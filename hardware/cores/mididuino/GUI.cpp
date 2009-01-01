@@ -313,8 +313,12 @@ void GuiClass::put_valuex(uint8_t idx, uint8_t value) {
   data[idx+1] = hex2c(value >> 0 & 0xF);
 }
 
-void GuiClass::put_string(uint8_t idx, char *str) {
-  /* XXX */
+void GuiClass::put_string(uint8_t idx, const char *str) {
+  char* data = lines[curLine].data;
+  lines[curLine].changed = true;
+  while (*str) {
+    data[idx++] = *str++;
+  }
 }
 
 void GuiClass::put_p_string(uint8_t idx, PGM_P str) {

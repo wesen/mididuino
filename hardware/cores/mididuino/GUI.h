@@ -159,7 +159,7 @@ class GuiClass {
   void put_value(uint8_t idx, uint8_t value);
   void put_value16(uint8_t idx, uint16_t value);
   void put_valuex(uint8_t idx, uint8_t value);
-  void put_string(uint8_t idx, char *str);
+  void put_string(uint8_t idx, const char *str);
   void put_p_string(uint8_t idx, PGM_P str);
   void setLine(uint8_t line) { curLine = line; }
 
