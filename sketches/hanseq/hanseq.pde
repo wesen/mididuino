@@ -16,6 +16,10 @@ public:
   void setLED(uint8_t ledNumber,
               ledState state,
               uint8_t time = 8);
+
+  void set7seg(uint16_t number, bool blink = false);
+
+  void handleSysex(uint8_t* data, uint8_t length);
 };
 
 void
@@ -63,11 +67,52 @@ void
 PadKontrol::setLED(uint8_t ledNumber,
                    ledState state,
                    uint8_t time) {
-  sendSysex(3, 0x01, 0, 0x63);
-  //  sendSysex(3, 0x01, ledNumber, (((uint8_t) state) << 5) | time);
+  sendSysex(3, 0x01, ledNumber, (((uint8_t) state) << 5) | time);
+}
+
+void
+PadKontrol::set7seg(uint16_t number, bool blink) {
+  sendSysex(6, 0x22, 0x04, 0x00 + (blink ? 1 : 0),
+            number / 100 + '0',
+            (number % 100) / 10 + '0',
+            (number % 10) + '0');
+}
+
+void
+PadKontrol::handleSysex(uint8_t* data, uint8_t length)
+{
 }
 
 PadKontrol PadKontrol;
+
+class PadKontrolSysexReceiver
+  : public MidiSysexClass
+{
+  uint8_t _buf[128];
+public:
+  PadKontrolSysexReceiver()
+    : MidiSysexClass(_buf, sizeof _buf)
+  {}
+
+  virtual void end();    
+};
+
+void
+PadKontrolSysexReceiver::end()
+{
+  if (aborted || (len < 5)) {
+    return;
+  }
+  if ((_buf[0] == 0x42)
+      && ((_buf[1] & 0xf0) == 0x40)
+      && (_buf[2] == 0x6e)
+      && (_buf[3] == 0x08)) {
+    PadKontrol.handleSysex(_buf + 4, len - 4);
+  }
+}
+
+
+PadKontrolSysexReceiver PadKontrolSysexReceiver;
 
 class EuclidPage {
 public:
@@ -225,6 +270,7 @@ void handleGui() {
 void
 EuclidPage::on16Callback() {
   if (!_muted && _track.isHit(MidiClock.div16th_counter)) {
+    PadKontrol.setLED(MidiClock.div16th_counter % 16, PadKontrol.oneShot, 2);
     if (_pitch) {
       USBMidiUart.sendNoteOff(_pitch);
     }
@@ -246,7 +292,32 @@ EuclidPage::updateDisplay() {
 }
 
 void on16Callback() {
-  PadKontrol.setLED(0, PadKontrol.oneShot);
+  static uint8_t padKontrolInitialized = 0;
+
+  if (padKontrolInitialized < 3) {
+    switch (padKontrolInitialized++) {
+    case 0:
+      PadKontrol.enterNativeMode();
+      break;
+    case 1:
+      PadKontrol.startLights();
+      break;
+    case 2:
+      PadKontrol.makeControlsSendSysex();
+      break;
+    }
+  } else {
+    if ((MidiClock.div16th_counter % 4) == 0) {
+      if ((MidiClock.div16th_counter % 16) == 0) {
+        static uint16_t bar = 0;
+        PadKontrol.setLED(0x10, PadKontrol.oneShot, 4);
+        PadKontrol.set7seg(bar++);
+      } else {
+        PadKontrol.setLED(0x10, PadKontrol.oneShot, 2);
+      }
+    }
+  }
+
   for (uint8_t i = 0; i < 4; i++) {
     euclids[i].on16Callback();
   }
@@ -264,28 +335,9 @@ void setup() {
   MidiClock.setTempo(150);
   MidiClock.start();
 
+  Midi.setSysex(&PadKontrolSysexReceiver);
+
   switchPage(0);
-
-  PadKontrol.enterNativeMode();
-  PadKontrol.startLights();
-  PadKontrol.makeControlsSendSysex();
-
-  for (int i = 0; i < 16; i++) {
-    switch (i & 3) {
-    case 0:
-      PadKontrol.setLED(i, PadKontrol.off);
-      break;
-    case 1:
-      PadKontrol.setLED(i, PadKontrol.on);
-      break;
-    case 2:
-      PadKontrol.setLED(i, PadKontrol.oneShot);
-      break;
-    case 3:
-      PadKontrol.setLED(i, PadKontrol.blink);
-      break;
-    }
-  }
 }
 
 void loop() {
@@ -296,5 +348,4 @@ void loop() {
   currentEuclid->_page.display();
   currentEuclid->_page.handle();
   sei();
-
 }
