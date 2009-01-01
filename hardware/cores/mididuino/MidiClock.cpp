@@ -81,16 +81,20 @@ void MidiClockClass::start() {
     div96th_counter = 0;
     div32th_counter = 0;
     div16th_counter = 0;
-    if (transmit)
+    if (transmit) {
       MidiUart.sendRaw(MIDI_START);
+      // USBMidiUart.sendRaw(MIDI_START);
+    }
   }
 }
 
 void MidiClockClass::stop() {
   if (mode == INTERNAL) {
     state = PAUSED;
-    if (transmit)
+    if (transmit) {
       MidiUart.sendRaw(MIDI_STOP);
+      // USBMidiUart.sendRaw(MIDI_STOP);
+    }      
   }
 }
 
@@ -135,8 +139,11 @@ void MidiClockClass::handleTimerInt()  {
 	}
       }
     } else if (mode == INTERNAL) {
-      if (transmit)
+      if (transmit) {
 	MidiUart.putc_immediate(MIDI_CLOCK);
+        // /*	USBMidiUart.putc_immediate(MIDI_CLOCK); */
+        // usb_midi_uart_putc(MIDI_CLOCK);
+      }
     }
     
     if (on96Callback)
