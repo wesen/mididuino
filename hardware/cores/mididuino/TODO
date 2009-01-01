@@ -1,0 +1,3 @@
+- length of notes to be sent out
+- timer1 precedence on timer2 and always run -> timer2 reentrant
+- timer1 midiclock rewrite in assembler
