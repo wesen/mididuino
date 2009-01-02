@@ -2,29 +2,38 @@
 
 #include <stdarg.h>
 
-typedef void (*PadKontrolButtonHandler)(uint8_t buttonNumber, bool state);
-typedef void (*PadKontrolEncoderHandler)(int8_t value);
+// --------------------------------------------------------------------------
+// Class definitions
+// --------------------------------------------------------------------------
+
+class PadKontrol;
+
+class PadKontrolSysexReceiver
+  : public MidiSysexClass
+{
+  uint8_t _buf[128];
+  PadKontrol* _padKontrol;
+
+public:
+  PadKontrolSysexReceiver(PadKontrol* padKontrol)
+    : _padKontrol(padKontrol),
+      MidiSysexClass(_buf, sizeof _buf)
+  {}
+
+  virtual void end();    
+};
 
 class PadKontrol {
+private:
   void sendSysex(uint8_t count ...);
 
-  PadKontrolButtonHandler _buttonHandler;
-  void handleButton(uint8_t buttonNumber, bool state) {
-    if (_buttonHandler) {
-      (*_buttonHandler)(buttonNumber, state);
-    }
-  }
+  virtual void handleButton(uint8_t buttonNumber, bool state) {}
+  virtual void handleEncoder(int8_t value) {}
 
-  PadKontrolEncoderHandler _encoderHandler;
-  void handleEncoder(int8_t value) {
-    if (_encoderHandler) {
-      (*_encoderHandler)(value);
-    }
-  }
+  PadKontrolSysexReceiver _sysexReceiver;
+
 public:
-  PadKontrol()
-    : _buttonHandler(0)
-  {}
+  PadKontrol();
 
   void enterNativeMode();
   void exitNativeMode();
@@ -41,14 +50,55 @@ public:
   void set7seg(uint16_t number, bool blink = false);
 
   void handleSysex(uint8_t* data, uint8_t length);
-
-  void setButtonHandler(PadKontrolButtonHandler handler) {
-    _buttonHandler = handler;
-  }
-  void setEncoderHandler(PadKontrolEncoderHandler handler) {
-    _encoderHandler = handler;
-  }
 };
+
+class HanseqPadKontrol
+  : public PadKontrol
+{
+protected:
+  virtual void handleButton(uint8_t buttonNumber, bool state);
+  virtual void handleEncoder(int8_t value);
+};
+
+class EuclidPage {
+public:
+  EuclidDrumTrack _track;
+  EncoderPage _page;
+  RangeEncoder _pulseEncoder;
+  RangeEncoder _lengthEncoder;
+  RangeEncoder _offsetEncoder;
+  RangeEncoder _pitchEncoder;
+
+  uint8_t _number;
+  uint8_t _pitch;
+  bool _muted;
+  bool _solo;
+
+  void toggleMute();
+  void mute();
+  void unMute();
+
+  void toggleSolo();
+  void solo();
+  void unSolo();
+  
+  void updateDisplay();
+  void checkEncoders();
+  void on16Callback();
+
+  void setup(uint8_t index);
+  EuclidPage();
+};
+
+// --------------------------------------------------------------------------
+// PadKontrol and friends
+// --------------------------------------------------------------------------
+
+PadKontrol::PadKontrol()
+  : _sysexReceiver(this)
+{
+  Midi.setSysex(&_sysexReceiver);
+}
 
 void
 PadKontrol::sendSysex(uint8_t count ...) {
@@ -119,20 +169,6 @@ PadKontrol::handleSysex(uint8_t* data, uint8_t length)
   }
 }
 
-PadKontrol PadKontrol;
-
-class PadKontrolSysexReceiver
-  : public MidiSysexClass
-{
-  uint8_t _buf[128];
-public:
-  PadKontrolSysexReceiver()
-    : MidiSysexClass(_buf, sizeof _buf)
-  {}
-
-  virtual void end();    
-};
-
 void
 PadKontrolSysexReceiver::end()
 {
@@ -143,42 +179,33 @@ PadKontrolSysexReceiver::end()
       && ((_buf[1] & 0xf0) == 0x40)
       && (_buf[2] == 0x6e)
       && (_buf[3] == 0x08)) {
-    PadKontrol.handleSysex(_buf + 4, len - 4);
+    _padKontrol->handleSysex(_buf + 4, len - 4);
   }
 }
 
+void
+HanseqPadKontrol::handleButton(uint8_t buttonNumber, bool state) {
+  if (state) {
+    switch (buttonNumber) {
+    case 0x00:
+      MidiClock.pause();
+      setLED(0x10, (MidiClock.state == MidiClock.PAUSED) ? blink : off);
+      break;
+    }
+  }
+}
 
-PadKontrolSysexReceiver PadKontrolSysexReceiver;
+void
+HanseqPadKontrol::handleEncoder(int8_t value) {
+  MidiClock.setTempo(MidiClock.getTempo() + value);
+  set7seg(MidiClock.getTempo());
+}
 
-class EuclidPage {
-public:
-  EuclidDrumTrack _track;
-  EncoderPage _page;
-  RangeEncoder _pulseEncoder;
-  RangeEncoder _lengthEncoder;
-  RangeEncoder _offsetEncoder;
-  RangeEncoder _pitchEncoder;
+HanseqPadKontrol padKontrol;
 
-  uint8_t _number;
-  uint8_t _pitch;
-  bool _muted;
-  bool _solo;
-
-  void toggleMute();
-  void mute();
-  void unMute();
-
-  void toggleSolo();
-  void solo();
-  void unSolo();
-  
-  void updateDisplay();
-  void checkEncoders();
-  void on16Callback();
-
-  void setup(uint8_t index);
-  EuclidPage();
-};
+// --------------------------------------------------------------------------
+// EuclidPage and friends
+// --------------------------------------------------------------------------
 
 EuclidPage::EuclidPage()
   : _track(0, 8),
@@ -275,6 +302,36 @@ EuclidPage::setup(uint8_t i)
   _number = i + 1;
 }
 
+void
+EuclidPage::on16Callback() {
+  if (!_muted && _track.isHit(MidiClock.div16th_counter)) {
+    if (this == currentEuclid) {
+      padKontrol.setLED(MidiClock.div16th_counter % 16, padKontrol.oneShot, 2);
+    }
+    if (_pitch) {
+      USBMidiUart.sendNoteOff(_pitch);
+    }
+    _pitch = _pitchEncoder.getValue(); //  + (random() % 16);
+    USBMidiUart.sendNoteOn(_pitch, 80 + (random() % 21));
+  }
+}
+
+void
+EuclidPage::updateDisplay() {
+  static char displayBuf[17];
+
+  GUI.setLine(GUI.LINE1);
+  GUI.put_value(0, (uint8_t) _number);
+  GUI.put_string(12,
+                 _muted ? "MUTE" : (_solo ? "SOLO" : "    "));
+  GUI.setLine(GUI.LINE2);
+  currentEuclid->_page.display(true);
+}
+
+// --------------------------------------------------------------------------
+// mididuino entry points and utility functions
+// --------------------------------------------------------------------------
+
 void switchPage(uint8_t i) {
   currentEuclid = &euclids[i];
   currentEuclid->updateDisplay();
@@ -304,75 +361,32 @@ void handleGui() {
 }
 
 void
-EuclidPage::on16Callback() {
-  if (!_muted && _track.isHit(MidiClock.div16th_counter)) {
-    if (this == currentEuclid) {
-      PadKontrol.setLED(MidiClock.div16th_counter % 16, PadKontrol.oneShot, 2);
-    }
-    if (_pitch) {
-      USBMidiUart.sendNoteOff(_pitch);
-    }
-    _pitch = _pitchEncoder.getValue(); //  + (random() % 16);
-    USBMidiUart.sendNoteOn(_pitch, 80 + (random() % 21));
-  }
-}
-
-void
-EuclidPage::updateDisplay() {
-  static char displayBuf[17];
-
-  GUI.setLine(GUI.LINE1);
-  GUI.put_value(0, (uint8_t) _number);
-  GUI.put_string(12,
-                 _muted ? "MUTE" : (_solo ? "SOLO" : "    "));
-  GUI.setLine(GUI.LINE2);
-  currentEuclid->_page.display(true);
-}
-
-void
-handlePadKontrolButton(uint8_t buttonNumber, bool state) {
-  if (state) {
-    switch (buttonNumber) {
-    case 0x00:
-      MidiClock.pause();
-      PadKontrol.setLED(0x10, (MidiClock.state == MidiClock.PAUSED) ? PadKontrol.blink : PadKontrol.off);
-      break;
-    }
-  }
-}
-
-void
-handlePadKontrolEncoder(int8_t value) {
-  MidiClock.setTempo(MidiClock.getTempo() + value);
-  PadKontrol.set7seg(MidiClock.getTempo());
-}
-
-void on16Callback() {
+on16Callback() {
   static uint8_t padKontrolInitialized = 0;
 
   if (padKontrolInitialized < 3) {
     switch (padKontrolInitialized++) {
     case 0:
-      PadKontrol.enterNativeMode();
+      padKontrol.enterNativeMode();
       break;
     case 1:
-      PadKontrol.startLights();
+      padKontrol.startLights();
       break;
     case 2:
-      PadKontrol.makeControlsSendSysex();
+      padKontrol.makeControlsSendSysex();
       break;
     }
   } else {
     if ((MidiClock.div16th_counter % 4) == 0) {
       if ((MidiClock.div16th_counter % 16) == 0) {
         static uint16_t bar = 0;
-        PadKontrol.setLED(0x10, PadKontrol.oneShot, 6);
-        PadKontrol.set7seg(bar++);
+        padKontrol.setLED(0x10, padKontrol.oneShot, 6);
+        padKontrol.set7seg(bar++);
         if (bar == 1000) {
           bar = 1;
         }
       } else {
-        PadKontrol.setLED(0x10, PadKontrol.oneShot, 2);
+        padKontrol.setLED(0x10, padKontrol.oneShot, 2);
       }
     }
   }
@@ -394,17 +408,12 @@ void setup() {
   MidiClock.setTempo(150);
   MidiClock.start();
 
-  Midi.setSysex(&PadKontrolSysexReceiver);
-
   switchPage(0);
 }
 
 void loop() {
   cli();
   currentEuclid->checkEncoders();
-  PadKontrol.setButtonHandler(handlePadKontrolButton);
-  PadKontrol.setEncoderHandler(handlePadKontrolEncoder);
-
   GUI.setLine(GUI.LINE2);
   currentEuclid->_page.display();
   currentEuclid->_page.handle();
