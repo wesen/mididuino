@@ -2,9 +2,30 @@
 
 #include <stdarg.h>
 
+typedef void (*PadKontrolButtonHandler)(uint8_t buttonNumber, bool state);
+typedef void (*PadKontrolEncoderHandler)(int8_t value);
+
 class PadKontrol {
   void sendSysex(uint8_t count ...);
+
+  PadKontrolButtonHandler _buttonHandler;
+  void handleButton(uint8_t buttonNumber, bool state) {
+    if (_buttonHandler) {
+      (*_buttonHandler)(buttonNumber, state);
+    }
+  }
+
+  PadKontrolEncoderHandler _encoderHandler;
+  void handleEncoder(int8_t value) {
+    if (_encoderHandler) {
+      (*_encoderHandler)(value);
+    }
+  }
 public:
+  PadKontrol()
+    : _buttonHandler(0)
+  {}
+
   void enterNativeMode();
   void exitNativeMode();
 
@@ -20,6 +41,13 @@ public:
   void set7seg(uint16_t number, bool blink = false);
 
   void handleSysex(uint8_t* data, uint8_t length);
+
+  void setButtonHandler(PadKontrolButtonHandler handler) {
+    _buttonHandler = handler;
+  }
+  void setEncoderHandler(PadKontrolEncoderHandler handler) {
+    _encoderHandler = handler;
+  }
 };
 
 void
@@ -47,7 +75,7 @@ PadKontrol::exitNativeMode() {
 
 void
 PadKontrol::startLights() {
-  sendSysex(12,
+ sendSysex(12,
             0x3f, 0x0a, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x03, 0x20, 0x20, 0x20);
 }
@@ -81,6 +109,14 @@ PadKontrol::set7seg(uint16_t number, bool blink) {
 void
 PadKontrol::handleSysex(uint8_t* data, uint8_t length)
 {
+  switch (data[0]) {
+  case 0x48:
+    handleButton(data[1], data[2] ? true : false);
+    break;
+  case 0x43:
+    handleEncoder(data[2] >= 0x40 ? (-64 + (data[2] - 0x40)) : data[2]);
+    break;
+  }
 }
 
 PadKontrol PadKontrol;
@@ -253,7 +289,7 @@ void handleGui() {
   currentEuclid->_page.update();
   
   for (uint8_t i = 0; i < 4; i++) {
-    if (BUTTON_DOWN(GUI.Buttons.SHIFT) && BUTTON_PRESSED(i)) {
+    if (BUTTON_PRESSED(i)) {
       switchPage(i);
     }
   }
@@ -270,12 +306,14 @@ void handleGui() {
 void
 EuclidPage::on16Callback() {
   if (!_muted && _track.isHit(MidiClock.div16th_counter)) {
-    PadKontrol.setLED(MidiClock.div16th_counter % 16, PadKontrol.oneShot, 2);
+    if (this == currentEuclid) {
+      PadKontrol.setLED(MidiClock.div16th_counter % 16, PadKontrol.oneShot, 2);
+    }
     if (_pitch) {
       USBMidiUart.sendNoteOff(_pitch);
     }
     _pitch = _pitchEncoder.getValue(); //  + (random() % 16);
-    USBMidiUart.sendNoteOn(_pitch, 100);
+    USBMidiUart.sendNoteOn(_pitch, 80 + (random() % 21));
   }
 }
 
@@ -289,6 +327,24 @@ EuclidPage::updateDisplay() {
                  _muted ? "MUTE" : (_solo ? "SOLO" : "    "));
   GUI.setLine(GUI.LINE2);
   currentEuclid->_page.display(true);
+}
+
+void
+handlePadKontrolButton(uint8_t buttonNumber, bool state) {
+  if (state) {
+    switch (buttonNumber) {
+    case 0x00:
+      MidiClock.pause();
+      PadKontrol.setLED(0x10, (MidiClock.state == MidiClock.PAUSED) ? PadKontrol.blink : PadKontrol.off);
+      break;
+    }
+  }
+}
+
+void
+handlePadKontrolEncoder(int8_t value) {
+  MidiClock.setTempo(MidiClock.getTempo() + value);
+  PadKontrol.set7seg(MidiClock.getTempo());
 }
 
 void on16Callback() {
@@ -310,8 +366,11 @@ void on16Callback() {
     if ((MidiClock.div16th_counter % 4) == 0) {
       if ((MidiClock.div16th_counter % 16) == 0) {
         static uint16_t bar = 0;
-        PadKontrol.setLED(0x10, PadKontrol.oneShot, 4);
+        PadKontrol.setLED(0x10, PadKontrol.oneShot, 6);
         PadKontrol.set7seg(bar++);
+        if (bar == 1000) {
+          bar = 1;
+        }
       } else {
         PadKontrol.setLED(0x10, PadKontrol.oneShot, 2);
       }
@@ -343,6 +402,8 @@ void setup() {
 void loop() {
   cli();
   currentEuclid->checkEncoders();
+  PadKontrol.setButtonHandler(handlePadKontrolButton);
+  PadKontrol.setEncoderHandler(handlePadKontrolEncoder);
 
   GUI.setLine(GUI.LINE2);
   currentEuclid->_page.display();
