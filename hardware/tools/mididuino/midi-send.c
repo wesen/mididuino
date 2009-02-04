@@ -391,13 +391,13 @@ void midiTimeout(void) {
 }
 
 void usage(void) {
-  fprintf(stderr, "Usage: ./midi-send [-l] [-h] -o outputDevice file\n");
+  fprintf(stderr, "Usage: ./midi-send [-l] [-h] [-I ID in hex (default 38)] -i inputDevice -o outputDevice file\n");
 }
 
 int main(int argc, char *argv[]) {
   int c;
-  char outputDevice[256];
-  char inputDevice[256];
+  char outputDevice[256] = "";
+  char inputDevice[256]  = "";
   int bootloader = 0;
 
   while ((c = getopt(argc, argv, "ho:l:i:I:bvq")) != -1) {
@@ -418,6 +418,7 @@ int main(int argc, char *argv[]) {
       break;
 
     case 'l':
+      printf("optarg: %s\n", optarg);
       if (optarg[0] == 'i') {
 	listInputMidiDevices();
       } else {
@@ -460,7 +461,7 @@ int main(int argc, char *argv[]) {
     convertHexFile = 1;
   }
   
-  if (outputDevice == -1 || inputDevice == -1) {
+  if (!strcmp(outputDevice, "") || !strcmp(inputDevice, "")) {
     usage();
     exit(1);
   }
