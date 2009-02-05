@@ -1,0 +1,117 @@
+#include <avr/interrupt.h>
+#include <util/delay.h>
+
+#include <MidiUart.h>
+#include "MidiDuino.h"
+
+MidiUartClass MidiUart;
+
+#define UART_BAUDRATE 31250
+#define UART_BAUDRATE_REG (((F_CPU / 16)/(UART_BAUDRATE)) - 1)
+
+#define UART_CHECK_EMPTY_BUFFER() IS_BIT_SET8(UCSR0A, UDRE)
+#define UART_CHECK_RX() IS_BIT_SET8(UCSR0A, RXC)
+#define UART_WRITE_CHAR(c) (UDR0 = (c))
+#define UART_READ_CHAR() (UDR0)
+
+#include <avr/io.h>
+
+MidiUartClass::MidiUartClass() {
+  currentChannel = 0x0;
+  initSerial();
+}
+
+void MidiUartClass::initSerial() {
+  UBRR0H = (UART_BAUDRATE_REG >> 8);
+  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
+  //  UBRRH = 0;
+  //  UBRRL = 15;
+
+  UCSR0C = (3<<UCSZ00); 
+  
+  /** enable receive, transmit and receive and transmit interrupts. **/
+  //  UCSRB = _BV(RXEN) | _BV(TXEN) | _BV(RXCIE);
+  UCSR0B = _BV(RXEN) | _BV(TXEN) | _BV(RXCIE);
+#ifdef TX_IRQ
+  UCSR0B |= _BV(TXCIE);
+#endif
+}
+
+void MidiUartClass::puts(uint8_t *data, uint8_t cnt) {
+  while (cnt--)
+    putc(*(data++));
+}
+
+void MidiUartClass::putc_immediate(uint8_t c) {
+#ifdef TX_IRQ
+  while (!UART_CHECK_EMPTY_BUFFER())
+    ;
+  UART_WRITE_CHAR(c);
+#else
+  putc(c);
+#endif
+}
+
+void MidiUartClass::putc(uint8_t c) {
+#ifdef TX_IRQ
+  if (txRb.isEmpty() && UART_CHECK_EMPTY_BUFFER()) {
+    UART_WRITE_CHAR(c);
+  } else {
+    if (txRb.isFull()) {
+      while (!UART_CHECK_EMPTY_BUFFER())
+	;
+      UART_WRITE_CHAR(c);
+      return;
+    } else {
+      txRb.put(c);
+    }
+  }
+#else
+  while (!UART_CHECK_EMPTY_BUFFER())
+    ;
+  UART_WRITE_CHAR(c);
+#endif
+}
+
+bool MidiUartClass::avail() {
+  return !rxRb.isEmpty();
+}
+
+uint8_t MidiUartClass::getc() {
+  return rxRb.get();
+}
+
+void MidiUartClass::sendNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
+  putc(MIDI_NOTE_ON | channel);
+  putc(note);
+  putc(velocity);
+}
+
+void MidiUartClass::sendNoteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
+  putc(MIDI_NOTE_OFF | channel);
+  putc(note);
+  putc(velocity);
+}
+
+void MidiUartClass::sendCC(uint8_t channel, uint8_t cc, uint8_t value) {
+  putc(MIDI_CONTROL_CHANGE | channel);
+  putc(cc);
+  putc(value);
+}
+
+SIGNAL(USART0_RX_vect) {
+  uint8_t c = UART_READ_CHAR();
+
+  if (c == 0xF8 && MidiClock.mode == MidiClock.EXTERNAL) {
+    MidiClock.handleClock();
+  } else {
+    MidiUart.rxRb.put(c);
+  }
+}
+
+#ifdef TX_IRQ
+SIGNAL(USART0_TX_vect) {
+  if (!MidiUart.txRb.isEmpty())
+    UART_WRITE_CHAR(MidiUart.txRb.get());
+}
+#endif
