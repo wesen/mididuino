@@ -52,7 +52,9 @@ public class MidiUploader extends AvrdudeUploader {
     commandDownloader.add("midi-send");
 		commandDownloader.add("-b");
 		String midiPort = Preferences.get("midi.port");
-		commandDownloader.add("-I" + Preferences.get("midi.deviceiid"));
+		
+		System.out.println("foobar " + Preferences.get("board") + " " + Preferences.get("boards." + Preferences.get("board") + ".upload.midiid"));
+		commandDownloader.add("-I" + Preferences.get("boards." + Preferences.get("board") + ".upload.midiid"));
 		commandDownloader.add("-i" + getMidiPortIndex(Preferences.get("midi.inputport")));
 		commandDownloader.add("-o" + getMidiPortIndex(Preferences.get("midi.outputport")));
 		commandDownloader.addAll(params);
