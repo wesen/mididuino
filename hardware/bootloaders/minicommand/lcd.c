@@ -7,18 +7,20 @@
 #include <avr/interrupt.h>
 #include "lcd.h"
 
-#define LCD_DATA_PORT PORTD
-#define LCD_DDR DDRD
+#define LCD_DATA_PORT PORTC
+#define LCD_DATA_DDR  DDRC
 
 #define LCD_DELAY_US 50
 
-#define LCD_RS PD2
-#define LCD_ENABLE PD3
+#define LCD_CTRL_PORT PORTE
+#define LCD_CTRL_DDR  DDRE
+#define LCD_RS        PE2
+#define LCD_ENABLE    PE3
 
-#define LCD_SET_ENABLE()   { SET_BIT8(LCD_DATA_PORT, LCD_ENABLE); }
-#define LCD_CLEAR_ENABLE() { CLEAR_BIT8(LCD_DATA_PORT, LCD_ENABLE); }
-#define LCD_SET_RS()       { SET_BIT8(LCD_DATA_PORT, LCD_RS); }
-#define LCD_CLEAR_RS()     { CLEAR_BIT8(LCD_DATA_PORT, LCD_RS); }
+#define LCD_SET_ENABLE()   { SET_BIT8(LCD_CTRL_PORT, LCD_ENABLE); }
+#define LCD_CLEAR_ENABLE() { CLEAR_BIT8(LCD_CTRL_PORT, LCD_ENABLE); }
+#define LCD_SET_RS()       { SET_BIT8(LCD_CTRL_PORT, LCD_RS); }
+#define LCD_CLEAR_RS()     { CLEAR_BIT8(LCD_CTRL_PORT, LCD_RS); }
 
 void lcd_enable(void) {
   LCD_SET_ENABLE();
@@ -32,7 +34,7 @@ void lcd_enable(void) {
 inline void lcd_putnibble(uint8_t nibble) {
   uint8_t tmp = SREG;
   cli();
-  PORTD = (PORTD & 0x0F) | (nibble << 4);
+  LCD_DATA_PORT = (LCD_DATA_PORT & 0x0F) | (nibble << 4);
   lcd_enable();
   SREG = tmp;
 }
@@ -169,8 +171,10 @@ void lcd_line2(void) {
 }
 
 void lcd_init(void) {
-  LCD_DDR = 0xFC;
+  LCD_DATA_DDR |= 0xFF;
   LCD_DATA_PORT = 0x00;
+
+  LCD_CTRL_DDR |= _BV(LCD_RS) | _BV(LCD_ENABLE);
 
   // wait for display
   uint8_t i;

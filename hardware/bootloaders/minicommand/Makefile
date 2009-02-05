@@ -1,6 +1,5 @@
 CC=avr-gcc
 OBJCOPY = avr-objcopy
-UISP=uisp
 AVR_ARCH = atmega64
 LDAVR_ARCH = avrmega64
 
@@ -12,7 +11,7 @@ LDFLAGS = -m $(LDAVR_ARCH) -M
 
 PROJ=bootloader
 
-BOOTLOADER64_START = 0xF800
+BOOTLOADER64_START = 0xF000
 
 all: bootloader.hex
 
@@ -52,16 +51,19 @@ bootloader.elf: bootloader.o lcd.o sr165.o
 init64:
 	avrdude -p m64 -P usb -c usbasp -U efuse:w:0xff:m -U hfuse:w:0x89:m -U lfuse:w:0x2f:m
 
-init64_1024:
+init64_2048:
 	avrdude -p m64 -P usb -c usbasp -U efuse:w:0xff:m -U hfuse:w:0x8a:m -U lfuse:w:0x2f:m
 
 bootavrdude64: bootloader.hex # $(PROJ).ee_srec $(PROJ).hex
-	avrdude -p m64 -P usb -c usbasp -U flash:w:bootloader.hex
+	avrdude -p m64 -P usb -c usbasp -V -U flash:w:bootloader.hex
 
 restart64:
 #       read the fuses to reset the programming adapter
 #	$(UISP) $(UISP_TARGET) --rd_fuses
 	avrdude -p m64 -P usb -c usbasp 
+
+avrread64: 
+	avrdude -p m64 -P usb -c usbasp -U flash:r:$(PROJ)-read.hex:i
 
 
 clean:

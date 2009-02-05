@@ -19,7 +19,7 @@ int main(void);
 
 #define ROM_SIZE 32768
 
-#define _B1024
+#define _B2048
 
 #ifdef _B128
   #define APP_PAGES ((2*ROM_SIZE / SPM_PAGESIZE)- (2*128 / SPM_PAGESIZE )) 
@@ -38,12 +38,13 @@ int main(void);
   #define APP_END APP_PAGES * SPM_PAGESIZE 
 #endif  
 #ifdef _B2048
-  #error "_B2048 not suppoted on this device"
+  #define APP_PAGES ((2*ROM_SIZE / SPM_PAGESIZE)- (2*2048 / SPM_PAGESIZE )) 
+  #define APP_END APP_PAGES * SPM_PAGESIZE 
 #endif   
 
 void (*jump_to_app)(void) = 0x0000;
 static uint16_t sysex_address = 0;
-static uint8_t recvd = 0;
+static uint16_t recvd = 0;
 
 void write_block_data(void);
 
@@ -102,6 +103,7 @@ void midi_sysex_send_nak(void) {
 }  
 
 uint8_t jump_to_main_program(void) {
+  _delay_ms(100);
   if (recvd != 0) {
     write_block_data();
   }
@@ -111,6 +113,7 @@ uint8_t jump_to_main_program(void) {
     lcd_clear_line();
     lcd_line2();
     lcd_clear_line();
+    eeprom_write_word(START_MAIN_APP_ADDR, 1);
     jump_to_app();
     return 1;
   } else {
@@ -120,7 +123,7 @@ uint8_t jump_to_main_program(void) {
   }
 }
 
-uint8_t block_cnt = 0;
+uint16_t block_cnt = 0;
 uint8_t sysex_data[SPM_PAGESIZE];
 
 uint8_t data[100];
@@ -144,26 +147,36 @@ uint8_t write_checksum(void) {
   return 1;
 }
 
+#if (SPM_PAGESIZE == 64)
+#define ADDR_SHIFT_BITS 6
+#elif (SPM_PAGESIZE == 128)
+#define ADDR_SHIFT_BITS 7
+#elif (SPM_PAGESIZE == 256)
+#define ADDR_SHIFT_BITS 8
+#endif
+
+
+
 void write_block_data(void) {
-  uint8_t i;
-    uint8_t sreg = SREG;
-    lcd_line2();
-    lcd_put((uint8_t *)"BLK ", 4);
-    lcd_putnumberx(sysex_address >> (SPM_PAGESIZE == 64 ? 6 : 7));
-    cli();
-    boot_page_erase(sysex_address);
-    boot_spm_busy_wait();
-    uint16_t address = sysex_address;
-    for (i = 0; i < SPM_PAGESIZE; i+=2) {
-      uint16_t tmp = sysex_data[i] | (sysex_data[i + 1] << 8);
-      boot_page_fill(address, tmp);
-      address += 2;
-    }
-    boot_page_write(sysex_address);
-    boot_spm_busy_wait();
-    boot_rww_enable();
-    SREG = sreg;
-    recvd = 0;
+  uint16_t i;
+  uint8_t sreg = SREG;
+  lcd_line2();
+  lcd_put((uint8_t *)"BLK ", 4);
+  lcd_putnumberx(sysex_address >> ADDR_SHIFT_BITS);
+  cli();
+  boot_page_erase(sysex_address);
+  boot_spm_busy_wait();
+  uint16_t address = sysex_address;
+  for (i = 0; i < SPM_PAGESIZE; i+=2) {
+    uint16_t tmp = sysex_data[i] | (sysex_data[i + 1] << 8);
+    boot_page_fill(address, tmp);
+    address += 2;
+  }
+  boot_page_write(sysex_address);
+  boot_spm_busy_wait();
+  boot_rww_enable();
+  SREG = sreg;
+  recvd = 0;
 }
 
 uint8_t write_block(void) {
@@ -197,7 +210,7 @@ uint8_t write_block(void) {
     if (i >= length)
       break;
   }
-
+  
   uint8_t check = data[sysex_cnt - 1];
   checksum &= 0x7f;
 

@@ -1,6 +1,9 @@
 #ifndef LCD_H__
 #define LCD_H__
 
+#include <inttypes.h>
+#include <avr/pgmspace.h>
+
 void lcd_putnumber(uint8_t num);
 void lcd_putcx(uint8_t i);
 void lcd_putnumberx(uint8_t num);
