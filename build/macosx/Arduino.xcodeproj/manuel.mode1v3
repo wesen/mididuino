@@ -231,6 +231,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -280,19 +282,27 @@
 								<string>336EA4DB09FF87E30052D765</string>
 								<string>33FF01DD0965BD160016AC38</string>
 								<string>3383BF8B0CB7C71200A8FB57</string>
+								<string>640A1CB90F3B0EC30001309F</string>
+								<string>640A1DC80F3B0EC50001309F</string>
 								<string>1C37FBAC04509CD000000102</string>
+								<string>640A272E0F3B3BAF0001309F</string>
+								<string>640A272F0F3B3BAF0001309F</string>
+								<string>3383BF8B0CB7C71200A8FB57</string>
+								<string>640A1CB90F3B0EC30001309F</string>
+								<string>640A1DC80F3B0EC50001309F</string>
+								<string>640A27300F3B3BAF0001309F</string>
+								<string>640A27310F3B3BAF0001309F</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>21</integer>
-									<integer>2</integer>
-									<integer>0</integer>
+									<integer>131</integer>
+									<integer>130</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 185}, {186, 660}}</string>
+							<string>{{0, 1919}, {186, 660}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -322,14 +332,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MidiUploader.java</string>
+								<string>programmers.txt</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -337,11 +345,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>MidiUploader.java</string>
+										<string>programmers.txt</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>640A272C0F3B19BA0001309F</string>
+										<string>640A27380F3B3BD40001309F</string>
 										<key>history</key>
 										<array>
 											<string>64A56FAE0EE45086002733F4</string>
@@ -359,7 +367,8 @@
 											<string>64985CC40EF84D8E00A71F64</string>
 											<string>64A9EA700F34747B00AFD4F7</string>
 											<string>640A271C0F3B154C0001309F</string>
-											<string>6431F52C0EF64A750046D296</string>
+											<string>640A27320F3B3BAF0001309F</string>
+											<string>640A27330F3B3BAF0001309F</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -380,6 +389,7 @@
 											<string>64A5709D0EE45FAA002733F4</string>
 											<string>644779C10EE6ABCB00695DDD</string>
 											<string>640A271D0F3B154C0001309F</string>
+											<string>640A27340F3B3BAF0001309F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>

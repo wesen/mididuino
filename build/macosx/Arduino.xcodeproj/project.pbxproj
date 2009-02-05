@@ -28,7 +28,6 @@
 				33FF07130965BFA80016AC38 /* CopyFiles */,
 				336EA3E309FF84FA0052D765 /* CopyFiles */,
 				33FF07170965BFFE0016AC38 /* ShellScript */,
-				33269DCF0D6E79D9006BB2E3 /* ShellScript */,
 			);
 			dependencies = (
 			);
@@ -743,19 +742,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		33269DCF0D6E79D9006BB2E3 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "unzip -od $BUILT_PRODUCTS_DIR/hardware dist/tools-universal.zip\n";
-		};
 		33269DE50D6E7A6F006BB2E3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

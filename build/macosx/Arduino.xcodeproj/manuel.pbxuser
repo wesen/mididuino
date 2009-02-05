@@ -120,6 +120,11 @@
 			640A27290F3B188D0001309F /* PBXTextBookmark */ = 640A27290F3B188D0001309F /* PBXTextBookmark */;
 			640A272B0F3B191D0001309F /* PBXTextBookmark */ = 640A272B0F3B191D0001309F /* PBXTextBookmark */;
 			640A272C0F3B19BA0001309F /* PBXTextBookmark */ = 640A272C0F3B19BA0001309F /* PBXTextBookmark */;
+			640A27320F3B3BAF0001309F /* PBXTextBookmark */ = 640A27320F3B3BAF0001309F /* PBXTextBookmark */;
+			640A27330F3B3BAF0001309F /* PBXBookmark */ = 640A27330F3B3BAF0001309F /* PBXBookmark */;
+			640A27340F3B3BAF0001309F /* PBXTextBookmark */ = 640A27340F3B3BAF0001309F /* PBXTextBookmark */;
+			640A27350F3B3BAF0001309F /* PBXTextBookmark */ = 640A27350F3B3BAF0001309F /* PBXTextBookmark */;
+			640A27380F3B3BD40001309F /* PBXTextBookmark */ = 640A27380F3B3BD40001309F /* PBXTextBookmark */;
 			6431F4F80EF6455A0046D296 = 6431F4F80EF6455A0046D296 /* PBXTextBookmark */;
 			6431F52B0EF64A750046D296 = 6431F52B0EF64A750046D296 /* PBXTextBookmark */;
 			6431F52C0EF64A750046D296 = 6431F52C0EF64A750046D296 /* PBXTextBookmark */;
@@ -236,6 +241,12 @@
 			sepNavWindowFrame = "{{518, 220}, {750, 558}}";
 		};
 	};
+	640A1CB80F3B0EC30001309F /* programmers.txt */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text;
+		path = programmers.txt;
+		sourceTree = "<group>";
+	};
 	640A27170F3B0ECF0001309F /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 33FFFE740965BD110016AC38 /* Uploader.java */;
@@ -345,6 +356,62 @@
 		rType = 0;
 		vrLen = 1177;
 		vrLoc = 988;
+	};
+	640A27320F3B3BAF0001309F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 64A56F940EE445FD002733F4 /* MidiUploader.java */;
+		name = "MidiUploader.java: 56";
+		rLen = 0;
+		rLoc = 1744;
+		rType = 0;
+		vrLen = 1158;
+		vrLoc = 1164;
+	};
+	640A27330F3B3BAF0001309F /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 640A1CB80F3B0EC30001309F /* programmers.txt */;
+	};
+	640A27340F3B3BAF0001309F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 64A56F940EE445FD002733F4 /* MidiUploader.java */;
+		name = "MidiUploader.java: 56";
+		rLen = 0;
+		rLoc = 1744;
+		rType = 0;
+		vrLen = 1158;
+		vrLoc = 1164;
+	};
+	640A27350F3B3BAF0001309F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 640A27360F3B3BAF0001309F /* programmers.txt */;
+		name = "programmers.txt: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 313;
+		vrLoc = 0;
+	};
+	640A27360F3B3BAF0001309F /* programmers.txt */ = {
+		isa = PBXFileReference;
+		name = programmers.txt;
+		path = /Users/manuel/mididuino/hardware/programmers.txt;
+		sourceTree = "<absolute>";
+	};
+	640A27380F3B3BD40001309F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 640A27390F3B3BD40001309F /* programmers.txt */;
+		name = "programmers.txt: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 313;
+		vrLoc = 0;
+	};
+	640A27390F3B3BD40001309F /* programmers.txt */ = {
+		isa = PBXFileReference;
+		name = programmers.txt;
+		path = /Users/manuel/mididuino/hardware/programmers.txt;
+		sourceTree = "<absolute>";
 	};
 	6431F4F80EF6455A0046D296 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -473,9 +540,9 @@
 	};
 	64A56F940EE445FD002733F4 /* MidiUploader.java */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1011, 1806}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1011, 1820}}";
 			sepNavSelRange = "{1744, 0}";
-			sepNavVisRange = "{988, 1177}";
+			sepNavVisRange = "{1164, 1158}";
 			sepNavWindowFrame = "{{462, 185}, {750, 558}}";
 		};
 	};
