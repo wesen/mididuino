@@ -6,6 +6,10 @@ extern "C" {
 #include <avr/interrupt.h>
 }
 
+extern "C" {
+  #include "helpers.h"
+}
+
 #include "mididuino_private.h"
 
 #ifdef __cplusplus
