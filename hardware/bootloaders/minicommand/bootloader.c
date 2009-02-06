@@ -83,11 +83,11 @@ void bl_uart_putc(uint8_t c) {
 }
 
 uint8_t ack_msg[6] = {
-  0xf0, 0x00, 0x13, 0x37, CMD_DATA_BLOCK_ACK, 0xf7
+  0xf0, SYSEX_VENDOR_1, SYSEX_VENDOR_2, SYSEX_VENDOR_3, CMD_DATA_BLOCK_ACK, 0xf7
 };
 
 uint8_t nak_msg[6] = {
-  0xf0, 0x00, 0x13, 0x37, CMD_DATA_BLOCK_NAK, 0xf7
+  0xf0, SYSEX_VENDOR_1, SYSEX_VENDOR_2, SYSEX_VENDOR_3, CMD_DATA_BLOCK_NAK, 0xf7
 };
 
 void midi_sysex_send_ack(void) {
@@ -271,7 +271,7 @@ void handle_midi(uint8_t c) {
     if (sysex_cnt >= 3) {
       if (data[0] != SYSEX_VENDOR_1 ||
 	  data[1] != SYSEX_VENDOR_2 ||
-	  data[2] != 0x40) {
+	  data[2] != SYSEX_VENDOR_3) {
 	in_sysex = 0;
       }
     }
