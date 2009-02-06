@@ -54,7 +54,7 @@ void MidiClockClass::handleClock() {
 }
 
 void MidiClockClass::handleMidiStart() {
-  if (mode == EXTERNAL) {
+  if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
     init();
     state = STARTING;
     div96th_counter = 0;
@@ -65,7 +65,7 @@ void MidiClockClass::handleMidiStart() {
 }
 
 void MidiClockClass::handleMidiStop() {
-  if (mode == EXTERNAL) {
+  if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
     state = PAUSED;
   }
 }
@@ -118,7 +118,7 @@ void MidiClockClass::handleTimerInt()  {
     counter = interval;
     div96th_counter++;
     
-    if (mode == EXTERNAL) {
+    if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
       uint16_t cur_clock = clock;
       uint16_t diff = clock_diff(last_clock, cur_clock);
       

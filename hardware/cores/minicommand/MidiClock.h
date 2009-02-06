@@ -32,7 +32,8 @@ class MidiClockClass {
   enum {
     OFF = 0,
     INTERNAL,
-    EXTERNAL
+    EXTERNAL,
+    EXTERNAL_UART2
   } mode;
 
   MidiClockClass();

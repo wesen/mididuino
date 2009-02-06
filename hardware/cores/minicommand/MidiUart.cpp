@@ -149,8 +149,8 @@ SIGNAL(USART1_RX_vect) {
   uint8_t c = UART2_READ_CHAR();
 
   // XXX clock on second input
-  if (c == 0xF8 && MidiClock.mode == MidiClock.EXTERNAL) {
-    //    MidiClock.handleClock();
+  if (c == 0xF8 && MidiClock.mode == MidiClock.EXTERNAL_UART2) {
+    MidiClock.handleClock();
   } else {
     MidiUart2.rxRb.put(c);
   }

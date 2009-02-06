@@ -42,7 +42,8 @@ void MidiClass::handleByte(uint8_t byte) {
   if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
     uint8_t tmp = SREG;
     cli();
-    if (MidiClock.mode == MidiClock.EXTERNAL) {
+    if ((MidiClock.mode == MidiClock.EXTERNAL && this == &Midi) ||
+	(MidiClock.mode == MidiClock.EXTERNAL_UART2 && this == &Midi2)) {
       switch (byte) {
       case MIDI_CLOCK:
 	// handled in interrupt routine
