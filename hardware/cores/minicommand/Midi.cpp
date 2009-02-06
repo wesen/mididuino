@@ -178,7 +178,6 @@ void MidiClass::setOnPitchWheelCallback(midi_callback_t cb) {
   callbacks[MIDI_PITCH_WHEEL_CB] = cb;
 }
 
-
 MidiClass Midi;
 MidiClass Midi2;
 
@@ -193,6 +192,8 @@ void MidiSysexClass::abort() {
 }
 
 void MidiSysexClass::handleByte(uint8_t byte) {
+  LCD.line2();
+  LCD.putnumberx(byte);
   if (data != NULL && !aborted) {
     if (len < max_len)
       data[len++] = byte;

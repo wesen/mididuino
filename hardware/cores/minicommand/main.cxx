@@ -29,16 +29,19 @@ ISR(TIMER1_OVF_vect) {
 
 // XXX CMP to have better time
 
-ISR(TIMER2_OVF_vect) {
-  //  setLed2();
-
-#ifdef MIDIDUINO_POLL_GUI_IRQ
+void gui_poll() {
   uint16_t sr = SR165.read16();
   Buttons.clear();
   Buttons.poll(sr >> 8);
   Encoders.clearEncoders();
   Encoders.poll(sr);
+}
 
+ISR(TIMER2_OVF_vect) {
+  //  setLed2();
+
+#ifdef MIDIDUINO_POLL_GUI_IRQ
+  gui_poll();
   handleGui();
 #endif
   slowclock++;
@@ -68,17 +71,14 @@ int main(void) {
     }
     
 #if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
-    GUI.poll();
+    cli();
+    gui_poll();
     handleGui();
+    sei();
 #endif
 
     loop();
 
-#ifdef MIDIDUINO_POLL_GUI
-    cli();
-    GUI.update();
-    sei();
-#endif
   }
   return 0;
 }
