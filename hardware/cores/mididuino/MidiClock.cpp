@@ -117,6 +117,10 @@ void MidiClockClass::setTempo(uint16_t _tempo) {
   SREG = tmp;
 }
 
+uint16_t MidiClockClass::getTempo() {
+  return tempo;
+}
+
 void MidiClockClass::handleTimerInt()  {
   if (counter == 0) {
     counter = interval;
