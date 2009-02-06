@@ -39,7 +39,7 @@ long map(long, long, long, long, long);
 #define MIDIDUINO_MIDI_CLOCK   1
 #define MIDIDUINO_ENABLE_USB   1
 #define MIDIDUINO_RESET_COMBO  1
-#define MIDIDUINO_ENABLE_LFOS  0
+//#define MIDIDUINO_ENABLE_LFOS  0
 
 #endif /* WProgram_h */
 
