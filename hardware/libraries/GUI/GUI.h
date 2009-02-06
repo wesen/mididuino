@@ -113,6 +113,7 @@ class GuiClass {
 
   void display(bool redisplay = false);
   void displayNames();
+  void updatePage();
 
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;

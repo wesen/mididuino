@@ -36,10 +36,13 @@ void TempoEncoder::handle(uint8_t val) {
 /********************/
 
 void EncoderPage::update() {
+  uint8_t tmp = SREG;
+  cli();
   for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     if (encoders[i] != NULL) 
       encoders[i]->update(Encoders.encoders + i);
   }
+  SREG = tmp;
 }
 
 void EncoderPage::handle() {
@@ -77,17 +80,15 @@ GuiClass::GuiClass() {
   page = NULL;
 }
 
-void GuiClass::update() {
+void GuiClass::updatePage() {
   if (page != NULL) {
-    cli();
     page->update();
-    sei();
   }
+}
+void GuiClass::update() {
   display();
   if (page != NULL) {
-    cli();
     page->handle();
-    sei();
   }
   for (uint8_t i = 0; i < 2; i++) {
     if (lines[i].changed) {
