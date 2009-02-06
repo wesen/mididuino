@@ -59,9 +59,9 @@ class EncodersClass {
 #define DOUBLE_CLICK_TIME 30
 #define LONG_CLICK_TIME   100
 
-#define B_STATUS(i, bit)        (IS_BIT_SET8(GUI.Buttons.buttons[i].status, bit))
-#define B_SET_STATUS(i, bit)    (SET_BIT8(GUI.Buttons.buttons[i].status, bit))
-#define B_CLEAR_STATUS(i, bit)  (CLEAR_BIT8(GUI.Buttons.buttons[i].status, bit))
+#define B_STATUS(i, bit)        (IS_BIT_SET8(Buttons.buttons[i].status, bit))
+#define B_SET_STATUS(i, bit)    (SET_BIT8(Buttons.buttons[i].status, bit))
+#define B_CLEAR_STATUS(i, bit)  (CLEAR_BIT8(Buttons.buttons[i].status, bit))
 #define B_STORE_STATUS(i, bit, j) { if (j) B_SET_STATUS(i, bit);	\
       else B_CLEAR_STATUS(i, bit); }
 
@@ -127,42 +127,9 @@ class ButtonsClass {
   void poll(uint8_t sr);
 };
 
-typedef struct line_s {
-  char data[16];
-  bool changed;
-} line_t;
-
-class GuiClass {
- protected:
-  line_t lines[2];
-  uint8_t curLine;
-  
- public:
-  GuiClass();
-  void poll();
-  void clear();
-  void update();
-  void (*handleButtons)();
-
-  static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
-  static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
-  
-  void put_value(uint8_t idx, uint8_t value);
-  void put_value16(uint8_t idx, uint16_t value);
-  void put_valuex(uint8_t idx, uint8_t value);
-  void put_string(uint8_t idx, char *str);
-  void put_p_string(uint8_t idx, PGM_P str);
-  void setLine(uint8_t line) { curLine = line; }
-
-  static const uint8_t LINE1 = 0;
-  static const uint8_t LINE2 = 1;
-  
-  SR165Class SR165;
-  EncodersClass Encoders;
-  ButtonsClass Buttons;
-};
-
-extern GuiClass GUI;
+extern SR165Class SR165;
+extern EncodersClass Encoders;
+extern ButtonsClass Buttons;
 
 #endif /* GUI_PRIVATE_H__ */
 

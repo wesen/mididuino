@@ -1,5 +1,5 @@
-#ifndef ENCODERPAGE_H__
-#define ENCODERPAGE_H__
+#ifndef GUI_H__
+#define GUI_H__
 
 #include <stdlib.h>
 
@@ -89,5 +89,38 @@ class TempoEncoder : public RangeEncoder {
   void handle(uint8_t val);
 };
 
+typedef struct line_s {
+  char data[16];
+  bool changed;
+} line_t;
 
-#endif /* ENCODERPAGE_H__ */
+class GuiClass {
+ protected:
+  line_t lines[2];
+  uint8_t curLine;
+  
+ public:
+  GuiClass();
+  void update();
+  void (*handleButtons)();
+
+  static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
+  static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
+  
+  void put_value(uint8_t idx, uint8_t value);
+  void put_value16(uint8_t idx, uint16_t value);
+  void put_valuex(uint8_t idx, uint8_t value);
+  void put_string(uint8_t idx, char *str);
+  void put_p_string(uint8_t idx, PGM_P str);
+  void setLine(uint8_t line) { curLine = line; }
+
+  static const uint8_t LINE1 = 0;
+  static const uint8_t LINE2 = 1;
+  
+};
+
+extern GuiClass GUI;
+
+
+
+#endif /* GUI_H__ */

@@ -17,11 +17,13 @@ static inline uint32_t phase_mult(uint32_t val) {
 
 ISR(TIMER1_OVF_vect) {
   //  setLed2();
+
   clock++;
 #ifdef MIDIDUINO_MIDI_CLOCK
   if (MidiClock.state == MidiClock.STARTED)
     MidiClock.handleTimerInt();
 #endif
+
   //  clearLed2();
 }
 
@@ -29,11 +31,18 @@ ISR(TIMER1_OVF_vect) {
 
 ISR(TIMER2_OVF_vect) {
   //  setLed2();
+
 #ifdef MIDIDUINO_POLL_GUI_IRQ
-  GUI.poll();
+  uint16_t sr = SR165.read16();
+  Buttons.clear();
+  Buttons.poll(sr >> 8);
+  Encoders.clearEncoders();
+  Encoders.poll(sr);
+
   handleGui();
 #endif
   slowclock++;
+
   //  clearLed2();
 }
 
