@@ -42,3 +42,4 @@ long map(long, long, long, long, long);
 #define MIDIDUINO_ENABLE_LFOS  1
 
 #endif /* WProgram_h */
+
