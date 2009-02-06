@@ -1,9 +1,6 @@
 #include "WProgram.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "MidiDuino.h"
-#include "GUI.h"
-#include "LCD.h"
 
 #define SR165_OUT    PC5
 #define SR165_SHLOAD PC6
@@ -94,7 +91,7 @@ EncodersClass::EncodersClass() {
 }
 
 void EncodersClass::clearEncoders() {
-  for (uint8_t i = 0; i < NUM_ENCODERS; i++) {
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     ENCODER_NORMAL(i) = ENCODER_BUTTON(i) = ENCODER_SHIFT(i) =
       ENCODER_BUTTON_SHIFT(i) = 0;
   }
@@ -103,7 +100,7 @@ void EncodersClass::clearEncoders() {
 void EncodersClass::poll(uint16_t sr) {
   uint16_t sr_tmp = sr;
   
-  for (uint8_t i = 0; i < NUM_ENCODERS; i++) {
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     uint8_t sr2 = sr & 3;
     uint8_t sro2 = sr_old & 3;
 
@@ -111,11 +108,11 @@ void EncodersClass::poll(uint16_t sr) {
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
       if (BUTTON_DOWN(i)) {
-	if (BUTTON_DOWN(GUI.Buttons.SHIFT))
+	if (BUTTON_DOWN(Buttons.SHIFT))
 	  val = &(ENCODER_BUTTON_SHIFT(i));
 	else
 	  val = &(ENCODER_BUTTON(i));
-      } else if (BUTTON_DOWN(GUI.Buttons.SHIFT)) {
+      } else if (BUTTON_DOWN(Buttons.SHIFT)) {
 	val = &(ENCODER_SHIFT(i));
       }
 
@@ -187,7 +184,7 @@ ButtonsClass::ButtonsClass() {
 }
 
 void ButtonsClass::clear() {
-  for (int i = 0; i < NUM_BUTTONS; i++) {
+  for (int i = 0; i < GUI_NUM_BUTTONS; i++) {
     CLEAR_B_DOUBLE_CLICK(i);
     CLEAR_B_CLICK(i);
     CLEAR_B_LONG_CLICK(i);
@@ -198,7 +195,7 @@ void ButtonsClass::clear() {
 void ButtonsClass::poll(uint8_t but) {
   uint8_t but_tmp = but;
 
-  for (uint8_t i = 0; i < NUM_BUTTONS; i++) {
+  for (uint8_t i = 0; i < GUI_NUM_BUTTONS; i++) {
     STORE_B_CURRENT(i, IS_BIT_SET8(but_tmp, 0));
 
     if (BUTTON_PRESSED(i)) {
@@ -238,93 +235,7 @@ void ButtonsClass::poll(uint8_t but) {
   }
 }
 
-/************************************************/
-GuiClass::GuiClass() : SR165(), Encoders(), Buttons() {
-  curLine = LINE1;
-  for (uint8_t i = 0; i < 16; i++) {
-    lines[0].data[i] = ' ';
-    lines[1].data[i] = ' ';
-  }
-  lines[0].changed = false;
-  lines[1].changed = false;
-  handleButtons = NULL;
-}
+SR165Class SR165;
+EncodersClass Encoders;
+ButtonsClass Buttons;
 
-void GuiClass::clear() {
-}
-
-void GuiClass::poll() {
-  uint8_t tmp = SREG;
-  cli();
-  uint16_t sr = SR165.read16();
-  SREG = tmp;
-
-  Buttons.clear();
-  Buttons.poll(sr >> 8);
-  Encoders.clearEncoders();
-  Encoders.poll(sr);
-
-  if (handleButtons != NULL)
-    handleButtons();
-  //  update();
-}
-
-void GuiClass::update() {
-  for (uint8_t i = 0; i < 2; i++) {
-    if (lines[i].changed) {
-      LCD.goLine(i);
-      LCD.puts(lines[i].data);
-      lines[i].changed = false;
-    }
-  }
-}
-
-char hex2c(uint8_t hex) {
-  if (hex < 10) {
-    return hex + '0';
-  } else {
-    return hex - 10 + 'a';
-  }
-}
-
-void GuiClass::put_value(uint8_t idx, uint8_t value) {
-  idx <<= 2;
-  char *data = lines[curLine].data;
-  lines[curLine].changed = true;
-  data[idx] = value / 100 + '0';
-  data[idx+1] = (value % 100) / 10 + '0';
-  data[idx+2] = (value % 10) + '0';
-  data[idx+3] = ' ';
-}
-
-void GuiClass::put_value16(uint8_t idx, uint16_t value) {
-  idx <<= 2;
-  char *data = lines[curLine].data;
-  lines[curLine].changed = true;
-  data[idx]   = hex2c(value >> 12 & 0xF);
-  data[idx+1] = hex2c(value >> 8 & 0xF);
-  data[idx+2] = hex2c(value >> 4 & 0xF);
-  data[idx+3] = hex2c(value >> 0 & 0xF);
-}
-
-void GuiClass::put_valuex(uint8_t idx, uint8_t value) {
-  idx <<= 1;
-  char *data = lines[curLine].data;
-  lines[curLine].changed = true;
-  data[idx]   = hex2c(value >> 4 & 0xF);
-  data[idx+1] = hex2c(value >> 0 & 0xF);
-}
-
-void GuiClass::put_string(uint8_t idx, const char *str) {
-  char* data = lines[curLine].data;
-  lines[curLine].changed = true;
-  while (*str) {
-    data[idx++] = *str++;
-  }
-}
-
-void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
-  /* XXX */
-}
-
-GuiClass GUI;

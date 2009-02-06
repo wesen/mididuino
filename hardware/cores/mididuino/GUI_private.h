@@ -1,8 +1,7 @@
-#ifndef ENCODER_H__
-#define ENCODER_H__
+#ifndef GUI_PRIVATE_H__
+#define GUI_PRIVATE_H__
 
 #include <avr/pgmspace.h>
-
 #include <inttypes.h>
 
 class SR165Class {
@@ -15,7 +14,7 @@ class SR165Class {
   uint8_t read_norst();
 };
 
-#define NUM_ENCODERS 4
+#define GUI_NUM_ENCODERS 4
 
 typedef struct encoder_s {
   int8_t normal;
@@ -30,7 +29,7 @@ class EncodersClass {
   static const int MACRO = 4;
 
  public:
-  encoder_t encoders[NUM_ENCODERS];
+  encoder_t encoders[GUI_NUM_ENCODERS];
 
   EncodersClass();
 
@@ -71,9 +70,9 @@ class EncodersClass {
 #define BUTTON_3 6
 #define BUTTON_4 7
 
-#define B_STATUS(i, bit)        (IS_BIT_SET8(GUI.Buttons.buttons[i].status, bit))
-#define B_SET_STATUS(i, bit)    (SET_BIT8(GUI.Buttons.buttons[i].status, bit))
-#define B_CLEAR_STATUS(i, bit)  (CLEAR_BIT8(GUI.Buttons.buttons[i].status, bit))
+#define B_STATUS(i, bit)        (IS_BIT_SET8(Buttons.buttons[i].status, bit))
+#define B_SET_STATUS(i, bit)    (SET_BIT8(Buttons.buttons[i].status, bit))
+#define B_CLEAR_STATUS(i, bit)  (CLEAR_BIT8(Buttons.buttons[i].status, bit))
 #define B_STORE_STATUS(i, bit, j) { if (j) B_SET_STATUS(i, bit);	\
       else B_CLEAR_STATUS(i, bit); }
 
@@ -125,11 +124,11 @@ typedef struct button_s {
   uint16_t last_press_time;
 } button_t;
 
-#define NUM_BUTTONS 8
+#define GUI_NUM_BUTTONS 8
 
 class ButtonsClass {
  public:
-  button_t buttons[NUM_BUTTONS];
+  button_t buttons[GUI_NUM_BUTTONS];
 
   ButtonsClass();
   void clear();
@@ -139,39 +138,9 @@ class ButtonsClass {
   static const int SHIFT = 5;
 };
 
-typedef struct line_s {
-  char data[16];
-  bool changed;
-} line_t;
+extern SR165Class SR165;
+extern EncodersClass Encoders;
+extern ButtonsClass Buttons;
 
-class GuiClass {
- protected:
-  line_t lines[2];
-  uint8_t curLine;
-  
- public:
-  GuiClass();
-  void poll();
-  void clear();
-  void update();
-  void (*handleButtons)();
-
-  void put_value(uint8_t idx, uint8_t value);
-  void put_value16(uint8_t idx, uint16_t value);
-  void put_valuex(uint8_t idx, uint8_t value);
-  void put_string(uint8_t idx, const char *str);
-  void put_p_string(uint8_t idx, PGM_P str);
-  void setLine(uint8_t line) { curLine = line; }
-
-  static const uint8_t LINE1 = 0;
-  static const uint8_t LINE2 = 1;
-  
-  SR165Class SR165;
-  EncodersClass Encoders;
-  ButtonsClass Buttons;
-};
-
-extern GuiClass GUI;
-
-#endif /* ENCODER_H__ */
+#endif /* GUI_PRIVATE_H__ */
 

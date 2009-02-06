@@ -10,12 +10,11 @@ extern "C" {
 
 #ifdef __cplusplus
 #include "LCD.h"
-#include "GUI.h"
+#include "GUI_private.h"
 #include "Midi.h"
 #include "MidiUart.h"
 #include "USBMidiUart.h"
 #include "MidiDuino.h"
-#include "EncoderPage.h"
 #include "MidiClock.h"
 
 uint16_t makeWord(uint16_t w);

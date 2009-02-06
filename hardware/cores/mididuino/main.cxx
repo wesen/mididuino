@@ -38,6 +38,14 @@ ISR(TIMER1_OVF_vect) {
   clearLed();
 }
 
+void gui_poll() {
+  uint16_t sr = SR165.read16();
+  Buttons.clear();
+  Buttons.poll(sr >> 8);
+  Encoders.clearEncoders();
+  Encoders.poll(sr);
+}
+
 ISR(TIMER2_OVF_vect) {
 #ifdef MIDIDUINO_ENABLE_LFOS
   uint8_t i;
@@ -47,7 +55,7 @@ ISR(TIMER2_OVF_vect) {
 #endif /* MIDIDUINO_ENABLE_LFOS */
   
 #if defined(MIDIDUINO_POLL_GUI) && defined(MIDIDUINO_POLL_GUI_IRQ)
-  GUI.poll();
+  gui_poll();
 
 #ifdef MIDIDUINO_RESET_COMBO
   if (CHECK_RESET()) {
@@ -135,7 +143,6 @@ int main(void) {
 #ifdef MIDIDUINO_ENABLE_USB
     if (USBMidiUart.avail()) {
       uint8_t byte = USBMidiUart.getc();
-      GUI.put_value(0, byte);
       USBMidi.handleByte(byte);
     }
     
@@ -166,7 +173,7 @@ int main(void) {
 #endif
 
 #if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
-    GUI.poll();
+    gui_poll();
 
 #ifdef MIDIDUINO_RESET_COMBO
   if (CHECK_RESET()) {
@@ -179,9 +186,6 @@ int main(void) {
 
     loop();
 
-#ifdef MIDIDUINO_POLL_GUI
-    GUI.update();
-#endif
   }
   return 0;
 }
