@@ -2,9 +2,10 @@
 
 #include "GUI.h"
 
-Encoder::Encoder() {
+Encoder::Encoder(char *_name) {
   old = 0;
   cur = 0;
+  setName(_name);
 }
 
 void Encoder::clear() {
@@ -73,9 +74,21 @@ GuiClass::GuiClass() {
   lines[0].changed = false;
   lines[1].changed = false;
   handleButtons = NULL;
+  page = NULL;
 }
 
 void GuiClass::update() {
+  if (page != NULL) {
+    cli();
+    page->update();
+    sei();
+  }
+  display();
+  if (page != NULL) {
+    cli();
+    page->handle();
+    sei();
+  }
   for (uint8_t i = 0; i < 2; i++) {
     if (lines[i].changed) {
       LCD.goLine(i);
@@ -122,11 +135,44 @@ void GuiClass::put_valuex(uint8_t idx, uint8_t value) {
 }
 
 void GuiClass::put_string(uint8_t idx, char *str) {
-  /* XXX */
+  idx <<= 2;
+  char *data = lines[curLine].data;
+  lines[curLine].changed = true;
+  for (uint8_t i = 0; i < 4 && str[i] != 0; i++) {
+    data[idx + i] = str[i];
+  }
 }
 
 void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
-  /* XXX */
+  idx <<= 2;
+  char *data = lines[curLine].data;
+  lines[curLine].changed = true;
+  for (uint8_t i = 0; i < 4 && str[i] != 0; i++) {
+    data[idx + i] = pgm_read_byte(str + i);
+  }
+}
+
+void GuiClass::display(bool redisplay) {
+  if (page != NULL) {
+    setLine(LINE2);
+    page->display(redisplay);
+  }
+}
+
+void GuiClass::displayNames() {
+  setLine(LINE1);
+  if (page != NULL) {
+    for (uint8_t i = 0; i < 4; i++) {
+      if (page->encoders[i] != NULL)
+	put_string(i, page->encoders[i]->getName());
+      else
+	put_string(i, (char *)" ");
+    }
+  } else {
+    for (uint8_t i = 0; i < 4; i++) {
+      put_string(i, (char *)"    ");
+    }
+  }
 }
 
 GuiClass GUI;

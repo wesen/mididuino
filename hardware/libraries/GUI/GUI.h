@@ -8,10 +8,16 @@
 class Encoder {
  protected:
   uint8_t old, cur;
+  char name[4];
 
  public:
-  Encoder();
+  Encoder(char *_name = NULL);
   void clear();
+  char *getName() { return name; }
+  void setName(char *_name) {
+    if (_name != NULL)
+      m_strncpy_fill(name, _name, 4);
+  }
   virtual void update(encoder_t *enc);
   virtual void handle(uint8_t val);
   void checkHandle() {
@@ -25,10 +31,10 @@ class Encoder {
     return old != cur;
   }
   uint8_t getValue() {
-    return old;
-  }
-  uint8_t getCurValue() {
     return cur;
+  }
+  uint8_t getOldValue() {
+    return old;
   }
   void setValue(uint8_t value) {
     old = cur = value;
@@ -40,7 +46,7 @@ class RangeEncoder : public Encoder {
   uint8_t min;
   uint8_t max;
 
- RangeEncoder(uint8_t _max = 127, uint8_t _min = 0) : Encoder() {
+ RangeEncoder(uint8_t _max = 127, uint8_t _min = 0, char *_name = NULL) : Encoder(_name) {
     if (_min > _max) {
       min = _max;
       max = _min;
@@ -57,7 +63,7 @@ class CCEncoder : public RangeEncoder {
  public:
   uint8_t cc;
 
- CCEncoder(uint8_t _cc) : RangeEncoder(127, 0) {
+ CCEncoder(uint8_t _cc, char *_name = NULL) : RangeEncoder(127, 0) {
     cc = _cc;
   }
   void handle(uint8_t val);
@@ -98,11 +104,15 @@ class GuiClass {
  protected:
   line_t lines[2];
   uint8_t curLine;
+  EncoderPage *page;
   
  public:
   GuiClass();
   void update();
   void (*handleButtons)();
+
+  void display(bool redisplay = false);
+  void displayNames();
 
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
@@ -113,6 +123,11 @@ class GuiClass {
   void put_string(uint8_t idx, char *str);
   void put_p_string(uint8_t idx, PGM_P str);
   void setLine(const uint8_t line) { curLine = line; }
+  void setPage(EncoderPage *_page) {
+    page = _page;
+    displayNames();
+    display(true);
+  }
 
   static const uint8_t LINE1 = 0;
   static const uint8_t LINE2 = 1;
