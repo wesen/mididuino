@@ -28,8 +28,6 @@ void handleGui() {
   if (BUTTON_PRESSED(0)) {
     setPitchLength(pitchLengthEncoder.getValue());
   }
-
-  page.update();
 }
 
 
@@ -64,9 +62,11 @@ void setup() {
 
 void loop() {
   GUI.updatePage();
-  
+
   if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
-    track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(), offsetEncoder.getValue());
+    track.setEuclid(pulseEncoder.getValue(),
+		    lengthEncoder.getValue(),
+		    offsetEncoder.getValue());
   }
   if (pitchLengthEncoder.hasChanged()) {
     setPitchLength(pitchLengthEncoder.getValue());
