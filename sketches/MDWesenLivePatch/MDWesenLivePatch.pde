@@ -44,6 +44,8 @@ void setup() {
 }
 
 void loop() {
+  page.handle();
+  
   if (flfEncoder.hasChanged())
     MD::setEchoParam(MD_ECHO_FLTF, flfEncoder.getValue());
   if (flwEncoder.hasChanged())
