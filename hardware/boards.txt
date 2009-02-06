@@ -165,6 +165,7 @@ midicommand168.name=MidiCommand Second Revision (atmega168)
 midicommand168.upload.protocol=midisend
 midicommand168.upload.maximum_size=14336
 midicommand168.upload.speed=19200
+midicommand168.upload.midiid=0x37
 
 midicommand168.bootloader.low_fuses=0xc6
 midicommand168.bootloader.high_fuses=0xdd
@@ -186,6 +187,7 @@ mididuino.name=MidiDuino 1.0 (atmega32 16 Mhz)
 mididuino.upload.protocol=midisend
 mididuino.upload.maximum_size=28672
 mididuino.upload.speed=19200
+mididuino.upload.midiid=0x38
 
 mididuino.bootloader.low_fuses=0x20
 mididuino.bootloader.high_fuses=0xd8
@@ -198,3 +200,24 @@ mididuino.bootloader.lock_bits=0x0F
 mididuino.build.mcu=atmega32
 mididuino.build.f_cpu=16000000L
 mididuino.build.core=mididuino
+
+############################################################
+
+minicommand.name=Minicommand 1.0 (atmega64 16 Mhz)
+
+minicommand.upload.protocol=midisend
+minicommand.upload.maximum_size=57344
+minicommand.upload.speed=19200
+minicommand.upload.midiid=0x40
+
+minicommand.bootloader.low_fuses=0x2f
+minicommand.bootloader.high_fuses=0x8a
+minicommand.bootloader.extended_fuses=0xff
+minicommand.bootloader.path=minicommand
+minicommand.bootloader.file=minicommand.hex
+minicommand.bootloader.unlock_bits=0x3F
+minicommand.bootloader.lock_bits=0x0F
+
+minicommand.build.mcu=atmega64
+minicommand.build.f_cpu=16000000L
+minicommand.build.core=minicommand
