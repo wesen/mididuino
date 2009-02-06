@@ -1,3 +1,6 @@
+#include <MD.h>
+#include <Sequencer.h>
+
 RangeEncoder pitchLengthEncoder(1, 32);
 RangeEncoder pulseEncoder(1, 32);
 RangeEncoder lengthEncoder(2, 32);

@@ -1,3 +1,6 @@
+#include <MidiTools.h>
+#include <MD.h>
+
 void setup() {
   LCD.line1("MD NOTE TEST");
   MD::trackModels[0] = EFM_SD_MODEL;

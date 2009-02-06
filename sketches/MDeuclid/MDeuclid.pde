@@ -1,3 +1,6 @@
+#include <MD.h>
+#include <Sequencer.h>
+
 class EuclidPage {
   public:
   EuclidDrumTrack track;

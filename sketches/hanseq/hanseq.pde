@@ -1,3 +1,6 @@
+#include <LFO.h>
+#include <Sequencer.h>
+
 // -*- C++ -*-
 
 #include <stdarg.h>
