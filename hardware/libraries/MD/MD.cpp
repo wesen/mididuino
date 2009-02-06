@@ -1,4 +1,5 @@
 #include "WProgram.h"
+#include "MD.h"
 
 uint8_t MD::baseChannel = 0;
 uint8_t MD::trackModels[16] = { 0 };

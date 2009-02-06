@@ -1,4 +1,5 @@
-#include "DrumTrack.h"
+#include "WProgram.h"
+#include "DrumTrack.hh"
 
 bool DrumTrack::isHit(uint8_t pos) {
   uint8_t idx = (pos + offset) % len;
