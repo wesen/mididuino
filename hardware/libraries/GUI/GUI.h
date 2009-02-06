@@ -75,7 +75,7 @@ class EncoderPage {
   void handle();
   void update();
   void clear();
-  void display();
+  void display(bool redisplay = false);
 };
 
 #define INIT_PAGE(page, encoders, size) \
@@ -112,7 +112,7 @@ class GuiClass {
   void put_valuex(uint8_t idx, uint8_t value);
   void put_string(uint8_t idx, char *str);
   void put_p_string(uint8_t idx, PGM_P str);
-  void setLine(uint8_t line) { curLine = line; }
+  void setLine(const uint8_t line) { curLine = line; }
 
   static const uint8_t LINE1 = 0;
   static const uint8_t LINE2 = 1;

@@ -55,10 +55,11 @@ void EncoderPage::clear() {
   }
 }
 
-void EncoderPage::display() {
+void EncoderPage::display(bool redisplay) {
   for (uint8_t i = 0; i < 4; i++) {
     if (encoders[i] != NULL)
-      GUI.put_value(i, encoders[i]->getValue());
+      if (encoders[i]->hasChanged() || redisplay)
+	GUI.put_value(i, encoders[i]->getValue());
   }
 }
 
