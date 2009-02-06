@@ -414,7 +414,12 @@ int main(int argc, char *argv[]) {
       break;
 
     case 'I':
-      deviceID = strtol(optarg, NULL, 16);
+      if ((strlen(optarg) > 2) && optarg[0] == '0' && optarg[1] == 'x') {
+	deviceID = strtol(optarg + 2, NULL, 16);
+      } else {
+	deviceID = strtol(optarg, NULL, 10);
+      }
+      printf("deviceID: %x\n", deviceID);
       break;
 
     case 'l':
