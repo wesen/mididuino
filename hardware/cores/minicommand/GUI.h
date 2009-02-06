@@ -2,7 +2,6 @@
 #define ENCODER_H__
 
 #include <avr/pgmspace.h>
-
 #include <inttypes.h>
 
 class SR165Class {
@@ -15,7 +14,8 @@ class SR165Class {
   uint8_t read_norst();
 };
 
-#define NUM_ENCODERS 4
+#define GUI_NUM_ENCODERS 4
+#define GUI_NUM_BUTTONS  8
 
 typedef struct encoder_s {
   int8_t normal;
@@ -28,7 +28,7 @@ class EncodersClass {
   uint16_t sr_old;
 
  public:
-  encoder_t encoders[NUM_ENCODERS];
+  encoder_t encoders[GUI_NUM_ENCODERS];
 
   EncodersClass();
 
@@ -112,11 +112,9 @@ typedef struct button_s {
   uint16_t last_press_time;
 } button_t;
 
-#define NUM_BUTTONS 8
-
 class ButtonsClass {
  public:
-  button_t buttons[NUM_BUTTONS];
+  button_t buttons[GUI_NUM_BUTTONS];
 
   static const int SHIFT = 4;
   static const int BUTTON1 = 4;
@@ -146,6 +144,9 @@ class GuiClass {
   void update();
   void (*handleButtons)();
 
+  static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
+  static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
+  
   void put_value(uint8_t idx, uint8_t value);
   void put_value16(uint8_t idx, uint16_t value);
   void put_valuex(uint8_t idx, uint8_t value);

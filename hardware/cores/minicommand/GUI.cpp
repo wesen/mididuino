@@ -87,7 +87,7 @@ EncodersClass::EncodersClass() {
 }
 
 void EncodersClass::clearEncoders() {
-  for (uint8_t i = 0; i < NUM_ENCODERS; i++) {
+  for (uint8_t i = 0; i < GUI.NUM_ENCODERS; i++) {
     ENCODER_NORMAL(i) = ENCODER_BUTTON(i) = ENCODER_SHIFT(i) =
       ENCODER_BUTTON_SHIFT(i) = 0;
   }
@@ -96,7 +96,7 @@ void EncodersClass::clearEncoders() {
 void EncodersClass::poll(uint16_t sr) {
   uint16_t sr_tmp = sr;
 
-  for (uint8_t i = 0; i < NUM_ENCODERS; i++) {
+  for (uint8_t i = 0; i < GUI.NUM_ENCODERS; i++) {
     if (IS_BIT_SET8(sr, 1) == !IS_BIT_SET8(sr_old, 1)) {
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
@@ -132,7 +132,7 @@ ButtonsClass::ButtonsClass() {
 }
 
 void ButtonsClass::clear() {
-  for (int i = 0; i < NUM_BUTTONS; i++) {
+  for (int i = 0; i < GUI.NUM_BUTTONS; i++) {
     CLEAR_B_DOUBLE_CLICK(i);
     CLEAR_B_CLICK(i);
     CLEAR_B_LONG_CLICK(i);
@@ -143,7 +143,7 @@ void ButtonsClass::clear() {
 void ButtonsClass::poll(uint8_t but) {
   uint8_t but_tmp = but;
 
-  for (uint8_t i = 0; i < NUM_BUTTONS; i++) {
+  for (uint8_t i = 0; i < GUI.NUM_BUTTONS; i++) {
     STORE_B_CURRENT(i, IS_BIT_SET8(but_tmp, 0));
 
     if (BUTTON_PRESSED(i)) {

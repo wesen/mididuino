@@ -65,10 +65,10 @@ class CCEncoder : public RangeEncoder {
 
 class EncoderPage {
  public:
-  Encoder *encoders[NUM_ENCODERS];
+  Encoder *encoders[GUI_NUM_ENCODERS];
   
   EncoderPage() {
-    for (uint8_t i; i < NUM_ENCODERS; i++) {
+    for (uint8_t i; i < GUI_NUM_ENCODERS; i++) {
       encoders[i] = NULL;
     }
   }

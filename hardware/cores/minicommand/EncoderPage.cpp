@@ -35,21 +35,21 @@ void TempoEncoder::handle(uint8_t val) {
 /********************/
 
 void EncoderPage::update() {
-  for (uint8_t i = 0; i < NUM_ENCODERS; i++) {
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     if (encoders[i] != NULL) 
       encoders[i]->update(GUI.Encoders.encoders + i);
   }
 }
 
 void EncoderPage::handle() {
-  for (uint8_t i = 0; i < NUM_ENCODERS; i++) {
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     if (encoders[i] != NULL) 
       encoders[i]->checkHandle();
   }
 }
 
 void EncoderPage::clear() {
-  for (uint8_t i = 0; i < NUM_ENCODERS; i++) {
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     if (encoders[i] != NULL)
       encoders[i]->clear();
   }
