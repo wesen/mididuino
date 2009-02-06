@@ -22,6 +22,7 @@ void Encoder::update(encoder_t *enc) {
 
 void RangeEncoder::update(encoder_t *enc) {
   int8_t inc = enc->normal + 5 * enc->button;
+  
   cur = u_limit_value(cur, inc, min, max);
 }
 
@@ -42,6 +43,7 @@ void EncoderPage::update() {
     if (encoders[i] != NULL) 
       encoders[i]->update(Encoders.encoders + i);
   }
+  Encoders.clearEncoders();
   SREG = tmp;
 }
 

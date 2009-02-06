@@ -42,7 +42,6 @@ void gui_poll() {
   uint16_t sr = SR165.read16();
   Buttons.clear();
   Buttons.poll(sr >> 8);
-  Encoders.clearEncoders();
   Encoders.poll(sr);
 }
 
