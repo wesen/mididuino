@@ -2,10 +2,10 @@
 #include <MD.h>
 #include <Sequencer.h>
 
-RangeEncoder pitchLengthEncoder(1, 32);
-RangeEncoder pulseEncoder(1, 32);
-RangeEncoder lengthEncoder(2, 32);
-RangeEncoder offsetEncoder(0, 32);
+RangeEncoder pitchLengthEncoder(1, 32, "PTC");
+RangeEncoder pulseEncoder(1, 32, "PLS");
+RangeEncoder lengthEncoder(2, 32, "LEN");
+RangeEncoder offsetEncoder(0, 32, "OFF");
 
 #define ROM_TRACK 4
 
@@ -47,36 +47,30 @@ void setup() {
   page.encoders[1] = &pulseEncoder;
   page.encoders[2] = &lengthEncoder;
   page.encoders[3] = &offsetEncoder;
-  
   setPitchLength(4);
   
   pulseEncoder.setValue(3);
   lengthEncoder.setValue(8);
   offsetEncoder.setValue(0);
   pitchLengthEncoder.setValue(4);
+
+  GUI.setPage(&page);
   
   MidiClock.mode = MidiClock.EXTERNAL;
   MidiClock.transmit = false;
   MidiClock.setOn16Callback(on16Callback);
   MidiClock.start();
-
-  GUI.setLine(GUI.LINE1);
-  page.display(true);
 }
 
 void loop() {
-  cli();
+  GUI.updatePage();
+  
   if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
     track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(), offsetEncoder.getValue());
   }
   if (pitchLengthEncoder.hasChanged()) {
     setPitchLength(pitchLengthEncoder.getValue());
   }
-  GUI.setLine(GUI.LINE1);
-  page.display();
 
-  page.handle();
-  sei();
-  
   GUI.update();
 }
