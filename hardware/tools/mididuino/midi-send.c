@@ -21,6 +21,9 @@ uint8_t deviceID = 56;
 #define CMD_DATA_BLOCK_ACK     0x02
 #define CMD_FIRMWARE_CHECKSUM 0x03
 
+#define SYSEX_VENDOR_1 0x00
+#define SYSEX_VENDOR_2 0x13
+
 int verbose = 1;
 int convertHexFile = 0;
 
@@ -128,7 +131,15 @@ int send_sysex_bootload(void) {
   midiSendLong(bootmsg, 6);
 }
 
+
+
 int getNextSysexPart(unsigned char *outbuf, unsigned int maxSize) {
+  uint8_t hdr_data[4];
+  hdr_data[0] = 0xF0;
+  hdr_data[1] = SYSEX_VENDOR_1;
+  hdr_data[2] = SYSEX_VENDOR_2;
+  hdr_data[3] = deviceID;
+
   if (convertHexFile) {
     unsigned int idx = 0;
     unsigned char len = 64;
@@ -145,8 +156,8 @@ int getNextSysexPart(unsigned char *outbuf, unsigned int maxSize) {
 	firmware_checksum += flashram[i];
       }
       firmware_len = max_address;
-      
-      memcpy(outbuf + idx, "\xf0\x00\x13\x37", 4);
+
+      memcpy(outbuf + idx, hdr_data, 4);
       outbuf[idx + 3] = deviceID;
       idx += 4;
       unsigned char cmd = CMD_FIRMWARE_CHECKSUM;
@@ -167,7 +178,7 @@ int getNextSysexPart(unsigned char *outbuf, unsigned int maxSize) {
       return idx;
     }
     
-    memcpy(outbuf + idx, "\xf0\x00\x13\x37", 4);
+    memcpy(outbuf + idx, hdr_data, 4);
     outbuf[idx + 3] = deviceID;
     idx += 4;
     unsigned char cmd =  CMD_DATA_BLOCK;
@@ -346,21 +357,21 @@ void midiReceive(unsigned char c) {
     break;
 
   case midi_wait_vendor1:
-    if (c == 0x00)
+    if (c == SYSEX_VENDOR_1)
       stm_state = midi_wait_vendor2;
     else
       stm_state = midi_wait_start;
     break;
 
   case midi_wait_vendor2:
-    if (c == 0x13)
+    if (c == SYSEX_VENDOR_2)
       stm_state = midi_wait_vendor3;
     else
       stm_state = midi_wait_start;
     break;
 
   case midi_wait_vendor3:
-    if (c == 0x37)
+    if (c == deviceID)
       stm_state = midi_wait_cmd;
     else
       stm_state = midi_wait_start;
