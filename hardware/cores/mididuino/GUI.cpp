@@ -257,6 +257,7 @@ void GuiClass::poll() {
   cli();
   uint16_t sr = SR165.read16();
   SREG = tmp;
+
   Buttons.clear();
   Buttons.poll(sr >> 8);
   Encoders.clearEncoders();
