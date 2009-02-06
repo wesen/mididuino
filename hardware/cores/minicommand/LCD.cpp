@@ -1,5 +1,4 @@
 #include "LCD.h"
-#include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
 
@@ -13,7 +12,7 @@ extern "C" {
 #define LCD_DATA_PORT PORTC
 #define LCD_DATA_DDR  DDRC
 
-#define LCD_DELAY_US 50
+#define LCD_DELAY_US 20
 
 #define LCD_CTRL_PORT PORTE
 #define LCD_CTRL_DDR  DDRE
@@ -27,36 +26,17 @@ extern "C" {
 #define LCD_SET_RS()       { SET_BIT8(LCD_CTRL_PORT, LCD_RS); }
 #define LCD_CLEAR_RS()     { CLEAR_BIT8(LCD_CTRL_PORT, LCD_RS); }
 
-void LCDClass::enable() {
+inline void LCDClass::enable() {
   LCD_SET_ENABLE();
-  asm("nop");
-  asm("nop");
-  asm("nop");
   LCD_CLEAR_ENABLE();
-}
-
-void LCDClass::putnibble(uint8_t nibble) {
-  uint8_t tmp = SREG;
-  cli();
-  LCD_DATA_PORT = (LCD_DATA_PORT & 0x0F) | (nibble << 4);
-  enable();
-  SREG = tmp;
-}
-
-void LCDClass::putbyte(uint8_t byte) {
-  //  uint8_t tmp = SREG;
-  //  cli();
-  LCD_DATA_PORT = byte;
-  enable();
-  //  SREG = tmp;
 }
 
 void LCDClass::putcommand(uint8_t command) {
   //  uint8_t tmp = SREG;
   //  cli();
   LCD_CLEAR_RS();
-
-  putbyte(command);
+  LCD_DATA_PORT = command;
+  enable();
   //  SREG = tmp;
   delayMicroseconds(LCD_DELAY_US);
 }
@@ -64,11 +44,15 @@ void LCDClass::putcommand(uint8_t command) {
 void LCDClass::putdata(uint8_t data) {
   //  uint8_t tmp = SREG;
   //  cli();
-  
   LCD_SET_RS();
-  putbyte(data);
+  LCD_DATA_PORT = data;
+  enable();
   //  SREG = tmp;
   delayMicroseconds(LCD_DELAY_US);
+}
+
+void LCDClass::putc(char c) {
+  putdata(c);
 }
 
 LCDClass::LCDClass() {
@@ -79,7 +63,7 @@ LCDClass::LCDClass() {
 
   delayMicroseconds(30);
   
-  putcommand(0x030);
+  putcommand(0x30);
   putcommand(0x30);
   delayMicroseconds(200);
   putcommand(0x38);
@@ -110,6 +94,7 @@ void LCDClass::puts(char *s) {
 
 void LCDClass::line1() {
   putcommand(0x80);
+  delayMicroseconds(20);
 }
 
 void LCDClass::line1(char *s) {
@@ -134,6 +119,7 @@ void LCDClass::line1_p_fill(PGM_P s) {
 
 void LCDClass::line2() {
   putcommand(0xc0);
+  delayMicroseconds(20);
 }
 
 void LCDClass::line2(char *s) {

@@ -179,6 +179,7 @@ void MidiClass::setOnPitchWheelCallback(midi_callback_t cb) {
 
 
 MidiClass Midi;
+MidiClass Midi2;
 
 void MidiSysexClass::start() {
     len = 0;

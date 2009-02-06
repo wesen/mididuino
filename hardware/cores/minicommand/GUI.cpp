@@ -101,11 +101,12 @@ void EncodersClass::poll(uint16_t sr) {
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
       if (BUTTON_DOWN(i)) {
-	if (BUTTON_DOWN(GUI.Buttons.SHIFT))
-	  val = &(ENCODER_BUTTON_SHIFT(i));
+       	if (BUTTON_DOWN(GUI.Buttons.SHIFT))
+		  val = &(ENCODER_BUTTON_SHIFT(i));
 	else
 	  val = &(ENCODER_BUTTON(i));
-      } else if (BUTTON_DOWN(GUI.Buttons.SHIFT)) {
+      }
+      else if (BUTTON_DOWN(GUI.Buttons.SHIFT)) {
 	val = &(ENCODER_SHIFT(i));
       }
 
@@ -142,7 +143,6 @@ void ButtonsClass::clear() {
 void ButtonsClass::poll(uint8_t but) {
   uint8_t but_tmp = but;
 
-  but_tmp >>= 2;
   for (uint8_t i = 0; i < NUM_BUTTONS; i++) {
     STORE_B_CURRENT(i, IS_BIT_SET8(but_tmp, 0));
 

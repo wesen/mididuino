@@ -53,4 +53,16 @@ class MidiUartClass {
 
 extern MidiUartClass MidiUart;
 
+class MidiUartClass2 {
+  void initSerial();
+  
+ public:
+  MidiUartClass2();
+  bool avail();
+  uint8_t getc();
+  volatile RingBuffer<32> rxRb;
+};
+
+extern MidiUartClass2 MidiUart2;
+
 #endif /* MIDI_UART_H__ */

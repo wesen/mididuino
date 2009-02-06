@@ -38,7 +38,8 @@ class LCDClass {
   void puts_p(PGM_P s);
   void puts_p_fill(PGM_P s, uint8_t i);
   void puts_p_fill(PGM_P s);
-  
+
+  void putc(char data); 
   void put(char *data, uint8_t cnt);
 
   void putnumber(uint8_t num);
@@ -49,11 +50,9 @@ class LCDClass {
   void putnumber32(uint32_t num);
 
  private:
-  void putnibble(uint8_t nibble);
-  void putbyte(uint8_t byte);
   void putcommand(uint8_t cmd);
   void putdata(uint8_t data);
-  void enable();
+  inline void enable();
 };
 
 extern LCDClass LCD;

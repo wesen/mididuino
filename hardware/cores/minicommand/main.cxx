@@ -15,31 +15,32 @@ static inline uint32_t phase_mult(uint32_t val) {
   return (val * PHASE_FACTOR) >> 8;
 }
 
-
 ISR(TIMER1_OVF_vect) {
-  setLed2();
+  //  setLed2();
   clock++;
 #ifdef MIDIDUINO_MIDI_CLOCK
   if (MidiClock.state == MidiClock.STARTED)
     MidiClock.handleTimerInt();
 #endif
-  clearLed2();
+  //  clearLed2();
 }
 
 // XXX CMP to have better time
 
 ISR(TIMER2_OVF_vect) {
-  setLed2();
+  //  setLed2();
 #ifdef MIDIDUINO_POLL_GUI_IRQ
   GUI.poll();
   handleGui();
 #endif
   slowclock++;
-  clearLed2();
+  //  clearLed2();
 }
 
 int main(void) {
   init();
+  clearLed();
+  clearLed2();
 
 #ifdef MIDIDUINO_HANDLE_SYSEX
   Midi.setSysex(&mididuinoSysex);
@@ -53,6 +54,10 @@ int main(void) {
       Midi.handleByte(MidiUart.getc());
     }
 
+    if (MidiUart2.avail()) {
+      Midi2.handleByte(MidiUart2.getc());
+    }
+    
 #if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
     GUI.poll();
     handleGui();
@@ -61,7 +66,9 @@ int main(void) {
     loop();
 
 #ifdef MIDIDUINO_POLL_GUI
+    cli();
     GUI.update();
+    sei();
 #endif
   }
   return 0;

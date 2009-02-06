@@ -5,6 +5,7 @@
 #include "MidiDuino.h"
 
 MidiUartClass MidiUart;
+MidiUartClass2 MidiUart2;
 
 #define UART_BAUDRATE 31250
 #define UART_BAUDRATE_REG (((F_CPU / 16)/(UART_BAUDRATE)) - 1)
@@ -13,6 +14,9 @@ MidiUartClass MidiUart;
 #define UART_CHECK_RX() IS_BIT_SET8(UCSR0A, RXC)
 #define UART_WRITE_CHAR(c) (UDR0 = (c))
 #define UART_READ_CHAR() (UDR0)
+
+#define UART2_CHECK_RX() IS_BIT_SET8(UCSR1A, RXC)
+#define UART2_READ_CHAR() (UDR1)
 
 #include <avr/io.h>
 
@@ -115,3 +119,40 @@ SIGNAL(USART0_TX_vect) {
     UART_WRITE_CHAR(MidiUart.txRb.get());
 }
 #endif
+
+MidiUartClass2::MidiUartClass2() {
+  initSerial();
+}
+
+void MidiUartClass2::initSerial() {
+  UBRR1H = (UART_BAUDRATE_REG >> 8);
+  UBRR1L = (UART_BAUDRATE_REG & 0xFF);
+  //  UBRRH = 0;
+  //  UBRRL = 15;
+
+  UCSR1C = (3<<UCSZ00); 
+  
+  /** enable receive, transmit and receive and transmit interrupts. **/
+  //  UCSRB = _BV(RXEN) | _BV(TXEN) | _BV(RXCIE);
+  UCSR1B = _BV(RXEN) | _BV(RXCIE);
+}
+
+bool MidiUartClass2::avail() {
+  return !rxRb.isEmpty();
+}
+
+uint8_t MidiUartClass2::getc() {
+  return rxRb.get();
+}
+
+SIGNAL(USART1_RX_vect) {
+  uint8_t c = UART2_READ_CHAR();
+
+  // XXX clock on second input
+  if (c == 0xF8 && MidiClock.mode == MidiClock.EXTERNAL) {
+    //    MidiClock.handleClock();
+  } else {
+    MidiUart2.rxRb.put(c);
+  }
+}
+

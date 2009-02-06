@@ -15,7 +15,7 @@ class SR165Class {
   uint8_t read_norst();
 };
 
-#define NUM_ENCODERS 5
+#define NUM_ENCODERS 4
 
 typedef struct encoder_s {
   int8_t normal;
@@ -26,8 +26,6 @@ typedef struct encoder_s {
 
 class EncodersClass {
   uint16_t sr_old;
-
-  static const int MACRO = 4;
 
  public:
   encoder_t encoders[NUM_ENCODERS];
@@ -97,7 +95,6 @@ class EncodersClass {
 
 #define B_LAST_PRESS_TIME(i)       (buttons[(i)].last_press_time)
 
-
 #define BUTTON_DOWN(button)           (!(B_CURRENT(button)))
 #define BUTTON_UP(button)             (B_CURRENT(button))
 #define OLD_BUTTON_DOWN(button)       (!(B_OLD(button)))
@@ -115,18 +112,21 @@ typedef struct button_s {
   uint16_t last_press_time;
 } button_t;
 
-#define NUM_BUTTONS 6
+#define NUM_BUTTONS 8
 
 class ButtonsClass {
  public:
   button_t buttons[NUM_BUTTONS];
 
+  static const int SHIFT = 4;
+  static const int BUTTON1 = 4;
+  static const int BUTTON2 = 5;
+  static const int BUTTON3 = 6;
+  static const int BUTTON4 = 7;
+  
   ButtonsClass();
   void clear();
   void poll(uint8_t sr);
-
-  static const int MAIN  = 4;
-  static const int SHIFT = 5;
 };
 
 typedef struct line_s {

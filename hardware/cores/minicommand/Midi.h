@@ -95,5 +95,6 @@ class MididuinoSysexClass : public MidiSysexClass {
     
 
 extern MidiClass Midi;
+extern MidiClass Midi2;
 
 #endif /* MIDI_H__ */
