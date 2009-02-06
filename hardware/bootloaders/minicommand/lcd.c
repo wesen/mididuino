@@ -22,26 +22,9 @@
 #define LCD_SET_RS()       { SET_BIT8(LCD_CTRL_PORT, LCD_RS); }
 #define LCD_CLEAR_RS()     { CLEAR_BIT8(LCD_CTRL_PORT, LCD_RS); }
 
-void lcd_enable(void) {
+inline void lcd_enable(void) {
   LCD_SET_ENABLE();
-  //  _delay_us(1);
-  asm("nop");
-  asm("nop");
-  asm("nop");
   LCD_CLEAR_ENABLE();
-}
-
-inline void lcd_putnibble(uint8_t nibble) {
-  uint8_t tmp = SREG;
-  cli();
-  LCD_DATA_PORT = (LCD_DATA_PORT & 0x0F) | (nibble << 4);
-  lcd_enable();
-  SREG = tmp;
-}
-
-void lcd_putbyte(uint8_t byte) {
-  lcd_putnibble(byte >> 4);
-  lcd_putnibble(byte & 0xF);
 }
 
 void lcd_command(uint8_t command) {
@@ -49,7 +32,8 @@ void lcd_command(uint8_t command) {
   cli();
   LCD_CLEAR_RS();
 
-  lcd_putbyte(command);
+  LCD_DATA_PORT = command;
+  lcd_enable();
   SREG = tmp;
   _delay_us(LCD_DELAY_US);
 }
@@ -59,7 +43,8 @@ void lcd_data(uint8_t data) {
   cli();
   
   LCD_SET_RS();
-  lcd_putbyte(data);
+  LCD_DATA_PORT = data;
+  lcd_enable();
   SREG = tmp;
   _delay_us(LCD_DELAY_US);
 }
@@ -177,23 +162,16 @@ void lcd_init(void) {
   LCD_CTRL_DDR |= _BV(LCD_RS) | _BV(LCD_ENABLE);
 
   // wait for display
-  uint8_t i;
-  for (i = 0; i < 50; i++)
-    _delay_ms(5);
+  _delay_ms(30);
 
-  lcd_putnibble(0x03);
-  _delay_ms(5);
-  lcd_putnibble(0x03);
+  lcd_command(0x30);
+  lcd_command(0x30);
   _delay_us(200);
-  lcd_putnibble(0x03);
-  _delay_us(200);
-  lcd_putnibble(0x02);
-  _delay_us(200);
-  lcd_command(0x28); // 8 bit, 2 zeilen
+  lcd_command(0x38);
+  _delay_us(10);
   lcd_command(0xC); // display ein, cursor aus, kein blinken.
   lcd_command(0x4);
   lcd_command(0x1);
-  _delay_ms(5);
   lcd_command(0x2);
   _delay_ms(5);
 }
