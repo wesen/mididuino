@@ -10,7 +10,7 @@ extern "C" {
 
 #ifdef __cplusplus
 #include "LCD.h"
-#include "GUI.h"
+#include "GUI_private.h"
 #include "Midi.h"
 #include "MidiUart.h"
 #include "MidiDuino.h"

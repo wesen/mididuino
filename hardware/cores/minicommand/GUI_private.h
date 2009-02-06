@@ -1,5 +1,5 @@
-#ifndef ENCODER_H__
-#define ENCODER_H__
+#ifndef GUI_PRIVATE_H__
+#define GUI_PRIVATE_H__
 
 #include <avr/pgmspace.h>
 #include <inttypes.h>
@@ -164,5 +164,5 @@ class GuiClass {
 
 extern GuiClass GUI;
 
-#endif /* ENCODER_H__ */
+#endif /* GUI_PRIVATE_H__ */
 
