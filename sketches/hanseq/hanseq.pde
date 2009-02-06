@@ -1,3 +1,4 @@
+#include <GUI.h>
 #include <LFO.h>
 #include <Sequencer.h>
 
@@ -326,7 +327,7 @@ EuclidPage::updateDisplay() {
   GUI.setLine(GUI.LINE1);
   GUI.put_value(0, (uint8_t) _number);
   GUI.put_string(12,
-                 _muted ? "MUTE" : (_solo ? "SOLO" : "    "));
+                 (char *)(_muted ? "MUTE" : (_solo ? "SOLO" : "    ")));
   GUI.setLine(GUI.LINE2);
   currentEuclid->_page.display(true);
 }
@@ -420,5 +421,6 @@ void loop() {
   GUI.setLine(GUI.LINE2);
   currentEuclid->_page.display();
   currentEuclid->_page.handle();
+  GUI.update();
   sei();
 }

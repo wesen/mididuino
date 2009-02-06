@@ -1,3 +1,5 @@
+#include <GUI.h>
+
 EncoderPage page;
 Encoder encoders[4];
 
@@ -20,6 +22,7 @@ void loop() {
   cli();
   page.display();
   page.handle();
+  GUI.update();
   sei();
 
   delay(10);
@@ -33,18 +36,18 @@ void handleGui() {
       LCD.putnumber(i);
     }
   }
-  if (BUTTON_PRESSED(GUI.Buttons.BUTTON1)) {
+  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
     setLed();
-  } else if (BUTTON_RELEASED(GUI.Buttons.BUTTON1)) {
+  } else if (BUTTON_RELEASED(Buttons.BUTTON1)) {
     clearLed();
   }
-  if (BUTTON_PRESSED(GUI.Buttons.BUTTON2)) {
+  if (BUTTON_PRESSED(Buttons.BUTTON2)) {
     setLed2();
-  } else if (BUTTON_RELEASED(GUI.Buttons.BUTTON2)) {
+  } else if (BUTTON_RELEASED(Buttons.BUTTON2)) {
     clearLed2();
   }
   
-  if (BUTTON_PRESSED(GUI.Buttons.BUTTON3)) {
+  if (BUTTON_PRESSED(Buttons.BUTTON3)) {
     MidiUart.sendNoteOn(0, 100, 100);
   }
 }

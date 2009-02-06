@@ -1,3 +1,4 @@
+#include <GUI.h>
 #include <MD.h>
 #include <Sequencer.h>
 
@@ -49,12 +50,12 @@ void setup() {
   
   setPitchLength(4);
   
-  MidiClock.mode = MidiClock.EXTERNAL;
   pulseEncoder.setValue(3);
   lengthEncoder.setValue(8);
   offsetEncoder.setValue(0);
   pitchLengthEncoder.setValue(4);
   
+  MidiClock.mode = MidiClock.EXTERNAL;
   MidiClock.transmit = false;
   MidiClock.setOn16Callback(on16Callback);
   MidiClock.start();
@@ -76,4 +77,6 @@ void loop() {
 
   page.handle();
   sei();
+  
+  GUI.update();
 }

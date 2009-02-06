@@ -1,3 +1,6 @@
+#include <Sequencer.h>
+#include <GUI.h>
+
 TempoEncoder tempoEncoder;
 RangeEncoder pitchLengthEncoder(1, 32);
 RangeEncoder pulseEncoder(1, 32);

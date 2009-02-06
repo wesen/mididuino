@@ -1,3 +1,4 @@
+#include <GUI.h>
 #include <MD.h>
 #include <Sequencer.h>
 
@@ -38,7 +39,7 @@ void handleGui() {
   currentEuclid->page.update();
   
   for (uint8_t i = 0; i < 4; i++) {
-    if (BUTTON_DOWN(GUI.Buttons.SHIFT) && BUTTON_PRESSED(i)) {
+    if (BUTTON_DOWN(Buttons.SHIFT) && BUTTON_PRESSED(i)) {
       switchPage(i);
     }
   }
@@ -78,5 +79,9 @@ void loop() {
   GUI.setLine(GUI.LINE2);
   currentEuclid->page.display();
 
+  cli();
   currentEuclid->page.handle();
+  sei();
+  
+  GUI.update();
 }
