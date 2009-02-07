@@ -1,14 +1,19 @@
 #include "WProgram.h"
 #include "MD.h"
 
-uint8_t MD::baseChannel = 0;
-uint8_t MD::trackModels[16] = { 0 };
+uint8_t machinedrum_sysex_hdr[5] = {
+  0x00,
+  0x20,
+  0x3c,
+  0x02,
+  0x00
+};
 
 uint8_t track_pitches[] = {
   36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62
 };
 
-uint8_t md_note_to_track(uint8_t pitch) {
+uint8_t MDClass::noteToTrack(uint8_t pitch) {
   uint8_t i;
   for (i = 0; i < sizeof(track_pitches); i++) {
     if (pitch == track_pitches[i])
@@ -17,9 +22,9 @@ uint8_t md_note_to_track(uint8_t pitch) {
   return 128;
 }
 
-void md_parse_cc(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
-  if ((channel >= MD::baseChannel) && (channel < MD::baseChannel + 4)) {
-    channel -= MD::baseChannel;
+void MDClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
+  if ((channel >= baseChannel) && (channel < baseChannel + 4)) {
+    channel -= baseChannel;
     *track = channel * 4;
     if (cc >= 96) {
       *track += 3;
@@ -38,11 +43,19 @@ void md_parse_cc(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
   }
 }
 
-void MD::triggerTrack(uint8_t track, uint8_t velocity) {
-  MidiUart.sendNoteOn(MD::baseChannel, track_pitches[track], velocity);
+void MDClass::sendRequest(uint8_t type, uint8_t param) {
+  MidiUart.putc(0xF0);
+  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+  MidiUart.putc(type);
+  MidiUart.putc(param);
+  MidiUart.putc(0xF7);
 }
 
-void MD::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
+void MDClass::triggerTrack(uint8_t track, uint8_t velocity) {
+  MidiUart.sendNoteOn(baseChannel, track_pitches[track], velocity);
+}
+
+void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
   uint8_t cc = param;
@@ -51,44 +64,38 @@ void MD::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
   } else {
     cc += 24 + b * 24;
   }
-  MidiUart.sendCC(channel + MD::baseChannel, cc, value);
-}
-
-void md_put_header(void) {
-  uint8_t header[6] = {
-    0xF0, 0x00, 0x20, 0x3C, 0x02, 0x00
-  };
-  MidiUart.sendRaw(header, 6);
+  MidiUart.sendCC(channel + baseChannel, cc, value);
 }
 
 //  0x5E, 0x5D, 0x5F, 0x60
 
-void md_send_fx_param(uint8_t param, uint8_t value, uint8_t type) {
-  md_put_header();
+void MDClass::sendFXParam(uint8_t param, uint8_t value, uint8_t type) {
+  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
   uint8_t data[4] = {
     type, param, value, 0xF7
   };
   MidiUart.sendRaw(data, 4);
 }
   
-void MD::setEchoParam(uint8_t param, uint8_t value) {
-  md_send_fx_param(param, value, 0x5D);
+void MDClass::setEchoParam(uint8_t param, uint8_t value) {
+  sendFXParam(param, value, 0x5D);
 }
 
-void MD::setReverbParam(uint8_t param, uint8_t value) {
-  md_send_fx_param(param, value, 0x5E);
+void MDClass::setReverbParam(uint8_t param, uint8_t value) {
+  sendFXParam(param, value, 0x5E);
 }
 
-void MD::setEQParam(uint8_t param, uint8_t value) {
-  md_send_fx_param(param, value, 0x5F);
+void MDClass::setEQParam(uint8_t param, uint8_t value) {
+  sendFXParam(param, value, 0x5F);
 }
 
-void MD::setCompressorParam(uint8_t param, uint8_t value) {
-  md_send_fx_param(param, value, 0x60);
+void MDClass::setCompressorParam(uint8_t param, uint8_t value) {
+  sendFXParam(param, value, 0x60);
 }
 
 /*** tunings ***/
 
+/* XXX convert to PGM_P */
 static const uint8_t efm_rs_tuning[] = {
    1,  3, 6, 9, 11, 14, 17, 19, 22, 25, 27, 30, 33, 35, 38, 41, 43,
   46, 49, 51, 54, 57, 59, 62, 65, 67, 70, 73, 75, 78, 81, 83, 86,
@@ -160,7 +167,7 @@ static const tuning_t tunings[] = {
 
 tuning_t const *track_tunings[16];
 
-const tuning_t *model_get_tuning(uint8_t model) {
+const tuning_t *MDClass::getModelTuning(uint8_t model) {
   uint8_t i;
   if (((model >= 128) && (model <= 159))) {
     return &rom_tuning_t;
@@ -174,8 +181,8 @@ const tuning_t *model_get_tuning(uint8_t model) {
   return NULL;
 }
 
-uint8_t MD::trackGetPitch(uint8_t track, uint8_t pitch) {
-  tuning_t const *tuning = model_get_tuning(trackModels[track]);
+uint8_t MDClass::trackGetPitch(uint8_t track, uint8_t pitch) {
+  tuning_t const *tuning = getModelTuning(trackModels[track]);
   
   if (tuning == NULL)
     return 128;
@@ -187,22 +194,24 @@ uint8_t MD::trackGetPitch(uint8_t track, uint8_t pitch) {
   return tuning->tuning[pitch - tuning->base];
 }
 
-void MD::sendNoteOn(uint8_t track, uint8_t pitch, uint8_t velocity) {
-  uint8_t realPitch = MD::trackGetPitch(track, pitch);
+void MDClass::sendNoteOn(uint8_t track, uint8_t pitch, uint8_t velocity) {
+  uint8_t realPitch = trackGetPitch(track, pitch);
   if (realPitch == 128)
     return;
-  MD::setTrackParam(track, 0, realPitch);
-  MD::triggerTrack(track, velocity);
+  setTrackParam(track, 0, realPitch);
+  triggerTrack(track, velocity);
 }
 
-void MD::sliceTrack32(uint8_t track, uint8_t from, uint8_t to) {
-  MD::setTrackParam(track, 4, MIN(127, from * 4));
-  MD::setTrackParam(track, 5, MIN(127, to * 4));
-  MD::triggerTrack(track, 100);
+void MDClass::sliceTrack32(uint8_t track, uint8_t from, uint8_t to) {
+  setTrackParam(track, 4, MIN(127, from * 4));
+  setTrackParam(track, 5, MIN(127, to * 4));
+  triggerTrack(track, 100);
 }
 
-void MD::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
-  MD::setTrackParam(track, 4, MIN(127, from * 8));
-  MD::setTrackParam(track, 5, MIN(127, to * 8));
-  MD::triggerTrack(track, 100);
+void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
+  setTrackParam(track, 4, MIN(127, from * 8));
+  setTrackParam(track, 5, MIN(127, to * 8));
+  triggerTrack(track, 100);
 }
+
+MDClass MD;
