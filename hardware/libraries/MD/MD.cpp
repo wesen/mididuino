@@ -293,8 +293,8 @@ uint8_t MDClass::trackGetPitch(uint8_t track, uint8_t pitch) {
   if (tuning == NULL)
     return 128;
 
-  uint8_t base = pgm_read_byte(&tuning->base);
-  uint8_t len = pgm_read_byte(&tuning->len);
+  uint8_t base = tuning->base;
+  uint8_t len = tuning->len;
   
   if ((pitch < base) || (pitch >= (base + len))) {
     return 128;
