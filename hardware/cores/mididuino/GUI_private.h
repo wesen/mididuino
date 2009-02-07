@@ -136,6 +136,10 @@ class ButtonsClass {
 
   static const int MAIN  = 4;
   static const int SHIFT = 5;
+  static const int BUTTON1 = 4;
+  static const int BUTTON2 = 5;
+  static const int BUTTON3 = 6;
+  static const int BUTTON4 = 7;
 };
 
 extern SR165Class SR165;
