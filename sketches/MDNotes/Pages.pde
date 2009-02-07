@@ -42,31 +42,31 @@ class ChannelConfigPage : public Page {
         
         if (configChannel == 128) {
           GUI.setLine(GUI.LINE1);
-          GUI.put_p_string_fill(PSTR("CFG CHN"));
+          GUI.put_p_string_fill(PSTR("CONFIG CHANNEL"));
           GUI.setLine(GUI.LINE2);
-          GUI.put_p_string_fill(PSTR("PRESS A TRACK"));
+          GUI.put_p_string_fill(PSTR("SELECT WITH PADS"));
         } else {
           GUI.setLine(GUI.LINE1);
-          GUI.setLine(GUI.LINE1);
-          GUI.put_value(1, configChannel + 1);
-          GUI.put_p_string_at(8, getMachineName(MD.trackModels[configChannel]));
-          
+          uint8_t model = MD.trackModels[configChannel];
+          GUI.put_p_string(PSTR("CHANNEL "));
+          GUI.put_value(2, configChannel + 1);
+          GUI.lines[GUI.curLine].data[11] = ':';
           switch (inputChannels[configChannel].type) {
             case InputChannel::NORMAL_CHANNEL_TYPE:
-               GUI.put_string(0, "NML");
+               GUI.put_p_string(3, PSTR(" NML"));
                break;
                
             case InputChannel::POLY_CHANNEL_TYPE:
-              GUI.put_string(0, "PLY");
+              GUI.put_p_string(3, PSTR(" PLY"));
               break;
            
            case InputChannel::MULTI_CHANNEL_TYPE:
-             GUI.put_string(0, "MLT");
+             GUI.put_p_string(3, PSTR(" MLT"));
              break;
              
            default:
              break;
-           }
+          }
 
           displayTracks();           
         }
@@ -82,10 +82,14 @@ class ChannelConfigPage : public Page {
       if (inputChannels[configChannel].type != InputChannel::NORMAL_CHANNEL_TYPE) {
         uint8_t i;
         for (i = 0; i < 16; i++) {
-          if (IS_BIT_SET(inputChannels[configChannel].trackmask, i))
-            mask[i] = 'X';
-	  else
-	    mask[i] = '.';
+          if (MD.isMelodicTrack(i)) {
+            if (IS_BIT_SET(inputChannels[configChannel].trackmask, i))
+              mask[i] = 'X';
+    	    else
+  	      mask[i] = '.';
+          } else {
+            mask[i] = '_';
+          }
         }
         mask[16] = 0;
         GUI.put_string_fill(mask);
@@ -95,9 +99,11 @@ class ChannelConfigPage : public Page {
     }
     
     void toggleTrack(uint8_t track) {
-      TOGGLE_BIT(inputChannels[configChannel].trackmask, track);
-      inputChannels[configChannel].voices = inputChannels[configChannel].getVoices();
-      displayTracks();
+      if (MD.isMelodicTrack(track)) {
+        TOGGLE_BIT(inputChannels[configChannel].trackmask, track);
+        inputChannels[configChannel].voices = inputChannels[configChannel].getVoices();
+        displayTracks();
+      }
     }
 };
 
