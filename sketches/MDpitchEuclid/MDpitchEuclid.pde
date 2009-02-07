@@ -33,13 +33,13 @@ void handleGui() {
 
 void on16Callback() {
   if (track.isHit(MidiClock.div16th_counter)) {
-    MD::sendNoteOn(ROM_TRACK, pitches[pitches_idx], 100);
+    MD.sendNoteOn(ROM_TRACK, pitches[pitches_idx], 100);
     pitches_idx = (pitches_idx + 1) % pitches_len;
   }
 }
 
 void setup() {
-  MD::trackModels[ROM_TRACK] = ROM_MODEL;
+  MD.trackModels[ROM_TRACK] = ROM_MODEL;
   
   page.encoders[0] = &pitchLengthEncoder;
   page.encoders[1] = &pulseEncoder;

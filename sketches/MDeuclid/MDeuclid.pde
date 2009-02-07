@@ -26,18 +26,13 @@ EuclidPage *currentEuclid = &euclids[0];
 
 void switchPage(uint8_t i) {
   currentEuclid = &euclids[i];
-  GUI.setLine(GUI.LINE1);
-  GUI.put_value(0, i);
-  GUI.setLine(GUI.LINE2);
-  currentEuclid->page.display(true);
+  GUI.setPage(&currentEuclid->page);
 }
 
 void handleGui() {
   if (BUTTON_PRESSED(4))  
     MidiClock.pause();
 
-  currentEuclid->page.update();
-  
   for (uint8_t i = 0; i < 4; i++) {
     if (BUTTON_DOWN(Buttons.SHIFT) && BUTTON_PRESSED(i)) {
       switchPage(i);
@@ -51,7 +46,7 @@ uint8_t cnt = 0;
 void on16Callback() {
    for (uint8_t i = 0; i < 4; i++) {
     if (euclids[i].track.isHit(MidiClock.div16th_counter)) {
-     MD::triggerTrack(euclids[i].pitchEncoder.getValue(), 100);
+     MD.triggerTrack(euclids[i].pitchEncoder.getValue(), 100);
     }
   }
 }
@@ -66,6 +61,8 @@ void setup() {
 }
 
 void loop() {
+  GUI.updatePage();
+  
   if (currentEuclid->pulseEncoder.hasChanged() || 
       currentEuclid->lengthEncoder.hasChanged() || 
       currentEuclid->offsetEncoder.hasChanged()) {
@@ -76,12 +73,5 @@ void loop() {
   GUI.setLine(GUI.LINE1);
   GUI.put_value16(2, currentEuclid->track.pattern);
 
-  GUI.setLine(GUI.LINE2);
-  currentEuclid->page.display();
-
-  cli();
-  currentEuclid->page.handle();
-  sei();
-  
   GUI.update();
 }

@@ -17,9 +17,9 @@ void on16Callback() {
         from = random(2, 8);
         to = random(0, from - 2);
       }
-      MD::sliceTrack32(15, from * 4, to * 4);
+      MD.sliceTrack32(15, from * 4, to * 4);
     } else {
-      MD::sliceTrack32(15, val, val + 8);
+      MD.sliceTrack32(15, val, val + 8);
     }
   }
 }

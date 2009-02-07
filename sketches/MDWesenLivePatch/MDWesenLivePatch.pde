@@ -47,19 +47,19 @@ void loop() {
   GUI.updatePage();
   
   if (flfEncoder.hasChanged())
-    MD::setEchoParam(MD_ECHO_FLTF, flfEncoder.getValue());
+    MD.setEchoParam(MD_ECHO_FLTF, flfEncoder.getValue());
   if (flwEncoder.hasChanged())
-    MD::setEchoParam(MD_ECHO_FLTW, flwEncoder.getValue());
+    MD.setEchoParam(MD_ECHO_FLTW, flwEncoder.getValue());
   if (fbEncoder.hasChanged())
-    MD::setEchoParam(MD_ECHO_FB, fbEncoder.getValue());
+    MD.setEchoParam(MD_ECHO_FB, fbEncoder.getValue());
   if (levEncoder.hasChanged())
-    MD::setEchoParam(MD_ECHO_LEV, levEncoder.getValue());
+    MD.setEchoParam(MD_ECHO_LEV, levEncoder.getValue());
   if (timEncoder.hasChanged())
-    MD::setEchoParam(MD_ECHO_TIME, timEncoder.getValue());
+    MD.setEchoParam(MD_ECHO_TIME, timEncoder.getValue());
   if (frqEncoder.hasChanged())
-    MD::setEchoParam(MD_ECHO_MFRQ, frqEncoder.getValue());
+    MD.setEchoParam(MD_ECHO_MFRQ, frqEncoder.getValue());
   if (modEncoder.hasChanged())
-    MD::setEchoParam(MD_ECHO_MOD, modEncoder.getValue());
+    MD.setEchoParam(MD_ECHO_MOD, modEncoder.getValue());
   
   GUI.update();
 }
