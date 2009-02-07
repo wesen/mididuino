@@ -7,10 +7,11 @@
 template <int N>
 class RingBuffer {
   volatile uint8_t rd, wr;
-  volatile uint8_t overflow;
   volatile uint8_t buf[N];
   
  public:
+  volatile uint8_t overflow;
+
   RingBuffer();
   bool put(uint8_t c) volatile;
   uint8_t get() volatile;
