@@ -107,6 +107,7 @@ void GuiClass::update() {
   if (page != NULL) {
     page->handle();
   }
+
   for (uint8_t i = 0; i < 2; i++) {
     if (lines[i].changed) {
       LCD.goLine(i);
@@ -179,6 +180,12 @@ void GuiClass::display(bool redisplay) {
   if (page != NULL) {
     page->display(redisplay);
   }
+}
+
+const prog_char empty[]  = "                ";
+
+void GuiClass::clearLine() {
+  put_p_string(0, empty);
 }
 
 GuiClass GUI;

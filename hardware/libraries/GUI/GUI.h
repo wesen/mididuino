@@ -75,7 +75,7 @@ class Page {
   virtual void handle() { }
   virtual void update() { }
   virtual void clear()  { }
-  virtual void display(bool redisplay = false);
+  virtual void display(bool redisplay = false) { }
 };
 
 class EncoderPage : public Page {
@@ -114,9 +114,10 @@ class GuiClass {
  protected:
   line_t lines[2];
   uint8_t curLine;
-  Page *page;
   
  public:
+  Page *page;
+
   GuiClass();
   void update();
   void (*handleButtons)();
@@ -134,6 +135,7 @@ class GuiClass {
   void put_string(uint8_t idx, char *str);
   void put_p_string(uint8_t idx, PGM_P str);
   void setLine(const uint8_t line) { curLine = line; }
+  void clearLine();
   void setPage(Page *_page);
   static const uint8_t LINE1 = 0;
   static const uint8_t LINE2 = 1;
