@@ -1,5 +1,7 @@
 #include "Midi.h"
 
+// #include "GUI.h"
+
 #define MIDI_NOTE_OFF_CB    0
 #define MIDI_NOTE_ON_CB     1
 #define MIDI_AT_CB          2
@@ -74,6 +76,11 @@ void MidiClass::handleByte(uint8_t byte) {
     break;
 
   case midi_wait_sysex:
+    //    GUI.setLine(GUI.LINE2);
+    //    GUI.put_valuex(0, byte);
+    //    GUI.put_valuex(1, MidiUart.rxRb.overflow);
+    //    GUI.put_value16(1, sysex->len);
+    
     if (MIDI_IS_STATUS_BYTE(byte)) {
       if (byte != MIDI_SYSEX_END) {
 	in_state = midi_wait_status;
@@ -211,8 +218,9 @@ void MidiSysexClass::handleByte(uint8_t byte) {
   len++;
 
   if (recording && data != NULL) {
-    if (recordLen < max_len)
+    if (recordLen < max_len) {
       data[recordLen++] = byte;
+    }
   }
   
 }
@@ -222,16 +230,17 @@ void MididuinoSysexClass::start() {
   MidiSysexClass::start();
 }
 
+uint8_t mididuino_hdr[3] = {
+  MIDIDUINO_SYSEX_VENDOR_1,
+  MIDIDUINO_SYSEX_VENDOR_2,
+  MIDIDUINO_SYSEX_VENDOR_3
+};
+
 void MididuinoSysexClass::handleByte(uint8_t byte) {
   if (isMididuinoSysex) {
-    if (len == 0 && byte != MIDIDUINO_SYSEX_VENDOR_1) {
+    if (len < 3 && byte != mididuino_hdr[len]) {
       isMididuinoSysex = false;
-    } else if (len == 1 && byte != MIDIDUINO_SYSEX_VENDOR_2) {
-      isMididuinoSysex = false;
-    } else if (len == 2 && byte != MIDIDUINO_SYSEX_VENDOR_3) {
-      isMididuinoSysex = false;
-    }
-    if (len == 3 && byte == CMD_START_BOOTLOADER) {
+    } else if (len == 3 && byte == CMD_START_BOOTLOADER) {
       LCD.line1_fill("BOOTLOADER");
       start_bootloader();
     }

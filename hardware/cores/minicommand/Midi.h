@@ -60,13 +60,14 @@ class MidiClass {
 
 class MidiSysexClass {
  protected:
-  uint8_t *data;
-  uint16_t max_len;
-  uint16_t recordLen;
   bool aborted;
   bool recording;
 
  public:
+  uint16_t max_len;
+  uint16_t recordLen;
+  uint8_t *data;
+
   uint16_t len;
 
   MidiSysexClass(uint8_t *_data, uint16_t size) {
