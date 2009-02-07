@@ -47,22 +47,21 @@ class ChannelConfigPage : public Page {
           GUI.put_p_string_fill(PSTR("PRESS A TRACK"));
         } else {
           GUI.setLine(GUI.LINE1);
-          GUI.put_value(2, configChannel + 1);
-//          GUI.put_value(2, configEncoder.getValue());
-//          GUI.put_value(2, inputChannels[configChannel].type);
+          GUI.setLine(GUI.LINE1);
+          GUI.put_value(1, configChannel + 1);
+          GUI.put_p_string_at(8, getMachineName(MD.trackModels[configChannel]));
           
           switch (inputChannels[configChannel].type) {
             case InputChannel::NORMAL_CHANNEL_TYPE:
-               GUI.put_string(3, "NML");
+               GUI.put_string(0, "NML");
                break;
                
             case InputChannel::POLY_CHANNEL_TYPE:
-//               GUI.put_p_string(3, PSTR("NML"));
-              GUI.put_string(3, "PLY");
+              GUI.put_string(0, "PLY");
               break;
            
            case InputChannel::MULTI_CHANNEL_TYPE:
-             GUI.put_string(3, "MLT");
+             GUI.put_string(0, "MLT");
              break;
              
            default:
@@ -141,6 +140,7 @@ void handleGuiPages() {
         GUI.setPage(&normalPage);
       } else {
         mdNotesStatus = MD_NOTES_STATUS_CONFIG_CHANNEL_WAIT_NOTE;
+        configPage.configChannel = 128;
         GUI.setPage(&configPage);
       }
     }
