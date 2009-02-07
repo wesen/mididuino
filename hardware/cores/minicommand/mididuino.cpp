@@ -41,7 +41,9 @@ void timer_init(void) {
 
   TCCR2 = _BV(WGM20) | _BV(WGM21) | _BV(CS20) | _BV(CS21); // ) | _BV(CS21); // | _BV(COM21);
   TIMSK |= _BV(TOIE2);
+#ifdef MIDIDUINO_MIDI_CLOCK
   TIMSK |= _BV(TOIE1);
+#endif
 }
 
 void init(void) {
