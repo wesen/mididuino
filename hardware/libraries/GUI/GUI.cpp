@@ -178,7 +178,7 @@ void GuiClass::put_string(uint8_t idx, char *str) {
 void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
   idx <<= 2;
   char *data = lines[curLine].data;
-  for (uint8_t i = 0; i < 4 && str[i] != 0; i++) {
+  for (uint8_t i = 0; i < 4 && pgm_read_byte(str + i) != 0; i++) {
     data[idx + i] = pgm_read_byte(str + i);
   }
   lines[curLine].changed = true;
@@ -216,7 +216,7 @@ void GuiClass::setPage(Page *_page) {
 }
 
 void GuiClass::clearLine() {
-  for (int i = 0; i < sizeof(lines[0].data); i++)
+  for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
     lines[curLine].data[i] = ' ';
   lines[curLine].changed = true;
 }

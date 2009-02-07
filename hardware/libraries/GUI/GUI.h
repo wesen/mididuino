@@ -112,10 +112,10 @@ typedef struct line_s {
 
 class GuiClass {
  protected:
+ public:
   line_t lines[2];
   uint8_t curLine;
   
- public:
   Page *page;
   Page *newPage;
 
