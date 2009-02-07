@@ -184,6 +184,32 @@ void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
   lines[curLine].changed = true;
 }
 
+void GuiClass::put_string_at(uint8_t idx, char *str) {
+  char *data = lines[curLine].data;
+  m_strncpy(data + idx, str, sizeof(lines[0].data) - idx);
+  lines[curLine].changed = true;
+}
+
+void GuiClass::put_p_string_at(uint8_t idx, PGM_P str) {
+  char *data = lines[curLine].data;
+  m_strncpy_p(data + idx, str, sizeof(lines[0].data) - idx);
+  lines[curLine].changed = true;
+}
+
+
+void GuiClass::put_string_at_fill(uint8_t idx, char *str) {
+  char *data = lines[curLine].data;
+  m_strncpy_fill(data + idx, str, sizeof(lines[0].data) - idx);
+  lines[curLine].changed = true;
+}
+
+void GuiClass::put_p_string_at_fill(uint8_t idx, PGM_P str) {
+  char *data = lines[curLine].data;
+  m_strncpy_p_fill(data + idx, str, sizeof(lines[0].data) - idx);
+  lines[curLine].changed = true;
+}
+
+
 void GuiClass::put_string_fill(char *str) {
   m_strncpy_fill(lines[curLine].data, str, sizeof(lines[0].data));
   lines[curLine].changed = true;
