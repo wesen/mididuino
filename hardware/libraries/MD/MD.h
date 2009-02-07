@@ -18,15 +18,15 @@ typedef struct tuning_s {
 class MDClass {
  public:
   MDClass() {
-    currentGlobal = 0;
-    currentKit = 0;
+    currentGlobal = -1;
+    currentKit = -1;
     baseChannel = 0;
     for (uint8_t i = 0; i < 16; i++) {
       trackModels[i] = 0;
     }
   }
-  uint8_t currentGlobal;
-  uint8_t currentKit;
+  int currentGlobal;
+  int currentKit;
   uint8_t baseChannel;
   uint8_t trackModels[16];
   char name[16];
