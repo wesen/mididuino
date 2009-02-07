@@ -6,7 +6,7 @@ void loop();
 void handleGui();
 
 #ifdef MIDIDUINO_HANDLE_SYSEX
-uint8_t mididuino_sysex_data[64];
+uint8_t mididuino_sysex_data[128];
 MididuinoSysexClass mididuinoSysex(mididuino_sysex_data, sizeof(mididuino_sysex_data));
 #endif
 

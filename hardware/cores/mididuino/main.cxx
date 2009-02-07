@@ -15,13 +15,11 @@ void handleGui();
 #define CHECK_RESET() (BUTTON_DOWN(BUTTON_1) && BUTTON_DOWN(ENCODER_1) && BUTTON_DOWN(ENCODER_2))
 
 #ifdef MIDIDUINO_HANDLE_SYSEX
-//uint8_t mididuino_sysex_data[64];
-//MididuinoSysexClass mididuinoSysex(mididuino_sysex_data, sizeof(mididuino_sysex_data));
+uint8_t mididuino_sysex_data[128];
+MididuinoSysexClass mididuinoSysex(mididuino_sysex_data, sizeof(mididuino_sysex_data));
 
 #ifdef MIDIDUINO_ENABLE_USB
-uint8_t usb_mididuino_sysex_data[64];
-MididuinoSysexClass USBmididuinoSysex(usb_mididuino_sysex_data,
-				      sizeof(usb_mididuino_sysex_data));
+MididuinoSysexClass USBmididuinoSysex(NULL, 0);
 #endif
 
 #endif

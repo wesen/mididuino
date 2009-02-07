@@ -42,7 +42,7 @@ void MidiClass::handleByte(uint8_t byte) {
   if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
     uint8_t tmp = SREG;
     cli();
-    if (MidiClock.mode == MidiClock.EXTERNAL) {
+    if (MidiClock.mode == MidiClock.EXTERNAL && this == &Midi) {
       switch (byte) {
       case MIDI_CLOCK:
 	// handled in interrupt routine
@@ -84,8 +84,9 @@ void MidiClass::handleByte(uint8_t byte) {
 	  sysex->end();
       }
     } else {
-      if (sysex != NULL)
+      if (sysex != NULL) {
 	sysex->handleByte(byte);
+      }
     }
     break;
 
@@ -177,42 +178,64 @@ void MidiClass::setOnPitchWheelCallback(midi_callback_t cb) {
   callbacks[MIDI_PITCH_WHEEL_CB] = cb;
 }
 
-
 MidiClass Midi;
 
 void MidiSysexClass::start() {
-    len = 0;
-    aborted = false;
+  len = 0;
+  aborted = false;
+  recording = false;
+  recordLen = 0;
+}
+
+void MidiSysexClass::startRecord() {
+  recording = true;
+  recordLen = 0;
+}
+
+void MidiSysexClass::stopRecord() {
+  recording = false;
 }
 
 void MidiSysexClass::abort() {
-  len = 0;
+  // don't reset len, leave at maximum when aborted
+  //  len = 0;
   aborted = true;
 }
 
 void MidiSysexClass::handleByte(uint8_t byte) {
-  if (data != NULL && !aborted) {
-    if (len < max_len)
-      data[len++] = byte;
-    else
-      abort();
+  if (aborted)
+    return;
+
+  len++;
+
+  if (recording && data != NULL) {
+    if (recordLen < max_len)
+      data[recordLen++] = byte;
   }
+  
 }
 
-void MididuinoSysexClass::end() {
-  if (aborted || (len < 4)) {
-    return;
-  }
-  if ((data[0] == MIDIDUINO_SYSEX_VENDOR_1) &&
-      (data[1] == MIDIDUINO_SYSEX_VENDOR_2) &&
-      (data[2] == MIDIDUINO_SYSEX_VENDOR_3)) {
-    switch (data[3]) {
-    case CMD_START_BOOTLOADER:
-      LCD.line1_fill((char *)"BOOTLOADER");
+void MididuinoSysexClass::start() {
+  isMididuinoSysex = true;
+  MidiSysexClass::start();
+}
+
+void MididuinoSysexClass::handleByte(uint8_t byte) {
+  if (isMididuinoSysex) {
+    if (len == 0 && byte != MIDIDUINO_SYSEX_VENDOR_1) {
+      isMididuinoSysex = false;
+    } else if (len == 1 && byte != MIDIDUINO_SYSEX_VENDOR_2) {
+      isMididuinoSysex = false;
+    } else if (len == 2 && byte != MIDIDUINO_SYSEX_VENDOR_3) {
+      isMididuinoSysex = false;
+    }
+    if (len == 3 && byte == CMD_START_BOOTLOADER) {
+      LCD.line1_fill("BOOTLOADER");
       start_bootloader();
-      break;
     }
   }
+  
+  MidiSysexClass::handleByte(byte);
 }
 
 

@@ -55,7 +55,7 @@
 /* sysex wesen types */
 #define MIDIDUINO_SYSEX_VENDOR_1 0x00
 #define MIDIDUINO_SYSEX_VENDOR_2 0x13
-#define MIDIDUINO_SYSEX_VENDOR_3 0x38 // mididuino 1.0
+#define MIDIDUINO_SYSEX_VENDOR_3 0x40
 
 #define CMD_BOOT_DATA_BLOCK    0x01
 #define CMD_DATA_BLOCK_ACK     0x02

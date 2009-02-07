@@ -54,17 +54,23 @@ class MidiSysexClass {
  protected:
   uint8_t *data;
   uint16_t max_len;
-  uint16_t len;
+  uint16_t recordLen;
   bool aborted;
+  bool recording;
 
  public:
+  uint16_t len;
+
   MidiSysexClass(uint8_t *_data, uint16_t size) {
     data = _data;
     max_len = size;
     len = 0;
     aborted = false;
+    recording = false;
   }
 
+  void startRecord();
+  void stopRecord();
   virtual void start();
   virtual void abort();
   virtual void end() {
@@ -73,18 +79,18 @@ class MidiSysexClass {
 };
 
 class MididuinoSysexClass : public MidiSysexClass {
+  bool isMididuinoSysex;
  public:
  MididuinoSysexClass(uint8_t *data, uint16_t size) :
   MidiSysexClass(data, size) {
+    isMididuinoSysex = true;
   }
 
-  virtual void end();
+  virtual void start();
+  virtual void handleByte(uint8_t byte);
 };
 
-#define DECLARE_SYSEX \
-  uint8_t sysex_data[64];					\
-  MididuinoSysexClass sysex(sysex_data, sizeof(sysex_data));
-    
+extern uint8_t mididuino_sysex_data[128];
 
 extern MidiClass Midi;
 extern MidiClass USBMidi;
