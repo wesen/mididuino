@@ -70,6 +70,7 @@ void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
 //  0x5E, 0x5D, 0x5F, 0x60
 
 void MDClass::sendFXParam(uint8_t param, uint8_t value, uint8_t type) {
+  MidiUart.putc(0xF0);
   MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
   uint8_t data[4] = {
     type, param, value, 0xF7

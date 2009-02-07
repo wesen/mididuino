@@ -29,6 +29,7 @@ class MDClass {
   uint8_t currentKit;
   uint8_t baseChannel;
   uint8_t trackModels[16];
+  char name[16];
 
   void parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param);
   void triggerTrack(uint8_t track, uint8_t velocity);

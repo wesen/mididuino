@@ -10,26 +10,25 @@ void MachineDrumSysexClass::start() {
 
 void MachineDrumSysexClass::handleGlobalDump(uint8_t c) {
   if (len == 0xAC)
-    MD.baseChannel = c;
+    lastReceivedGlobal.baseChannel = c;
 }
 
 void MachineDrumSysexClass::handleKitDump(uint8_t c) {
-  if (len == 0x1A8) {
+  if (len >= 0x08 && len < 0x18) {
+    lastReceivedKit.name[len - 0x08] = c;
+  } else if (len == 0x1A8) {
     startRecord();
-  }
-
-  if (len == 0x1F3) {
+  } else if (len == 0x1F3) {
     uint8_t tmp[16 * 4];
     stopRecord();
     sysex_to_data_elektron(data, tmp, 74);
 
     uint8_t i;
     for (i = 0; i < 16; i++) {
-      MD.trackModels[i] = tmp[i * 4 + 3];
+      lastReceivedKit.trackModels[i] = tmp[i * 4 + 3];
     }
   }
 }
-  
 
 void MachineDrumSysexClass::handleByte(uint8_t byte) {
   if ((len < sizeof(machinedrum_sysex_hdr)) &&
@@ -90,12 +89,12 @@ void MachineDrumSysexClass::end() {
       
     case MD_GLOBAL_MESSAGE_ID:
       if (onGlobalMessageCallback != NULL)
-	onGlobalMessageCallback();
+	onGlobalMessageCallback(&lastReceivedGlobal);
       break;
       
     case MD_KIT_MESSAGE_ID:
       if (onKitMessageCallback != NULL)
-	onKitMessageCallback();
+	onKitMessageCallback(&lastReceivedKit);
       break;
     }
   }
