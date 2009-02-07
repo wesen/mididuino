@@ -25,9 +25,7 @@ void onStatusResponseCallback(uint8_t type, uint8_t value) {
   } else if (type == MD_CURRENT_GLOBAL_SLOT_REQUEST && 
              mdNotesSysexStatus == MD_GET_CURRENT_GLOBAL) {
     mdNotesSysexStatus = MD_GET_KIT;
-    MD.sendRequest(MD_KIT_REQUEST_ID, MD.currentKit);
-  } else {
-    LCD.line1("UNKNOWN");
+       MD.sendRequest(MD_KIT_REQUEST_ID, MD.currentKit);
   }
 }
 
@@ -35,7 +33,7 @@ void onGlobalMessageCallback(md_global_t *global) {
   if (mdNotesSysexStatus == MD_GET_GLOBAL) {
     MD.baseChannel = global->baseChannel;
     mdNotesSysexStatus = MD_DONE;
-    LCD.line1("FINISH");
+    loadedKit = true;
   }
 }
 
@@ -49,8 +47,9 @@ void onKitMessageCallback(md_kit_t *kit) {
 }
 
 void handleGuiSysex() {
-  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+  if (BUTTON_PRESSED(Buttons.BUTTON1) && !isConfigPageActive()) {
     mdNotesSysexStatus = MD_GET_CURRENT_KIT;
+    loadedKit = false;
     MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_KIT_REQUEST);
   }
 }

@@ -7,6 +7,8 @@ enum {
   MD_NOTES_STATUS_CONFIG_CHANNEL
 } mdNotesStatus = MD_NOTES_STATUS_NORMAL;
 
+bool loadedKit = false;
+
 class InputChannel {
   public:
     static const uint8_t NORMAL_CHANNEL_TYPE = 0;
@@ -54,6 +56,10 @@ void setup() {
 }
 
 void loop() {
+  GUI.updatePage();
+  
+//  if (!MidiUart.avail())
+    GUI.update();
 }
 
 void handleGui() {
