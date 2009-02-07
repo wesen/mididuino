@@ -54,6 +54,8 @@ class MDClass {
   uint8_t noteToTrack(uint8_t pitch);
 };
 
+PGM_P getMachineName(uint8_t machine);
+
 extern MDClass MD;
 
 #define MD_ASSIGN_MACHINE_ID                             0x5b

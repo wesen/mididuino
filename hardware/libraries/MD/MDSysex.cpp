@@ -20,8 +20,9 @@ void MachineDrumSysexClass::handleKitDump(uint8_t c) {
   } else if (len == 0x1A9) {
     startRecord();
   } else if (len == 0x1F4) {
-    uint8_t tmp[16 * 4];
     stopRecord();
+
+    uint8_t tmp[16 * 4];
     sysex_to_data_elektron(data, tmp, 74);
 
     uint8_t i;
