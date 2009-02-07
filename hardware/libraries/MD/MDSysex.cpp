@@ -1,5 +1,6 @@
 #include "MD.h"
 #include "MDSysex.hh"
+#include "GUI.h"
 
 MachineDrumSysexClass MDSysex(mididuino_sysex_data, sizeof(mididuino_sysex_data));
 
@@ -14,11 +15,11 @@ void MachineDrumSysexClass::handleGlobalDump(uint8_t c) {
 }
 
 void MachineDrumSysexClass::handleKitDump(uint8_t c) {
-  if (len >= 0x08 && len < 0x18) {
-    lastReceivedKit.name[len - 0x08] = c;
-  } else if (len == 0x1A8) {
+  if (len <= 0x18 && len > 0x08) {
+    lastReceivedKit.name[len - 0x09] = c;
+  } else if (len == 0x1A9) {
     startRecord();
-  } else if (len == 0x1F3) {
+  } else if (len == 0x1F4) {
     uint8_t tmp[16 * 4];
     stopRecord();
     sysex_to_data_elektron(data, tmp, 74);
@@ -34,9 +35,7 @@ void MachineDrumSysexClass::handleByte(uint8_t byte) {
   if ((len < sizeof(machinedrum_sysex_hdr)) &&
       (byte != machinedrum_sysex_hdr[len])) {
     isMachineDrumSysex = false;
-  }
-  
-  if (isMachineDrumSysex) {
+  } else if (isMachineDrumSysex) {
     if (len == sizeof(machinedrum_sysex_hdr)) {
       msgType = byte;
       switch (byte) {
@@ -65,7 +64,7 @@ void MachineDrumSysexClass::handleByte(uint8_t byte) {
       }
     }
   }
-  
+
   MididuinoSysexClass::handleByte(byte);
 }
 
