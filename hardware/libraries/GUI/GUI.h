@@ -117,13 +117,12 @@ class GuiClass {
   
  public:
   Page *page;
+  Page *newPage;
 
   GuiClass();
   void update();
   void (*handleButtons)();
 
-  void display(bool redisplay = false);
-  void displayNames();
   void updatePage();
 
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
@@ -134,6 +133,10 @@ class GuiClass {
   void put_valuex(uint8_t idx, uint8_t value);
   void put_string(uint8_t idx, char *str);
   void put_p_string(uint8_t idx, PGM_P str);
+  void put_string(char *str);
+  void put_p_string(PGM_P str);
+  void put_string_fill(char *str);
+  void put_p_string_fill(PGM_P str);
   void setLine(const uint8_t line) { curLine = line; }
   void clearLine();
   void setPage(Page *_page);

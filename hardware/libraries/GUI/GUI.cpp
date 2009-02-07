@@ -103,11 +103,23 @@ void GuiClass::updatePage() {
   }
 }
 void GuiClass::update() {
-  display();
+  bool redisplay = false;
+  
+  uint8_t tmp = SREG;
+  cli();
+  if (newPage != NULL) {
+    page = newPage;
+    newPage = NULL;
+    redisplay = true;
+  }
+  SREG = tmp;
   if (page != NULL) {
+    page->display(redisplay);
     page->handle();
   }
 
+  //  uint8_t tmp = SREG;
+  //  cli();
   for (uint8_t i = 0; i < 2; i++) {
     if (lines[i].changed) {
       LCD.goLine(i);
@@ -115,6 +127,7 @@ void GuiClass::update() {
       lines[i].changed = false;
     }
   }
+  //  SREG = tmp;
 }
 
 char hex2c(uint8_t hex) {
@@ -165,27 +178,47 @@ void GuiClass::put_string(uint8_t idx, char *str) {
 void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
   idx <<= 2;
   char *data = lines[curLine].data;
-  lines[curLine].changed = true;
   for (uint8_t i = 0; i < 4 && str[i] != 0; i++) {
     data[idx + i] = pgm_read_byte(str + i);
   }
+  lines[curLine].changed = true;
+}
+
+void GuiClass::put_string_fill(char *str) {
+  m_strncpy_fill(lines[curLine].data, str, sizeof(lines[0].data));
+  lines[curLine].changed = true;
+}
+
+void GuiClass::put_p_string_fill(PGM_P str) {
+  m_strncpy_p_fill(lines[curLine].data, str, sizeof(lines[0].data));
+  lines[curLine].changed = true;
+}
+
+void GuiClass::put_string(char *str) {
+  m_strncpy(lines[curLine].data, str, sizeof(lines[0].data));
+  lines[curLine].changed = true;
+}
+
+void GuiClass::put_p_string(PGM_P str) {
+  m_strncpy_p(lines[curLine].data, str, sizeof(lines[0].data));
+  lines[curLine].changed = true;
 }
 
 void GuiClass::setPage(Page *_page) {
-  page = _page;
-  display(true);
+  newPage = _page;
+  // XXX needed?
+  /*
+  uint8_t tmp = SREG;
+  cli();
+  Encoders.clearEncoders();
+  SREG = tmp;
+  */
 }
-
-void GuiClass::display(bool redisplay) {
-  if (page != NULL) {
-    page->display(redisplay);
-  }
-}
-
-const prog_char empty[]  = "                ";
 
 void GuiClass::clearLine() {
-  put_p_string(0, empty);
+  for (int i = 0; i < sizeof(lines[0].data); i++)
+    lines[curLine].data[i] = ' ';
+  lines[curLine].changed = true;
 }
 
 GuiClass GUI;
