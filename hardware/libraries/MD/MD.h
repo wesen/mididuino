@@ -52,6 +52,7 @@ class MDClass {
 
   const tuning_t* getModelTuning(uint8_t model);
   uint8_t noteToTrack(uint8_t pitch);
+  bool isMelodicTrack(uint8_t track);
 };
 
 PGM_P getMachineName(uint8_t machine);

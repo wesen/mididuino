@@ -199,57 +199,57 @@ void MDClass::setCompressorParam(uint8_t param, uint8_t value) {
 /*** tunings ***/
 
 /* XXX convert to PGM_P */
-static const uint8_t efm_rs_tuning[] = {
+static const uint8_t efm_rs_tuning[] PROGMEM = {
    1,  3, 6, 9, 11, 14, 17, 19, 22, 25, 27, 30, 33, 35, 38, 41, 43,
   46, 49, 51, 54, 57, 59, 62, 65, 67, 70, 73, 75, 78, 81, 83, 86,
   89, 91, 94, 97, 99, 102, 105, 107, 110, 113, 115, 118, 121, 123,
   126
 };
-static const uint8_t efm_hh_tuning[] = {
+static const uint8_t efm_hh_tuning[] PROGMEM = {
   1, 5, 9, 14, 18, 22, 27, 31, 35, 39, 44, 48, 52, 56, 61, 65, 69,
   73, 78, 82, 86, 91, 95, 99, 103, 108, 112, 116, 120, 125
 };
-static const uint8_t efm_cp_tuning[] = {
+static const uint8_t efm_cp_tuning[] PROGMEM = {
   0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 29, 31, 33,
   35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 62, 64, 66,
   68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 95, 97, 99, 101,
   103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127};
 
-static const uint8_t efm_sd_tuning[] = {
+static const uint8_t efm_sd_tuning[] PROGMEM = {
   1, 5, 9, 14, 18, 22, 27, 31, 35, 39, 44, 48, 52, 56, 61, 65, 69, 73, 78, 82, 
 86, 91, 95, 99, 103, 108, 112, 116, 120, 125, 
 };
 
-static const uint8_t efm_xt_tuning[] = {
+static const uint8_t efm_xt_tuning[] PROGMEM = {
   1, 7, 12, 17, 23, 28, 33, 39, 44, 49, 55, 60, 65, 71, 76, 81, 87, 92, 97, 102, 
   108, 113, 118, 124, 
 };
 
-static const uint8_t efm_bd_tuning[] = {
+static const uint8_t efm_bd_tuning[] PROGMEM = {
   1, 3, 6, 9, 11, 14, 17, 19, 22, 25, 27, 30, 33, 35, 38, 41, 43, 46, 49, 51, 54, 
   57, 59, 62, 65, 67, 70, 73, 75, 78, 81, 83, 86, 89, 91, 94, 97, 99, 102, 105, 107, 
   110, 113, 115, 118, 121, 123, 126, 
 };
-static const uint8_t trx_cl_tuning[] = {
+static const uint8_t trx_cl_tuning[] PROGMEM = {
   5, 11, 17, 23, 29, 36, 42, 48, 54, 60, 66, 72, 78, 84, 91, 97, 103, 109, 115, 121, 
   127, 
 };
-static const uint8_t trx_sd_tuning[] = {
+static const uint8_t trx_sd_tuning[] PROGMEM = {
   3, 13, 24, 35, 45, 56, 67, 77, 88, 98, 109, 120, 
 };
-static const uint8_t trx_xc_tuning[] = {
+static const uint8_t trx_xc_tuning[] PROGMEM = {
   1, 6, 11, 17, 22, 27, 33, 38, 43, 49, 54, 60, 65, 70, 76, 81, 86, 92, 97, 102, 
   108, 113, 118, 124, 
 };
-static const uint8_t trx_xt_tuning[] = {
+static const uint8_t trx_xt_tuning[] PROGMEM = {
   2, 7, 12, 18, 23, 28, 34, 39, 44, 49, 55, 60, 65, 71, 76, 81, 87, 92, 97, 103, 
   108, 113, 118, 124,
 };
-static const uint8_t trx_bd_tuning[] = {
+static const uint8_t trx_bd_tuning[] PROGMEM = {
   1, 7, 12, 17, 23, 28, 33, 39, 44, 49, 55, 60, 66, 71, 76, 82, 87, 92, 98, 103, 
   108, 114, 119, 124, 
 };
-static const uint8_t rom_tuning[] = {
+static const uint8_t rom_tuning[] PROGMEM = {
   0, 2, 5, 7, 9, 12, 14, 16, 19, 21, 23, 26, 28, 31, 34, 37, 40, 43, 46, 49, 52, 
   55, 58, 61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100, 102, 105, 107, 
   109, (112), 114, 116, 119, 121, 123, 125, 
@@ -273,7 +273,7 @@ static const tuning_t tunings[] = {
 
 tuning_t const *track_tunings[16];
 
-const tuning_t *MDClass::getModelTuning(uint8_t model) {
+const tuning_t PROGMEM *MDClass::getModelTuning(uint8_t model) {
   uint8_t i;
   if (((model >= 128) && (model <= 159))) {
     return &rom_tuning_t;
@@ -293,11 +293,14 @@ uint8_t MDClass::trackGetPitch(uint8_t track, uint8_t pitch) {
   if (tuning == NULL)
     return 128;
 
-  if ((pitch < tuning->base) || (pitch >= (tuning->base + tuning->len))) {
+  uint8_t base = pgm_read_byte(&tuning->base);
+  uint8_t len = pgm_read_byte(&tuning->len);
+  
+  if ((pitch < base) || (pitch >= (base + len))) {
     return 128;
   }
 
-  return tuning->tuning[pitch - tuning->base];
+  return pgm_read_byte(&tuning->tuning[pitch - base]);
 }
 
 void MDClass::sendNoteOn(uint8_t track, uint8_t pitch, uint8_t velocity) {
@@ -318,6 +321,10 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
   setTrackParam(track, 4, MIN(127, from * 8));
   setTrackParam(track, 5, MIN(127, to * 8));
   triggerTrack(track, 100);
+}
+
+bool MDClass::isMelodicTrack(uint8_t track) {
+  return (getModelTuning(trackModels[track]) != NULL);
 }
 
 MDClass MD;
