@@ -62,12 +62,27 @@ void EncoderPage::clear() {
 }
 
 void EncoderPage::display(bool redisplay) {
+  if (redisplay) {
+    displayNames();
+  }
+  GUI.setLine(GUI.LINE2);
   for (uint8_t i = 0; i < 4; i++) {
     if (encoders[i] != NULL)
       if (encoders[i]->hasChanged() || redisplay)
 	GUI.put_value(i, encoders[i]->getValue());
   }
 }
+
+void EncoderPage::displayNames() {
+  GUI.setLine(GUI.LINE1);
+  for (uint8_t i = 0; i < 4; i++) {
+    if (encoders[i] != NULL)
+      GUI.put_string(i, encoders[i]->getName());
+    else
+      GUI.put_string(i, (char *)" ");
+  }
+}
+
 
 /************************************************/
 GuiClass::GuiClass() {
@@ -155,26 +170,14 @@ void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
   }
 }
 
-void GuiClass::display(bool redisplay) {
-  if (page != NULL) {
-    setLine(LINE2);
-    page->display(redisplay);
-  }
+void GuiClass::setPage(Page *_page) {
+  page = _page;
+  display(true);
 }
 
-void GuiClass::displayNames() {
-  setLine(LINE1);
+void GuiClass::display(bool redisplay) {
   if (page != NULL) {
-    for (uint8_t i = 0; i < 4; i++) {
-      if (page->encoders[i] != NULL)
-	put_string(i, page->encoders[i]->getName());
-      else
-	put_string(i, (char *)" ");
-    }
-  } else {
-    for (uint8_t i = 0; i < 4; i++) {
-      put_string(i, (char *)"    ");
-    }
+    page->display(redisplay);
   }
 }
 

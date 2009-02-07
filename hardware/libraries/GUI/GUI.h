@@ -69,7 +69,16 @@ class CCEncoder : public RangeEncoder {
   void handle(uint8_t val);
 };
 
-class EncoderPage {
+class Page {
+ public:
+  Page() { }
+  virtual void handle() { }
+  virtual void update() { }
+  virtual void clear()  { }
+  virtual void display(bool redisplay = false);
+};
+
+class EncoderPage : public Page {
  public:
   Encoder *encoders[GUI_NUM_ENCODERS];
   
@@ -78,10 +87,11 @@ class EncoderPage {
       encoders[i] = NULL;
     }
   }
-  void handle();
-  void update();
-  void clear();
-  void display(bool redisplay = false);
+  virtual void handle();
+  virtual void update();
+  virtual void clear();
+  virtual void display(bool redisplay = false);
+  void displayNames();
 };
 
 #define INIT_PAGE(page, encoders, size) \
@@ -104,7 +114,7 @@ class GuiClass {
  protected:
   line_t lines[2];
   uint8_t curLine;
-  EncoderPage *page;
+  Page *page;
   
  public:
   GuiClass();
@@ -124,19 +134,12 @@ class GuiClass {
   void put_string(uint8_t idx, char *str);
   void put_p_string(uint8_t idx, PGM_P str);
   void setLine(const uint8_t line) { curLine = line; }
-  void setPage(EncoderPage *_page) {
-    page = _page;
-    displayNames();
-    display(true);
-  }
-
+  void setPage(Page *_page);
   static const uint8_t LINE1 = 0;
   static const uint8_t LINE2 = 1;
   
 };
 
 extern GuiClass GUI;
-
-
 
 #endif /* GUI_H__ */
