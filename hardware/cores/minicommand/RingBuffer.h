@@ -15,6 +15,7 @@ class RingBuffer {
   RingBuffer();
   bool put(uint8_t c) volatile;
   uint8_t get() volatile;
+  uint8_t peek() volatile;
   bool isEmpty() volatile;
   bool isFull() volatile;
 };
@@ -49,13 +50,28 @@ uint8_t RingBuffer<N>::get() volatile {
 }
 
 template <int N>
+uint8_t RingBuffer<N>::peek() volatile {
+  if (isEmpty())
+    return 0;
+  else return buf[rd];
+}
+
+template <int N>
 bool RingBuffer<N>::isEmpty() volatile {
-  return (rd == wr);
+  uint8_t tmp = SREG;
+  cli();
+  uint8_t ret = (rd == wr);
+  SREG = tmp;
+  return ret;
 }
 
 template <int N>
 bool RingBuffer<N>::isFull() volatile {
-  return (RB_INC(wr) == rd);
+  uint8_t tmp = SREG;
+  cli();
+  uint8_t ret = (RB_INC(wr) == rd);
+  SREG = tmp;
+  return ret;
 }
 
 #endif /* RINGBUFFER_H__ */
