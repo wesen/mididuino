@@ -76,7 +76,7 @@ class MDClass {
   
   void assignMachine(uint8_t track, uint8_t model);
   
-  void loadMachine(uint8_t track, md_machine_t *machine);
+  void setMachine(uint8_t track, md_machine_t *machine);
 };
 
 PGM_P getMachineName(uint8_t machine);

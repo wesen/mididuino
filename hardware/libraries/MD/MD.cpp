@@ -246,11 +246,18 @@ void MDClass::assignMachine(uint8_t track, uint8_t model) {
   MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
   MidiUart.putc(0x5B);
   MidiUart.putc(track);
-  MidiUart.putc(model);
+  if (model > 128) {
+    MidiUart.putc(model - 128);
+    MidiUart.putc(0x01);
+  } else {
+    MidiUart.putc(model);
+    MidiUart.putc(0x00);
+  }
+  MidiUart.putc(0x00);
   MidiUart.putc(0xF7);
 }
 
-void MDClass::loadMachine(uint8_t track, md_machine_t *machine) {
+void MDClass::setMachine(uint8_t track, md_machine_t *machine) {
   assignMachine(track, machine->model);
   for (uint8_t i = 0; i < 24; i++) {
     setTrackParam(track, i, machine->params[i]);
