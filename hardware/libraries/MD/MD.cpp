@@ -1,108 +1,6 @@
 #include "WProgram.h"
 #include "MD.h"
 
-typedef struct machine_name_s {
-  char name[7];
-  uint8_t id;
-} machine_name_t;
-
-machine_name_t machine_names[] PROGMEM = {
-  { "GND---", 0},
-  { "GND-SN", 1}, { "GND-NS", 2},
-  { "GND-IM", 3}, { "TRX-BD", 16},
-  { "TRX-SD", 17}, { "TRX-XT", 18},
-  { "TRX-CP", 19}, { "TRX-RS", 20},
-  { "TRX-RS", 21}, { "TRX-CH", 22},
-  { "TRX-OH", 23}, { "TRX-CY", 24},
-  { "TRX-MA", 25}, { "TRX-CL", 26},
-  { "TRX-XC", 27}, { "TRX-B2", 28},
-  { "EFM-BD", 32}, { "EFM-SD", 33},
-  { "EFM-XT", 34}, { "EFM-CP", 35},
-  { "EFM-RS", 36}, { "EFM-CB", 37},
-  { "EFM-HH", 38}, { "EFM-CY", 39},
-  { "E12-BD", 48}, { "E12-SD", 49},
-  { "E12-HT", 50}, { "E12-LT", 51},
-  { "E12-CP", 52}, { "E12-RS", 53},
-  { "E12-CB", 54}, { "E12-CH", 55},
-  { "E12-OH", 56}, { "E12-RC", 57},
-  { "E12-CC", 58}, { "E12-BR", 59},
-  { "E12-TA", 60}, { "E12-TR", 61},
-  { "E12-SH", 62}, { "E12-BC", 63},
-  { "P-I-BD", 64}, { "P-I-SD", 65},
-  { "P-I-MT", 66}, { "P-I-ML", 67},
-  { "P-I-MA", 68}, { "P-I-RS", 69},
-  { "P-I-RC", 70}, { "P-I-CC", 71},
-  { "P-I-HH", 72}, { "INP-GA", 80},
-  { "INP-GB", 81}, { "INP-FA", 82},
-  { "INP-FB", 83}, { "INP-EA", 84},
-  { "INP-EB", 85}, { "MID-01", 96},
-  { "MID-02", 97}, { "MID-03", 98},
-  { "MID-04", 99}, { "MID-05", 100},
-  { "MID-06", 101}, { "MID-07", 102},
-  { "MID-08", 103}, { "MID-09", 104},
-  { "MID-10", 105}, { "MID-11", 106},
-  { "MID-12", 107}, { "MID-13", 108},
-  { "MID-14", 109}, { "MID-15", 110},
-  { "MID-16", 111}, { "CTR-AL", 112},
-  { "CTR-8P", 113},
-			
-  { "CTR-RE", 120},
-  { "CTR-GB", 121},
-  { "CTR-EQ", 122},
-  { "CTR-DX", 123},
-			
-  { "ROM-01", 128},
-  { "ROM-02", 129}, { "ROM-03", 130},
-  { "ROM-04", 131}, { "ROM-05", 132},
-  { "ROM-06", 133}, { "ROM-07", 134},
-  { "ROM-08", 135}, { "ROM-09", 136},
-  { "ROM-10", 137}, { "ROM-11", 138},
-  { "ROM-12", 139}, { "ROM-13", 140},
-  { "ROM-14", 141}, { "ROM-15", 142},
-  { "ROM-16", 143}, { "ROM-17", 144},
-  { "ROM-18", 145}, { "ROM-19", 146},
-  { "ROM-20", 147}, { "ROM-21", 148},
-  { "ROM-22", 149}, { "ROM-23", 150},
-  { "ROM-24", 151}, { "ROM-25", 152},
-  { "ROM-26", 153}, { "ROM-27", 154},
-  { "ROM-28", 155}, { "ROM-29", 156},
-  { "ROM-30", 157}, { "ROM-31", 158},
-  { "ROM-32", 159}, { "RAM-R1", 160},
-  { "RAM-R2", 161}, { "RAM-P1", 162},
-  { "RAM-P2", 163},
-			
-  { "RAM-R3", 165},
-  { "RAM-R4", 166},
-  { "RAM-P3", 167},
-  { "RAM-P4", 168},
-
-  { "ROM-33", 176},
-  { "ROM-34", 177},
-  { "ROM-35", 178},
-  { "ROM-36", 179},
-  { "ROM-37", 180},
-  { "ROM-38", 181},
-  { "ROM-39", 182},
-  { "ROM-40", 183},
-  { "ROM-41", 184},
-  { "ROM-42", 185},
-  { "ROM-43", 186},
-  { "ROM-44", 187},
-  { "ROM-45", 188},
-  { "ROM-46", 189},
-  { "ROM-47", 190},
-  { "ROM-48", 191}
-};
-
-PGM_P getMachineName(uint8_t machine) {
-  for (uint8_t i = 0; i < countof(machine_names); i++) {
-    if (pgm_read_byte(&machine_names[i].id) == machine) {
-      return machine_names[i].name;
-    }
-  }
-  return NULL;
-}
-
 uint8_t machinedrum_sysex_hdr[5] = {
   0x00,
   0x20,
@@ -308,6 +206,7 @@ void MDClass::sendNoteOn(uint8_t track, uint8_t pitch, uint8_t velocity) {
   if (realPitch == 128)
     return;
   setTrackParam(track, 0, realPitch);
+  delayMicroseconds(10);
   triggerTrack(track, velocity);
 }
 
@@ -325,6 +224,38 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
 
 bool MDClass::isMelodicTrack(uint8_t track) {
   return (getModelTuning(trackModels[track]) != NULL);
+}
+
+void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {
+  MidiUart.putc(0xF0);
+  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+  MidiUart.putc(0x62);
+  MidiUart.putc(track << 3 | param);
+  MidiUart.putc(value);
+  MidiUart.putc(0xF7);
+}
+
+void MDClass::setLFO(uint8_t track, lfo_t *lfo) {
+  for (uint8_t i = 0; i < 8; i++) {
+    setLFOParam(track, i, lfo->params[i]);
+  }
+}
+
+void MDClass::assignMachine(uint8_t track, uint8_t model) {
+  MidiUart.putc(0xF0);
+  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+  MidiUart.putc(0x5B);
+  MidiUart.putc(track);
+  MidiUart.putc(model);
+  MidiUart.putc(0xF7);
+}
+
+void MDClass::loadMachine(uint8_t track, md_machine_t *machine) {
+  assignMachine(track, machine->model);
+  for (uint8_t i = 0; i < 24; i++) {
+    setTrackParam(track, i, machine->params[i]);
+  }
+  setLFO(track, &machine->lfo);
 }
 
 MDClass MD;
