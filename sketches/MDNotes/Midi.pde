@@ -86,13 +86,10 @@ void onNoteOnCallbackMD(uint8_t *msg) {
 }
 
 void onNoteOnCallbackKeyboard(uint8_t *msg) {
-  switch (mdNotesStatus) {
-    case MD_NOTES_STATUS_NORMAL:
-      handleNoteOn(msg);
-      break;
-
-    default:
-      break;    
+  if (msg[2] != 0) {
+    setLed();
+    handleNoteOn(msg);
+    clearLed();
   }
 }
 

@@ -71,6 +71,6 @@ void loop() {
   if (pitchLengthEncoder.hasChanged()) {
     setPitchLength(pitchLengthEncoder.getValue());
   }
-
+  
   GUI.update();
 }

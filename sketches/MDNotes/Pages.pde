@@ -54,21 +54,28 @@ class ChannelConfigPage : public Page {
           switch (inputChannels[configChannel].type) {
             case InputChannel::NORMAL_CHANNEL_TYPE:
                GUI.put_p_string(3, PSTR(" NML"));
+               GUI.setLine(GUI.LINE2);
+               GUI.clearLine();
+               GUI.put_p_string_at(0, getMachineName(model));
+               if (MD.isMelodicTrack(configChannel)) {
+               } else {
+                 GUI.put_p_string_at(7, PSTR("XXX"));
+               }
                break;
                
             case InputChannel::POLY_CHANNEL_TYPE:
               GUI.put_p_string(3, PSTR(" PLY"));
+              displayTracks();
               break;
            
            case InputChannel::MULTI_CHANNEL_TYPE:
              GUI.put_p_string(3, PSTR(" MLT"));
+             displayTracks();           
              break;
              
            default:
              break;
           }
-
-          displayTracks();           
         }
         oldConfigChannel = configChannel;
       }
@@ -93,8 +100,6 @@ class ChannelConfigPage : public Page {
         }
         mask[16] = 0;
         GUI.put_string_fill(mask);
-      } else {
-        GUI.clearLine();
       }
     }
     
@@ -144,16 +149,15 @@ void handleGuiPages() {
       if (GUI.page == &configPage) {
         mdNotesStatus = MD_NOTES_STATUS_NORMAL;
         GUI.setPage(&normalPage);
-      } else {
-        mdNotesStatus = MD_NOTES_STATUS_CONFIG_CHANNEL_WAIT_NOTE;
-        configPage.configChannel = 128;
-        GUI.setPage(&configPage);
       }
     }
   } 
-  if (BUTTON_PRESSED(Buttons.BUTTON3) && mdNotesStatus == MD_NOTES_STATUS_CONFIG_CHANNEL) {
-    mdNotesStatus = MD_NOTES_STATUS_CONFIG_CHANNEL_WAIT_NOTE;
-    configPage.configChannel = 128;
+  if (BUTTON_PRESSED(Buttons.BUTTON3)) {
+    if (MD.currentKit != -1) {
+      mdNotesStatus = MD_NOTES_STATUS_CONFIG_CHANNEL_WAIT_NOTE;
+      configPage.configChannel = 128;
+      GUI.setPage(&configPage);
+    }
   }
 }
 
