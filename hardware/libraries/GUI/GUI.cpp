@@ -139,7 +139,18 @@ char hex2c(uint8_t hex) {
 }
 
 void GuiClass::put_value(uint8_t idx, uint8_t value) {
-  idx <<= 2;
+  put_value_at(idx << 2, value);
+}
+
+void GuiClass::put_value16(uint8_t idx, uint16_t value) {
+  put_value16_at(idx << 2, value);
+}
+
+void GuiClass::put_valuex(uint8_t idx, uint8_t value) {
+  put_valuex_at(idx << 1, value);
+}
+
+void GuiClass::put_value_at(uint8_t idx, uint8_t value) {
   char *data = lines[curLine].data;
   lines[curLine].changed = true;
   data[idx] = value / 100 + '0';
@@ -148,8 +159,7 @@ void GuiClass::put_value(uint8_t idx, uint8_t value) {
   data[idx+3] = ' ';
 }
 
-void GuiClass::put_value16(uint8_t idx, uint16_t value) {
-  idx <<= 2;
+void GuiClass::put_value16_at(uint8_t idx, uint16_t value) {
   char *data = lines[curLine].data;
   lines[curLine].changed = true;
   data[idx]   = hex2c(value >> 12 & 0xF);
@@ -158,13 +168,13 @@ void GuiClass::put_value16(uint8_t idx, uint16_t value) {
   data[idx+3] = hex2c(value >> 0 & 0xF);
 }
 
-void GuiClass::put_valuex(uint8_t idx, uint8_t value) {
-  idx <<= 1;
+void GuiClass::put_valuex_at(uint8_t idx, uint8_t value) {
   char *data = lines[curLine].data;
   lines[curLine].changed = true;
   data[idx]   = hex2c(value >> 4 & 0xF);
   data[idx+1] = hex2c(value >> 0 & 0xF);
 }
+
 
 void GuiClass::put_string(uint8_t idx, char *str) {
   idx <<= 2;
