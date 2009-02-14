@@ -108,7 +108,14 @@ class TempoEncoder : public RangeEncoder {
 typedef struct line_s {
   char data[16];
   bool changed;
+  char flash[16];
+  bool flashChanged;
+  bool flashActive;
+  uint16_t flashTimer;
+  uint16_t duration;
 } line_t;
+
+#define DEFAULT_FLASH_DURATION 2000
 
 class GuiClass {
  protected:
@@ -144,6 +151,26 @@ class GuiClass {
   void put_p_string_at(uint8_t idx, PGM_P str);
   void put_string_at_fill(uint8_t idx, char *str);
   void put_p_string_at_fill(uint8_t idx, PGM_P str);
+
+
+  void flash_string(char *str,
+		    uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string(PGM_P str,
+		      uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_fill(char *str,
+			 uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_fill(PGM_P str,
+			   uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_at(uint8_t idx, char *str,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_at(uint8_t idx, PGM_P str,
+			 uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_at_fill(uint8_t idx, char *str,
+			    uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_at_fill(uint8_t idx, PGM_P str,
+			      uint16_t duration = DEFAULT_FLASH_DURATION);
+  
+  
   void setLine(const uint8_t line) { curLine = line; }
   void clearLine();
   void setPage(Page *_page);

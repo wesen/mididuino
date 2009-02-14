@@ -121,7 +121,21 @@ void GuiClass::update() {
   //  uint8_t tmp = SREG;
   //  cli();
   for (uint8_t i = 0; i < 2; i++) {
-    if (lines[i].changed) {
+    if (lines[i].flashActive) {
+      uint16_t clock = read_slowclock();
+      uint16_t diff = clock_diff(lines[i].flashTimer, clock);
+      if (diff > lines[i].duration) {
+	lines[i].changed = true;
+	lines[i].flashActive = false;
+      }
+      if (lines[i].flashChanged) {
+	LCD.goLine(i);
+	LCD.puts(lines[i].flash);
+	lines[i].flashChanged = false;
+      }
+    }
+
+    if (lines[i].changed && !lines[i].flashActive) {
       LCD.goLine(i);
       LCD.puts(lines[i].data);
       lines[i].changed = false;
@@ -177,21 +191,11 @@ void GuiClass::put_valuex_at(uint8_t idx, uint8_t value) {
 
 
 void GuiClass::put_string(uint8_t idx, char *str) {
-  idx <<= 2;
-  char *data = lines[curLine].data;
-  lines[curLine].changed = true;
-  for (uint8_t i = 0; i < 4 && str[i] != 0; i++) {
-    data[idx + i] = str[i];
-  }
+  put_string_at(idx << 2, str);
 }
 
 void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
-  idx <<= 2;
-  char *data = lines[curLine].data;
-  for (uint8_t i = 0; i < 4 && pgm_read_byte(str + i) != 0; i++) {
-    data[idx + i] = pgm_read_byte(str + i);
-  }
-  lines[curLine].changed = true;
+  put_p_string_at(idx << 2, str);
 }
 
 void GuiClass::put_string_at(uint8_t idx, char *str) {
@@ -221,23 +225,19 @@ void GuiClass::put_p_string_at_fill(uint8_t idx, PGM_P str) {
 
 
 void GuiClass::put_string_fill(char *str) {
-  m_strncpy_fill(lines[curLine].data, str, sizeof(lines[0].data));
-  lines[curLine].changed = true;
+  put_string_at_fill(0, str);
 }
 
 void GuiClass::put_p_string_fill(PGM_P str) {
-  m_strncpy_p_fill(lines[curLine].data, str, sizeof(lines[0].data));
-  lines[curLine].changed = true;
+  put_p_string_at_fill(0, str);
 }
 
 void GuiClass::put_string(char *str) {
-  m_strncpy(lines[curLine].data, str, sizeof(lines[0].data));
-  lines[curLine].changed = true;
+  put_string_at(0, str);
 }
 
 void GuiClass::put_p_string(PGM_P str) {
-  m_strncpy_p(lines[curLine].data, str, sizeof(lines[0].data));
-  lines[curLine].changed = true;
+  put_p_string_at(0, str);
 }
 
 void GuiClass::setPage(Page *_page) {
@@ -255,6 +255,54 @@ void GuiClass::clearLine() {
   for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
     lines[curLine].data[i] = ' ';
   lines[curLine].changed = true;
+}
+
+void GuiClass::flash_string_at(uint8_t idx, char *str, uint16_t duration) {
+  char *data = lines[curLine].flash;
+  m_strncpy(data + idx, str, sizeof(lines[0].flash) - idx);
+  lines[curLine].flashChanged = lines[curLine].flashActive = true;
+  lines[curLine].duration = duration;
+  lines[curLine].flashTimer = read_slowclock();
+}
+
+void GuiClass::flash_string_at_fill(uint8_t idx, char *str, uint16_t duration) {
+  char *data = lines[curLine].flash;
+  m_strncpy_fill(data + idx, str, sizeof(lines[0].flash) - idx);
+  lines[curLine].flashChanged = lines[curLine].flashActive = true;
+  lines[curLine].duration = duration;
+  lines[curLine].flashTimer = read_slowclock();
+}
+
+void GuiClass::flash_p_string_at(uint8_t idx, PGM_P str, uint16_t duration) {
+  char *data = lines[curLine].flash;
+  m_strncpy_p(data + idx, str, sizeof(lines[0].flash) - idx);
+  lines[curLine].flashChanged = lines[curLine].flashActive = true;
+  lines[curLine].duration = duration;
+  lines[curLine].flashTimer = read_slowclock();
+}
+
+void GuiClass::flash_p_string_at_fill(uint8_t idx, PGM_P str, uint16_t duration) {
+  char *data = lines[curLine].flash;
+  m_strncpy_p_fill(data + idx, str, sizeof(lines[0].flash) - idx);
+  lines[curLine].flashChanged = lines[curLine].flashActive = true;
+  lines[curLine].duration = duration;
+  lines[curLine].flashTimer = read_slowclock();
+}
+
+void GuiClass::flash_string(char *str, uint16_t duration) {
+  flash_string_at(0, str, duration);
+}
+
+void GuiClass::flash_p_string(PGM_P str, uint16_t duration) {
+  flash_p_string_at(0, str, duration);
+}
+
+void GuiClass::flash_string_fill(char *str, uint16_t duration) {
+  flash_string_at_fill(0, str, duration);
+}
+
+void GuiClass::flash_p_string_fill(PGM_P str, uint16_t duration) {
+  flash_p_string_at_fill(0, str, duration);
 }
 
 GuiClass GUI;
