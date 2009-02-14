@@ -21,6 +21,59 @@ uint8_t undoParams[24] = {
 #define SELECT_FX_SYN    11
 #define SELECT_ALL       12
 
+uint32_t paramSelectMask[13] = {
+  // SELECT_FILTER
+  _BV(MODEL_FLTF) | _BV(MODEL_FLTW) | _BV(MODEL_FLTQ), 
+
+  // SELECT_AMD
+  _BV(MODEL_AMD) | _BV(MODEL_AMF), 
+
+  // SELECT_EQ
+  _BV(MODEL_EQF) | _BV(MODEL_EQG), 
+
+  // SELECT_EFFECT
+  _BV(MODEL_AMD) | _BV(MODEL_AMF) | _BV(MODEL_EQF) | _BV(MODEL_EQG) |
+  _BV(MODEL_FLTF) | _BV(MODEL_FLTW) | _BV(MODEL_FLTQ), 
+  
+  // SELECT_LOWSYN
+  _BV(MODEL_P5) | _BV(MODEL_P6) | _BV(MODEL_P7) | _BV(MODEL_P8),
+  
+  // SELECT_UPSYN
+  _BV(MODEL_P2) | _BV(MODEL_P3) | _BV(MODEL_P4),
+  
+  // SELECT_SYN
+  _BV(MODEL_P2) | _BV(MODEL_P3) | _BV(MODEL_P4) | _BV(MODEL_P5) |
+  _BV(MODEL_P6) | _BV(MODEL_P7),
+
+  // SELECT_LFO  
+  _BV(MODEL_LFOS) | _BV(MODEL_LFOD) | _BV(MODEL_LFOM),
+  
+  // SELECT_SENDS
+  _BV(MODEL_DEL) | _BV(MODEL_REV),
+  
+  // SELECT_DIST
+  _BV(MODEL_SRR) | _BV(MODEL_DIST),
+  
+  // SELECT FX_LOWSYN
+  _BV(MODEL_AMD) | _BV(MODEL_AMF) | _BV(MODEL_EQF) | _BV(MODEL_EQG) |
+  _BV(MODEL_FLTF) | _BV(MODEL_FLTW) | _BV(MODEL_FLTQ) |
+  _BV(MODEL_P5) | _BV(MODEL_P6) | _BV(MODEL_P7) | _BV(MODEL_P8),
+  
+  // SELECT_FX_SYN
+  _BV(MODEL_AMD) | _BV(MODEL_AMF) | _BV(MODEL_EQF) | _BV(MODEL_EQG) |
+  _BV(MODEL_FLTF) | _BV(MODEL_FLTW) | _BV(MODEL_FLTQ) |
+  _BV(MODEL_P2) | _BV(MODEL_P3) | _BV(MODEL_P4) |
+  _BV(MODEL_P5) | _BV(MODEL_P6) | _BV(MODEL_P7) | _BV(MODEL_P8),
+  
+  // SELECT_ALL
+  _BV(MODEL_AMD) | _BV(MODEL_AMF) | _BV(MODEL_EQF) | _BV(MODEL_EQG) |
+  _BV(MODEL_FLTF) | _BV(MODEL_FLTW) | _BV(MODEL_FLTQ) | _BV(MODEL_SRR) |
+  _BV(MODEL_P1) | _BV(MODEL_P2) | _BV(MODEL_P3) | _BV(MODEL_P4) |
+  _BV(MODEL_P5) | _BV(MODEL_P6) | _BV(MODEL_P7) | _BV(MODEL_P8) |
+  _BV(MODEL_DIST) | _BV(MODEL_VOL) | _BV(MODEL_PAN) | _BV(MODEL_DEL) |
+  _BV(MODEL_REV) | _BV(MODEL_LFOS) | _BV(MODEL_LFOD) | _BV(MODEL_LFOM)
+};
+
 PROGMEM char selectNames[13][7] = {
   "FILTER",
   "AMD   ",
@@ -37,15 +90,14 @@ PROGMEM char selectNames[13][7] = {
   "ALL   "
 };
 
+RangeEncoder trackEncoder(0, 15, "TRK");
+RangeEncoder amtEncoder(0, 128, "AMT");
+RangeEncoder selectEncoder(0, 12, "SEL");
+
+
 class RandomizePage : public Page {
 public:
-  RangeEncoder trackEncoder;
-  RangeEncoder amtEncoder;
-  RangeEncoder selectEncoder;
-
-  RandomizePage() : trackEncoder(0, 15, "TRK"), 
-                    amtEncoder(0, 128, "AMT"),
-                    selectEncoder(0, 12, "AMT") {
+  RandomizePage() {
   }
   
   virtual void update() {
@@ -74,7 +126,7 @@ public:
     selectEncoder.checkHandle();
     if (amtEncoder.hasChanged()) {
       GUI.setLine(GUI.LINE2);
-      GUI.put_value_at(11, amtEncoder.getValue());
+      GUI.put_value_at(9, amtEncoder.getValue());
     }
     amtEncoder.checkHandle();
     
@@ -104,6 +156,8 @@ public:
       displayTrack();
       displayKit();
       displaySelect();
+      GUI.setLine(GUI.LINE2);
+      GUI.put_value_at(9, amtEncoder.getValue());
     }
   }
   
@@ -132,9 +186,32 @@ void loop() {
 }
 
 void randomize() {
+  uint32_t trackMask = paramSelectMask[selectEncoder.getValue()];
+  uint8_t track = trackEncoder.getValue();
+  int amount = (int)amtEncoder.getValue();
+  
+  for (uint8_t i = 0; i < 24; i++) {
+    if (IS_BIT_SET(trackMask, i)) {
+      int param = MD.trackParams[track][i];
+      int rand = random(-amount, amount);
+      param += rand;
+      if (param > 127) 
+        param = 127;
+      if (param < 0)
+        param = 0;
+      undoParams[i] = MD.trackParams[track][i];
+      MD.trackParams[track][i] = param;
+      MD.setTrackParam(track, i, param);
+    }
+  }
 }
 
 void undo() {
+  uint8_t track = trackEncoder.getValue();
+  m_memcpy(MD.trackParams[track], undoParams, 24);
+  for (uint8_t i = 0; i < 24; i++) {
+    MD.setTrackParam(track, i, MD.trackParams[track][i]);
+  }
 }
 
 void handleGui() {
