@@ -11,7 +11,15 @@ typedef struct md_kit_s {
 
 typedef struct md_global_s {
   uint8_t baseChannel;
-} md_global_t;  
+} md_global_t;
+
+typedef enum handle_kit_state_e {
+  handle_kit_name = 0,
+  handle_kit_params,
+  handle_kit_levels,
+  handle_kit_models,
+  handle_kit_none
+} handle_kit_state_t;
   
 typedef void (*md_callback_t)();
 typedef void (*md_kit_callback_t)(md_kit_t *kit);
@@ -25,6 +33,8 @@ class MachineDrumSysexClass : public MididuinoSysexClass {
   md_kit_callback_t    onKitMessageCallback;
   md_kit_t    lastReceivedKit;
   md_global_t lastReceivedGlobal;
+
+  handle_kit_state_t handle_kit_state;
   
 public:
   MachineDrumSysexClass(uint8_t *data, uint16_t size) : MididuinoSysexClass(data, size) {

@@ -47,6 +47,8 @@ class MDClass {
   int currentKit;
   uint8_t baseChannel;
   uint8_t trackModels[16];
+  uint8_t trackParams[16][24];
+  uint8_t trackLevels[16];
   char name[16];
 
   void parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param);
