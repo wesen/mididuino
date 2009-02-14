@@ -146,8 +146,9 @@ void ButtonsClass::poll(uint8_t but) {
   for (uint8_t i = 0; i < GUI_NUM_BUTTONS; i++) {
     STORE_B_CURRENT(i, IS_BIT_SET8(but_tmp, 0));
 
+    uint16_t sclock = read_slowclock();
     if (BUTTON_PRESSED(i)) {
-      B_PRESS_TIME(i) =  slowclock;
+      B_PRESS_TIME(i) =  sclock;
       
       if (B_PRESSED_ONCE(i)) {
 	uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), B_PRESS_TIME(i));
@@ -162,7 +163,7 @@ void ButtonsClass::poll(uint8_t but) {
     }
     
     if (BUTTON_DOWN(i) && B_PRESSED_ONCE(i)) {
-      uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), slowclock);
+      uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), sclock);
       if (diff > LONG_CLICK_TIME) {
 	SET_B_LONG_CLICK(i);
 	CLEAR_B_PRESSED_ONCE(i);
@@ -170,7 +171,7 @@ void ButtonsClass::poll(uint8_t but) {
     }
 
     if (BUTTON_UP(i) && B_PRESSED_ONCE(i)) {
-      uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), slowclock);
+      uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), sclock);
       if (diff > LONG_CLICK_TIME) {
 	CLEAR_B_PRESSED_ONCE(i);
       } else if (diff > DOUBLE_CLICK_TIME) {

@@ -56,8 +56,9 @@ class EncodersClass {
 #define B_BIT_CLICK          4
 #define B_BIT_LONG_CLICK     5
 
-#define DOUBLE_CLICK_TIME 30
-#define LONG_CLICK_TIME   100
+// XXX adjust these to correct length of irq time
+#define DOUBLE_CLICK_TIME 200
+#define LONG_CLICK_TIME   800
 
 #define B_STATUS(i, bit)        (IS_BIT_SET8(Buttons.buttons[i].status, bit))
 #define B_SET_STATUS(i, bit)    (SET_BIT8(Buttons.buttons[i].status, bit))
