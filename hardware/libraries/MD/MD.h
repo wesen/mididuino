@@ -13,6 +13,7 @@ typedef struct tuning_s {
   uint8_t model;
   uint8_t base;
   uint8_t len;
+  uint8_t offset;
   const uint8_t *tuning;
 } tuning_t;
 
@@ -61,6 +62,8 @@ class MDClass {
   void sendRequest(uint8_t type, uint8_t param);
 
   uint8_t trackGetPitch(uint8_t track, uint8_t pitch);
+  uint8_t trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset = NULL);
+  
   void sendNoteOn(uint8_t track, uint8_t pitch,
 			    uint8_t velocity);
 
