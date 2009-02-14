@@ -5,10 +5,22 @@ bool loadedKit = false;
 
 void setup() {
   setupMidi();
-  setupMDSysex();
   setupPages();
   GUI.setLine(GUI.LINE1);
   GUI.put_p_string_fill(PSTR("RELOAD KIT"));
+}
+
+void onCurrentKitCallback() {
+    loadedKit = true;
+    GUI.setLine(GUI.LINE1);
+    GUI.put_string_fill(MD.name);
+}
+
+void handleGuiSysex() {
+  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+    loadedKit = false;
+    MDSysex.getCurrentKit(onCurrentKitCallback);
+  }
 }
 
 void loop() {

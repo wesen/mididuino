@@ -171,7 +171,6 @@ void setup() {
   GUI.flash_p_string_fill(PSTR("MD RANDOMIZE"));
   GUI.setLine(GUI.LINE2);
   GUI.flash_p_string_fill(PSTR(""));
-  setupMDSysex();
 }
 
 uint8_t lastOverflow = 0;
@@ -211,6 +210,19 @@ void undo() {
   m_memcpy(MD.trackParams[track], undoParams, 24);
   for (uint8_t i = 0; i < 24; i++) {
     MD.setTrackParam(track, i, MD.trackParams[track][i]);
+  }
+}
+
+void onCurrentKitCallback() {
+    loadedKit = true;
+    m_memcpy(undoParams, MD.trackParams[trackEncoder.getValue()], 24);
+    randomizePage.display(true);
+}
+
+void handleGuiSysex() {
+  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+    loadedKit = false;
+    MDSysex.getCurrentKit(onCurrentKitCallback);
   }
 }
 

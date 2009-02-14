@@ -49,9 +49,19 @@ class InputChannel {
 
 InputChannel inputChannels[16];
 
+void onCurrentKitCallback() {
+  loadedKit = true;
+}
+
+void handleGuiSysex() {
+  if (BUTTON_PRESSED(Buttons.BUTTON1) && !isConfigPageActive()) {
+    loadedKit = false;
+    MDSysex.getCurrentKit(onCurrentKitCallback);
+  }
+}
+
 void setup() {
   setupMidi();
-  setupMDSysex();
   setupPages();
 }
 
