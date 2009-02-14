@@ -115,7 +115,7 @@ typedef struct line_s {
   uint16_t duration;
 } line_t;
 
-#define DEFAULT_FLASH_DURATION 2000
+#define DEFAULT_FLASH_DURATION 600
 
 class GuiClass {
  protected:
