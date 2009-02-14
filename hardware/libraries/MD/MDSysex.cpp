@@ -136,3 +136,44 @@ void MachineDrumSysexClass::end() {
 void MachineDrumSysexClass::setup() {
   Midi.setSysex(this);
 }
+
+void getCurrentKitOnStatusResponseCallback(uint8_t type, uint8_t value) {
+  if (type == MD_CURRENT_KIT_REQUEST && 
+      MDSysex.mdGetCurrentKitStatus == MD_GET_CURRENT_KIT) {
+    MDSysex.mdGetCurrentKitStatus = MD_GET_CURRENT_GLOBAL;
+    MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_GLOBAL_SLOT_REQUEST);
+  } else if (type == MD_CURRENT_GLOBAL_SLOT_REQUEST && 
+             MDSysex.mdGetCurrentKitStatus == MD_GET_CURRENT_GLOBAL) {
+    MDSysex.mdGetCurrentKitStatus = MD_GET_KIT;
+       MD.sendRequest(MD_KIT_REQUEST_ID, MD.currentKit);
+  }
+}
+
+void getCurrentKitOnGlobalMessageCallback(md_global_t *global) {
+  if (MDSysex.mdGetCurrentKitStatus == MD_GET_GLOBAL) {
+    MD.baseChannel = global->baseChannel;
+    MDSysex.mdGetCurrentKitStatus = MD_DONE;
+    if (MDSysex.onCurrentKitCallback != NULL)
+      MDSysex.onCurrentKitCallback();
+  }
+}
+
+void getCurrentKitOnKitMessageCallback(md_kit_t *kit) {
+  if (MDSysex.mdGetCurrentKitStatus == MD_GET_KIT) {
+    m_memcpy(MD.name, kit->name, sizeof(MD.name));
+    m_memcpy(MD.trackModels, kit->trackModels, sizeof(MD.trackModels));
+    MDSysex.mdGetCurrentKitStatus = MD_GET_GLOBAL;
+    MD.sendRequest(MD_GLOBAL_REQUEST_ID, MD.currentGlobal);
+  }
+}
+
+void MachineDrumSysexClass::getCurrentKit(md_callback_t callback) {
+  setup();
+  setOnStatusResponseCallback(getCurrentKitOnStatusResponseCallback);
+  setOnKitMessageCallback(getCurrentKitOnKitMessageCallback);
+  setOnGlobalMessageCallback(getCurrentKitOnGlobalMessageCallback);
+  setOnCurrentKitCallback(callback);
+  mdGetCurrentKitStatus = MD_GET_CURRENT_KIT;
+  MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_KIT_REQUEST);
+}
+

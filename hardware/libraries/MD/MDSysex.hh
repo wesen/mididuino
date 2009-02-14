@@ -26,25 +26,49 @@ typedef void (*md_kit_callback_t)(md_kit_t *kit);
 typedef void (*md_global_callback_t)(md_global_t *global);
 typedef void (*md_status_callback_t)(uint8_t type, uint8_t param);
 
+typedef enum {
+    MD_NONE,
+    
+    MD_GET_CURRENT_KIT,
+    MD_GET_KIT,
+    
+    MD_GET_CURRENT_GLOBAL,
+    MD_GET_GLOBAL,
+    
+    MD_DONE
+} getCurrentKitStatus_t;
 class MachineDrumSysexClass : public MididuinoSysexClass {
+public:
   bool isMachineDrumSysex;
+
   md_status_callback_t onStatusResponseCallback;
   md_global_callback_t onGlobalMessageCallback;
   md_kit_callback_t    onKitMessageCallback;
+  md_callback_t onCurrentKitCallback;
+  
   md_kit_t    lastReceivedKit;
   md_global_t lastReceivedGlobal;
 
   handle_kit_state_t handle_kit_state;
-  
+
+  getCurrentKitStatus_t mdGetCurrentKitStatus;
+
 public:
   MachineDrumSysexClass(uint8_t *data, uint16_t size) : MididuinoSysexClass(data, size) {
     onStatusResponseCallback = NULL;
     onGlobalMessageCallback = NULL;
     onKitMessageCallback = NULL;
+    onCurrentKitCallback = NULL;
   }
 
   uint8_t msgType;
 
+  void getCurrentKit(md_callback_t callback);
+
+  void setOnCurrentKitCallback(md_callback_t callback) {
+    onCurrentKitCallback = callback;
+  }
+  
   void setOnStatusResponseCallback(md_status_callback_t callback) {
     onStatusResponseCallback = callback;
   }
