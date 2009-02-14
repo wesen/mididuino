@@ -17,6 +17,8 @@ char *noteNames[] = {
   "B"
 };
 
+#define NOTE_OFFSET 8
+
 void onControlChangeCallback(uint8_t *msg) {
   uint8_t channel = MIDI_VOICE_CHANNEL(msg[0]);
   uint8_t track, param;
@@ -32,14 +34,14 @@ void onControlChangeCallback(uint8_t *msg) {
     GUI.put_p_string_at(0, getMachineName(MD.trackModels[track]));
 
     if (pitch == 128) {
-      GUI.put_p_string_at_fill(7, PSTR("XXX"));
+      GUI.put_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
     } else {
       uint8_t note = pitch % 12;
       uint8_t octave = pitch / 12;
-      GUI.put_string_at_fill(7, noteNames[note]);
-      GUI.lines[GUI.curLine].data[9] = octave + '0';
+      GUI.put_string_at_fill(NOTE_OFFSET, noteNames[note]);
+      GUI.lines[GUI.curLine].data[NOTE_OFFSET + 1] = octave + '0';
       for (uint8_t i = 0; i < offset; i += 2) {
-        GUI.lines[GUI.curLine].data[10 + (i >> 1)] = '+';
+        GUI.lines[GUI.curLine].data[NOTE_OFFSET + 2 + (i >> 1)] = '+';
       }
     }
   }
