@@ -27,7 +27,7 @@ void MachineDrumSysexClass::handleKitDump(uint8_t c) {
 
   case handle_kit_params:
     if (len > (0x1A - 2)) {
-      *((uint8_t *)(MD.trackParams) + (len - (0x1A - 2) + 1)) = c;
+      *((uint8_t *)(MD.trackParams) + (len - (0x1A - 2 +  1))) = c;
     }
     if (len == (0x19A - 2))
       handle_kit_state = handle_kit_levels;
@@ -35,7 +35,7 @@ void MachineDrumSysexClass::handleKitDump(uint8_t c) {
 
   case handle_kit_levels:
     if (len > (0x19A - 2)) {
-      MD.trackLevels[len - (0x19A - 2) + 1] = c;
+      MD.trackLevels[len - (0x19A - 2 + 1)] = c;
     }
     if (len == (0x1AA - 2))
       handle_kit_state = handle_kit_models;
