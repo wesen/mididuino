@@ -1,8 +1,8 @@
 #ifndef MIDI_UART_H__
 #define MIDI_UART_H__
 
-#include "WProgram.h"
 #include <inttypes.h>
+#include "MidiClock.h"
 #include "RingBuffer.h"
 
 #define TX_IRQ 1

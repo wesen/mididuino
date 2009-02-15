@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "MidiDuino.h"
 #include "GUI_private.h"
 #include "LCD.h"
 

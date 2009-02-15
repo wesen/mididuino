@@ -1,3 +1,5 @@
+#include <Midi.h>
+
 #include "WProgram.h"
 #include <avr/interrupt.h>
 
@@ -47,6 +49,9 @@ ISR(TIMER2_OVF_vect) {
 
   //  clearLed2();
 }
+
+MidiClass Midi;
+MidiClass Midi2;
 
 int main(void) {
   init();
