@@ -111,6 +111,10 @@ void GuiClass::update() {
     page = newPage;
     newPage = NULL;
     redisplay = true;
+    setLine(GUI.LINE1);
+    clearLine();
+    setLine(GUI.LINE2 );
+    clearLine();
   }
   SREG = tmp;
   if (page != NULL) {
@@ -257,6 +261,14 @@ void GuiClass::clearLine() {
   lines[curLine].changed = true;
 }
 
+void GuiClass::clearFlash(uint16_t duration) {
+  for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
+    lines[curLine].flash[i] = ' ';
+  lines[curLine].flashChanged = lines[curLine].flashActive = true;
+  lines[curLine].duration = duration;
+  lines[curLine].flashTimer = read_slowclock();
+}
+
 void GuiClass::flash_string_at(uint8_t idx, char *str, uint16_t duration) {
   char *data = lines[curLine].flash;
   m_strncpy(data + idx, str, sizeof(lines[0].flash) - idx);
@@ -303,6 +315,35 @@ void GuiClass::flash_string_fill(char *str, uint16_t duration) {
 
 void GuiClass::flash_p_string_fill(PGM_P str, uint16_t duration) {
   flash_p_string_at_fill(0, str, duration);
+}
+
+void GuiClass::flash_string_clear(char *str, uint16_t duration) {
+  setLine(LINE1);
+  flash_string_fill(str, duration);
+  setLine(LINE2);
+  clearFlash(duration);
+}
+
+
+void GuiClass::flash_p_string_clear(char *str, uint16_t duration) {
+  setLine(LINE1);
+  flash_p_string_fill(str, duration);
+  setLine(LINE2);
+  clearFlash(duration);
+}
+
+void GuiClass::flash_strings_fill(char *str1, char *str2, uint16_t duration) {
+  setLine(LINE1);
+  flash_string_fill(str1, duration);
+  setLine(LINE2);
+  flash_string_fill(str2, duration);
+}
+
+void GuiClass::flash_p_strings_fill(PGM_P str1, PGM_P str2, uint16_t duration) {
+  setLine(LINE1);
+  flash_p_string_fill(str1, duration);
+  setLine(LINE2);
+  flash_p_string_fill(str2, duration);
 }
 
 GuiClass GUI;

@@ -169,10 +169,19 @@ class GuiClass {
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_p_string_at_fill(uint8_t idx, PGM_P str,
 			      uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_clear(char *str,
+			  uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_clear(char *str,
+			    uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_strings_fill(char *str1, char *str2,
+			  uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_strings_fill(PGM_P str1, PGM_P str2,
+			    uint16_t duration = DEFAULT_FLASH_DURATION);
   
   
   void setLine(const uint8_t line) { curLine = line; }
   void clearLine();
+  void clearFlash(uint16_t duration = DEFAULT_FLASH_DURATION);
   void setPage(Page *_page);
   static const uint8_t LINE1 = 0;
   static const uint8_t LINE2 = 1;
