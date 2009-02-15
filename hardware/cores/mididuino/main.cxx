@@ -12,6 +12,8 @@ void setup();
 void loop();
 void handleGui();
 
+MidiClass Midi;
+
 #define CHECK_RESET() (BUTTON_DOWN(BUTTON_1) && BUTTON_DOWN(ENCODER_1) && BUTTON_DOWN(ENCODER_2))
 
 #ifdef MIDIDUINO_HANDLE_SYSEX

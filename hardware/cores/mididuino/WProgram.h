@@ -4,6 +4,7 @@
 extern "C" {
 #include <inttypes.h>
 #include <avr/interrupt.h>
+#include "helpers.h"
 }
 
 #include "mididuino_private.h"
@@ -11,24 +12,13 @@ extern "C" {
 #ifdef __cplusplus
 #include "LCD.h"
 #include "GUI_private.h"
-#include "Midi.h"
 #include "MidiUart.h"
 #include "USBMidiUart.h"
-#include "MidiDuino.h"
 #include "MidiClock.h"
-
-uint16_t makeWord(uint16_t w);
-uint16_t makeWord(uint8_t h, uint8_t l);
-
-#define word(...) makeWord(__VA_ARGS__)
-
-unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
-
-// WMath prototypes
-long random(long);
-long random(long, long);
-void randomSeed(unsigned int);
-long map(long, long, long, long, long);
+#include "WMath.h"
+#include "Midi.h"
+#include "Stack.h"
+#include "GUI.h"
 #endif
 
 /* default config flags */

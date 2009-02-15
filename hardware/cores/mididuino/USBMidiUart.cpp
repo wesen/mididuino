@@ -1,6 +1,7 @@
 #include "USBMidiUart.h"
 #include "usb_midi.h"
 #include "d12.h"
+#include "Midi.h"
 
 USBMidiUartClass USBMidiUart;
 

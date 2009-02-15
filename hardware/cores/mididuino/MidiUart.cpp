@@ -2,7 +2,7 @@
 #include <util/delay.h>
 
 #include <MidiUart.h>
-#include "MidiDuino.h"
+#include <midi-common.hh>
 
 MidiUartClass MidiUart;
 
@@ -98,14 +98,18 @@ void MidiUartClass::putc_immediate(uint8_t c) {
 
 void MidiUartClass::putc(uint8_t c) {
 #ifdef TX_IRQ
+ again:
   if (txRb.isEmpty() && UART_CHECK_EMPTY_BUFFER()) {
     UART_WRITE_CHAR(c);
   } else {
     if (txRb.isFull()) {
-      while (!UART_CHECK_EMPTY_BUFFER())
-	;
-      UART_WRITE_CHAR(c);
-      return;
+      while (txRb.isFull()) {
+	uint8_t tmp = SREG;
+	sei();
+	delayMicroseconds(10);
+	SREG = tmp;
+      }
+      goto again;
     } else {
       txRb.put(c);
     }
