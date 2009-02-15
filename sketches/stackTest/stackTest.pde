@@ -1,5 +1,3 @@
-#include <GUI.h>
-
 Stack<uint8_t, 8> intStack;
 RangeEncoder enc(0, 31, "NUM");
 EncoderPage page;
