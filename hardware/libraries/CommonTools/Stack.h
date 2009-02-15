@@ -8,10 +8,10 @@
 
 template <class T, int N>
 class Stack {
+ public:
   volatile uint8_t wr, start;
   T buf[N];
   
- public:
   Stack();
   bool push(T *t);
   bool push(T t);
@@ -19,6 +19,7 @@ class Stack {
   bool peek(T *t);
   bool isEmpty();
   bool isFull();
+  void reset();
   uint8_t size();
 };
 
@@ -31,6 +32,14 @@ template <class T, int N>
 Stack<T,N>::Stack() {
   wr = 0;
   start = 0;
+}
+
+template <class T, int N>
+void Stack<T,N>::reset() {
+  uint8_t tmp = SREG;
+  cli();
+  wr = start = 0;
+  SREG = tmp;
 }
 
 template <class T, int N>
@@ -90,9 +99,9 @@ uint8_t Stack<T, N>::size() {
   cli();
   uint8_t ret = 0;
   if (start > wr) {
-    ret = N - start + ret;
+    ret = N - start + wr;
   } else {
-    ret = ret - start;
+    ret = wr - start;
   }
   SREG = tmp;
   return ret;
