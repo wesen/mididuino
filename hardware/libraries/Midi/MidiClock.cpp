@@ -1,5 +1,7 @@
 #include "MidiClock.h"
 #include "midi-common.hh"
+#include "helpers.h"
+#include "MidiUart.h"
 
 MidiClockClass::MidiClockClass() {
   init();

@@ -1,5 +1,4 @@
 #include "WProgram.h"
-
 #include "GUI.h"
 
 Encoder::Encoder(char *_name) {

@@ -1,8 +1,8 @@
 #ifndef RINGBUFFER_H__
 #define RINGBUFFER_H__
 
-#include "mididuino_private.h"
 #include <inttypes.h>
+#include <avr/interrupt.h>
 
 template <int N>
 class RingBuffer {
