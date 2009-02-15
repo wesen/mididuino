@@ -14,6 +14,9 @@ void loop() {
   
   loopPages();
   
+  if (MidiUart.rxRb.overflow > 0) {
+    setLed();
+  }
   GUI.update();
 }
 

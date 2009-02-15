@@ -1,7 +1,3 @@
-RangeEncoder trackEncoder(0, 15, "TRK");
-RangeEncoder speedEncoder(1, 16, "SPD");
-RangeEncoder octavesEncoder(0, 5, "OCT");
-  
 class ConfigPage_1 : public EncoderPage {
   public:
   ConfigPage_1() {
@@ -16,14 +12,12 @@ class ConfigPage_2 : public Page {
 
 ConfigPage_1 configPage_1;
 
-void on16Callback() {
-  speedEncoder.getValue();
-}
-
 void loopPages() {
   if (trackEncoder.hasChanged()) {
     GUI.setLine(GUI.LINE2);
-    GUI.flash_p_string_fill(getMachineName(MD.trackModels[trackEncoder.getValue()]));
+    GUI.clearFlash();
+    GUI.flash_put_value(0, trackEncoder.getValue());
+    GUI.flash_p_string_at_fill(8, getMachineName(MD.trackModels[trackEncoder.getValue()]));
   }
 }
 
@@ -33,6 +27,7 @@ void setupPages() {
 
 void onCurrentKitCallback() {
   GUI.flash_strings_fill("LOADED KIT", MD.name);
+  GUI.setLine(GUI.LINE1);
   loadedKit = true;
 }
 

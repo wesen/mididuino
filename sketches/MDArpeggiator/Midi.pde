@@ -1,3 +1,7 @@
+RangeEncoder trackEncoder(0, 15, "TRK");
+RangeEncoder speedEncoder(1, 16, "SPD");
+RangeEncoder octavesEncoder(0, 5, "OCT");
+  
 typedef enum {
   ARP_STYLE_UP = 0,
   ARP_STYLE_DOWN,
@@ -46,7 +50,7 @@ char retrig_names[RETRIG_CNT][5] PROGMEM = {
   "BEAT"
 };
 
-#define NUM_NOTES 16
+#define NUM_NOTES 8
 
 uint8_t notes[NUM_NOTES];
 uint8_t velocities[NUM_NOTES];
@@ -55,12 +59,67 @@ uint8_t orderedNotes[NUM_NOTES];
 uint8_t orderedVelocities[NUM_NOTES];
 uint8_t numNotes = 0;
 
+#define MAX_ARP_LEN 64
+uint8_t arpNotes[MAX_ARP_LEN];
+uint8_t arpVelocities[MAX_ARP_LEN];
+uint8_t arpLen = 0;
+
+uint8_t arpStep = 0;
+
+arp_style_t arpStyle = ARP_STYLE_UP;
+arp_retrig_type_t arpRetrig = RETRIG_OFF;
+
+uint16_t speedCounter = 0;
+
+void on16Callback() {
+  if (arpLen == 0)
+    return;
+  if (++speedCounter == speedEncoder.getValue()) {
+    speedCounter = 0;
+    MD.sendNoteOn(trackEncoder.getValue(), arpNotes[arpStep], arpVelocities[arpStep]);
+    if (++arpStep == arpLen) {
+      arpStep = 0;
+    }
+  } 
+}
+
+void calculateArp() {
+    uint8_t tmp = SREG;
+    cli();
+
+  switch (arpStyle) {
+    case ARP_STYLE_UP: {
+    for (int i = 0; i < numNotes; i++) {
+      arpNotes[i] = orderedNotes[i];
+      arpVelocities[i] = orderedVelocities[i];
+    }
+    arpLen = numNotes;
+    arpStep = 0;
+    
+    }
+    break;
+    
+    default:
+    break;
+  }
+
+    SREG = tmp;
+}
+
+void setupArp() {
+  for (int i = 0; i < NUM_NOTES; i++) {
+    orderedNotes[i] = 128;
+  }
+}
+
 void reorderNotes() {
   uint8_t write = 0;
   for (int i = 0; i < NUM_NOTES; i++) {
     if (orderedNotes[i] != 128) {
       orderedNotes[write] = orderedNotes[i];
       orderedVelocities[write] = orderedVelocities[i];
+      if (i != write)
+        orderedNotes[i] = 128;
       write++;
     }
   }
@@ -96,11 +155,14 @@ void removeNote(uint8_t pitch) {
       orderedNotes[i] = 128;
       reorderNotes();
       numNotes--;
+      return;
     }
   }
 }
 
 void setupMidi() {
+  setupArp();
+  
   Midi.setOnNoteOnCallback(onNoteOnCallbackMD);
   Midi2.setOnNoteOnCallback(onNoteOnCallbackKeyboard);
   Midi2.setOnNoteOffCallback(onNoteOffCallbackKeyboard);
@@ -113,10 +175,12 @@ void setupMidi() {
 
 void handleNoteOn(uint8_t *msg) {
   addNote(msg[1], msg[2]);
+  calculateArp();
 }
 
 void handleNoteOff(uint8_t *msg) {
   removeNote(msg[1]);
+  calculateArp();
 }
 
 void onNoteOnCallbackMD(uint8_t *msg) {
