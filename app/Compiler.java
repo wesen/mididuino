@@ -72,7 +72,7 @@ public class Compiler implements MessageConsumer {
 
     this.sketch = sketch;
     this.buildPath = buildPath;
-
+	
     // the pms object isn't used for anything but storage
     MessageStream pms = new MessageStream(this);
 
@@ -98,6 +98,28 @@ public class Compiler implements MessageConsumer {
     
     List includePaths = new ArrayList();
     includePaths.add(target.getPath());
+	String prefLibs = Preferences.get("boards." + Preferences.get("board") + ".build.libraries");
+	if (prefLibs != null) {
+		String []boardLibraries  = prefLibs.trim().split("\\s+");
+		try {
+			LibraryManager libraryManager = new LibraryManager();
+			Collection libraries = libraryManager.getAll();
+			for (Iterator i = libraries.iterator(); i.hasNext(); ) {
+				Library library = (Library) i.next();
+				for (int k = 0; k < boardLibraries.length; k++) {
+					if (library.getName().equals(boardLibraries[k]) &&
+						!sketch.importedLibraries.contains(library)) {
+						sketch.importedLibraries.add(library);
+						System.out.println("Adding library " + library.getName());
+					}
+				}
+			}
+		} catch (IOException e) {
+			System.err.println("Error finding libraries:");
+			e.printStackTrace();
+			throw new RunnerException(e.getMessage());
+		}
+	}
     // use lib directories as include paths
     for (int i = 0; i < sketch.importedLibraries.size(); i++) {
       includePaths.add(

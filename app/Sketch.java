@@ -223,7 +223,8 @@ public class Sketch {
           new SketchCode(list[i].substring(0, list[i].length() - 6),
                       new File(folder, list[i]),
                       CPP);
-      }
+      } 
+	  // XXX add assembler files
     }
 
     // some of the hidden files may be bad too, so use hiddenCounter
@@ -1364,6 +1365,7 @@ public class Sketch {
         bigCode.append('\n');
         bigCode.append(code[i].program);
         bigCount += countLines(code[i].program);
+		System.out.println("adding " + code[i].name);
         code[i].preprocName = null;  // don't compile me
       }
     }
