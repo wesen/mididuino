@@ -6,11 +6,13 @@ RangeEncoder pitchLengthEncoder(1, 32, "PTC");
 RangeEncoder pulseEncoder(1, 32, "PLS");
 RangeEncoder lengthEncoder(2, 32, "LEN");
 RangeEncoder offsetEncoder(0, 32, "OFF");
+RangeEncoder trackEncoder(0, 15, "TRK");
 
 #define ROM_TRACK 4
 
 EuclidDrumTrack track(3, 8);
 EncoderPage page;
+EncoderPage trackPage;
 uint8_t arpPitches[] = { 0, 3, 7, 10, 12, 15, 19, 22 };
 
 uint8_t pitches[32];
@@ -24,17 +26,12 @@ void setPitchLength(uint8_t len) {
   pitches_len = len;
 }
 
-void handleGui() {
-  if (BUTTON_PRESSED(0)) {
-    setPitchLength(pitchLengthEncoder.getValue());
-  }
-}
-
-
 void on16Callback() {
   if (track.isHit(MidiClock.div16th_counter)) {
-    MD.sendNoteOn(ROM_TRACK, pitches[pitches_idx], 100);
-    pitches_idx = (pitches_idx + 1) % pitches_len;
+    if (BUTTON_DOWN(Buttons.BUTTON3)) {
+      MD.sendNoteOn(trackEncoder.getValue(), pitches[pitches_idx], 100);
+      pitches_idx = (pitches_idx + 1) % pitches_len;
+    }
   }
 }
 
@@ -46,6 +43,9 @@ void setup() {
   page.encoders[2] = &lengthEncoder;
   page.encoders[3] = &offsetEncoder;
   setPitchLength(4);
+  
+  trackPage.encoders[0] = &trackEncoder;
+  trackEncoder.setValue(0);
   
   pulseEncoder.setValue(3);
   lengthEncoder.setValue(8);
@@ -71,6 +71,36 @@ void loop() {
   if (pitchLengthEncoder.hasChanged()) {
     setPitchLength(pitchLengthEncoder.getValue());
   }
+  if (trackEncoder.hasChanged() && GUI.page == &trackPage) {
+    GUI.setLine(GUI.LINE2);
+    uint8_t track = trackEncoder.getValue();
+    if (MD.isMelodicTrack(track)) {
+      GUI.put_p_string_at_fill(5, getMachineName(MD.trackModels[track]));
+    } else {
+      GUI.put_p_string_at_fill(5, PSTR("XXX"));
+    }
+  }
   
   GUI.update();
+}
+
+void onCurrentKitCallback() {
+  GUI.setLine(GUI.LINE1);
+  GUI.flash_string_fill(MD.name);
+}
+
+void handleGui() {
+  if (BUTTON_PRESSED(0)) {
+    setPitchLength(pitchLengthEncoder.getValue());
+  }
+  
+  if (BUTTON_PRESSED(Buttons.BUTTON2)) {
+    GUI.setPage(&trackPage);
+  } else if (BUTTON_RELEASED(Buttons.BUTTON2)) {
+    GUI.setPage(&page);
+  }
+  
+  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+    MDSysex.getCurrentKit(onCurrentKitCallback);
+  }
 }
