@@ -236,8 +236,12 @@ void MDClass::sendNoteOn(uint8_t track, uint8_t pitch, uint8_t velocity) {
   if (realPitch == 128)
     return;
   setTrackParam(track, 0, realPitch);
-  delayMicroseconds(10);
+  //  setTrackParam(track, 0, realPitch);
+  //  delay(20);
   triggerTrack(track, velocity);
+  //  delay(20);
+  //  setTrackParam(track, 0, realPitch - 10);
+  //  triggerTrack(track, velocity);
 }
 
 void MDClass::sliceTrack32(uint8_t track, uint8_t from, uint8_t to) {
