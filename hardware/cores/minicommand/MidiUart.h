@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include "MidiClock.h"
 #include "RingBuffer.h"
+#include "helpers.h"
 
 #define TX_IRQ 1
 
