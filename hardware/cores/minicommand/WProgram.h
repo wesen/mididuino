@@ -19,6 +19,7 @@ extern "C" {
 #include "MidiUart.h"
 #include "MidiDuino.h"
 #include "MidiClock.h"
+#include "Stack.h"
 
 uint16_t makeWord(uint16_t w);
 uint16_t makeWord(uint8_t h, uint8_t l);

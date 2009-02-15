@@ -105,8 +105,7 @@ void EncodersClass::poll(uint16_t sr) {
 		  val = &(ENCODER_BUTTON_SHIFT(i));
 	else
 	  val = &(ENCODER_BUTTON(i));
-      }
-      else if (BUTTON_DOWN(Buttons.SHIFT)) {
+      } else if (BUTTON_DOWN(Buttons.SHIFT)) {
 	val = &(ENCODER_SHIFT(i));
       }
 
