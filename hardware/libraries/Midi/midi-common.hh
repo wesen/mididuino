@@ -6,6 +6,14 @@
 #define NULL 0
 #endif
 
+typedef enum {
+  midi_wait_status = 0,
+  midi_wait_byte_2,
+  midi_wait_byte_1,
+  midi_wait_sysex,
+  midi_ignore_message
+} midi_state_t;
+
 /**## MIDI definitions and MIDI parsing macros
  **/
 

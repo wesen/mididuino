@@ -10,14 +10,6 @@ extern "C" {
 #include "midi-common.hh"
 }
 
-typedef enum {
-  midi_wait_status = 0,
-  midi_wait_byte_2,
-  midi_wait_byte_1,
-  midi_wait_sysex,
-  midi_ignore_message
-} midi_state_t;
-
 typedef struct {
   uint8_t      midi_status;
   midi_state_t next_state;
@@ -103,5 +95,6 @@ extern uint8_t mididuino_sysex_data[128];
 
 extern MidiClass Midi;
 extern MidiClass Midi2;
+extern MidiClass USBMidi;
 
 #endif /* MIDI_H__ */

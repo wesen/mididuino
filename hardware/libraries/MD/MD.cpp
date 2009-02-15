@@ -1,5 +1,6 @@
 #include "WProgram.h"
 #include "MD.h"
+#include "helpers.h"
 
 uint8_t machinedrum_sysex_hdr[5] = {
   0x00,
