@@ -1,5 +1,4 @@
 #include <MD.h>
-#include <GUI.h>
 
 bool loadedKit = false;
 

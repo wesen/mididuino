@@ -1,4 +1,3 @@
-#include <GUI.h>
 #include <MD.h>
 #include <Sequencer.h>
 

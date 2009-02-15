@@ -1,4 +1,3 @@
-#include <GUI.h>
 #include <MD.h>
 
 RangeEncoder flfEncoder(0, 127, "FLF");
