@@ -20,7 +20,9 @@ void MidiClockClass::init() {
   div96th_counter = 0;
   div32th_counter = 0;
   div16th_counter = 0;
+  mod6_counter = 0;
   indiv96th_counter = 0;
+  inmod6_counter = 0;
   pll_x = 220;
 }
 
@@ -35,6 +37,9 @@ void MidiClockClass::handleClock() {
   last_interval = diff;
   last_clock = cur_clock;
   indiv96th_counter++;
+  inmod6_counter++;
+  if (inmod6_counter == 6)
+    inmod6_counter = 0;
 
   switch (state) {
   case PAUSED:
@@ -60,6 +65,7 @@ void MidiClockClass::handleMidiStart() {
   if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
     init();
     state = STARTING;
+    mod6_counter = 0;
     div96th_counter = 0;
     div32th_counter = 0;
     div16th_counter = 0;
@@ -81,6 +87,7 @@ static uint32_t phase_mult(uint32_t val) {
 void MidiClockClass::start() {
   if (mode == INTERNAL) {
     state = STARTED;
+    mod6_counter = 0;
     div96th_counter = 0;
     div32th_counter = 0;
     div16th_counter = 0;
@@ -120,6 +127,7 @@ void MidiClockClass::handleTimerInt()  {
   if (counter == 0) {
     counter = interval;
     div96th_counter++;
+    mod6_counter++;
     
     if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
       uint16_t cur_clock = clock;
@@ -128,6 +136,7 @@ void MidiClockClass::handleTimerInt()  {
       if ((div96th_counter < indiv96th_counter) ||
 	  (div96th_counter > (indiv96th_counter + 1))) {
 	div96th_counter = indiv96th_counter;
+	mod6_counter = inmod6_counter;
       }
       
       if (div96th_counter <= indiv96th_counter) {
@@ -144,8 +153,12 @@ void MidiClockClass::handleTimerInt()  {
     
     if (on96Callback)
       on96Callback();
+
+    if (mod6_counter == 6)
+      mod6_counter = 0;
     
-    if ((div96th_counter % 6) == 1) {
+    //    if (mod6_counter == 0) {
+    if (mod6_counter == 1) {
       div16th_counter++;
       if (on16Callback)
 	on16Callback();

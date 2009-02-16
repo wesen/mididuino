@@ -13,6 +13,8 @@ class MidiClockClass {
   uint32_t div96th_counter;
   uint32_t div32th_counter;
   uint32_t div16th_counter;
+  uint8_t mod6_counter;
+  uint8_t inmod6_counter;
   uint16_t interval;
   uint16_t counter;
   uint16_t last_clock;
