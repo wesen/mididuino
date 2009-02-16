@@ -80,7 +80,7 @@ bt.build.core=arduino
 
 ##############################################################
 
-diecimila.name=Arduino Diecimila
+diecimila.name=Arduino Diecimila or Duemilanove
 
 diecimila.upload.protocol=stk500
 diecimila.upload.maximum_size=14336
@@ -200,6 +200,7 @@ mididuino.bootloader.lock_bits=0x0F
 mididuino.build.mcu=atmega32
 mididuino.build.f_cpu=16000000L
 mididuino.build.core=mididuino
+mididuino.build.libraries=Midi GUI CommonTools
 
 ############################################################
 
@@ -221,3 +222,4 @@ minicommand.bootloader.lock_bits=0x0F
 minicommand.build.mcu=atmega64
 minicommand.build.f_cpu=16000000L
 minicommand.build.core=minicommand
+minicommand.build.libraries=Midi GUI CommonTools
