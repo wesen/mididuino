@@ -68,6 +68,10 @@ public:
   uint8_t arpStep;
   uint8_t arpCount;
   uint8_t arpTrack;
+  uint8_t arpTimes;
+  uint8_t arpOctaves;
+  uint8_t arpOctaveCount;
+  uint8_t retrigSpeed;
 
   arp_style_t arpStyle;
   arp_retrig_type_t arpRetrig;
@@ -79,11 +83,15 @@ public:
     arpLen = 0;
     arpStep = 0;
     arpCount = 0;
+    arpTimes = 0;
     arpStyle = ARP_STYLE_UP;
     arpRetrig = RETRIG_OFF;
     arpSpeed = 0;
     speedCounter = 0;
     arpTrack = 0;
+    retrigSpeed = 1;
+    arpOctaves = 0;
+    arpOctaveCount = 0;
 
     for (int i = 0; i < NUM_NOTES; i++) {
       orderedNotes[i] = 128;
@@ -94,6 +102,7 @@ public:
     arpStep = 0;
     arpCount = 0;
     speedCounter = 0;
+    arpOctaveCount = 0;
   }
 
   void bubbleSortUp() {
@@ -303,7 +312,7 @@ public:
     numNotes++;
     
     calculateArp();
-    if (arpRetrig == RETRIG_NOTE) {
+    if (arpRetrig == RETRIG_NOTE || numNotes == 1) {
       retrigger();
     }      
   }
@@ -321,17 +330,26 @@ public:
   }
 
   void playNext() {
-    if (arpLen == 0)
+    if (arpLen == 0 || (arpTimes != 0 && arpCount >= arpTimes))
       return;
+    if (arpRetrig == RETRIG_BEAT && (MidiClock.div16th_counter % retrigSpeed) == 0)
+      retrigger();
     if (++speedCounter >= arpSpeed) {
       speedCounter = 0;
       if (arpStyle == ARP_STYLE_RANDOM) {
 	uint8_t i = random(numNotes);
-	MD.sendNoteOn(arpTrack, orderedNotes[i], orderedVelocities[i]);
+	MD.sendNoteOn(arpTrack, orderedNotes[i] + random(arpOctaves) * 12, orderedVelocities[i]);
       } else {
-	MD.sendNoteOn(arpTrack, arpNotes[arpStep], arpVelocities[arpStep]);
+	MD.sendNoteOn(arpTrack, arpNotes[arpStep] + 12 * arpOctaveCount, arpVelocities[arpStep]);
 	if (++arpStep == arpLen) {
-	  arpStep = 0;
+          if (arpOctaveCount < arpOctaves) {
+            arpStep = 0;
+            arpOctaveCount++;
+          } else {
+  	    arpStep = 0;
+            arpOctaveCount = 0;
+            arpCount++;
+          }
 	}
       }
     } 

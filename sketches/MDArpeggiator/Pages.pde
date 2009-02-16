@@ -19,8 +19,14 @@ class ConfigPage_1 : public EncoderPage {
     if (redisplay || (lenEncoder.hasChanged() && lenEncoder.getValue() == 0)) {
       GUI.put_p_string_at(12, PSTR("INF"));
     }
+    if (lenEncoder.hasChanged()) {
+      arpeggiator.arpTimes = lenEncoder.getValue();
+    }
     if (speedEncoder.hasChanged()) {
       arpeggiator.arpSpeed = speedEncoder.getValue();
+    }
+    if (octavesEncoder.hasChanged()) {
+      arpeggiator.arpOctaves = octavesEncoder.getValue();
     }
     if (trackEncoder.hasChanged()) {
       uint8_t track = trackEncoder.getValue();
@@ -39,13 +45,15 @@ class ConfigPage_1 : public EncoderPage {
 
 RangeEncoder styleEncoder(0, ARP_STYLE_CNT - 1, "STY");
 RangeEncoder retrigEncoder(0, RETRIG_CNT - 1, "TRG");
+RangeEncoder retrigSpeedEncoder(1, 32, "SPD");
 
 class ConfigPage_2 : public EncoderPage {
   public:
   
   ConfigPage_2() {
     encoders[0] = &styleEncoder;
-    encoders[3] = &retrigEncoder;
+    encoders[2] = &retrigEncoder;
+    encoders[3] = &retrigSpeedEncoder;
     styleEncoder.setValue(0);
     arpeggiator.arpStyle = (arp_style_t)styleEncoder.getValue();
     retrigEncoder.setValue(0);
@@ -56,7 +64,7 @@ class ConfigPage_2 : public EncoderPage {
   virtual void display(bool redisplay = false) {
     if (redisplay) {
       GUI.setLine(GUI.LINE1);
-      GUI.put_p_string_fill(PSTR("STYLE    RETRIG"));
+      GUI.put_p_string_fill(PSTR("STYLE   TRG  SPD "));
       displayStyle();
       displayRetrig();
     }
@@ -69,7 +77,10 @@ class ConfigPage_2 : public EncoderPage {
   
   void displayRetrig() {
     GUI.setLine(GUI.LINE2);
-    GUI.put_p_string_at(9, retrig_names[retrigEncoder.getValue()]);
+    GUI.put_p_string_at(8, retrig_names[retrigEncoder.getValue()]);
+    if (arpeggiator.arpRetrig == RETRIG_BEAT) {
+      GUI.put_value_at(13, retrigSpeedEncoder.getValue());
+    }
   }
   
   virtual void handle() {
@@ -89,6 +100,11 @@ class ConfigPage_2 : public EncoderPage {
     if (changed) {
       arpeggiator.calculateArp();
     }
+    if (retrigSpeedEncoder.hasChanged()) {
+      arpeggiator.retrigSpeed = retrigSpeedEncoder.getValue();
+      displayRetrig();
+    }
+    retrigSpeedEncoder.checkHandle();
   }
 };
 
