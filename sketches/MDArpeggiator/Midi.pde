@@ -17,6 +17,7 @@ typedef enum {
   ARP_STYLE_THUMB_UPDOWN,
   ARP_STYLE_RANDOM,
   ARP_STYLE_RANDOM_ONCE,
+  ARP_STYLE_ORDER,
   ARP_STYLE_CNT
 } arp_style_t;
 
@@ -34,7 +35,8 @@ char arp_names[ARP_STYLE_CNT][8] PROGMEM = {
   "THMB_UP",
   "THMB_UD",
   "RANDOM ",
-  "RANDOM1"
+  "RANDOM1",
+  "ORDER  "
 };
 
 typedef enum {
@@ -76,30 +78,166 @@ void on16Callback() {
     return;
   if (++speedCounter == speedEncoder.getValue()) {
     speedCounter = 0;
-    MD.sendNoteOn(trackEncoder.getValue(), arpNotes[arpStep], arpVelocities[arpStep]);
-    if (++arpStep == arpLen) {
-      arpStep = 0;
+    if (arpStyle == ARP_STYLE_RANDOM) {
+      uint8_t i = random(numNotes);
+      MD.sendNoteOn(trackEncoder.getValue(), orderedNotes[i], orderedVelocities[i]);
+    } else {
+      MD.sendNoteOn(trackEncoder.getValue(), arpNotes[arpStep], arpVelocities[arpStep]);
+      if (++arpStep == arpLen) {
+        arpStep = 0;
+      }
     }
   } 
+}
+
+void bubbleSortUp() {
+  bool completed = true;
+  do {
+    completed = true;
+    for (int i = 0; i < numNotes-1; i++) {
+      if (orderedNotes[i] > orderedNotes[i+1]) {
+        completed = false;
+        uint8_t tmp = orderedNotes[i];
+        orderedNotes[i] = orderedNotes[i+1];
+        orderedNotes[i+1] = tmp;
+        tmp = orderedVelocities[i];
+        orderedVelocities[i] = orderedVelocities[i+1];
+        orderedVelocities[i+1] = tmp;
+      }
+    }
+  } while (!completed);
+}
+
+void bubbleSortDown() {
+  bool completed = true;
+  do {
+    completed = true;
+    for (int i = 0; i < numNotes-1; i++) {
+      if (orderedNotes[i] < orderedNotes[i+1]) {
+        completed = false;
+        uint8_t tmp = orderedNotes[i];
+        orderedNotes[i] = orderedNotes[i+1];
+        orderedNotes[i+1] = tmp;
+        tmp = orderedVelocities[i];
+        orderedVelocities[i] = orderedVelocities[i+1];
+        orderedVelocities[i+1] = tmp;
+      }
+    }
+  } while (!completed);
 }
 
 void calculateArp() {
     uint8_t tmp = SREG;
     cli();
 
+  arpStep = 0;
   switch (arpStyle) {
-    case ARP_STYLE_UP: {
-    for (int i = 0; i < numNotes; i++) {
-      arpNotes[i] = orderedNotes[i];
-      arpVelocities[i] = orderedVelocities[i];
-    }
+    case ARP_STYLE_UP:
+    bubbleSortUp();
+    m_memcpy(arpNotes, orderedNotes, numNotes);
+    m_memcpy(arpVelocities, orderedVelocities, numNotes);
     arpLen = numNotes;
-    arpStep = 0;
+    break;
     
+    case ARP_STYLE_DOWN:
+    bubbleSortDown();
+    m_memcpy(arpNotes, orderedNotes, numNotes);
+    m_memcpy(arpVelocities, orderedVelocities, numNotes);
+    arpLen = numNotes;
+    break;
+    
+    case ARP_STYLE_ORDER: {
+      m_memcpy(arpNotes, orderedNotes, numNotes);
+      m_memcpy(arpVelocities, orderedVelocities, numNotes);
+      arpLen = numNotes;
     }
     break;
     
-    default:
+   case ARP_STYLE_UPDOWN:
+   if (numNotes > 1) {
+     bubbleSortUp();
+     m_memcpy(arpNotes, orderedNotes, numNotes);
+     m_memcpy(arpVelocities, orderedVelocities, numNotes);
+     for (int i = 0; i < numNotes - 2; i++) {
+       arpNotes[numNotes + i] = orderedNotes[numNotes - 2 - i];
+       arpVelocities[numNotes + i] = arpVelocities[numNotes - 2 - i];
+     }
+     arpLen = numNotes + numNotes - 2;
+   }
+   break;
+  
+   case ARP_STYLE_DOWNUP:
+   if (numNotes > 1) {
+     bubbleSortDown();
+     m_memcpy(arpNotes, orderedNotes, numNotes);
+     m_memcpy(arpVelocities, orderedVelocities, numNotes);
+     for (int i = 0; i < numNotes - 2; i++) {
+       arpNotes[numNotes + i] = orderedNotes[numNotes - 2 - i];
+       arpVelocities[numNotes + i] = arpVelocities[numNotes - 2 - i];
+     }
+     arpLen = numNotes + numNotes - 2;
+   }
+   break;
+   
+   case ARP_STYLE_UP_AND_DOWN:
+   if (numNotes > 1) {
+     bubbleSortUp();
+     m_memcpy(arpNotes, orderedNotes, numNotes);
+     m_memcpy(arpVelocities, orderedVelocities, numNotes);
+     for (int i = 0; i < numNotes; i++) {
+       arpNotes[numNotes + i] = orderedNotes[numNotes - 1 - i];
+       arpVelocities[numNotes + i] = arpVelocities[numNotes - 1 - i];
+     }
+     arpLen = numNotes + numNotes;
+   }
+   break;
+   
+   case ARP_STYLE_DOWN_AND_UP:
+   if (numNotes > 1) {
+     bubbleSortDown();
+     m_memcpy(arpNotes, orderedNotes, numNotes);
+     m_memcpy(arpVelocities, orderedVelocities, numNotes);
+     for (int i = 0; i < numNotes; i++) {
+       arpNotes[numNotes + i] = orderedNotes[numNotes - 1 - i];
+       arpVelocities[numNotes + i] = arpVelocities[numNotes - 1 - i];
+     }
+     arpLen = numNotes + numNotes;
+   }
+   break;
+   
+   case ARP_STYLE_CONVERGE:
+   bubbleSortUp();
+   break;
+   
+   case ARP_STYLE_DIVERGE:
+   bubbleSortUp();
+   break;
+   
+   case ARP_STYLE_PINKY_UP:
+   bubbleSortUp();
+   break;
+   
+   case ARP_STYLE_PINKY_UPDOWN:
+   bubbleSortUp();
+   break;
+   
+   case ARP_STYLE_THUMB_UP:
+   bubbleSortUp();
+   break;
+   
+   case ARP_STYLE_THUMB_UPDOWN:
+   bubbleSortUp();
+   break;
+   
+   case ARP_STYLE_RANDOM:
+   arpLen = numNotes;
+   break;
+   
+   case ARP_STYLE_RANDOM_ONCE:
+   bubbleSortUp();
+   break;
+   
+   default:
     break;
   }
 
