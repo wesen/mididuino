@@ -23,6 +23,16 @@ uint8_t MDClass::noteToTrack(uint8_t pitch) {
   return 128;
 }
 
+MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
+  RangeEncoder(127, 0, _name, init) {
+  track = _track;
+  param = _param;
+}
+
+void MDEncoder::handle(uint8_t val) {
+  MD.setTrackParam(track, param, val);
+}
+
 void MDClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
   if ((channel >= baseChannel) && (channel < baseChannel + 4)) {
     channel -= baseChannel;
@@ -245,14 +255,19 @@ void MDClass::sendNoteOn(uint8_t track, uint8_t pitch, uint8_t velocity) {
   //  triggerTrack(track, velocity);
 }
 
-void MDClass::sliceTrack32(uint8_t track, uint8_t from, uint8_t to) {
+void MDClass::sliceTrack32(uint8_t track, uint8_t from, uint8_t to, bool correct) {
+  uint8_t pfrom, pto;
   if (from > to) {
-    setTrackParam(track, 4, MIN(127, from * 4 + 1));
-    setTrackParam(track, 5, MIN(127, to * 4));
+    pfrom = MIN(127, from * 4 + 1);
+    pto = MIN(127, to * 4);
   } else {
-    setTrackParam(track, 4, MIN(127, from * 4));
-    setTrackParam(track, 5, MIN(127, to * 4));
+    pfrom = MIN(127, from * 4);
+    pto = MIN(127, to * 4);
+    if (correct && pfrom > 64)
+      pfrom++;
   }
+  setTrackParam(track, 4, pfrom);
+  setTrackParam(track, 5, pto);
   triggerTrack(track, 100);
 }
 
@@ -308,6 +323,13 @@ void MDClass::setMachine(uint8_t track, md_machine_t *machine) {
     setTrackParam(track, i, machine->params[i]);
   }
   setLFO(track, &machine->lfo);
+}
+
+void MDClass::muteTrack(uint8_t track, bool mute) {
+  uint8_t channel = track >> 2;
+  uint8_t b = track & 3;
+  uint8_t cc = 16 + b;
+  MidiUart.sendCC(channel + baseChannel, cc, mute ? 1 : 0);
 }
 
 MDClass MD;

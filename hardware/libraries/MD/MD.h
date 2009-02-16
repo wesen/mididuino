@@ -33,6 +33,15 @@ typedef struct machine_name_s {
 } machine_name_t;
 
 
+class MDEncoder : public RangeEncoder {
+public:
+  uint8_t track;
+  uint8_t param;
+
+  MDEncoder(uint8_t _track, uint8_t _param, char *_name = NULL, uint8_t init = 0);
+  void handle(uint8_t val);
+};
+
 class MDClass {
  public:
   MDClass() {
@@ -69,7 +78,7 @@ class MDClass {
   void sendNoteOn(uint8_t track, uint8_t pitch,
 			    uint8_t velocity);
 
-  void sliceTrack32(uint8_t track, uint8_t from, uint8_t to);
+  void sliceTrack32(uint8_t track, uint8_t from, uint8_t to, bool correct = true);
   void sliceTrack16(uint8_t track, uint8_t from, uint8_t to);
 
   const tuning_t* getModelTuning(uint8_t model);
@@ -82,6 +91,11 @@ class MDClass {
   void assignMachine(uint8_t track, uint8_t model);
   
   void setMachine(uint8_t track, md_machine_t *machine);
+
+  void muteTrack(uint8_t track, bool mute = true);
+  void unmuteTrack(uint8_t track) {
+    muteTrack(track, false);
+  }
 };
 
 PGM_P getMachineName(uint8_t machine);
