@@ -16,8 +16,9 @@ class ConfigPage_1 : public EncoderPage {
   
   virtual void display(bool redisplay = false) {
     EncoderPage::display(redisplay);
-    if (redisplay || (lenEncoder.hasChanged() && lenEncoder.getValue() == 0)) {
-      GUI.put_p_string_at(12, PSTR("INF"));
+    if (redisplay || lenEncoder.hasChanged()) {
+      if (lenEncoder.getValue() == 0)
+        GUI.put_p_string_at(12, PSTR("INF"));
     }
     if (lenEncoder.hasChanged()) {
       arpeggiator.arpTimes = lenEncoder.getValue();
@@ -27,6 +28,7 @@ class ConfigPage_1 : public EncoderPage {
     }
     if (octavesEncoder.hasChanged()) {
       arpeggiator.arpOctaves = octavesEncoder.getValue();
+      arpeggiator.arpOctaveCount = 0;
     }
     if (trackEncoder.hasChanged()) {
       uint8_t track = trackEncoder.getValue();
