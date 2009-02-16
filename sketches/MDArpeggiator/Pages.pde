@@ -1,10 +1,40 @@
+RangeEncoder trackEncoder(0, 15, "TRK");
+RangeEncoder speedEncoder(1, 16, "SPD");
+RangeEncoder octavesEncoder(0, 5, "OCT");
+RangeEncoder lenEncoder(0, 16, "LEN");
+  
 class ConfigPage_1 : public EncoderPage {
   public:
   ConfigPage_1() {
     encoders[0] = &trackEncoder;
-    encoders[2] = &speedEncoder;
-    encoders[3] = &octavesEncoder;
+    encoders[1] = &speedEncoder;
+    encoders[2] = &octavesEncoder;
+    encoders[3] = &lenEncoder;
+    trackEncoder.setValue(arpeggiator.arpTrack);
+    speedEncoder.setValue(arpeggiator.arpSpeed);
   }  
+  
+  virtual void display(bool redisplay = false) {
+    EncoderPage::display(redisplay);
+    if (redisplay || (lenEncoder.hasChanged() && lenEncoder.getValue() == 0)) {
+      GUI.put_p_string_at(12, PSTR("INF"));
+    }
+    if (speedEncoder.hasChanged()) {
+      arpeggiator.arpSpeed = speedEncoder.getValue();
+    }
+    if (trackEncoder.hasChanged()) {
+      uint8_t track = trackEncoder.getValue();
+      GUI.setLine(GUI.LINE2);
+      GUI.clearFlash();
+      GUI.flash_put_value(0, track);
+      if (MD.isMelodicTrack(track)) {
+        arpeggiator.arpTrack = track;
+        GUI.flash_p_string_at_fill(8, getMachineName(MD.trackModels[track]));
+      } else {
+        GUI.flash_p_string_at_fill(8, PSTR("XXX"));
+      }
+    }
+  }
 };
 
 RangeEncoder styleEncoder(0, ARP_STYLE_CNT - 1, "STY");
@@ -17,10 +47,10 @@ class ConfigPage_2 : public EncoderPage {
     encoders[0] = &styleEncoder;
     encoders[3] = &retrigEncoder;
     styleEncoder.setValue(0);
-    arpStyle = (arp_style_t)styleEncoder.getValue();
+    arpeggiator.arpStyle = (arp_style_t)styleEncoder.getValue();
     retrigEncoder.setValue(0);
-    arpRetrig = (arp_retrig_type_t)retrigEncoder.getValue();
-    calculateArp();
+    arpeggiator.arpRetrig = (arp_retrig_type_t)retrigEncoder.getValue();
+    arpeggiator.calculateArp();
   }
   
   virtual void display(bool redisplay = false) {
@@ -39,25 +69,25 @@ class ConfigPage_2 : public EncoderPage {
   
   void displayRetrig() {
     GUI.setLine(GUI.LINE2);
-    GUI.put_p_string_at(8, retrig_names[retrigEncoder.getValue()]);
+    GUI.put_p_string_at(9, retrig_names[retrigEncoder.getValue()]);
   }
   
   virtual void handle() {
     bool changed = false;
     if (styleEncoder.hasChanged()) {
-      arpStyle = (arp_style_t)styleEncoder.getValue();
+      arpeggiator.arpStyle = (arp_style_t)styleEncoder.getValue();
       displayStyle();
       changed = true;
     }
     styleEncoder.checkHandle();
     if (retrigEncoder.hasChanged()) {
-      arpRetrig = (arp_retrig_type_t)retrigEncoder.getValue();
+      arpeggiator.arpRetrig = (arp_retrig_type_t)retrigEncoder.getValue();
       displayRetrig();
       changed = true;
     }
     retrigEncoder.checkHandle();
     if (changed) {
-      calculateArp();
+      arpeggiator.calculateArp();
     }
   }
 };
@@ -66,12 +96,6 @@ ConfigPage_1 configPage_1;
 ConfigPage_2 configPage_2;
 
 void loopPages() {
-  if (trackEncoder.hasChanged()) {
-    GUI.setLine(GUI.LINE2);
-    GUI.clearFlash();
-    GUI.flash_put_value(0, trackEncoder.getValue());
-    GUI.flash_p_string_at_fill(8, getMachineName(MD.trackModels[trackEncoder.getValue()]));
-  }
 }
 
 void setupPages() {
