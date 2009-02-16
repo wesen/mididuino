@@ -260,44 +260,78 @@ void GuiClass::clearLine() {
   lines[curLine].changed = true;
 }
 
-void GuiClass::clearFlash(uint16_t duration) {
-  for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
-    lines[curLine].flash[i] = ' ';
+void GuiClass::flash(uint16_t duration) {
   lines[curLine].flashChanged = lines[curLine].flashActive = true;
   lines[curLine].duration = duration;
   lines[curLine].flashTimer = read_slowclock();
+}
+
+void GuiClass::clearFlash(uint16_t duration) {
+  for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
+    lines[curLine].flash[i] = ' ';
+  flash(duration);
+}
+
+void GuiClass::flash_put_value(uint8_t idx, uint8_t value, uint16_t duration) {
+  flash_put_value_at(idx << 2, value, duration);
+}
+
+void GuiClass::flash_put_value16(uint8_t idx, uint16_t value, uint16_t duration) {
+  flash_put_value16_at(idx << 2, value, duration);
+}
+
+void GuiClass::flash_put_valuex(uint8_t idx, uint8_t value, uint16_t duration) {
+  flash_put_valuex_at(idx << 1, value, duration);
+}
+
+void GuiClass::flash_put_value_at(uint8_t idx, uint8_t value, uint16_t duration) {
+  char *data = lines[curLine].flash;
+  lines[curLine].changed = true;
+  data[idx] = value / 100 + '0';
+  data[idx+1] = (value % 100) / 10 + '0';
+  data[idx+2] = (value % 10) + '0';
+  data[idx+3] = ' ';
+  flash(duration);
+}
+
+void GuiClass::flash_put_value16_at(uint8_t idx, uint16_t value, uint16_t duration) {
+  char *data = lines[curLine].flash;
+  lines[curLine].changed = true;
+  data[idx]   = hex2c(value >> 12 & 0xF);
+  data[idx+1] = hex2c(value >> 8 & 0xF);
+  data[idx+2] = hex2c(value >> 4 & 0xF);
+  data[idx+3] = hex2c(value >> 0 & 0xF);
+}
+
+void GuiClass::flash_put_valuex_at(uint8_t idx, uint8_t value, uint16_t duration) {
+  char *data = lines[curLine].flash;
+  lines[curLine].changed = true;
+  data[idx]   = hex2c(value >> 4 & 0xF);
+  data[idx+1] = hex2c(value >> 0 & 0xF);
 }
 
 void GuiClass::flash_string_at(uint8_t idx, char *str, uint16_t duration) {
   char *data = lines[curLine].flash;
   m_strncpy(data + idx, str, sizeof(lines[0].flash) - idx);
-  lines[curLine].flashChanged = lines[curLine].flashActive = true;
-  lines[curLine].duration = duration;
-  lines[curLine].flashTimer = read_slowclock();
+  flash(duration);
 }
 
 void GuiClass::flash_string_at_fill(uint8_t idx, char *str, uint16_t duration) {
   char *data = lines[curLine].flash;
   m_strncpy_fill(data + idx, str, sizeof(lines[0].flash) - idx);
-  lines[curLine].flashChanged = lines[curLine].flashActive = true;
-  lines[curLine].duration = duration;
-  lines[curLine].flashTimer = read_slowclock();
+  flash(duration);
 }
 
 void GuiClass::flash_p_string_at(uint8_t idx, PGM_P str, uint16_t duration) {
   char *data = lines[curLine].flash;
   m_strncpy_p(data + idx, str, sizeof(lines[0].flash) - idx);
-  lines[curLine].flashChanged = lines[curLine].flashActive = true;
-  lines[curLine].duration = duration;
-  lines[curLine].flashTimer = read_slowclock();
+  flash(duration);
 }
 
 void GuiClass::flash_p_string_at_fill(uint8_t idx, PGM_P str, uint16_t duration) {
   char *data = lines[curLine].flash;
   m_strncpy_p_fill(data + idx, str, sizeof(lines[0].flash) - idx);
-  lines[curLine].flashChanged = lines[curLine].flashActive = true;
-  lines[curLine].duration = duration;
-  lines[curLine].flashTimer = read_slowclock();
+  flash(duration);
 }
 
 void GuiClass::flash_string(char *str, uint16_t duration) {

@@ -246,14 +246,24 @@ void MDClass::sendNoteOn(uint8_t track, uint8_t pitch, uint8_t velocity) {
 }
 
 void MDClass::sliceTrack32(uint8_t track, uint8_t from, uint8_t to) {
-  setTrackParam(track, 4, MIN(127, from * 4));
-  setTrackParam(track, 5, MIN(127, to * 4));
+  if (from > to) {
+    setTrackParam(track, 4, MIN(127, from * 4 + 1));
+    setTrackParam(track, 5, MIN(127, to * 4));
+  } else {
+    setTrackParam(track, 4, MIN(127, from * 4));
+    setTrackParam(track, 5, MIN(127, to * 4));
+  }
   triggerTrack(track, 100);
 }
 
 void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
-  setTrackParam(track, 4, MIN(127, from * 8));
-  setTrackParam(track, 5, MIN(127, to * 8));
+  if (from > to) {
+    setTrackParam(track, 4, MIN(127, from * 8 + 1));
+    setTrackParam(track, 5, MIN(127, to * 8));
+  } else {
+    setTrackParam(track, 4, MIN(127, from * 8));
+    setTrackParam(track, 5, MIN(127, to * 8));
+  }
   triggerTrack(track, 100);
 }
 

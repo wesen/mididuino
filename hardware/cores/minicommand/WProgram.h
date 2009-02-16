@@ -4,10 +4,7 @@
 extern "C" {
 #include <inttypes.h>
 #include <avr/interrupt.h>
-}
-
-extern "C" {
-  #include "helpers.h"
+#include "helpers.h"
 }
 
 #include "mididuino_private.h"
@@ -21,7 +18,6 @@ extern "C" {
 #include "GUI.h"
 #include "Midi.h"
 #include "WMath.h"
-
 #endif
 
 /* default config flags */

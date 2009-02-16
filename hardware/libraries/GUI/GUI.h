@@ -153,6 +153,19 @@ class GuiClass {
   void put_p_string_at_fill(uint8_t idx, PGM_P str);
 
 
+  void flash(uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value16(uint8_t idx, uint16_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_valuex(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value_at(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value16_at(uint8_t idx, uint16_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_valuex_at(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_string(char *str,
 		    uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_p_string(PGM_P str,
