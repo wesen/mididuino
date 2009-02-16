@@ -46,7 +46,7 @@ class RangeEncoder : public Encoder {
   uint8_t min;
   uint8_t max;
 
- RangeEncoder(uint8_t _max = 127, uint8_t _min = 0, char *_name = NULL) : Encoder(_name) {
+ RangeEncoder(uint8_t _max = 127, uint8_t _min = 0, char *_name = NULL, uint8_t init = 0) : Encoder(_name) {
     if (_min > _max) {
       min = _max;
       max = _min;
@@ -54,6 +54,7 @@ class RangeEncoder : public Encoder {
       min = _min;
       max = _max;
     }
+    setValue(init);
   }
   void handle(uint8_t val) { }
   void update(encoder_t *enc);
@@ -63,7 +64,7 @@ class CCEncoder : public RangeEncoder {
  public:
   uint8_t cc;
 
- CCEncoder(uint8_t _cc, char *_name = NULL) : RangeEncoder(127, 0) {
+ CCEncoder(uint8_t _cc, char *_name = NULL, uint8_t init = 0) : RangeEncoder(127, 0, name, init) {
     cc = _cc;
   }
   void handle(uint8_t val);
@@ -82,10 +83,14 @@ class EncoderPage : public Page {
  public:
   Encoder *encoders[GUI_NUM_ENCODERS];
   
-  EncoderPage() {
+  EncoderPage(Encoder *e1 = NULL, Encoder *e2 = NULL, Encoder *e3 = NULL, Encoder *e4 = NULL) {
     for (uint8_t i; i < GUI_NUM_ENCODERS; i++) {
       encoders[i] = NULL;
     }
+    encoders[0] = e1;
+    encoders[1] = e2;
+    encoders[2] = e3;
+    encoders[3] = e4;
   }
   virtual void handle();
   virtual void update();
