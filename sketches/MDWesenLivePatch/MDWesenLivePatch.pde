@@ -2,6 +2,11 @@
 
 bool supaTriggaActive = false;
 bool breakdownActive = false;
+bool storedBreakdownActive = false;
+
+#define RAM_R1_TRACK 14
+#define RAM_P1_TRACK 15
+
 
 RangeEncoder flfEncoder(0, 127, "FLF", 0);
 RangeEncoder flwEncoder(0, 127, "FLW", 127);
@@ -13,6 +18,12 @@ RangeEncoder timEncoder(0, 127, "TIM", 24);
 RangeEncoder frqEncoder(0, 127, "FRQ", 0);
 RangeEncoder modEncoder(0, 127, "MOD", 0);
 EncoderPage page2(&timEncoder, &frqEncoder, &modEncoder, &fbEncoder);
+
+MDEncoder pFlfEncoder(RAM_P1_TRACK, MODEL_FLTF, "FLF", 0);
+MDEncoder pFlwEncoder(RAM_P1_TRACK, MODEL_FLTW, "FLW", 127);
+MDEncoder pSrrEncoder(RAM_P1_TRACK, MODEL_SRR, "SRR", 0);
+MDEncoder pVolEncoder(RAM_P1_TRACK, MODEL_VOL, "VOL", 100);
+EncoderPage page4(&pFlfEncoder, &pFlwEncoder, &pSrrEncoder, &pVolEncoder);
 
 typedef enum {
   REPEAT_2_BARS = 0,
@@ -33,6 +44,15 @@ char repeat_speed_names[REPEAT_SPEED_CNT][8] PROGMEM = {
   "1 16TH "
 };
 
+uint8_t repeat_speed_mask[REPEAT_SPEED_CNT] = {
+  32 - 1,
+  16 - 1, 
+  8  - 1,
+  4  - 1,
+  2  - 1,
+  1  - 1
+};
+
 RangeEncoder repeatSpeedEncoder(0, REPEAT_SPEED_CNT-1, "RPT", 0);
 
 typedef enum {
@@ -51,6 +71,9 @@ char breakdown_names[BREAKDOWN_CNT][8] PROGMEM = {
 };
 RangeEncoder breakdownEncoder(0, BREAKDOWN_CNT - 1, "BRK", 0);
 
+repeat_speed_type_t repeatSpeed = REPEAT_2_BARS;
+breakdown_type_t breakdown = BREAKDOWN_NONE;
+
 class BreakPage : public EncoderPage {
   public:
   BreakPage() : EncoderPage(&repeatSpeedEncoder, NULL, &breakdownEncoder) {    
@@ -63,6 +86,12 @@ class BreakPage : public EncoderPage {
     }
     if (redisplay || repeatSpeedEncoder.hasChanged()) {
       displayRepeatSpeed();
+    }
+    if (breakdownEncoder.hasChanged()) {
+      breakdown = (breakdown_type_t)breakdownEncoder.getValue();
+    }
+    if (repeatSpeedEncoder.hasChanged()) {
+      repeatSpeed = (repeat_speed_type_t)repeatSpeedEncoder.getValue();
     }
   }
   
@@ -79,20 +108,46 @@ class BreakPage : public EncoderPage {
 
 BreakPage breakPage;
 
-#define RAM_R1_TRACK 14
-#define RAM_P1_TRACK 15
-
 void doBreakdown() {
-  uint8_t val = MidiClock.div16th_counter % 32;
-  repeat_speed_type_t speed = (repeat_speed_type_t)repeatSpeedEncoder.getValue();
-  breakdown_type_t breakdown = (breakdown_type_t)breakdownEncoder.getValue();  
-  if ((val % 8) == 0) {  
-    MD.sliceTrack32(RAM_P1_TRACK, val, val + 8);
+  uint8_t val = (MidiClock.div16th_counter + 1) % 64;
+
+  switch (breakdown) {
+  case BREAKDOWN_2_BARS:
+     if (val == 24 || val == 56) {
+       MD.sliceTrack32(RAM_P1_TRACK, 24, 32, true);
+       return;
+     }
+  break;
+  
+  case BREAKDOWN_4_BARS:
+     if (val == 56) {
+       MD.sliceTrack32(RAM_P1_TRACK, 24, 32, true);
+       return;
+     }
+  break;
+  
+  case BREAKDOWN_2_AND_4_BARS:
+     if (val == 56) {
+       MD.sliceTrack32(RAM_P1_TRACK, 24, 32, true);
+       return;
+     } else if (val == 24) {
+       MD.sliceTrack32(RAM_P1_TRACK, 24, 32, true);
+       return;
+     } else if (val == 28) {
+       MD.sliceTrack32(RAM_P1_TRACK, 24, 32, true);
+       return;
+     }
+  break;
+  
   }
+ 
+  if ((val % 8) == 0 || ((val & repeat_speed_mask[repeatSpeed]) == 0)) {
+    MD.sliceTrack32(RAM_P1_TRACK, val & repeat_speed_mask[repeatSpeed], 32);
+  } 
 }
 
 void doSupatrigga() {
-  uint8_t val = MidiClock.div16th_counter % 32;
+  uint8_t val = (MidiClock.div16th_counter + 1) % 32;
   if ((val % 4) == 0) {
     uint8_t from = 0, to = 0;
     if (random(100) > 50) {
@@ -108,10 +163,10 @@ void doSupatrigga() {
 void on16Callback() {
   if (supaTriggaActive) {
     doSupatrigga();
-  } else if (breakdownActive) {
+  } else if (breakdownActive || storedBreakdownActive) {
     doBreakdown();
   } else {
-    uint8_t val = MidiClock.div16th_counter % 32;
+    uint8_t val = (MidiClock.div16th_counter + 1) % 32;
     if ((val % 8) == 0) {
       MD.sliceTrack32(RAM_P1_TRACK, val, val + 8);
     }
@@ -151,11 +206,27 @@ void loop() {
 Page *previousPage = NULL;
 
 void handleGui() {
-  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
-    GUI.setPage(&page);
-  } else if (BUTTON_PRESSED(Buttons.BUTTON2)) {
-    GUI.setPage(&page2);
+  if (BUTTON_DOWN(Buttons.BUTTON4)) {
+    if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+      storedBreakdownActive = !storedBreakdownActive;
+      if (storedBreakdownActive) {
+        GUI.flash_p_strings_fill(PSTR("BREAKDOWN ON"), PSTR(""));
+      } else {
+        GUI.flash_p_strings_fill(PSTR("BREAKDOWN OFF"), PSTR(""));
+      }
+    }
+  } else {
+    if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+      GUI.setPage(&page);
+    } else if (BUTTON_PRESSED(Buttons.BUTTON2)) {
+      if (GUI.page == &page2) {
+         GUI.setPage(&page4);
+      } else {
+        GUI.setPage(&page2);
+      }
+    }
   }
+  
   if (BUTTON_PRESSED(Buttons.BUTTON3)) {
     supaTriggaActive = true;
   } else if (BUTTON_RELEASED(Buttons.BUTTON3)) {
