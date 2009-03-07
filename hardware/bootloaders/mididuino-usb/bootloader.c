@@ -102,7 +102,7 @@ uint8_t jump_to_main_program(void) {
     jump_to_app();
     return 1;
   } else {
-    lcd_line2();
+    //    lcd_line2();
     //    lcd_puts("WRONG CHECK");
     return 0;
   }

@@ -172,7 +172,6 @@ void usb_midi_handle_rx_byte(uint8_t  byte) {
       }
       /* status byte not found */
       if (midi_to_usb[i].midi_status == 0) {
-	PRINTF_APP("Ignore message\n");
 	in_state = midi_ignore_message;
 	return;
       }

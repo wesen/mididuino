@@ -20,10 +20,10 @@ usb_midi_message_t rw_msg =
   { CIN_SYSEX_START, 0, { 0xf0, 0x00, 0x13 } };
   
 usb_midi_message_t usb_ack_msg = 
-  { CIN_SYSEX_END_3BYTES, 0, {0x37, CMD_DATA_BLOCK_ACK, 0xf7 } };
+  { CIN_SYSEX_END_3BYTES, 0, {SYSEX_VENDOR_3, CMD_DATA_BLOCK_ACK, 0xf7 } };
 
 usb_midi_message_t usb_nak_msg =
-  { CIN_SYSEX_END_3BYTES, 0, {0x37, CMD_DATA_BLOCK_NAK, 0xf7 } };
+  { CIN_SYSEX_END_3BYTES, 0, {SYSEX_VENDOR_3, CMD_DATA_BLOCK_NAK, 0xf7 } };
 
 void midi_sysex_send_ack(void) {
   usb_midi_send_message(&rw_msg);
@@ -143,27 +143,17 @@ int main(void) {
 	jump_to_main_program();
       }
     }
-    
-    if (d12_device_is_configured() && !midi_init) {
-      midi_sysex_send_ack();
-      midi_init = 1;
-    }
-    
+
     /** Handle midi from UART and from USB. **/
     midi_link_main();
 
     /** Handle usb status. **/
     d12_main();
-
-    /* check ep2 again because of d12 bug */
-    uint8_t status;
-    do {
-      d12_read_cmd(D12_CMD_SELECT_EP + D12_MIDI_EP_OUT, &status, 1);
-      if ((status & 1) && d12_device_is_configured()) {
-	handle_midi_ep_out();
-      }
-    } while (status & 1);
-
+    
+    if (d12_device_is_configured() && !midi_init) {
+      midi_sysex_send_ack();
+      midi_init = 1;
+    }
   }
 }
 

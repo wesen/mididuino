@@ -9,13 +9,15 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <avr/sleep.h>
+#include <stdlib.h>
 
 #include "d12.h"
 #include "usb.h"
 #include "midi_link_desc.h"
-#include "lcd.h"
 
-#define NOP { asm("nop"); asm("nop"); asm("nop"); }
+#define NOINLINE __attribute__ ((noinline))
+#define SMALLNOP { asm("nop"); asm("nop");  }
+#define NOP _delay_us(0.6)
 
 /**
  ** Configured USB device address, set during enumeration
@@ -58,20 +60,21 @@ uint8_t ep_status = 0;
 /** Send buffer for ep0, because messages can be split between different interrupt
  ** states.
  **/
-static uint8_t *tx_ptr, tx_bytes;
+static uint8_t *tx_ptr;
+static uint16_t tx_bytes;
 
 /**
  ** Check the suspend line from D12.
  **/
 static inline uint8_t d12_is_suspend(void) {
-  return IS_BIT_SET(CTRL_PORT_PIN, SUSPEND_PIN);
+  return IS_PIN_SET(SUSPEND_PORT, SUSPEND_PIN);
 }
 
 /**
  ** Check the interruptline from d12 (low active).
  **/
 static inline uint8_t d12_is_irq(void) {
-  return !IS_BIT_SET(CTRL_PORT_PIN, IRQ_PIN);
+  return !IS_PIN_SET(IRQ_PORT, IRQ_PIN);
 }
 
 /**
@@ -87,36 +90,39 @@ uint8_t d12_device_is_configured(void) {
  **/
 
 /** Set the IO pins to output and write a byte to the data lines **/
-void d12_write_to_output(uint8_t data) {
-  DATA_PORT_DDR = 0xFF;
-  DATA_PORT_PORT = data;
+
+void inline d12_write_to_output(uint8_t data) {
+  D12_WRITE(data);
 }
 
 /**
  ** Switch the IO pins to input. **/
 static inline void d12_set_to_input(void) {
-  DATA_PORT_DDR = 0;
+  D12_SET_INPUT();
 }
 
 /** Initialize the pins needed for the communication with D12.
  **/
 void d12_pins_init(void) {
-  CTRL_PORT_DDR |= _BV(A0_PIN) | _BV(RD_PIN) | _BV(WR_PIN) | _BV(SUSPEND_PIN);
-  CLEAR_BIT(CTRL_PORT_DDR, IRQ_PIN);
-  CLEAR_BIT(CTRL_PORT_PORT, IRQ_PIN);
+  INIT_PIN_OUTPUT(A0_PORT, A0_PIN);
+  INIT_PIN_OUTPUT(RD_PORT, RD_PIN);
+  INIT_PIN_OUTPUT(WR_PORT, WR_PIN);
+  INIT_PIN_OUTPUT(SUSPEND_PORT, SUSPEND_PIN);
+
+  INIT_PIN_INPUT(IRQ_PORT, IRQ_PIN);
+  CLEAR_PIN(IRQ_PORT, IRQ_PIN);
 }
 
 static void d12_write_data(uint8_t data);
 
 /** Write a command byte to d12. **/
 void d12_write_cmd_byte(uint8_t cmd) {
-  //  cli();
   SET_A0();
   CLEAR_WR();
   d12_write_to_output(cmd);
-  NOP;
+  SMALLNOP;
   SET_WR();
-  //  sei();
+  NOP;
 }
 
 /** Write a command and its data to D12. **/
@@ -128,12 +134,12 @@ void d12_write_cmd(uint8_t cmd, uint8_t *data, uint8_t cnt) {
   }
 }
 
-void d12_write_cmd_1_byte(uint8_t cmd, uint8_t byte) {
+NOINLINE void d12_write_cmd_1_byte(uint8_t cmd, uint8_t byte) {
   d12_write_cmd_byte(cmd);
   d12_write_data(byte);
 }
 
-void d12_write_cmd_1(uint8_t cmd) {
+NOINLINE void d12_write_cmd_1(uint8_t cmd) {
   d12_write_cmd_1_byte(cmd, 1);
 }
 
@@ -147,26 +153,24 @@ void d12_write_cmd_flash(uint8_t cmd, uint8_t *data, uint8_t cnt) {
 }
 
 /** Write a data byte to D12. **/
-static void d12_write_data(uint8_t data) {
-  //  cli();
+NOINLINE static void d12_write_data(uint8_t data) {
   CLEAR_A0();
   CLEAR_WR();
   d12_write_to_output(data);
-  NOP;
+  SMALLNOP;
   SET_WR();
-  //  sei();
+  NOP;
 }
 
 /** Read a data byte from D12. **/
-static uint8_t d12_read_data(void) {
-  //  cli();
+NOINLINE static uint8_t d12_read_data(void) {
   d12_set_to_input();
   CLEAR_A0();
   CLEAR_RD();
-  NOP;
-  uint8_t data = DATA_PORT_PIN;
+  SMALLNOP;
+  uint8_t data = D12_READ();
   SET_RD();
-  //  sei();
+  NOP;
   return data;
 }
 
@@ -178,19 +182,27 @@ void d12_read_cmd(uint8_t cmd, uint8_t *buf, uint8_t cnt) {
   for (i = 0; i < cnt; i++) {
     buf[i] = d12_read_data();
   }
-  
 }
 
-uint8_t d12_read_cmd_1(uint8_t cmd) {
+NOINLINE uint8_t d12_read_cmd_1(uint8_t cmd) {
   d12_write_cmd_byte(cmd);
-  return d12_read_data();
+  uint8_t ret = d12_read_data();
+  return ret;
 }
 
 uint8_t d12_write_ep_buf(uint8_t ep, uint8_t cnt) {
   /* select endpoint */
-  uint8_t status = d12_read_cmd_1(D12_CMD_SELECT_EP + ep);
+  uint8_t status = 0;
+  uint8_t cnt2 = 0;
+  do {
+    status = d12_read_cmd_1(D12_CMD_SELECT_EP + ep);
+    if (status & 1)
+      _delay_us(2);
+    cnt2++;
+  } while ((status & 1) && (cnt2 < 128));
   if (status & 1)
     return 0;
+  
   d12_write_cmd_byte(D12_CMD_WRITE_BUFFER);
   d12_write_data(0x00);
   d12_write_data(cnt);
@@ -211,11 +223,11 @@ uint8_t d12_write_ep_pkt(uint8_t ep, uint8_t *buf, uint8_t cnt) {
   return 1;
 }
 
-void d12_write_ep0_pkt_ep_buf(uint8_t cnt) {
+NOINLINE void d12_write_ep0_pkt_ep_buf(uint8_t cnt) {
   d12_write_ep_pkt(D12_EP0_IN, ep_buf, cnt);
 }
 
-void d12_write_ep_pkt_0(void) {
+NOINLINE void d12_write_ep_pkt_0(void) {
   d12_write_ep_pkt(D12_EP0_IN, NULL, 0);
 }
 
@@ -223,8 +235,9 @@ void d12_write_ep_pkt_0(void) {
  ** Returns 1 if successful, 0 if endpoint full.
  **/
 uint8_t d12_write_ep_pkt_flash(uint8_t ep, uint8_t *buf, uint8_t cnt) {
-  if (!d12_write_ep_buf(ep, cnt))
+  if (!d12_write_ep_buf(ep, cnt)) {
     return 0;
+  }
   uint8_t i;
   for (i = 0; i < cnt; i++) {
     d12_write_data(pgm_read_byte(buf + i));
@@ -263,9 +276,10 @@ uint8_t d12_read_ep_pkt(uint8_t ep, uint8_t *buf, uint8_t cnt) {
  ** Write the ep0 buffer to endpoint 0.
  **/
 void d12_write_ep0_buf(void) {
-  uint8_t to_send = 0;
+  uint16_t to_send = 0;
 
   if (tx_bytes == 0) {
+    // send empty packet ??
     return;
   }
   
@@ -273,23 +287,18 @@ void d12_write_ep0_buf(void) {
   if (to_send > D12_EP0_SIZE)
     to_send = D12_EP0_SIZE;
 
-  uint8_t ret;
   if (d12_flags & D12_FLAG_FLASH) 
-    ret = d12_write_ep_pkt_flash(D12_EP0_IN, tx_ptr, to_send);
+    d12_write_ep_pkt_flash(D12_EP0_IN, tx_ptr, to_send);
   else
-    ret = d12_write_ep_pkt(D12_EP0_IN, tx_ptr, to_send);
-  //  NOP;
-  //  NOP;
-  _delay_us(10);
-  //  lcd_line1();
-  //  lcd_putnumberx(ret);
-  
+    d12_write_ep_pkt(D12_EP0_IN, tx_ptr, to_send);
+
   tx_ptr += to_send;
   tx_bytes -= to_send;
+
 }
 
 /** Stall the control endpoint (in case a command can't be answered. **/
-void d12_stall_ep0(void) {
+NOINLINE void d12_stall_ep0(void) {
   /* stall pid in response to next DATA stage TX */
   d12_write_cmd_1(D12_CMD_SET_EP_STATUS + D12_EP0_IN);
   /* stall pid in response to the next status stage */
@@ -297,7 +306,7 @@ void d12_stall_ep0(void) {
 }
 
 /** Stall an endpoint. **/
-void d12_stall_ep(uint8_t ep) {
+NOINLINE void d12_stall_ep(uint8_t ep) {
   d12_read_cmd_1(D12_CMD_READ_LAST_TX_STATUS + ep);
   d12_write_cmd_1(D12_CMD_SET_EP_STATUS + ep);
 }
@@ -306,19 +315,7 @@ void d12_stall_ep(uint8_t ep) {
 void d12_init(void) {
   uint8_t buf[2];
 
-  buf[0] =
-      _BV(1) // no lazyclock
-    | _BV(2) // clock running, even during suspend
-    | _BV(3); // interrupt mode
-    //    | _BV (4) // softconnect
-    // mode 0
-    ;
-  buf[1] = 0x2; // clock division 48 / (5 + 1) = 8 Mhz
-
   // no soft connect
-  d12_write_cmd(D12_CMD_SET_MODE, buf, 2);
-  _delay_ms(5);
-
   buf[0] =
       _BV(1) // no lazyclock
     | _BV(2) // clock running, even during suspend
@@ -327,8 +324,13 @@ void d12_init(void) {
     // mode 0
     ;
   //  buf[1] = 0x2; // clock division 48 / (2 + 1) = 16 Mhz
+  buf[1] = 0x2;
   d12_write_cmd(D12_CMD_SET_MODE, buf, 2);
 
+  //  d12_write_cmd_1_byte(D12_CMD_SET_EP_STATUS + D12_EP0_IN, 0);
+  /* stall pid in response to the next status stage */
+  //  d12_write_cmd_1_byte(D12_CMD_SET_EP_STATUS + D12_EP0_OUT, 0);
+		  
 }
 
 /** Structure to hold the callbacks for different D12 interrupt status. **/
@@ -369,23 +371,6 @@ void d12_suspend_handler(void) {
  end:
   sei();
   return;
-}
-
-/** Main routine for d12, poll interrupts and check suspend state.
- **/
-void d12_main(void) {
-  d12_interrupt_handler();
-  // d12_suspend_handler();
-}
-
-void d12_suspend_callback(uint8_t bla) {
-#if 0
-  if (d12_is_suspend()) {
-    d12_flags |= D12_FLAG_SUSPEND;
-  } else {
-    d12_flags &= ~D12_FLAG_SUSPEND;
-  }
-#endif
 }
 
 /** Reset the D12 stack after a bus reset.
@@ -441,6 +426,28 @@ static const PROGMEM usb_language_id_descriptor_t usb_langid_string = {
 #include "midi_link_str.h"
 #endif
 
+/** USB String list to answer GET_STRING_DESCRIPTOR requests. The strings
+ ** themselves are in midi_link_str.h
+ **/
+static const PROGMEM usb_string_list_t usb_string_list[] = {
+  { 0, sizeof(usb_langid_string), (uint8_t PROGMEM *)&usb_langid_string },
+#ifdef USB_STR_MANUFACTURER
+  { 1, sizeof(usb_manufacturer_string), usb_manufacturer_string },
+#endif
+#ifdef USB_STR_PRODUCT
+  { 2, sizeof(usb_product_string), usb_product_string },
+#endif
+#ifdef USB_STR_SERIAL
+  { 3, sizeof(usb_serial_string), usb_serial_string },
+#endif
+#ifdef USB_STR_CONFIGURATION
+  { 4, sizeof(usb_configuration_string), usb_configuration_string },
+#endif
+#ifdef USB_STR_INTERFACE
+  { 5, sizeof(usb_interface_string), usb_interface_string },
+#endif
+};
+
 /** Answer a GET_DESCRIPTOR request on ep0.
  **/
 void d12_get_descriptor(usb_setup_request_t *setup_pkt) {
@@ -465,36 +472,26 @@ void d12_get_descriptor(usb_setup_request_t *setup_pkt) {
     
   case USB_DESCRIPTOR_STRING:
     {
-      uint8_t value = setup_pkt->wValue & 0xFF;
-      if (value == 0) {
-	tx_ptr = (uint8_t PROGMEM *)&usb_langid_string;
-	tx_bytes = sizeof(usb_langid_string);
-      } else if (value == 1) {
-	tx_ptr = usb_manufacturer_string;
-	tx_bytes = sizeof(usb_manufacturer_string);
-      } else if (value == 2) {
-	tx_ptr = usb_product_string;
-	tx_bytes = sizeof(usb_product_string);
-      } else {
-	goto stall;
+      uint8_t i;
+      for (i = 0; i < sizeof(usb_string_list) / sizeof(usb_string_list_t); i++) {
+	const usb_string_list_t *list = usb_string_list + i;
+	if (pgm_read_byte(&list->index) == (setup_pkt->wValue & 0xFF)) {
+	  tx_ptr = GET_FLASH_PTR(&list->str);
+	  tx_bytes = pgm_read_byte(&list->size);
+	  d12_flags |= D12_FLAG_FLASH;
+	}
       }
-	d12_flags |= D12_FLAG_FLASH;
-
       break;
     }
-
-  default:
-    goto stall;
   }
 
-  if (tx_bytes > setup_pkt->wLength)
-    tx_bytes = setup_pkt->wLength;
-  d12_write_ep0_buf();
-  
-  return;
-
- stall:
-  d12_stall_ep0();
+  if (tx_bytes) {
+    if (tx_bytes > setup_pkt->wLength)
+      tx_bytes = setup_pkt->wLength;
+    d12_write_ep0_buf();
+  } else {
+    d12_stall_ep0();
+  }
 }
 
 /** Callback for Endpoint 0 IN, write any data available if necessary,
@@ -503,8 +500,9 @@ void d12_get_descriptor(usb_setup_request_t *setup_pkt) {
  ** themain loop.
  **/
 void d12_ep0_in_callback(uint8_t ep) {
-  d12_read_cmd_1(D12_CMD_READ_LAST_TX_STATUS + D12_EP0_IN);
+  uint8_t status = d12_read_cmd_1(D12_CMD_READ_LAST_TX_STATUS + D12_EP0_IN);
   /* discard status */
+  status = 0;
 
   if (d12_flags & D12_FLAG_TX_ADDRESS) {
   } else if (d12_flags & D12_FLAG_ENABLE_EP) {
@@ -608,7 +606,7 @@ void d12_handle_ep_setup_pkt(usb_setup_request_t *setup_pkt) {
   switch (setup_pkt->bRequest) {
   case USB_REQ_CLEAR_FEATURE:
   case USB_REQ_SET_FEATURE:
-    #if 1
+    #if 0
     /* supports only STALL feature */
     if (setup_pkt->wValue == USB_FEATURE_EP_HALT) {
       uint8_t ep = setup_pkt->wIndex & 0x7F;
@@ -626,7 +624,7 @@ void d12_handle_ep_setup_pkt(usb_setup_request_t *setup_pkt) {
       d12_stall_ep0();
     }
 #endif
-    //    d12_stall_ep0();
+    d12_stall_ep0();
     break;
 
   case USB_REQ_GET_STATUS:
@@ -705,7 +703,6 @@ void d12_ep0_out_callback(uint8_t ep) {
     usb_setup_request_t setup_pkt;
     /* setup packet */
     d12_read_ep_pkt(D12_EP0_OUT, (uint8_t *)&setup_pkt, sizeof(setup_pkt));
-#if 0
     static const uint8_t cmds[5] = { D12_CMD_ACK_SETUP,
 			D12_CMD_CLEAR_BUFFER,
 			D12_CMD_SELECT_EP + D12_EP0_IN,
@@ -715,9 +712,8 @@ void d12_ep0_out_callback(uint8_t ep) {
     for (i = 0; i < 5; i++) {
       d12_write_cmd_byte(cmds[i]);
     }
-#endif
 
-#if 1
+#if 0
     /* ack setup pkt */
     d12_write_cmd(D12_CMD_ACK_SETUP, NULL, 0);
     /* flush buffer after ack */
@@ -745,12 +741,9 @@ static const PROGMEM usb_event_list_t event_list[] = {
   //  { 0x01, d12_generic_ep_callback, D12_EP0_OUT },
 };
 
-
-//static uint8_t int_cnt = 0;
-
-/** Read the interrupt status if D12 is in interrupt state (INT0 pulled down).
+/** Main routine for d12, poll interrupts and check suspend state.
  **/
-void d12_interrupt_handler(void) {
+void d12_main(void) {
   while (d12_is_irq()) {
     uint8_t irq[2];
     d12_read_cmd(D12_CMD_READ_INT_REG, irq, 2);
@@ -765,5 +758,16 @@ void d12_interrupt_handler(void) {
       }
     }
   }
+  // d12_suspend_handler();
+}
+
+void d12_suspend_callback(uint8_t bla) {
+#if 0
+  if (d12_is_suspend()) {
+    d12_flags |= D12_FLAG_SUSPEND;
+  } else {
+    d12_flags &= ~D12_FLAG_SUSPEND;
+  }
+#endif
 }
 

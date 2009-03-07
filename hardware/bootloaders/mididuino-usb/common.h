@@ -45,4 +45,19 @@
 #define IS_BIT_SET8(port, bit) (((port) & (uint8_t)(1 << (bit))) ? 1 : 0)
 #define IS_BIT_CLEAR8(port, bit) (((port) & (uint8_t)(1 << (bit))) == 0 ? 1 : 0)
 
+/* direction stuff and init values */
+#define DDRIFY1(x)  DDR ## x
+#define PINIFY1(x)  PIN ## x
+#define PORTIFY1(x) PORT ## x
+#define DDRIFY(x)   DDRIFY1(x)
+#define PINIFY(x)   PINIFY1(x)
+#define PORTIFY(x)  PORTIFY1(x)
+
+#define INIT_PIN_OUTPUT(port, pin) { SET_BIT(DDRIFY(port), pin); }
+#define INIT_PIN_INPUT(port, pin)  { CLEAR_BIT(DDRIFY(port), pin); }
+#define IS_PIN_SET(port, pin)      IS_BIT_SET(PINIFY(port), pin)
+#define IS_PIN_CLEAR(port, pin)    IS_BIT_CLEAR(PINIFY(port), pin)
+#define SET_PIN(port, pin)         SET_BIT(PORTIFY(port), pin)
+#define CLEAR_PIN(port, pin)       CLEAR_BIT(PORTIFY(port), pin)
+
 #endif /* COMMON_H__ **/

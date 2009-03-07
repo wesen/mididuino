@@ -1,29 +1,38 @@
 #ifndef D12_H__
 #define D12_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#include "app.h"
+#include "common.h"
+
+/*
 #define DATA_PORT A
 #define DATA_PORT_PORT PORTA
 #define DATA_PORT_PIN  PINA
 #define DATA_PORT_DDR  DDRA
 
-#define CTRL_PORT D
-#define CTRL_PORT_PORT PORTD
-#define CTRL_PORT_PIN  PIND
-#define CTRL_PORT_DDR  DDRD
+#define CTRL_PORT K
+#define CTRL_PORT_PORT PORTK
+#define CTRL_PORT_PIN  PINK
+#define CTRL_PORT_DDR  DDRK
 
-#define A0_PIN 5
-#define WR_PIN 7
-#define RD_PIN 6
-#define SUSPEND_PIN 4
-#define IRQ_PIN 3
-
-#define CLEAR_A0() CLEAR_BIT(CTRL_PORT_PORT, A0_PIN)
-#define SET_A0()   SET_BIT(CTRL_PORT_PORT,   A0_PIN)
-#define CLEAR_WR() CLEAR_BIT(CTRL_PORT_PORT, WR_PIN)
-#define SET_WR()   SET_BIT(CTRL_PORT_PORT,   WR_PIN)
-#define CLEAR_RD() CLEAR_BIT(CTRL_PORT_PORT, RD_PIN)
-#define SET_RD()   SET_BIT(CTRL_PORT_PORT,   RD_PIN)
+#define A0_PIN      2
+#define WR_PIN      4
+#define RD_PIN      3
+#define SUSPEND_PIN 1
+#define IRQ_PIN     0
+#define RESET_PIN   5
+*/  
+    
+#define CLEAR_A0() CLEAR_PIN(A0_PORT, A0_PIN)
+#define SET_A0()   SET_PIN(A0_PORT, A0_PIN)
+#define CLEAR_WR() CLEAR_PIN(WR_PORT, WR_PIN)
+#define SET_WR()   SET_PIN(WR_PORT, WR_PIN)
+#define CLEAR_RD() CLEAR_PIN(RD_PORT, RD_PIN)
+#define SET_RD()   SET_PIN(RD_PORT, RD_PIN)
 
 #define D12_CMD_SET_ADDRESS         0xD0
 #define D12_CMD_SET_EP_ENABLE       0xD8
@@ -69,6 +78,9 @@ void d12_unset_lock(void);
 void d12_interrupt_handler(void);
 void d12_bus_reset(uint8_t i);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* D12_H__ */
 
