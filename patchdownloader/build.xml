@@ -1,0 +1,114 @@
+<project name="patchdownloader" basedir="." default="">
+
+  <property name="build.dir" value="build" />
+  <property name="dist.dir" value="dist" />
+  <property name="source.dir" value="src" />
+  <property name="javadoc.dir" value="docs/api" />
+  <property name="lib.dir" value="lib" />
+  <property name="classpath" value="lib/commons-codec.jar:lib/httpclient.jar:lib/httpcore-nio.jar:lib/log4j.jar:lib/commons-logging.jar:lib/httpcore.jar:lib/httpmime.jar:lib/lucene-core.jar"/>
+  <property name="jarclasspath" value="lib/commons-codec.jar lib/httpclient.jar lib/httpcore-nio.jar lib/log4j.jar:lib/commons-logging.jar lib/httpcore.jar lib/httpmime.jar lib/lucene-core.jar"/>
+  <path id ="class.path">
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path> 
+  <path id ="jar.class.path">
+    <fileset dir="${dist.dir}">
+      <include name="lib/*.jar"/>
+    </fileset>      
+    <pathelement path="${dist.dir}/resources"/>
+    <pathelement path="${dist.dir}/."/>
+  </path> 
+  
+  <!-- deletes all generated content -->
+  <target name="clean">
+    <!-- delete the javadoc api directory -->
+    <delete dir="${javadoc.dir}"/>
+    <delete dir="${dist.dir}"/>
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="build">
+    <mkdir dir="${build.dir}/classes"/>
+    
+    <javac
+      destdir="${build.dir}/classes"
+      source="1.5" debug="on"
+      target="1.5" classpathref="class.path">
+      <src path="${source.dir}" />
+      <include name="com/**" />
+      <include name="name/**" />
+    </javac>
+  </target>
+  
+  <target name="dist" depends="build">
+    <mkdir dir="${dist.dir}"/>
+    <mkdir dir="${dist.dir}/lib"/>
+    <copy todir="${dist.dir}/lib">     
+      <fileset dir="lib/"/> 
+    </copy>
+    <copy file="LICENSE.txt" todir="${dist.dir}" />
+    <copy file="${source.dir}/log4j.properties" todir="${dist.dir}" />
+    <copy file="${source.dir}/repository.properties" todir="${dist.dir}" />
+    <copy todir="${dist.dir}/resources">     
+      <fileset dir="${source.dir}/resources"/> 
+    </copy>
+    
+    <manifestclasspath property="jar.manifest.class.path" jarfile="${dist.dir}/patchdownloader.jar">
+      <classpath refid="jar.class.path" />
+    </manifestclasspath>
+
+    <jar destfile="${dist.dir}/patchdownloader.jar" basedir="${build.dir}/classes">
+      <manifest>      
+        <attribute name="Built-By" value="${user.name}"/> 
+        <attribute name="Specification-Vendor" value="Ruin&amp;Wesen"/>      
+	<attribute name="Specification-Title" value="Patchdownloader"/>
+	<attribute name="Specification-Version" value="0.0.1"/>
+        <attribute name="Implementation-Vendor" value="Ruin&amp;Wesen"/>      
+	<attribute name="Implementation-Title" value="com.ruinwesen.patchdownloader"/>
+	<attribute name="Implementation-Version" value="0.0.1"/>
+
+
+	<attribute name="Main-Class" value="com.ruinwesen.patchdownloader.App"/>   
+	<attribute name="Class-Path" value="${jar.manifest.class.path}"/>    
+      </manifest>
+    </jar>
+  </target>
+  
+  <target name="run" depends="dist">
+    <java jar="${dist.dir}/patchdownloader.jar"
+      dir="${dist.dir}"
+      fork="true"
+      failonerror="true"
+      maxmemory="128m" >
+      <!--
+         <arg value="-h"/>
+         <classpath>
+           <pathelement location="dist/test.jar"/>
+           <pathelement path="${java.class.path}"/>
+         </classpath> -->   
+    </java>
+  </target>
+
+  <!-- creates the javadoc api -->
+  <target name="javadoc">
+    <javadoc
+	packagenames="com.ruinwesen.*,com.csutils.*"
+	sourcepath="${source.dir}"
+	excludepackagenames=""
+	destdir="${javadoc.dir}"
+	author="true"
+	version="true"
+	use="true"
+	windowtitle="PatchDownloader API">    
+	<doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
+	<bottom><![CDATA[<i>Copyright &#169; 2009 Ruin&amp;Wesen All Rights Reserved.</i>]]></bottom>
+	<tag name="todo" scope="all" description="To do:"/>
+	<!-- <group title="Group 1 Packages" packages="com.dummy.test.a*"/>
+	<group title="Group 2 Packages" packages="com.dummy.test.b*:com.dummy.test.c*"/>
+	<link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/" packagelistLoc="C:\tmp"/> -->
+	<link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+    </javadoc>
+  </target>
+  
+</project>
