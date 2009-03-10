@@ -434,7 +434,6 @@ int main(int argc, char *argv[]) {
       break;
 
     case 'l':
-      printf("optarg: %s\n", optarg);
       if (optarg[0] == 'i') {
 	listInputMidiDevices();
       } else {
