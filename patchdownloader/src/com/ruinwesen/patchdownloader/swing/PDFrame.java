@@ -319,7 +319,7 @@ public class PDFrame extends PatchDownloader {
                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (code == JOptionPane.YES_OPTION) {
-            System.err.println(messageA);
+            getLog().error(messageA);
             try {
                 getLuceneIndex().close();
             } catch (CorruptIndexException ex) {

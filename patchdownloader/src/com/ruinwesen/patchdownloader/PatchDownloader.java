@@ -28,7 +28,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
@@ -53,6 +55,7 @@ import com.ruinwesen.patchdownloader.repository.HTTPRepository;
 import com.ruinwesen.patchdownloader.repository.LocalRepository;
 import com.ruinwesen.patchdownloader.repository.RemoteBackupRepository;
 import com.ruinwesen.patchdownloader.repository.StoredPatch;
+import com.ruinwesen.patchdownloader.repository.StoredPatchCollector;
 import com.ruinwesen.patchdownloader.repository.WorkspaceRepository;
 
 public class PatchDownloader {
@@ -137,8 +140,10 @@ public class PatchDownloader {
         return luceneIndex;
     }
     
-    public int getAvailablePatches(Date since) throws IOException {
-        return remoteRepository.listPatches(since).length;
+    public int getAvailablePatches(Date since) {
+        return remoteRepository
+        .collectPatches(new StoredPatchCollector.Counter())
+        .getCount();
     }
     
     private Properties getConfig() throws IOException {
@@ -211,7 +216,8 @@ public class PatchDownloader {
             db = new Properties();
         }
         
-        StoredPatch[] srclist = remoteRepository.listPatches(since);
+        List<StoredPatch> srclist = new ArrayList<StoredPatch>();
+        remoteRepository.collectPatches(new StoredPatchCollector.Collection(srclist),since);
         
         for (StoredPatch patch: srclist) {
             // the target file name, we assume there are no collisions
@@ -324,9 +330,6 @@ public class PatchDownloader {
             luceneIndex.open();
         } catch (LockObtainFailedException ex) {
             this.luceneIndexCorrupted = true;
-            if (getLog().isWarnEnabled()) {
-                getLog().warn("lucene index is corrupted", ex);
-            }
             handleLockObtainFailedOnStartException(ex);
         } catch (CorruptIndexException ex) {
             this.luceneIndexCorrupted = true;
