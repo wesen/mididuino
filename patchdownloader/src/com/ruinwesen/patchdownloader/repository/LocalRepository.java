@@ -22,16 +22,18 @@ package com.ruinwesen.patchdownloader.repository;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.iterator.FileEnumeration;
 import name.cs.csutils.swing.FileFilterFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public abstract class LocalRepository extends Repository {
 
+    private Log log = LogFactory.getLog(LocalRepository.class);
     private File repositoryDir;
     private boolean compressed;
 
@@ -66,12 +68,19 @@ public abstract class LocalRepository extends Repository {
     public File getBaseDir() {
         return repositoryDir;
     }
-    
+
     @Override
-    public StoredPatch[] listPatches() throws IOException {
-        validate();
+    public <C extends StoredPatchCollector> C collectPatches(C collector) {
+        try {
+            validate();
+        } catch (IOException ex) {
+            if (log.isErrorEnabled()) {
+                log.error("validate() failed", ex);
+            }
+            return collector;
+        }
+        
         if (compressed) {
-            List<StoredPatch> list = new ArrayList<StoredPatch>(300);
             Enumeration<File> files = new FileEnumeration(repositoryDir, ".rwp");
             while (files.hasMoreElements()) {
                 File file = files.nextElement();
@@ -79,20 +88,27 @@ public abstract class LocalRepository extends Repository {
                         !repositoryDir.equals(file.getParentFile())) {
                     continue;
                 }
-                list.add(new StoredPatch.JarFilePatch(file));
+                if (!collector.takesMore()) {
+                    break;
+                }
+                collector.collect(this, new StoredPatch.JarFilePatch(file));
             }
-            return list.toArray(new StoredPatch[list.size()]);
         } else {
             File[] files = repositoryDir.listFiles(FileFilterFactory.DirectoriesOnly());
             if (files == null) {
-                throw new IOException("could not retrieve directories");
+                if (log.isErrorEnabled()) {
+                    log.error("could not retrieve directories");
+                    return collector;
+                }
             }
-            List<StoredPatch> list = new ArrayList<StoredPatch>(files.length);
             for (File file: files) {
-                list.add(new StoredPatch.DirectoryPatch(file));
+                if (!collector.takesMore()) {
+                    break;
+                }
+                collector.collect(this, new StoredPatch.DirectoryPatch(file));
             }
-            return list.toArray(new StoredPatch[list.size()]);
         }
+        return collector;
     }
 
     @Override

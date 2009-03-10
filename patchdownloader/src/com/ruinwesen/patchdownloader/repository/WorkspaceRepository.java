@@ -20,6 +20,7 @@
 package com.ruinwesen.patchdownloader.repository;
 
 import java.io.File;
+import java.io.IOException;
 
 public class WorkspaceRepository extends LocalRepository {
 
@@ -30,5 +31,5 @@ public class WorkspaceRepository extends LocalRepository {
     public WorkspaceRepository() {
         super(false);
     }
-    
+
 }

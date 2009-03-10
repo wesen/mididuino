@@ -25,9 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 
 import name.cs.csutils.CSUtils;
@@ -35,6 +33,7 @@ import name.cs.csutils.net.CSHttpGet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.ClientProtocolException;
 
 public class HTTPRepository extends Repository {
 
@@ -120,26 +119,38 @@ public class HTTPRepository extends Repository {
 
 
     @Override
-    public StoredPatch[] listPatches() throws IOException {
-        return listPatches(null);
+    public <C extends StoredPatchCollector> C collectPatches(C collector) {
+        return collectPatches(collector, null);
     }
 
-    public StoredPatch[] listPatches(Date since) throws IOException {
+    public <C extends StoredPatchCollector> C collectPatches(C collector, Date since) {
         String requestURL = since != null 
             ? getRequestPatchesSinceRequestURL(since)
             : getRequestPatchesAllRequestURL();
-        String patchListText = new CSHttpGet().get(requestURL);
+        String patchListText;
+        try {
+            patchListText = new CSHttpGet().get(requestURL);
+        } catch (ClientProtocolException ex) {
+            if (log.isErrorEnabled()) {
+                log.error("could not get url: "+requestURL, ex);
+            }
+            return collector;
+        } catch (IOException ex) {
+            log.error("could not get url: "+requestURL, ex);
+            return collector;
+        }
         
         String[] pathList = patchListText.split("[\r\n]+");
-        List<StoredPatch> result = new ArrayList<StoredPatch>(pathList.length);
         for (String path: pathList) {
             path = path.trim();
-            if (path.length() == 0) {
-                continue; // empty line
+            if (path.length() > 0) { // not an empty line
+                if (!collector.takesMore()) {
+                    break;
+                }
+                collector.collect(this, new StoredPatch.Remote(path));
             }
-            result.add(new StoredPatch.Remote(path));
         }
-        return result.toArray(new StoredPatch[result.size()]);
+        return collector;
     }
 
     public void export(StoredPatch patch, File dst) throws IOException {
@@ -171,5 +182,5 @@ public class HTTPRepository extends Repository {
         CSHttpGet httpget = new CSHttpGet();
         httpget.get(patch.getPath(), out);
     }
-    
+
 }
