@@ -48,7 +48,7 @@
       <fileset dir="lib/"/> 
     </copy>
     <copy file="LICENSE.txt" todir="${dist.dir}" />
-    <copy file="${source.dir}/log4j.properties" todir="${dist.dir}" />
+    <copy file="${source.dir}/log4j-dist.properties" tofile="${dist.dir}/log4j.properties" />
     <copy file="${source.dir}/repository.properties" todir="${dist.dir}" />
     <copy todir="${dist.dir}/resources">     
       <fileset dir="${source.dir}/resources"/> 
