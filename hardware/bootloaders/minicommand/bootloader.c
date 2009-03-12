@@ -291,6 +291,8 @@ int main() {
   asm("wdr");
   wdt_disable();
 
+  DDRE = 0xFF;
+  
   MCUCR = _BV(IVCE) | _BV(IVSEL);
 
   /* init uart */
@@ -301,6 +303,7 @@ int main() {
   UCSR0C = (3<<UCSZ00); 
   UCSR0B = _BV(RXEN) | _BV(TXEN);
 
+  /* sr init */
   sr165_init();
   
   lcd_init();
@@ -330,6 +333,7 @@ int main() {
     if (UART_CHECK_RX()) {
       uint8_t c = bl_uart_getc();
       handle_midi(c);
+      //      bl_uart_putc(c);
     }
   }
 }
