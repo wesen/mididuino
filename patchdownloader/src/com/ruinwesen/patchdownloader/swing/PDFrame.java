@@ -51,7 +51,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.UIManager.LookAndFeelInfo;
-import name.cs.csutils.CSUtils;
 import name.cs.csutils.FileFilterFactory;
 import name.cs.csutils.I18N;
 import name.cs.csutils.Platform;
@@ -121,7 +120,13 @@ public class PDFrame extends PatchDownloader {
     }
     
     protected void createFrame() {
-        this.frame = new JFrame("Patchdownloader "+PatchdownloaderVersion());
+        String title = "Patchdownloader "+PatchDownloader.Version();
+        if (PatchDownloader.isDebugModeOn()) {
+            title += " - Build id: "+PatchDownloader.BuildNumber();
+            title += " - Build time: "+PatchDownloader.BuildTimestamp();
+        }
+        
+        this.frame = new JFrame(title);
         this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new PDWindowListener());
         frame.setLayout(new BorderLayout());
@@ -395,9 +400,9 @@ static int doccounter = 0;
     }
 
     @RedirectActionMeta(title="About Patchdownloader",
-            resourcekey="menu.help.about-patchdownloader")
+            resourcekey="aboutdialog")
     public void showAboutDialog() {
-        throw CSUtils.NotImplementedYet();
+        new AboutDialog(frame).show();
     }
 
     @RedirectActionMeta(title="Update Repository...",
