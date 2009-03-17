@@ -1,24 +1,34 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package name.cs.csutils;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -40,8 +50,7 @@ import java.util.Iterator;
 
 import javax.swing.JComponent;
 
-import name.cs.csutils.platform.Platform;
-import name.cs.csutils.platform.Platform.OS;
+import name.cs.csutils.Platform.OS;
 
 public class CSUtils {
     
@@ -49,7 +58,67 @@ public class CSUtils {
 
     private static final
         SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+
+    public static String limitString(String str, int maxlen) {
+        return limitString(str, maxlen, "...");
+    }
     
+    public static String limitString(String str, int maxlen, String limitSuffix) {
+        if (str.length()<=maxlen) {
+            return str;
+        }
+        if (limitSuffix == null) {
+            limitSuffix = EMPTY_STRING;
+        }
+        return str.substring(0, Math.max(0,Math.min(str.length()-3,maxlen)))+limitSuffix; 
+    }
+
+    private static int colorComponent(float value) {
+        return Math.max(0, Math.min(255, (int)value));
+    }
+    
+    public static Color newColor(Color c, float factor) {
+        return new Color(colorComponent(c.getRed()*factor), 
+            colorComponent(c.getGreen()*factor),
+            colorComponent(c.getBlue() *factor));
+    }
+
+    public static Color change(Color c, float factor) {
+        return new Color(
+                colorComponent(c.getRed()+0xFf*factor*2-0xFf),
+                colorComponent(c.getGreen()+0xFf*factor*2-0xFf),
+                colorComponent(c.getBlue()+0xFf*factor*2-0xFf));
+    }
+
+    public static Color change(Color c, float rfactor, float gfactor, float bfactor) {
+        return new Color(
+                colorComponent(c.getRed()+0xFf*rfactor*2-0xFf),
+                colorComponent(c.getGreen()+0xFf*gfactor*2-0xFf),
+                colorComponent(c.getBlue()+0xFf*bfactor*2-0xFf));
+    }
+
+    public static String toHTMLColor(Color c) {
+        return "#"+Integer.toHexString(c.getRGB()).substring(2);
+    }
+    
+    /**
+     * Returns the last path component of the specified path.
+     * The components are separated using the slash character '/'
+     * or the '\' character.
+     * @param path the path
+     * @return the last path component of the specified path
+     */
+    public static String getLastPathComponent(String path) {
+        int separator = Math.max(path.lastIndexOf('/'),path.lastIndexOf('\\'));
+        if (separator>=0) { // keep name if it contains only a single separator
+            if (separator == path.length()-1) { // path ends with separator which is no good
+                return getLastPathComponent(path.substring(0, path.length()-1));
+            }
+            return path.substring(separator+1);
+        }
+        return path;
+    }
+
     public static File getApplicationConfigDir(String name) {
         File userhome = new File(System.getProperty("user.home"));
         if (Platform.isFlavor(OS.UnixFlavor) || Platform.isFlavor(OS.MacOSFlavor)) {
@@ -129,7 +198,7 @@ public class CSUtils {
         return cal.getTime();*/
     }
         
-    public static String join(String delimiter, Object ... values) {
+    public static <T> String join(String delimiter, T ... values) {
         if (delimiter == null) {
             delimiter = EMPTY_STRING;
         }
@@ -271,5 +340,5 @@ public class CSUtils {
         int idx = name.lastIndexOf('.');
         return idx<0 ? name : name.substring(0, idx);
     }
-    
+
 }
