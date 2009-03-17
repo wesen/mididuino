@@ -1,21 +1,30 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.ruinwesen.patchdownloader.patch;
 
@@ -27,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +54,7 @@ import name.cs.csutils.CSUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -329,6 +340,9 @@ public class XMLPatchMetadata implements PatchMetadata {
         setLastModifiedDate(metadata.getLastModifiedDate());
         setComment(metadata.getComment());
         setTags(metadata.getTags());
+        for (Map.Entry<String,String> entry:metadata.getPaths().entrySet()) {
+            setPath(entry.getKey(), entry.getValue());
+        }
         // we don't take the format version value
     }
 
@@ -348,14 +362,14 @@ public class XMLPatchMetadata implements PatchMetadata {
             for (int i=0;i<list.getLength();i++) {
                 Node node = list.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE &&
-                        EL_TAG.equals(node.getNodeValue())) {
-                    String tag = convertEmptyString(((Element)node).getNodeValue(), null);
+                        EL_TAG.equals(node.getNodeName())) {
+                    String tag = convertEmptyString(((Element)node).getTextContent(), null);
                     if (tag != null) {
                         set.add(tag);
                     }
                 }
             }
-        }
+        }  
         return set;
     }
 
@@ -413,24 +427,26 @@ public class XMLPatchMetadata implements PatchMetadata {
     @Override
     public Map<String, String> getPaths() {
         if (cachedPaths != null) {
-            return cachedPaths;
+            return Collections.unmodifiableMap(new HashMap<String,String>(cachedPaths));
         }
         Map<String,String> paths = new HashMap<String, String>();
         NodeList list = doc.getDocumentElement().getChildNodes();
         for (int i=0;i<list.getLength();i++) {
             Node node = list.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE &&
-                    EL_PATH.equals(node.getNodeValue())) {
+                    EL_PATH.equals(node.getNodeName())) {
                 Element elem = (Element) node;
-                String name = elem.getAttribute(ATT_PATH_NAME);
-                String path = elem.getTextContent();
-                if (name != null && path != null) {
-                    paths.put(name, path);
+                String name = getAttr(elem,ATT_PATH_NAME);
+                if (name != null) {
+                    String path = elem.getTextContent();
+                    if (path != null) {
+                        paths.put(name, path);
+                    } 
                 }
             }
         }
         cachedPaths = paths;
-        return paths;
+        return Collections.unmodifiableMap(new HashMap<String,String>(cachedPaths));
     }
 
     @Override
@@ -438,9 +454,9 @@ public class XMLPatchMetadata implements PatchMetadata {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        
+
         if (cachedPaths != null) {
-            if (name == null) {
+            if (path == null) {
                 cachedPaths.remove(name);
             } else {
                 cachedPaths.put(name, path);
@@ -450,11 +466,13 @@ public class XMLPatchMetadata implements PatchMetadata {
         for (int i=0;i<list.getLength();i++) {
             Node node = list.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE &&
-                    EL_PATH.equals(node.getNodeValue())) {
+                    EL_PATH.equals(node.getNodeName())) {
                 Element elem = (Element) node;
-                String currentname = elem.getAttribute(ATT_PATH_NAME);
-                if (name.equals(currentname)) {
+                
+                String attr = getAttr(elem,ATT_PATH_NAME);
+                if (attr != null && name.equals(attr)) {
                     elem.setTextContent(path);
+                    System.out.print("settextcontent:"+elem.getTextContent());
                     return;
                 }
             }
@@ -463,7 +481,19 @@ public class XMLPatchMetadata implements PatchMetadata {
         // create new path element
         Element elemPath = doc.createElement(EL_PATH);
         elemPath.setTextContent(path);
+        elemPath.setAttribute(ATT_PATH_NAME, name);
         doc.getDocumentElement().appendChild(elemPath);
+    }
+    
+    private String getAttr(Element elem,String name) {
+        NamedNodeMap map = elem.getAttributes();
+        for (int i=0;i<map.getLength();i++) {
+            Node node = map.item(i);
+            if (name.equals(node.getNodeName())) {
+                return node.getNodeValue();
+            }
+        }
+        return null;
     }
     
      
