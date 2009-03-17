@@ -1,21 +1,30 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package name.cs.csutils.directoryreader;
 
@@ -41,7 +50,28 @@ public abstract class DirectoryReader {
     public DirectoryReader() {
         super();
     }
-    
+
+    /**
+     * Returns true if the specified path points to a directory, otherwise false.
+     * @param path a path
+     * @return true if the specified path points to a directory
+     */
+    public boolean isDirectory(String path) {
+        Enumeration<? extends Entry> enumeration = entryEnumeration(path);
+        return enumeration.hasMoreElements() && enumeration.nextElement().isDirectory();
+    }
+
+    /**
+     * Returns true if the specified path points to a file, otherwise false.
+     * @param path a path
+     * @return true if the specified path points to a file
+     */
+    public boolean isFile(String path) {
+        Enumeration<? extends Entry> enumeration = entryEnumeration(path);
+        return enumeration.hasMoreElements() && enumeration.nextElement().isFile();
+    }
+
+
     /**
      * Returns all files and directories.
      * @return all files and directories
@@ -99,6 +129,16 @@ public abstract class DirectoryReader {
     public abstract InputStream open(Entry entry) throws IOException;
     
     /**
+     * Returns the full path for the specified argument. If the operation
+     * is not possible it returns the path argument.
+     * @param path a path
+     * @return the full path for the specified argument
+     */
+    protected String resolvePath(String path) {
+        return path;
+    }
+    
+    /**
      * Opens a stream to read the contents of the file at the specified path.
      * 
      * @param path the path name of the file
@@ -109,11 +149,11 @@ public abstract class DirectoryReader {
     public InputStream open(String path) throws IOException {
         Enumeration<? extends Entry> enumeration = entryEnumeration(path);
         if (!enumeration.hasMoreElements()) {
-            throw new FileNotFoundException("file not found: "+path);
+            throw new FileNotFoundException("file not found: "+resolvePath(path));
         }
         Entry entry = enumeration.nextElement();
         if (!entry.isFile()) {
-            throw new FileNotFoundException("not a file: "+path);
+            throw new FileNotFoundException("not a file: "+resolvePath(path));
         }
         return open(entry);
     }
@@ -129,11 +169,11 @@ public abstract class DirectoryReader {
     public void copyFile(String path, File target) throws IOException {
         Enumeration<? extends Entry> enumeration = entryEnumeration(path);
         if (!enumeration.hasMoreElements()) {
-            throw new FileNotFoundException("file not found: "+path);
+            throw new FileNotFoundException("file not found: "+resolvePath(path));
         }
         Entry entry = enumeration.nextElement();
         if (!entry.isFile()) {
-            throw new FileNotFoundException("not a file: "+path);
+            throw new FileNotFoundException("not a file: "+resolvePath(path));
         }
         transfer(target, entry, null);
     }
@@ -184,7 +224,7 @@ public abstract class DirectoryReader {
             if (entry.isDirectory()) {
                 // replicate the directory
                 File newDir = new File(targetDirectory, entry.getPath()); 
-                if (!newDir.mkdirs()) {
+                if (!newDir.exists() && !newDir.mkdirs()) {
                     throw new IOException("could not create directory: "
                             +newDir.getAbsolutePath());
                 }
@@ -244,15 +284,19 @@ public abstract class DirectoryReader {
                 inputStream.close();
             }
         } finally {
+            out.flush();
             out.close();
         }
         return buffer;
     }
     
-    
     /* TODO
     public void copyTo(ZipOutputStream out, String path, boolean relativePaths) {
         new ZipEntry()
     }*/
-    
+
+    public void close() throws IOException {
+        // no op
+    }
+
 }
