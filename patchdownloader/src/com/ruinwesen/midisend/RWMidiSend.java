@@ -1,31 +1,48 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.ruinwesen.midisend;
 
-import java.io.BufferedReader;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+
+import name.cs.csutils.CSUtils;
+import name.cs.csutils.Platform;
+import name.cs.csutils.StringInputBuffer;
+import name.cs.csutils.Platform.OS;
 
 import org.apache.log4j.Logger;
 
@@ -54,9 +71,7 @@ public class RWMidiSend extends MidiSend {
     /**
      * The midi-send command.
      */
-    private String command =
-        "/home/christian/dev/mididuino/mididuino-read-only/hardware/tools/mididuino/"+
-        "midi-send";
+    private String command = null;
     
     /**
      * The input device.
@@ -67,6 +82,53 @@ public class RWMidiSend extends MidiSend {
      * The output device.
      */
     private RWMidiDevice output;
+    
+    private String getCommand(boolean locate) throws MidiSendException {
+        if (command != null) {
+            return command;
+        }
+        if (locate) {
+            File file;
+            try {
+                file = locateMidiSend();
+                command = file.getCanonicalPath();
+            } catch (IOException ex) {
+                throw new MidiSendException("could not locate midi-send", ex);
+            }
+            if (command != null && getLog().isDebugEnabled() ) {
+                getLog().debug("midi-send located at: "+command);
+            }
+        }
+        return command;
+    }
+    
+    public File locateMidiSend() throws FileNotFoundException {
+        final String PATH;
+        if (Platform.isFlavor(OS.UnixFlavor)) {
+            PATH = "/midi-send/unix/midi-send";
+        } else if (Platform.isFlavor(OS.MacOSFlavor)) {
+            PATH = "/midi-send/mac/midi-send";
+        } else if (Platform.isFlavor(OS.WindowsFlavor)) {
+            PATH = "/midi-send/windowsx/midi-send.exe";
+        } else {
+            throw new FileNotFoundException("midi-send is not available on your platform");
+        }
+        
+        URL locationURL = getClass().getResource(PATH);
+        if (locationURL == null) {
+            throw new FileNotFoundException("could not locate midi-send at: "+PATH);
+        }
+        File file;
+        try {
+            file = new File(locationURL.toURI());
+        } catch (URISyntaxException ex) {
+            throw new FileNotFoundException("could not locate midi-send at:"+PATH+" ("+ex.getMessage()+")");
+        }
+        if (!file.exists()) {
+            throw new FileNotFoundException("could not validate midi-send location at:"+file.getAbsolutePath());
+        }
+        return file;
+    }
     
     @Override
     public void setOutputDevice(MidiDevice device) {
@@ -102,11 +164,13 @@ public class RWMidiSend extends MidiSend {
         return this.input;
     }
 
+    @Override
     public List<MidiDevice> getOutputDeviceList()
         throws MidiSendException {
         return getDeviceList(false);
     }
 
+    @Override
     public List<MidiDevice> getInputDeviceList()
         throws MidiSendException {
         return getDeviceList(true);
@@ -156,11 +220,12 @@ public class RWMidiSend extends MidiSend {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void send(byte[] data, int fromIndex, int toIndex)
         throws MidiSendException {
         // reuse the argument testing of the parent class
         super.send(data, fromIndex, toIndex);
-        int length = toIndex-fromIndex;
+        final int length = toIndex-fromIndex;
         if (length == 0) {
             throw new MidiSendException("no data");
         }
@@ -169,10 +234,27 @@ public class RWMidiSend extends MidiSend {
         File tempFile;
         try {
             tempFile = File.createTempFile("midi", ".bin");
-            tempFile.deleteOnExit();
         } catch (IOException ex) {
             throw new MidiSendException("could not create temporary file", ex);
         }
+        
+        OutputStream out = null;
+        try {
+            out = new BufferedOutputStream(new FileOutputStream(tempFile));
+            out.write(data, fromIndex, length);
+            out.flush();
+        } catch (IOException ex) {
+            throw new MidiSendException("could not write temporary file: "+tempFile.getAbsolutePath(), ex);
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    // no op
+                }
+            }
+        }
+        
         // then send the file
         try {
             send(tempFile);
@@ -183,52 +265,100 @@ public class RWMidiSend extends MidiSend {
         }
     }
 
+    private String parseAlsaName(String name) {
+        int idx = name.indexOf(')');
+        if (idx>0) return name.substring(0, idx);
+        return name;
+    }
+    
     /**
      * {@inheritDoc}
      */
+    @Override
     public void send(File file) throws MidiSendException, FileNotFoundException {
         ensureDevicesAreSet();
-        ensureCommandIsSet();
         if (!file.exists()) {
             throw new FileNotFoundException(file.getAbsolutePath());
+        }
+        String cmd = getCommand(true);
+
+        String inputArg = Integer.toString(input.index);
+        String outputArg = Integer.toString(output.index);
+        
+        if (getLog().isDebugEnabled()) {
+            getLog().debug("midi-in:"+input+", midi-out:"+output);
+        }
+        
+        if (Platform.isFlavor(OS.UnixFlavor)) {
+            // midi-send fix for linx/alsa
+            inputArg = parseAlsaName(input.getName());
+            outputArg = parseAlsaName(output.getName());
+
+            if (getLog().isDebugEnabled()) {
+                getLog().debug("Decoding alsa device names. midi-in:"+inputArg+", midi-out:"+outputArg);
+            }
         }
 
         boolean interrupted = false;    
         // create the process
         Process process;
+        String[] commandArgs; 
         try {
-        process = Runtime.getRuntime().exec( new String[] {
-                command, "-i",Integer.toString(input.index),
-                "-o",Integer.toString(output.index), 
-                file.getCanonicalPath()} );
+            //File midisendFile = new File(command);
+            //File midisendDir = midisendFile.getParentFile();
+            commandArgs = new String[] {
+                    cmd, "-i",inputArg,
+                    "-o",outputArg,"-b", 
+                    "-I0x40",
+                    file.getCanonicalPath()};
+            
+            if (getLog().isDebugEnabled()) {
+                getLog().debug("Invoking midi-send:"+CSUtils.join(" ", (String[])commandArgs));
+            }
+            
+        process = new ProcessBuilder(commandArgs).start();
+        //Runtime.getRuntime().exec( command );
         } catch (IOException ex) {
             throw new MidiSendException(
                     "midi-send:send(File) failed, could start process", ex);
         }
-        try {  
-            int status;
-            while (true) {
-                try {
-                    status = process.waitFor();
-                    break;
-                } catch (InterruptedException ex) {
-                    interrupted = true;                
-                    // fall through and retry
+        StringInputBuffer stderrBuffer = new StringInputBuffer(process.getErrorStream());
+        StringInputBuffer stdoutBuffer = new StringInputBuffer(process.getInputStream());
+        try {
+            stderrBuffer.start();
+            stdoutBuffer.start();
+            try {
+                int status = waitFor(process);
+                if (isErrorStatus(status)) {
+                    throw new MidiSendException(
+                            "midi-send:send(File) failed, return status:"+status
+                            +stderrBuffer.getOutput());
                 }
-            }
-            if (isErrorStatus(status)) {
-                throw new MidiSendException(
-                        "midi-send:send(File) failed, return status:"+status
-                        +err(process));
+            } catch (InterruptedException ex) {
+                interrupted = true;
             }
         } finally {
+            try {
+                stderrBuffer.close();
+            } catch (IOException ex) {
+                if (getLog().isDebugEnabled()) {
+                    getLog().debug("error closing stderrBuffer", ex);
+                }
+            }
+            try {
+                stdoutBuffer.close();
+            } catch (IOException ex) {
+                if (getLog().isDebugEnabled()) {
+                    getLog().debug("error closing stdoutBuffer", ex);
+                }
+            }
             process.destroy();
             if (interrupted) {
                 Thread.currentThread().interrupt();
             }
         }
     }
-
+    
     /**
      * Returns a list containing either all input devices or all output devices.
      * 
@@ -240,46 +370,35 @@ public class RWMidiSend extends MidiSend {
     public List<MidiDevice> getDeviceList(boolean inputs)
         throws MidiSendException {
 
-        ensureCommandIsSet();
+        String cmd = getCommand(true);
 
-        Process process;
-        try {
-            process = Runtime.getRuntime().exec(
-                new String[] {command,"-l", inputs?"i":"o"});
-        } catch (IOException ex) {
-            throw new MidiSendException(
-            "midi-send:getDeviceList() failed, could start process", ex);
-        }
+        Process process = null;
         boolean interrupted = false;
         List<MidiDevice> list = new LinkedList<MidiDevice>();
+        StringInputBuffer processInput = null;
         try {
-            int status;
-            while (true) {
-                try {
-                    status = process.waitFor();
-                    break;
-                } catch (InterruptedException ex) {
-                    interrupted = true;                
-                    // fall through and retry
-                }
-            }
-            if (isErrorStatus(status)) {
+            try {
+                process = new ProcessBuilder(new String[] {
+                        cmd,"-l", inputs?"i":"o"}).start();
+            } catch (IOException ex) {
                 throw new MidiSendException(
-                        "midi-send:getDeviceList() failed, status:"+status
-                        +err(process));
-            }
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
-            String line;
-            while (true) {
-                try {
-                    if ((line=reader.readLine())==null) break;
-                } catch (IOException ex) {
-                    getLog()
-                    .error("reading from the process input stream failed", ex);
-                    break;
+                "midi-send:getDeviceList() failed, could start process", ex);
+            } 
+            processInput = new StringInputBuffer(process.getInputStream());
+            try {
+                int status = waitFor(process);
+                if (status != 0) {
+                    throw new MidiSendException(
+                    "midi-send:getDeviceList() failed, exit status "+status+"\n"+err(process));
                 }
-                if (line.indexOf("optarg")>=0) {
+            } catch (InterruptedException ex) {
+                interrupted = true;
+            }
+          
+            processInput.run();
+            String text = processInput.getOutput();
+            for (String line: text.split("[\\n\\r]+")) {
+                if (line.indexOf("optarg")>=0||line.trim().length()==0) {
                     // workaround for midi-send debug output
                     continue;
                 }
@@ -287,13 +406,41 @@ public class RWMidiSend extends MidiSend {
             }
             return list;
         } finally {
-            process.destroy();
+            if (processInput != null) {
+                try {
+                    processInput.close();
+                } catch (IOException ex) {
+                    if (getLog().isDebugEnabled()) {
+                        getLog().debug("could not close process input buffer", ex);
+                    }
+                }
+            }
+            if (process != null)
+                process.destroy();
             if (interrupted) {
                 Thread.currentThread().interrupt();
             }
         }
     }
 
+    private static int waitFor(Process process) 
+        throws MidiSendException, InterruptedException {
+        final long resolution = 100;
+        long timeout = 10000;
+        while (true) {
+            try {
+                return process.exitValue();
+            } catch (IllegalThreadStateException ex) {
+                // ignorable
+            }
+            Thread.sleep(resolution);
+            timeout  -= resolution;
+            if (timeout<=0) {
+                throw new MidiSendException("process did not respond");
+            }
+        }
+    }
+    
     /**
      * Returns the error output of the process.
      * 
@@ -301,22 +448,9 @@ public class RWMidiSend extends MidiSend {
      * @return the error output of the process
      */
     private String err(Process process) {
-        BufferedReader reader = 
-            new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        StringBuilder sb = null;
-        try {
-            String line;
-            int lineno = 0;
-            while ((line=reader.readLine())!=null) {
-                if (sb == null) sb = new StringBuilder();
-                if (lineno++ == 0) sb.append('\n');
-                sb.append(line);
-            }
-        } catch (IOException ex) {
-            getLog().error("error while reading stderr of the process "+
-                    process, ex);
-        }
-        return sb == null ? "" : sb.toString();
+        StringInputBuffer buf = new StringInputBuffer(process.getErrorStream());
+        buf.run();
+        return buf.getOutput();
     }
 
     /**
@@ -349,6 +483,8 @@ public class RWMidiSend extends MidiSend {
          * The device name.
          */
         String name;
+        
+        private String prettyName;
         
         /**
          * Creates the midi device info.
@@ -390,10 +526,46 @@ public class RWMidiSend extends MidiSend {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String toString() {
-            return getName();
+            if (prettyName == null) {
+                String name = getName().trim();
+                StringBuilder sb = new StringBuilder();
+                boolean previousCharWasWhitespace = false;
+                for (int i=0;i<name.length();i++) {
+                    char ch = name.charAt(i);
+                    if (Character.isWhitespace(ch)) {
+                        if (!previousCharWasWhitespace) {
+                            sb.append(' ');
+                            previousCharWasWhitespace = true;
+                        }
+                    } else {
+                        sb.append(ch);
+                        previousCharWasWhitespace = false;
+                    }
+                }
+                prettyName = sb.toString();
+            }
+            
+            return prettyName;
         }
 
+        @Override
+        public int hashCode() {
+            return name.hashCode();
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) return false;
+            if (o == this) return true;
+            if (getClass().equals(o.getClass())) {
+                RWMidiDevice dev = (RWMidiDevice) o;
+                return input == dev.input && index == dev.index && name.equals(dev.name); 
+            }
+            return false;
+        }
+        
     }
     
 }
