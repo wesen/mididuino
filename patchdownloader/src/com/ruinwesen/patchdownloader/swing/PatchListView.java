@@ -1,169 +1,232 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.ruinwesen.patchdownloader.swing;
 
 import java.awt.Component;
-import java.io.IOException;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.SwingUtilities;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.Timer;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.HitCollector;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searcher;
+import name.cs.csutils.I18N;
 
-import com.ruinwesen.patchdownloader.PatchDownloader;
-import com.ruinwesen.patchdownloader.lucene.LuceneIndex;
-import com.ruinwesen.patchdownloader.patch.PatchDocument;
+import com.ruinwesen.patchdownloader.indexer.Doc;
+import com.ruinwesen.patchdownloader.indexer.Query;
 import com.ruinwesen.patchdownloader.patch.PatchMetadata;
+import com.ruinwesen.patchdownloader.repository.StoredPatch;
 
-public class PatchListView {
+public class PatchListView implements ListSelectionListener {
 
+    private JComponent container;
     private JList listView;
-    private LuceneIndex luceneIndex;
-    private IndexSearcher searcher = null;
-    private Query query;
-    private SearchHitsListModel listmodel;
+    private PDFrame patchdownloader;
+    private Timer listSelectionTimer;
+    private long lastSelectionEventTime = 0;
+    private long acceptSelectionEventDelay = 250; // 1/2 second until a selection is 'accepted'
+    private JLabel headerTitleLabel;
+    private int minCellWidth = 200;
+    private LargeListModel<Doc,List<Doc>> listmodel;
+    private int patchResultCounter = 0;
+    private PatchCellRenderer cellRenderer;
     
-    public PatchListView() {
+    public PatchListView(PDFrame patchdownloader) {
         super();
+        this.patchdownloader = patchdownloader;
+        
+        listSelectionTimer = new Timer(0, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (isSelectionTimeAccepted()) {
+                    listSelectionTimer.stop();
+                    notifySelectionTimeAccepted();
+                }
+            }  
+            });
+        listSelectionTimer.setDelay(100);
+        listSelectionTimer.setCoalesce(true);
+        listSelectionTimer.setInitialDelay(100);
+        listSelectionTimer.setRepeats(true);
+        
         init();
-        this.luceneIndex = PatchDownloader.getSharedInstance().getLuceneIndex();
-    }
-    
-    private void init() {
-        listmodel = new SearchHitsListModel();
-        listView = new JList(listmodel);
-        //Font font = CSUtils.changeFontSize(UIManager.getFont("TextPane.font"), 0.8f);
-        // listView.setFont(font); 
-    }
-    
-    public JComponent getComponent() {
-        return listView;
     }
     
     public void setQuery(Query query) {
-        this.query = query;
-        if (query != null) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    performSearch();
-                }
-            });
-        }
+        cellRenderer.setQuery(query);
     }
     
-    protected void performSearch() {
-        if (query == null) {
+    public LargeListModel<Doc, List<Doc>> getListModel() {
+        return listmodel;
+    }
+    
+    private void updateTitleLabel() {
+        String text =  I18N.format("translation.patchlistview.headerlabel",
+                "Patches (%d)", patchResultCounter);
+        headerTitleLabel.setText(text);
+    }
+    
+    private void notifySelectionTimeAccepted() {
+        if (listSelectionTimer.isRunning()) {
             return;
         }
-        // clean up
-        if (searcher != null) {
-            try {
-                searcher.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            searcher = null;
-        }
-        
-        IndexReader reader;
-        try {
-            reader = luceneIndex.newIndexReader();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
-        }
-       
-        
-        this.searcher = new IndexSearcher(reader);
-        
-        // now create new listmodel and renderer and ...
-        listmodel = new SearchHitsListModel();
-        listView.setModel(listmodel);
-        listView.setCellRenderer(new IndexedPatchListCellRenderer(searcher));
-        
-        try {
-            searcher.search(query, listmodel.createHitCollector());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private static class IndexedPatch {
-        int docid;
-        float score;
-
-        public IndexedPatch(int docid) {
-            this.docid = docid;
-            this.score = -1;
-        }
-        
-        public IndexedPatch(int docid, float score) {
-            this.docid = docid;
-            this.score = score;
-        }
-    }
-    
-    private static class PutHitsIntoListModel extends HitCollector {
-        private SearchHitsListModel model;
-
-        public PutHitsIntoListModel(SearchHitsListModel model) {
-            this.model = model;
-        }
-
-        @Override
-        public void collect(int doc, float score) {
-            model.put(this, new IndexedPatch(doc, score));
-        }
-    }
-    
-    private static class SearchHitsListModel extends DefaultListModel {
-        
-        public HitCollector createHitCollector() {
-            return new PutHitsIntoListModel(this);
-        }
-        
-        public void put(PutHitsIntoListModel putter, IndexedPatch patch) {
-            addElement(patch);
-        }
-        
-    }
-    
-    private static class IndexedPatchListCellRenderer extends DefaultListCellRenderer {
-
-        private Searcher searcher;
-
-        public IndexedPatchListCellRenderer(Searcher searcher) {
-            this.searcher = searcher;
+        PatchDetailsView details = patchdownloader.getPatchDetailsView();
+        int index = listView.getSelectedIndex();
+        if (index<0 || index>=listmodel.getSize()) {
+            details.setPatch(null, null);
+        } else {
+            Doc patch = listmodel.getElementAt(index);
+            File file = new File(patchdownloader.getRemoteRepositoryBackup().getBaseDir(), patch.path());
+            
+            PatchMetadata metadata = patchdownloader.getMetadataCache().getMetadata(patch, true);
+            details.setPatch(new StoredPatch.JarFilePatch(file), metadata);
             
         }
+    }
+    
+    private void notifySelectionChanged() {
+        lastSelectionEventTime = System.currentTimeMillis();
+        if (!listSelectionTimer.isRunning()) {
+            listSelectionTimer.start(); 
+        }
+    }
+    
+    private boolean isSelectionTimeAccepted() {
+        return System.currentTimeMillis() > lastSelectionEventTime+acceptSelectionEventDelay;
+    }
+    
+    private void init() {
+        listmodel = new LargeListModel<Doc, List<Doc>>(new ArrayList<Doc>());
+        listView = new JList(listmodel);
+        cellRenderer = new PatchCellRenderer(patchdownloader.getMetadataCache());
+        listView.setCellRenderer(cellRenderer);
+        listView.addListSelectionListener(this);
+        //Font font = CSUtils.changeFontSize(UIManager.getFont("TextPane.font"), 0.8f);
+        // listView.setFont(font); 
+        container = new JPanel(new BorderLayout());
+
+        HeaderPaneBuilder hpb = new HeaderPaneBuilder("Patches");
+        this.headerTitleLabel = hpb.headerTitleLabel;
         
+        updateTitleLabel();
+        JScrollPane listViewScroller = new JScrollPane(listView); 
+        container.add(hpb.headerPane, BorderLayout.NORTH);
+        container.add(listViewScroller, BorderLayout.CENTER);
+
+        SearchBar topBar;
+        topBar = new SearchBar(patchdownloader);
+        container.add(topBar.getContainer(), BorderLayout.SOUTH);
+
+        // TODO don't use this approximation because different fonts
+        // require a different cell height 
+        
+        Font listViewFont = listView.getFont();
+        FontMetrics metrics = listView.getFontMetrics(listViewFont);
+        
+        int[] widths = metrics.getWidths();
+        int maxCharWidth = 6;
+        for (int w: widths)
+            maxCharWidth = Math.max(maxCharWidth, w);
+        
+        minCellWidth = maxCharWidth*20;
+        
+        
+        
+        listView.setFixedCellHeight((int)(metrics.getHeight()*4
+                +metrics.getLeading()+metrics.getAscent()+
+                metrics.getDescent())); 
+        // TODO set the fixed cell width depending on the component width
+        listViewScroller.addComponentListener(new FixedCellWidthUpdater());
+        updateListViewFixedCellWidth();
+        
+    }
+    
+    private void updateListViewFixedCellWidth() {
+        Component parent = listView.getParent();
+        if (parent != null && parent instanceof JComponent) {
+            Insets insets = ((JComponent)parent).getInsets();
+            int w = parent.getWidth()-insets.left-insets.right;
+            insets = listView.getInsets(insets);
+            w += -insets.left-insets.right;
+
+            listView.setFixedCellWidth(Math.max(minCellWidth,w));
+        } else {
+            Insets insets = listView.getInsets();
+            listView.setFixedCellWidth(Math.max(minCellWidth,listView.getWidth()-insets.left-insets.right));
+        }
+    }
+    
+    private class FixedCellWidthUpdater extends ComponentAdapter {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            updateListViewFixedCellWidth();
+        }
+    }
+    
+    public JComponent getComponent() {
+        return container;
+    }
+    
+    public void setPatchResultCounter(int newcount) {
+        if (newcount != patchResultCounter) {
+            patchResultCounter = newcount;
+            updateTitleLabel();
+        }
+    }
+    
+    public int getPatchResultCounter() {
+        return patchResultCounter;
+    }
+    
+    /*
+    private class IndexedPatchListCellRenderer extends DefaultListCellRenderer {
+
+        private StringBuilder html = new StringBuilder();
+        private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        
+        private String dateToString(Date date) {
+            return dateFormat.format(date);
+        }
+            
         public Component getListCellRendererComponent(
             JList list,
             Object value,
@@ -172,8 +235,18 @@ public class PatchListView {
             boolean cellHasFocus) {
             super.getListCellRendererComponent(list, "", index, isSelected, cellHasFocus);
             
-            IndexedPatch patch = (IndexedPatch) value;
-            PatchMetadata metadata = getMetadata(patch);
+            Color foreground = list.getForeground();
+            if (foreground == null) {
+                foreground = list.getSelectionForeground();
+                if (foreground == null)
+                    foreground = Color.BLACK;
+            }
+            
+            String bluer = CSUtils.toHTMLColor(isSelected ? list.getSelectionForeground() : CSUtils.change(foreground, 0, 0, 0.8f));
+            String paler = CSUtils.toHTMLColor(CSUtils.change(foreground, .75f));
+            
+            Doc patch = (Doc) value;
+            PatchMetadata metadata = patchdownloader.getMetadataCache().getMetadata(patch, true);
             
             if (metadata == null) {
                 setText("[Unavailable]");
@@ -181,23 +254,51 @@ public class PatchListView {
                 String title = metadata.getTitle();
                 if (title == null || title.trim().length() == 0) {
                     title = "Title: -unknown-";
+                } else {
+                    title = CSUtils.limitString(title.trim(), 40);
                 }
-                String tags = metadata.getTags().toString();
-                setText("<html><b>"+title+"</b><br>Tags: "+tags+"</html>");
+                String comment = metadata.getComment();
+                if (comment != null) {
+                    if (comment.trim().length() == 0) comment = null;
+                    else { comment = CSUtils.limitString(comment.trim(), 40);}
+                }
+                
+                html.setLength(0);
+                html.append("<html>");
+                html.append("<div><b>").append(title).append("</b>");
+
+                if (metadata.getLastModifiedDate() != null) {
+                    html.append(" <span style=\"font-size:.8em;\"> - "+dateToString(metadata.getLastModifiedDate())+"</span>");
+                }
+                html.append("</div>\n");
+               
+                //html.append(" <span style=\"font-size:0.8em;\">(score:"+patch.score+")</span>");
+                if (comment != null) {
+                    html.append("<div style=\"color:"+paler+"\">"+comment+"</div>\n");
+                }
+
+                html.append("<div style=\"font-size:.9em;\">");
+                html.append("Tags: ");
+                Tagset tagset = metadata.getTags();
+                if (!tagset.isEmpty()) {
+                    String tags = tagset.toSortedString();
+                    String hltags = query.highlight(tags, "<b>","</b>");
+                    html.append("<span style=\"color:"+bluer+";\">"+hltags+"</span>");
+                }
+                html.append("</div>\n");
+                html.append("</html>");
+                setText(html.toString()); 
             }
             
             return this;
         }
-
-        private PatchMetadata getMetadata(IndexedPatch patch) {
-            try {
-                Document document = searcher.doc(patch.docid);
-                return PatchDocument.ToMetadata(document);
-            } catch (Exception ex) {
-                return null;
-            }
-        }
         
     }
-    
+    */
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        this.notifySelectionChanged();
+    }
+
 }

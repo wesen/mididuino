@@ -1,21 +1,30 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.ruinwesen.patchdownloader.swing;
 
@@ -26,37 +35,40 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Properties;
 
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 import javax.swing.UIManager.LookAndFeelInfo;
+import name.cs.csutils.CSUtils;
+import name.cs.csutils.FileFilterFactory;
+import name.cs.csutils.I18N;
+import name.cs.csutils.Platform;
+import name.cs.csutils.RedirectAction;
+import name.cs.csutils.LockFile.MultipleApplicationInstancesException;
+import name.cs.csutils.Platform.OS;
+import name.cs.csutils.RedirectAction.RedirectActionMeta;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.store.LockObtainFailedException;
 
-import name.cs.csutils.CSUtils;
-import name.cs.csutils.i18n.I18N;
-import name.cs.csutils.platform.Platform;
-import name.cs.csutils.platform.Platform.OS;
-import name.cs.csutils.swing.RedirectAction;
-import name.cs.csutils.swing.RedirectAction.RedirectActionMeta;
-
+import com.ruinwesen.midisend.MidiDevice;
+import com.ruinwesen.midisend.MidiSend;
+import com.ruinwesen.midisend.MidiSendException;
 import com.ruinwesen.patchdownloader.PatchDownloader;
-import com.ruinwesen.patchdownloader.patch.DefaultPatchMetadata;
-import com.ruinwesen.patchdownloader.patch.PatchDocument;
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
-import com.ruinwesen.patchdownloader.patch.Tagset;
+import com.ruinwesen.patchdownloader.indexer.IndexReader;
+import com.ruinwesen.patchdownloader.repository.RandomPatchGenerator;
 
 public class PDFrame extends PatchDownloader {
 
@@ -73,60 +85,200 @@ public class PDFrame extends PatchDownloader {
     private static final String KEY_FRAME_Y = "frame.bounds.y";
     private static final String KEY_FRAME_W = "frame.bounds.width";
     private static final String KEY_FRAME_H = "frame.bounds.height";
+    private static final String KEY_PLAF = "plaf";
+    private static final String KEY_MIDI_IN = "midi.in";
+    private static final String KEY_MIDI_OUT = "midi.out";
     
     private JFrame frame;
-    private SearchFilters searchFilters;
-    private SimpleSearchBar searchBar;
-    private MidiMenu midiMenu;
     private PatchListView patchListView;
+    private FilterListView filterListView;
+    private PatchDetailsView patchDetailsView;
+    private File lastFileChooserLocation = null;
+    private SearchController searchController = new SearchController(this);
+    private MetadataCache metadataCache = new MetadataCache();
+    
+    public MetadataCache getMetadataCache() {
+        return metadataCache;
+    }
+
+    public SearchController getSearchController() {
+        return searchController;
+    }
+    
+    public File getLastFileChooserLocation() {
+        return lastFileChooserLocation;
+    }
+    
+    public void setLastFileChooserLocation(JFileChooser chooser) {
+        File file = chooser.getSelectedFile();
+        if (file != null) {
+            lastFileChooserLocation = file;
+        }
+    }
+    
+    public void setLastFileChooserLocation(File file) {
+        this.lastFileChooserLocation = file;
+    }
     
     protected void createFrame() {
         this.frame = new JFrame("Patchdownloader "+PatchdownloaderVersion());
-        this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new PDWindowListener());
         frame.setLayout(new BorderLayout());
+        /*
+        TopBar topBar;
+        topBar = new TopBar(this);
+        frame.add(topBar.getContainer(), BorderLayout.NORTH);*/
         
-        searchFilters = new SearchFilters();
-        searchBar = new SimpleSearchBar(this);
+        patchListView = new PatchListView(this);
+        JComponent patchListViewComponent = patchListView.getComponent();
         
-        frame.add(searchBar.getContainer(), BorderLayout.NORTH);
+        filterListView = new FilterListView(this);
+        JComponent filterListViewComponent = filterListView.getComponent();
+        filterListViewComponent.setPreferredSize(new Dimension(150,Short.MAX_VALUE));
         
-        patchListView = new PatchListView();
-        JScrollPane scPLV = new JScrollPane(patchListView.getComponent());
-        frame.add(scPLV, BorderLayout.CENTER);
+        patchDetailsView = new PatchDetailsView(this);
+        JComponent patchDetailsViewComponent = patchDetailsView.getComponent();
+        patchDetailsViewComponent.setPreferredSize(patchDetailsViewComponent.getPreferredSize());
+        
+        frame.add(patchListViewComponent, BorderLayout.CENTER);
+        frame.add(patchDetailsViewComponent, BorderLayout.EAST);
+        frame.add(filterListViewComponent,BorderLayout.WEST);
+        
+      ///  BottomBar bottomBar = new BottomBar(this);
+       // frame.add(bottomBar.getContainer(), BorderLayout.SOUTH);
         
         // create menu
         JMenuBar jmenubar = new JMenuBar();
         JMenu menuFile = new JMenu(I18N.action("File","menu.file"));
-        menuFile.add(new RedirectAction(this, "showCreatePatchFileDialog"));
+        menuFile.add(new RedirectAction(this, "updateLocalRepository"));
+        menuFile.addSeparator();
         menuFile.add(new RedirectAction(this, "exit"));
         jmenubar.add(menuFile);
         
-        JMenu menuFilter = new JMenu(I18N.action("Filter","menu.filter"));
-        menuFilter.add(new RedirectAction(this, "showAllPatches"));
-        menuFilter.add(new RedirectAction(this, "showUserPatches"));
-        menuFilter.addSeparator();
-        menuFilter.add(new RedirectAction(this, "saveSearchAs"));
-        
-        jmenubar.add(menuFilter);
-
-        midiMenu = new MidiMenu(); 
-        jmenubar.add(midiMenu.getMenu());
-
-        JMenu menuDatabase = new JMenu("Database");
-        menuDatabase.add(new RedirectAction(this, "updateLocalRepository"));
-        
-        jmenubar.add(menuDatabase);
-
-        JMenu menuHelp = new JMenu("Help");
-        menuHelp.add(new RedirectAction(this, "showHelpContents"));
+        JMenu menuHelp = new JMenu(I18N.action("Help","menu.help"));
         menuHelp.add(new RedirectAction(this, "showAboutDialog"));
         
         jmenubar.add(menuHelp);
+
+        if (PatchDownloader.isDebugModeOn()) {
+            JMenu menuDebug = new JMenu("Debug");
+            menuDebug.add(new RedirectAction(this, "showCreatePatchFileDialog"));
+            menuDebug.add(new RedirectAction(this, "debugGenerateRandomPatches"));
+            menuDebug.add(new RedirectAction(this, "debugDeletePatchIndex"));
+            menuDebug.add(new RedirectAction(this, "debugPatchIndex"));
+            menuDebug.add(new RedirectAction(this, "debugGC"));
+            jmenubar.add(menuDebug);
+        }
+        
+        
         frame.setJMenuBar(jmenubar);
         // create menu : end
         
         frame.pack();
+    }
+
+    @RedirectActionMeta(title="gc()")
+    public void debugGC() {
+        System.gc();
+    }
+    
+static int doccounter = 0;
+    @RedirectActionMeta(title="debugPatchIndex...")
+    public void debugPatchIndex() {
+        if (!PatchDownloader.isDebugModeOn()) {
+            return;
+        }
+        /*
+        IndexReader2 index = getPatchIndex();
+        
+        long time = System.currentTimeMillis();
+        index.search(new Query("beat"), new SearchCollector(){
+            
+            @Override
+            public void collect(int docid, float score) {
+                // TODO Auto-generated method stub
+                doccounter++;
+            }
+
+            @Override
+            public boolean takesMore() {
+                return true;
+            }
+            
+        });
+        System.out.println("doccounter:"+(doccounter));
+        System.out.println("time:"+(System.currentTimeMillis()-time));*/
+    }
+
+    @RedirectActionMeta(title="Generate random patches...")
+    public void debugGenerateRandomPatches() {
+        if (!PatchDownloader.isDebugModeOn()) {
+            return;
+        }
+        RandomPatchGenerator gen = new RandomPatchGenerator();
+        gen.showDialog(frame);
+    }
+
+    @RedirectActionMeta(title="Reset Patch Repository (Deletes all content!)")
+    public void debugDeletePatchIndex() {
+        if (!PatchDownloader.isDebugModeOn()) {
+            return;
+        }
+
+        IndexReader ir = getPatchIndex();
+        LinkedList<File> deleteList = new LinkedList<File>();
+        deleteList.add(new File(ir.getIndexDir(), "key.index"));
+        deleteList.add(new File(ir.getIndexDir(), "document.index"));
+        if (getRemoteRepositoryBackup().getBaseDir() != null) {
+            deleteList.add(getRemoteRepositoryBackup().getBaseDir());
+        }
+        
+        Log log = getLog().isDebugEnabled() ? getLog() : null;
+        
+        int count = 0;
+        while (!deleteList.isEmpty()) {
+            File file = deleteList.removeFirst();
+            if (!file.exists()) {
+                continue;
+            } else if (file.isFile()) {
+                if (file.delete()) {
+                    if (log != null) {
+                        log.debug("delete: "+file.getAbsolutePath());
+                    }
+                    count ++;
+                }
+            } else if (file.isDirectory()) {
+                File[] children = file.listFiles(
+                        FileFilterFactory.and(FileFilterFactory.FilesOnly(),
+                                FileFilterFactory.SuffixFilter(".rwp"))
+                        );
+                for (File child: children) {
+                    if (child.delete()) {
+                        if (log != null) {
+                            log.debug("delete: "+child.getAbsolutePath());
+                        }
+                        count ++;
+                    }
+                }
+            }
+        }
+
+        if (log != null) {
+            log.debug(count+" files deleted");
+        }
+        try {
+            ir.update();
+        } catch (FileNotFoundException ex) {
+            // no surprise: we deleted the files
+        } catch (IOException ex) {
+            if (log != null) {
+                getLog().debug("could not update index", ex);
+            }
+        }
+        
+        searchController.indexChanged();
+        searchController.update();
     }
 
     public PatchListView getPatchListView() {
@@ -143,7 +295,7 @@ public class PDFrame extends PatchDownloader {
         try {
             intValue = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
-            return defaultValue;
+            return Math.max(minValue, Math.min(maxValue, defaultValue));
         }
         
         return Math.max(minValue, Math.min(maxValue, intValue));
@@ -153,7 +305,7 @@ public class PDFrame extends PatchDownloader {
     protected void start(Properties config) throws IOException {
         super.start(config);
         try {
-            fixLookAndFeel();
+            fixLookAndFeel(config);
         } catch (Throwable ex) {
             if (getLog().isDebugEnabled()) {
                 getLog().debug("fixLookAndFeel() failed", ex);
@@ -169,8 +321,8 @@ public class PDFrame extends PatchDownloader {
         Dimension screen = AWTToolkit.getScreenSize();
         int w = frame.getWidth();
         int h = frame.getHeight();
-        if (w<640) w = 640;
-        if (h<480) h = 480;
+        if (w<640) { w = 640; } else if (w>screen.width) { w = screen.width/2; } 
+        if (h<480) { h = 480; } else if (h>screen.height) { h = screen.height/2; }
         int x = (screen.width-w)/2;
         int y = (screen.height-h)/2;
 
@@ -179,6 +331,34 @@ public class PDFrame extends PatchDownloader {
         w = intValue(config, KEY_FRAME_W, 100, screen.width, w);
         h = intValue(config, KEY_FRAME_H, 100, screen.height, h);
         frame.setBounds(x,y,w,h);
+        
+        // load midi 
+
+        MidiSend midisend = getMidiSend();
+        String inputName = config.getProperty(KEY_MIDI_IN);
+        if (inputName != null) {
+            try {
+                MidiDevice device = midisend.getInputDevice(inputName);
+                if (device != null) {
+                    midisend.setInputDevice(device);
+                }
+            } catch (MidiSendException ex) {
+                // ignorable
+            }
+        }
+        String outputName = config.getProperty(KEY_MIDI_OUT);
+        if (outputName != null) {
+            try {
+                MidiDevice device = midisend.getOutputDevice(outputName);
+                if (device != null) {
+                    midisend.setOutputDevice(device);
+                }
+            } catch (MidiSendException ex) {
+                // ignorable
+            }
+        }
+
+        patchDetailsView.getMidiBar().refreshMidideviceLists();
         
         frame.setVisible(true);
     }
@@ -191,6 +371,21 @@ public class PDFrame extends PatchDownloader {
             config.setProperty(KEY_FRAME_Y, Integer.toString(b.y));
             config.setProperty(KEY_FRAME_W, Integer.toString(b.width));
             config.setProperty(KEY_FRAME_H, Integer.toString(b.height ));
+            
+            MidiSend midisend = getMidiSend();
+            MidiDevice input = midisend.getInputDevice();
+            MidiDevice output = midisend.getOutputDevice();
+            if (input != null) {
+                config.setProperty(KEY_MIDI_IN, input.getName());
+            }
+            if (output != null) {
+                config.setProperty(KEY_MIDI_OUT, output.getName());
+            }
+            
+            String plaf = UIManager.getLookAndFeel().getClass().getName();
+            if (!UIManager.getSystemLookAndFeelClassName().equals(plaf)) {
+                config.setProperty(KEY_PLAF, plaf);
+            }
             
             frame.setVisible(false);
             frame.dispose();
@@ -205,27 +400,28 @@ public class PDFrame extends PatchDownloader {
         throw CSUtils.NotImplementedYet();
     }
 
-    @RedirectActionMeta(title="Help Contents",
-            resourcekey="menu.help.help-contents")
-    public void showHelpContents() {
-        throw CSUtils.NotImplementedYet();
-    }
-
     @RedirectActionMeta(title="Update Repository...",
             resourcekey="menu.db.update-repository")
     public void updateLocalRepository() {
-        throw CSUtils.NotImplementedYet();
+        try {
+            this.updateRemoteRepositoryBackup();
+            
+            searchController.indexChanged();
+            searchController.update();
+        } catch (IOException ex) {
+            // TODO Auto-generated catch block
+            ex.printStackTrace();
+        }
     }
 
-    public void saveSearchAs() {
-        throw CSUtils.NotImplementedYet();
-    }
-    
     private CreatePatchFileEditor createPatchFileDialog;
 
     @RedirectActionMeta(title="Create Patch...",
             resourcekey="menu.file.createpatch")
     public void showCreatePatchFileDialog() {
+        if (!PatchDownloader.isDebugModeOn()) {
+            return;
+        }
         if (createPatchFileDialog != null) {
             createPatchFileDialog.toFront();
         } else {
@@ -233,6 +429,7 @@ public class PDFrame extends PatchDownloader {
             createPatchFileDialog.setModal(false);
             createPatchFileDialog.pack();
             createPatchFileDialog.addWindowListener(new WindowAdapter() {
+                @Override
                 public void windowClosed(WindowEvent e) {
                     createPatchFileDialog = null;
                 }
@@ -241,32 +438,55 @@ public class PDFrame extends PatchDownloader {
         }
     }
     
-    @RedirectActionMeta(title="Show own Patches",
-            resourcekey="menu.filter.showUserPatches")
-    public void showUserPatches() {
-        throw CSUtils.NotImplementedYet();
-    }
-
-    public void showAllPatches() {
-        throw CSUtils.NotImplementedYet();
-    }
-
     @RedirectActionMeta(resourcekey="menu.file.exit")
     public void exit() {
         stop();
     }
 
+    @Override
     protected void startExceptionHandler(Throwable ex) {
+        if (ex instanceof RuntimeException) {
+            ex.printStackTrace();
+            return; // not important
+        }
+        if (ex instanceof MultipleApplicationInstancesException) {
+            JOptionPane.showMessageDialog(null,
+                    "An instance of this application is already running.",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+            System.exit(1);
+        }
+
+        String message = ex.getMessage();
+                
         JOptionPane.showMessageDialog(null, 
-                "Error while starting the application:"+ex.getMessage(),
+                "Error while starting the application:"+message,
                 "Error",JOptionPane.ERROR_MESSAGE);
-        
     }
 
+    @Override
     protected void stopExceptionHandler(Throwable ex) {
         JOptionPane.showMessageDialog(null, 
                 "Error while closing the application:"+ex.getMessage(),
                 "Error",JOptionPane.ERROR_MESSAGE);
+        
+    }
+
+    @Override
+    protected void handleFatalExceptionOnStart(String message, Throwable  ex) {
+        
+        int code = 
+        JOptionPane.showConfirmDialog(null,
+                message,
+                "Fatal",
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+        if (code == JOptionPane.YES_OPTION) {
+            try {
+                getLog().fatal(message, ex);
+            } finally {
+                System.exit(1);
+            }
+        }
         
     }
 
@@ -276,72 +496,15 @@ public class PDFrame extends PatchDownloader {
             runInitTasks = true;
         }
         // TODO: ensureIndexNotCorrupted();
-        
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-
-                boolean createExamples = false;
-                if (createExamples) {
-                    try {
-                    // DEBUG: example data
-                    for (int i=0;i<10;i++) {
-                        getLuceneIndex().index("id"+i, PatchDocument.Document(exampleMetadata(i)));
-                    
-                    }
-                    getLuceneIndex().commit();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                
-                // TODO load the default query
-                patchListView.setQuery(new MatchAllDocsQuery());
-                     
+                searchController.indexChanged();
+                searchController.update();
             }
         });
     }
 
-    protected void handleLockObtainFailedOnStartException(
-            LockObtainFailedException error) {
-        
-        String messageA = "Please ensure no other application instance is running.\n"
-        +"If this problem still exists try to delete the lock-file.\n";
-        
-        String messageB = messageA
-        +"It is recommended to close the application now.\n\n"
-        +"Close the application now?";
-        
-        
-        int code = 
-        JOptionPane.showConfirmDialog(null,
-                error.getMessage()+"\n\n"+messageB,
-                "Error",
-                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
-        if (code == JOptionPane.YES_OPTION) {
-            getLog().error(messageA);
-            try {
-                getLuceneIndex().close();
-            } catch (CorruptIndexException ex) {
-                // no op
-            } catch (IOException ex) {
-                // no op
-            } finally {
-                System.exit(1);
-            }
-        }
-        
-    }
-
-    private static PatchMetadata exampleMetadata(int id) {
-        PatchMetadata data = new DefaultPatchMetadata();
-        data.setTitle("title"+id);
-        data.setAuthor("author"+id);
-        data.setComment("comment"+id);
-        data.setTags(new Tagset("tag"+id, "synth", "waldorf"));
-        return data;
-    }
-    
     private class PDWindowListener implements WindowListener {
 
         @Override
@@ -384,45 +547,115 @@ public class PDFrame extends PatchDownloader {
     }
 
     
-    private void fixLookAndFeel() {
-        if (!Platform.isFlavor(OS.UnixFlavor)) {
-            return;
-        }
-        
+    private void fixLookAndFeel(Properties config) {
         Log log = getLog();
-        
-        String laf = UIManager.getSystemLookAndFeelClassName();
-        if (laf.toLowerCase().equalsIgnoreCase("javax.swing.plaf.metal.MetalLookAndFeel")) {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                
-                if (log.isDebugEnabled()) {
-                    log.debug("installed look and feel: "+info.getClassName());
-                }
 
-                if (info.getClassName().equalsIgnoreCase("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")) {
-                    laf = info.getClassName();
-                }/*
-                if (info.getClassName().equalsIgnoreCase("com.sun.java.swing.plaf.gtk.GTKLookAndFeel")) {
-                    laf = info.getClassName();
-                }*/
+        if (log.isDebugEnabled()) {
+            log.debug("system look and feel: "+UIManager.getSystemLookAndFeelClassName());
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                log.debug("available look and feel: "+info.getClassName());
             }   
         }
-        
-        try {
-            UIManager.setLookAndFeel(laf);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
+        String selectedPLAF = null;//config.getProperty(KEY_PLAF);
+        if (selectedPLAF != null) {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if (info.getClassName().equals(selectedPLAF)) {
+                    try {
+                        UIManager.setLookAndFeel(selectedPLAF);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Using look and feel from configuration:"+selectedPLAF);
+                        }
+                        return;
+                    } catch (Exception ex) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Could not load look and feel from configuration:"+selectedPLAF, ex);
+                        }
+                        return;
+                    }
+                }
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Could not find look and feel from configuration:"+selectedPLAF);
+            }
         }
         
+        // fix look and feel depending on the platform
+        
+        
+        if (Platform.isFlavor(OS.WindowsFlavor)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Switching to look and feel:"+UIManager.getSystemLookAndFeelClassName());
+            }
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not set system look and feel:"+UIManager.getSystemLookAndFeelClassName());
+                }
+            }
+        } else if (Platform.isFlavor(OS.MacOSFlavor)) { 
+            //System.setProperty("apple.laf.useScreenMenuBar", "true");
+            //System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Patchdownloader");
+            if (log.isDebugEnabled()) {
+                log.debug("Switching to look and feel:"+UIManager.getSystemLookAndFeelClassName());
+            }
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not set system look and feel:"+UIManager.getSystemLookAndFeelClassName());
+                }
+            }
+        } else if (Platform.isFlavor(OS.UnixFlavor)) {
+            
+            // TODO do not force a look and feel, but write the automatically selected laf to the config file
+            // then only rely on this setting so users can change their preferences
+            
+            String laf = UIManager.getSystemLookAndFeelClassName();
+            String nimbus = null;
+            String gtk = null;
+            if (laf.toLowerCase().equalsIgnoreCase("javax.swing.plaf.metal.MetalLookAndFeel")) {
+                for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                    if (info.getClassName().equalsIgnoreCase("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")) {
+                        nimbus = info.getClassName();
+                    } else if (info.getClassName().equalsIgnoreCase("com.sun.java.swing.plaf.gtk.GTKLookAndFeel")) {
+                        gtk = info.getClassName();
+                    }
+                }
+                //nimbus=null;
+                gtk = null; // no - this looks too bad
+                if (nimbus != null) {
+                    laf = nimbus;
+                } else if (gtk != null) {
+                    laf = gtk;
+                } else {
+                    laf = null;
+                }
+
+                if (laf != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Switching to look and feel:"+laf);
+                    }
+                    try {
+                        UIManager.setLookAndFeel(laf);
+                    } catch (Exception ex) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Could not set look and feel:"+laf);
+                        }
+                    }
+                }
+            }
+            
+        }
     }
+
+    public PatchDetailsView getPatchDetailsView() {
+        return patchDetailsView;
+    }
+
+    public FilterListView getFilterListView() {
+        return filterListView;
+    }
+
 }
