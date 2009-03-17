@@ -1,21 +1,30 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.ruinwesen.patchdownloader;
 
@@ -34,23 +43,19 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import name.cs.csutils.CSUtils;
-import name.cs.csutils.i18n.I18N;
+import name.cs.csutils.I18N;
+import name.cs.csutils.LockFile;
+import name.cs.csutils.LockFile.MultipleApplicationInstancesException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.store.LockObtainFailedException;
 
-import com.ruinwesen.midisend.JavaMidiSend;
 import com.ruinwesen.midisend.MidiSend;
 import com.ruinwesen.midisend.RWMidiSend;
-import com.ruinwesen.patchdownloader.lucene.LuceneIndex;
-import com.ruinwesen.patchdownloader.patch.PatchDocument;
-import com.ruinwesen.patchdownloader.patch.XMLPatchMetadata;
+import com.ruinwesen.patchdownloader.indexer.IndexReader;
+import com.ruinwesen.patchdownloader.indexer.MetadataIndexWriter;
+import com.ruinwesen.patchdownloader.patch.PatchMetadata;
 import com.ruinwesen.patchdownloader.repository.HTTPRepository;
 import com.ruinwesen.patchdownloader.repository.LocalRepository;
 import com.ruinwesen.patchdownloader.repository.RemoteBackupRepository;
@@ -78,10 +83,10 @@ public class PatchDownloader {
     protected LocalRepository remoteRepositoryBackup;
     protected LocalRepository workspaceRepository;
     protected HTTPRepository remoteRepository;
-    private LuceneIndex luceneIndex = new LuceneIndex();
-    private boolean luceneIndexCorrupted = false;
-    private boolean stopping = false;
+    private IndexReader patchIndex = new IndexReader();
     private MidiSend midiSend;
+    private volatile long stopping = 0;
+    private boolean debugModeOn = false;
     
     private static PatchDownloader INSTANCE;
     
@@ -92,6 +97,10 @@ public class PatchDownloader {
         }
         
         PatchDownloader.INSTANCE = this;
+    }
+    
+    public static boolean isDebugModeOn() {
+        return INSTANCE.debugModeOn;
     }
     
     public static PatchDownloader getSharedInstance() {
@@ -116,16 +125,12 @@ public class PatchDownloader {
         return  PATCH_DOWNLOADER_VERSION_STRING;
     }
     
-    public boolean getLuceneIndexCorruptedFlag() {
-        return luceneIndexCorrupted;
-    }
-    
     public LocalRepository getWorkspaceRepository() {
         return workspaceRepository;
     }
 
-    public LocalRepository getWorkspaceRepositoryBackup() {
-        return workspaceRepository;
+    public LocalRepository getRemoteRepositoryBackup() {
+        return remoteRepositoryBackup;
     }
 
     public HTTPRepository getRemoteRepository() {
@@ -136,8 +141,8 @@ public class PatchDownloader {
         return configDir;
     }
 
-    public LuceneIndex getLuceneIndex() {
-        return luceneIndex;
+    public IndexReader getPatchIndex() {
+        return patchIndex;
     }
     
     public int getAvailablePatches(Date since) {
@@ -148,7 +153,7 @@ public class PatchDownloader {
     
     private Properties getConfig() throws IOException {
         try {
-            return readProperties("config");
+            return readProperties("config.properties");
         } catch (FileNotFoundException ex) {
             // it does not matter if the file exists or not
             return new Properties();
@@ -161,13 +166,45 @@ public class PatchDownloader {
     }
     
     private void storeConfig(Properties db) throws IOException {
-        writeProperties("config", db);
+        writeProperties("config.properties", db);
+    }
+    
+    private transient Properties applicationProperties; 
+    
+    private Properties getApplicationProperties() {
+        if (applicationProperties == null) { 
+            applicationProperties = new Properties();
+            InputStream in = getClass().getResourceAsStream("/application.properties");
+            if (in != null) {
+                if (getLog().isDebugEnabled()) {
+                    getLog().debug("Application properties available.");
+                }
+                try {
+                    applicationProperties.load(new BufferedInputStream(in));
+                    in.close();
+                } catch (IOException ex) {
+                    if (getLog().isDebugEnabled()) {
+                        getLog().debug("Could not read application properties.", ex);
+                    }
+                } 
+            } else {
+                if (getLog().isDebugEnabled()) {
+                    getLog().debug("Application properties not available.");
+                }
+            }
+        }
+        // read only
+        return new Properties(applicationProperties); 
     }
     
     private Properties readProperties(String name) throws IOException {
+        return readProperties(configDir, name);
+    }
+
+    private Properties readProperties(File dir, String name) throws IOException {
         Properties props = new Properties();
         InputStream in = new BufferedInputStream(new FileInputStream(
-                new File(configDir, name)));
+                new File(dir, name)));
         try {
             props.load(in);
         } finally {
@@ -219,40 +256,39 @@ public class PatchDownloader {
         List<StoredPatch> srclist = new ArrayList<StoredPatch>();
         remoteRepository.collectPatches(new StoredPatchCollector.Collection(srclist),since);
         
+        MetadataIndexWriter writer = patchIndex.createAppendableIndexWriter();
+        
+        // write new documents to index
         for (StoredPatch patch: srclist) {
             // the target file name, we assume there are no collisions
             File dstfile = new File(remoteRepositoryBackup.getBaseDir(),
                     patch.getName());
             // export the patch from the repository
-            remoteRepository.export(patch, dstfile);
+            remoteRepository.exportFile(patch, dstfile);
+            
+            StoredPatch dstStoredPatch = new StoredPatch.JarFilePatch(dstfile);
+            
             // get the metadata
-            XMLPatchMetadata metadata;
+            PatchMetadata metadata;
             try {
-                metadata = new XMLPatchMetadata(dstfile);
-            } catch (ParserConfigurationException ex) {
+                metadata = dstStoredPatch.getMetadata();
+            } catch (IOException ex) {
                 if (getLog().isErrorEnabled()) {
-                    getLog().error("could not instantiate xml parser", ex);
+                    getLog().error("could not read metadata: "+dstfile.getAbsolutePath(), ex);
                 }
                 // clean up
                 dstfile.delete();
-                // we cannot continue
-                throw new IOException("could not instantiate xml parser", ex);
+                continue; // go on
             }
-            // create a lucene document using the metadata
-            Document luceneDocument = PatchDocument.Document(metadata);
-            // the unique document id
-            String documentId = "remote:"+dstfile.getName();
-            // index the document
-            luceneIndex.index(documentId, luceneDocument);
+            // create a document using the metadata
+            String path = dstfile.getName();
+            int docid = writer.newDocument(path);
+            writer.putMetadata(docid, metadata);
         }
 
         // commit the changes
-        try {
-            luceneIndex.setOptimizeAfterCommitEnabled(true);
-            luceneIndex.commit();
-        } finally {
-            luceneIndex.setOptimizeAfterCommitEnabled(false);
-        }
+        writer.flush();
+        writer.close();
         
         // memorize when we performed this operation
         db.put(KEY_LASTUPDATE_DATE, CSUtils.dateToString(CSUtils.now()));
@@ -265,13 +301,66 @@ public class PatchDownloader {
             }
             throw ex;
         }
+
+        try {
+            // update the in-memory index
+            patchIndex.update();
+        } catch (IOException ex) {
+            if (getLog().isErrorEnabled()) {
+                getLog().error("could not load the index", ex);
+            }
+            throw ex;
+        }
+        
     }
     
     public final void start() throws IOException {
         try {
+            if (getLog().isInfoEnabled()) {
+                Properties sys = System.getProperties();
+                String[] keys = {
+                        "os.name",
+                        "os.arch",
+                        "os.version",
+                        "java.version",
+                        "java.vendor",
+                        "java.vendor.url",
+                        "java.home",
+                        "java.vm.specification.version",
+                        "java.vm.specification.vendor",
+                        "java.vm.specification.name",
+                        "java.vm.version",
+                        "java.vm.vendor",
+                        "java.vm.name",
+                        "java.specification.version",
+                        "java.specification.vendor",
+                        "java.specification.name",
+                        "java.class.version",
+                        "java.class.path",
+                        "java.library.path",
+                        "java.io.tmpdir",
+                        "java.compiler"
+                        };
+                for (String key: keys) {
+                    getLog().info(key+"="+sys.getProperty(key));
+                }
+            }
+        } catch (RuntimeException ex) {
+            // ignore
+        }
+        
+        try {
+            String debug = getApplicationProperties().getProperty("debug");
+            debugModeOn = debug != null && "true".equalsIgnoreCase(debug);
+            
             configDir = CSUtils.getApplicationConfigDir("patchdownloader");
             if (!configDir.exists() && !configDir.mkdir()) {
                 throw new IOException("could not create config directory");
+            }
+            // tests if the application is already running
+            File lock = new File(configDir, "patchdownloader.lock");
+            if (new LockFile(lock).isLockActive()) {
+                throw new LockFile.MultipleApplicationInstancesException();
             }
             
             // get the config file
@@ -283,6 +372,11 @@ public class PatchDownloader {
             }
             startExceptionHandler(ex);
         } catch (IOException ex) {
+            if (getLog().isErrorEnabled()) {
+                getLog().error("error in start()", ex);
+            }
+            startExceptionHandler(ex);
+        } catch (MultipleApplicationInstancesException ex) {
             if (getLog().isErrorEnabled()) {
                 getLog().error("error in start()", ex);
             }
@@ -317,41 +411,39 @@ public class PatchDownloader {
         
         remoteRepository = new HTTPRepository();
         
-        // configure lucene
+        // configure patch index
         File indexDir = new File(configDir, "index");
         if (getLog().isDebugEnabled()) {
-            getLog().debug("lucene index dir: "+indexDir.getAbsolutePath());
+            getLog().debug("patch index directory: "+indexDir.getAbsolutePath());
         }
         if (!indexDir.exists() && !indexDir.mkdir()) {
             throw new IOException("could not create index directory");
         }
-        luceneIndex.setIndexDir(indexDir);
+        if (!indexDir.exists() && !indexDir.mkdir()) {
+            handleFatalExceptionOnStart("could not create index directory", 
+                    new FileNotFoundException("could not create index directory: "+indexDir.getAbsolutePath()));
+        }
+        patchIndex.setIndexDir(indexDir);
         try {
-            luceneIndex.open();
-        } catch (LockObtainFailedException ex) {
-            this.luceneIndexCorrupted = true;
-            handleLockObtainFailedOnStartException(ex);
-        } catch (CorruptIndexException ex) {
-            this.luceneIndexCorrupted = true;
-            if (getLog().isWarnEnabled()) {
-                getLog().warn("lucene index is corrupted", ex);
-            }
+            patchIndex.update();
+        } catch (FileNotFoundException ex) {
+            // no op - no index, then it will be created later
         } catch (IOException ex) {
-            this.luceneIndexCorrupted = true;
             if (getLog().isWarnEnabled()) {
-                getLog().warn("lucene index IO error", ex);
+                getLog().warn("could not read the patch index, please rebuild the index", ex);
             }
         }
         
         // create midisend
-        String selectedMidisend = config.getProperty(KEY_MIDISEND);
+        /*String selectedMidisend = config.getProperty(KEY_MIDISEND);
         if (RWMidiSend.class.getName().equals(selectedMidisend)) {
             this.midiSend = new RWMidiSend();
         } else if (JavaMidiSend.class.getName().equals(selectedMidisend)) {
             this.midiSend = new JavaMidiSend();
         } else {
             this.midiSend = new RWMidiSend(); // default
-        }
+        }*/
+        this.midiSend = new RWMidiSend(); // default
         
         try {
             I18N.getSharedInstance().setResourceBundleName("resources/lang/MessageBundle");
@@ -362,24 +454,24 @@ public class PatchDownloader {
         }
     }
 
-    protected void handleLockObtainFailedOnStartException(
-            LockObtainFailedException ex) {
-        String message = "Please ensure no other application instance is running.\n"
-        +"If this problem still exists try to delete the lock-file.\n"
-        +"Exiting...";
-        getLog().fatal(message);
+    protected void handleFatalExceptionOnStart(String message, Throwable  ex) {
+        getLog().fatal(message, ex);
         System.exit(1);
+    }
+    
+    public boolean isStopping() {
+        return stopping != 0;
     }
 
     public synchronized final void stop() {
-        if (stopping) {
+        if (isStopping()) {
             if (getLog().isDebugEnabled()) {
                 getLog().debug("attempt to stop() again");
             }
             
             return;
         }
-        stopping = true;
+        stopping = 1;
         if (getLog().isDebugEnabled()) {
             getLog().debug("stopping...");
         }
@@ -420,6 +512,9 @@ public class PatchDownloader {
 
     protected void startExceptionHandler(Throwable ex) {
         // no op
+        if (ex instanceof MultipleApplicationInstancesException) {
+            System.exit(1);
+        }
     }
 
     protected void stopExceptionHandler(Throwable ex) {
@@ -427,9 +522,6 @@ public class PatchDownloader {
     }
 
     protected void stop(Properties config) throws IOException {
-        // stop lucene
-        luceneIndex.close();
-        
         // update the configuration
         // workspace basedir
         File workspaceFile = workspaceRepository.getBaseDir();
