@@ -37,6 +37,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,9 +66,6 @@ import com.ruinwesen.patchdownloader.repository.StoredPatchCollector;
 import com.ruinwesen.patchdownloader.repository.WorkspaceRepository;
 
 public class PatchDownloader {
-    
-    private static final String PATCH_DOWNLOADER_VERSION_STRING = 
-        "1.0";
 
     public static final String KEY_WORKSPACE = "workspace";
     public static final String KEY_MIDISEND = "midisend";
@@ -78,6 +77,10 @@ public class PatchDownloader {
         }
         return alog;
     }
+    
+    private String version = "<unknown version>";
+    private String build_number = "<unknown build id>";
+    private String build_timestamp = "<unknown build time>";
     
     private File configDir;
     protected LocalRepository remoteRepositoryBackup;
@@ -120,9 +123,17 @@ public class PatchDownloader {
         }
         this.midiSend = midiSend;
     }
-    
-    public static final String PatchdownloaderVersion() {
-        return  PATCH_DOWNLOADER_VERSION_STRING;
+
+    public static final String Version() {
+        return INSTANCE.version;
+    }
+
+    public static final String BuildNumber() {
+        return INSTANCE.build_number;
+    }
+
+    public static final String BuildTimestamp() {
+        return INSTANCE.build_timestamp;
     }
     
     public LocalRepository getWorkspaceRepository() {
@@ -174,22 +185,18 @@ public class PatchDownloader {
     private Properties getApplicationProperties() {
         if (applicationProperties == null) { 
             applicationProperties = new Properties();
-            InputStream in = getClass().getResourceAsStream("/application.properties");
-            if (in != null) {
-                if (getLog().isDebugEnabled()) {
-                    getLog().debug("Application properties available.");
-                }
+            URL url = getClass().getResource("/application.properties");
+            if (url != null) {
                 try {
-                    applicationProperties.load(new BufferedInputStream(in));
-                    in.close();
+                    applicationProperties = readProperties(new File(url.toURI()));
                 } catch (IOException ex) {
                     if (getLog().isDebugEnabled()) {
-                        getLog().debug("Could not read application properties.", ex);
+                        getLog().debug("Could not read application.properties file.");
                     }
-                } 
-            } else {
-                if (getLog().isDebugEnabled()) {
-                    getLog().debug("Application properties not available.");
+                } catch (URISyntaxException ex) {
+                    if (getLog().isDebugEnabled()) {
+                        getLog().debug("Could not read application.properties file.");
+                    }
                 }
             }
         }
@@ -197,14 +204,32 @@ public class PatchDownloader {
         return new Properties(applicationProperties); 
     }
     
+    private Properties getVersionProperties() {
+        try {
+            URL url = getClass().getResource("/version.properties");
+            if (url != null) {
+                return readProperties(new File(url.toURI()));
+            }
+        } catch (IOException ex) {
+            if (getLog().isDebugEnabled()) {
+                getLog().debug("Could not read version.properties file.");
+            }
+        } catch (URISyntaxException ex) {
+            if (getLog().isDebugEnabled()) {
+                getLog().debug("Could not read version.properties file.");
+            }
+        }
+        return new Properties();
+    }
+    
     private Properties readProperties(String name) throws IOException {
-        return readProperties(configDir, name);
+        return readProperties(new File(configDir, name));
     }
 
-    private Properties readProperties(File dir, String name) throws IOException {
+    private Properties readProperties(File file) throws IOException {
         Properties props = new Properties();
         InputStream in = new BufferedInputStream(new FileInputStream(
-                new File(dir, name)));
+                file));
         try {
             props.load(in);
         } finally {
@@ -315,6 +340,22 @@ public class PatchDownloader {
     }
     
     public final void start() throws IOException {
+        
+        // read version, build number and build time
+
+        Properties versionInfo = getVersionProperties();
+        String str = versionInfo.getProperty("patchdownloader.build.number");
+        if (str != null) { this.build_number = str; }
+        str = versionInfo.getProperty("patchdownloader.build.timestamp");
+        if (str != null) { this.build_timestamp = str; }
+        str = versionInfo.getProperty("patchdownloader.version");
+        if (str != null) { this.version = str; }
+        
+        if (getLog().isInfoEnabled()) {
+            getLog().info("Patchdownloader Version "+version);
+            getLog().info("Build id: "+build_number);
+            getLog().info("Build time: "+build_timestamp);
+        }
         try {
             if (getLog().isInfoEnabled()) {
                 Properties sys = System.getProperties();
