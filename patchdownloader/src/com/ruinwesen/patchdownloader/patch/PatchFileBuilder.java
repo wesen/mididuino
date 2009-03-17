@@ -1,21 +1,30 @@
-/** 
- * Copyright (C) 2009 Christian Schneider
- *
- * This file is part of Patchdownloader.
+/**
+ * Copyright (c) 2009, Christian Schneider
+ * All rights reserved.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * - Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *  - Neither the names of the authors nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.ruinwesen.patchdownloader.patch;
 
@@ -30,17 +39,12 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import name.cs.csutils.CSUtils;
 
 import com.ruinwesen.patchdownloader.repository.StoredPatch;
 
 public class PatchFileBuilder {
     
-    private static Log log = LogFactory.getLog(PatchFileBuilder.class);
-
     private PatchMetadata metadata;
     private File midifile;
     private File sourcecode;
@@ -63,12 +67,16 @@ public class PatchFileBuilder {
         this.midifile = file;
     }
     
-    public void setSourceCodeDir(File file) {
+    public void setSourceCode(File file) {
         this.sourcecode = file;
     }
     
     public void setOutput(File file) {
         this.output = file;
+    }
+
+    public File getOutput() {
+        return output;
     }
     
     public void build() throws IOException, ParserConfigurationException, TransformerException {
@@ -78,8 +86,8 @@ public class PatchFileBuilder {
         if (midifile != null && (!midifile.exists() || !midifile.isFile())) {
             throw new FileNotFoundException("not a file: "+midifile.getAbsolutePath());
         }
-        if (sourcecode != null && (!sourcecode.exists() || !sourcecode.isDirectory())) {
-            throw new FileNotFoundException("not a directory: "+sourcecode.getAbsolutePath());
+        if (sourcecode != null && !sourcecode.exists()) {
+            throw new FileNotFoundException("file not found: "+sourcecode.getAbsolutePath());
         }
         if (output == null) {
             throw new FileNotFoundException("output file not set");
@@ -141,6 +149,8 @@ public class PatchFileBuilder {
     }
 
     private void writeMetadata(ZipOutputStream out) throws IOException, ParserConfigurationException, TransformerException {
+        
+        
         out.putNextEntry(new JarEntry(StoredPatch.DEFAULT_METADATA));
         new XMLPatchMetadata(metadata).write(out);
         out.closeEntry();
@@ -148,9 +158,10 @@ public class PatchFileBuilder {
 
     private void writeFiles(ZipOutputStream out, String path,
             File file) throws IOException {
-        if (log.isDebugEnabled()) {
+        /* 
+          if (log.isDebugEnabled()) {
             log.debug("adding zip entry path:"+path+" (source:"+file.getAbsolutePath()+")");
-        }
+        }*/
         
         if (file.isFile()) {
             out.putNextEntry(new JarEntry(path));
@@ -159,19 +170,28 @@ public class PatchFileBuilder {
         } else if (file.isDirectory()) {
             // directory entry
             File[] files = file.listFiles();
-            if (files == null || files.length == 0) {
-                return;
-            }
-            
-            out.putNextEntry(new JarEntry(path+'/'));
-            if (files != null) {
+            if (files != null && files.length >= 0) {
+                out.putNextEntry(new JarEntry(path+'/'));
                 for (File child: files) {
                     writeFiles(out, path+"/"+child.getName(),child);
                 }
+                out.closeEntry();
             }
-            out.closeEntry();
             
         }
     }
-
+    /*
+    public static void main(String[] args) throws IOException, ParserConfigurationException, TransformerException {
+    
+        PatchFileBuilder builder = new PatchFileBuilder();
+        builder.sourcecode = new File("/home/christian/dev/mididuino/mididuino/patchdownloader/playground/example-patch1/source");
+        builder.midifile = new File("/home/christian/dev/mididuino/mididuino/patchdownloader/playground/example-patch1/chresan.hex");
+        builder.output = new File("/home/christian/dev/mididuino/mididuino/patchdownloader/playground/test.jar");
+        builder.build();
+        
+        PatchMetadata meta = new StoredPatch.JarFilePatch(builder.output).getMetadata();
+        System.out.println(meta.getPath(PatchMetadata.PATH_MIDIFILE));
+        System.out.println(meta.getPath(PatchMetadata.PATH_SOURCECODE));
+    }*/
+    
 }
