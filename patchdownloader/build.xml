@@ -18,6 +18,7 @@
     </fileset>      
     <pathelement path="${dist.dir}/resources"/>
     <pathelement path="${dist.dir}/."/>
+    <pathelement path="${dist.dir}/midi-send"/>
   </path> 
   
   <!-- deletes all generated content -->
@@ -49,11 +50,28 @@
     </copy>
     <copy file="LICENSE.txt" todir="${dist.dir}" />
     <copy file="${source.dir}/log4j-dist.properties" tofile="${dist.dir}/log4j.properties" />
-    <copy file="${source.dir}/repository.properties" todir="${dist.dir}" />
+    <copy file="${source.dir}/repository-dist.properties" tofile="${dist.dir}/repository.properties" />
     <copy todir="${dist.dir}/resources">     
       <fileset dir="${source.dir}/resources"/> 
     </copy>
+    <mkdir dir="${dist.dir}/midi-send"/>
+    <mkdir dir="${dist.dir}/midi-send/windows"/>
+    <mkdir dir="${dist.dir}/midi-send/unix"/>
+    <mkdir dir="${dist.dir}/midi-send/mac"/>
     
+    <copy todir="${dist.dir}/midi-send/windows">     
+      <fileset dir="${source.dir}/midi-send/windows"/> 
+    </copy>
+    <copy todir="${dist.dir}/midi-send/mac">     
+      <fileset dir="${source.dir}/midi-send/mac"/> 
+    </copy>
+    <!-- keep executablee permissions in linux binary -->
+    <exec executable="cp"> 
+      <arg value="-p" />
+      <arg value="${basedir}/${source.dir}/midi-send/unix/midi-send" />
+      <arg value="${basedir}/${dist.dir}/midi-send/unix/midi-send" />
+    </exec> 
+ 
     <manifestclasspath property="jar.manifest.class.path" jarfile="${dist.dir}/patchdownloader.jar">
       <classpath refid="jar.class.path" />
     </manifestclasspath>
