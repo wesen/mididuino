@@ -32,6 +32,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.net.URL;
 import java.util.Arrays;
 
 import javax.swing.Box;
@@ -42,7 +43,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
+import name.cs.csutils.Launcher;
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.I18N;
 import name.cs.csutils.RedirectAction;
@@ -66,9 +70,10 @@ public class AboutDialog {
         Container pan = dialog.getContentPane();
         pan.setLayout(new BorderLayout());
         
-        //HTMLEditorKit kit = new HTMLEditorKit();
         JTextPane textPane = new JTextPane();
         textPane.setContentType("text/html");
+        new TextPopup().installAt(textPane);
+        textPane.addHyperlinkListener(new HyperlinkHandler());
         textPane.setEditable(false);
         textPane.setText(generateHTML());
         pan.add(new JScrollPane(textPane), BorderLayout.CENTER);
@@ -97,7 +102,7 @@ public class AboutDialog {
         Arrays.sort(contributors);
         
         String apache = "This product includes software developed by the "
-        +"Apache Software Foundation http://www.apache.org/";
+        +"Apache Software Foundation <a href=\"http://www.apache.org/\">http://www.apache.org/</a>";
         
         StringBuilder html = new StringBuilder();
         html.append("<html>");
@@ -107,6 +112,7 @@ public class AboutDialog {
         html.append("<div>").append(btLine).append("</div>");
         html.append("<br>");
         html.append("<div>").append("&copy; Patchdownloader contributors 2009. All rights reserved.").append("</div>");
+        html.append("<div>").append("Visit <a href=\"http://www.ruinwesen.com/\">http://www.ruinwesen.com/</a>").append("</div>");
         html.append("<br>");
         html.append("<div>").append(I18N.translate("aboutdialog.contributors.label", "Contributors:")+" ")
             .append(CSUtils.join(", ", contributors))
@@ -131,4 +137,23 @@ public class AboutDialog {
         dialog.setVisible(true);
     }
     
+    private static class HyperlinkHandler implements HyperlinkListener {
+        public void hyperlinkUpdate(HyperlinkEvent e) {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                URL url = e.getURL();
+                if (url != null) {
+                    Launcher.getInstance().launchURL(url);
+                }
+                
+                /*
+                JTextPane pane = (JTextPane) e.getSource();
+                if (e instanceof HTMLFrameHyperlinkEvent) {
+                    HTMLFrameHyperlinkEvent  evt = (HTMLFrameHyperlinkEvent)e;
+                    HTMLDocument doc = (HTMLDocument)pane.getDocument();
+                    doc.processHTMLFrameHyperlinkEvent(evt);
+                }*/
+            }
+         }
+    }
+
 }
