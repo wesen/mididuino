@@ -63,6 +63,54 @@ public class CSUtils {
         return limitString(str, maxlen, "...");
     }
     
+    public static class ProcessResult {
+        public int status;
+        public boolean timeout;
+        public boolean interrupted;
+        public InterruptedException interruptedException;
+    }
+    
+    public static ProcessResult waitFor(Process proc, long timeout, long resolution) {
+        if (timeout <= 0) {
+            throw new IllegalArgumentException("timeout<0");
+        }
+        if (resolution <= 0) {
+            throw new IllegalArgumentException("resolution<0");
+        }
+        resolution = Math.min(timeout, resolution);
+        
+        ProcessResult res = new ProcessResult();
+        res.status = 1;
+        res.timeout = false;
+        res.interrupted = false;
+        res.interruptedException = null;
+        while (true) {
+            if (timeout<=0) {
+                res.timeout = true;
+                break;
+            }
+            try {
+                res.status = proc.exitValue();
+                break;
+            } catch (IllegalThreadStateException ex) {
+                // no op
+            }
+            
+            try {
+                Thread.sleep(resolution);
+            } catch (InterruptedException ex) {
+                // remember the interrupted state
+                res.interrupted = true;
+                res.interruptedException = ex;
+            }
+            // we can't do this in the try-clause since the
+            // Interrupted exception might cause that the timeout
+            // is never decremented and then this look will block forever
+            timeout -= resolution;
+        }
+        return res;
+    }
+    
     public static String limitString(String str, int maxlen, String limitSuffix) {
         if (str.length()<=maxlen) {
             return str;
