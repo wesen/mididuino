@@ -341,7 +341,7 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
       midiSendLong(buf, 6);
       usleep(5000);
       midiClose();
-      exit(1);
+      exit(0);
     }
   } else {
     fprintf(stderr, "unknown cmd %d received\n", cmd);
