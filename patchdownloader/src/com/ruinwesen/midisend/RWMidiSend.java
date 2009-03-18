@@ -307,9 +307,9 @@ public class RWMidiSend extends MidiSend {
             //File midisendFile = new File(command);
             //File midisendDir = midisendFile.getParentFile();
             commandArgs = new String[] {
-                    cmd, "-i",inputArg,
-                    "-o",outputArg,"-b", 
-                    "-I0x40",
+                    cmd, "-b", "-I0x40", 
+                    "-i",inputArg,
+                    "-o",outputArg,
                     file.getCanonicalPath()};
             
             if (getLog().isDebugEnabled()) {
@@ -327,15 +327,22 @@ public class RWMidiSend extends MidiSend {
         try {
             stderrBuffer.start();
             stdoutBuffer.start();
-            try {
-                int status = waitFor(process);
-                if (isErrorStatus(status)) {
-                    throw new MidiSendException(
-                            "midi-send:send(File) failed, return status:"+status
-                            +stderrBuffer.getOutput());
-                }
-            } catch (InterruptedException ex) {
-                interrupted = true;
+            
+            CSUtils.ProcessResult presult = CSUtils.waitFor(process, 10000, 100);
+            if (getLog().isDebugEnabled()) {
+                getLog().debug("midi-send:status("+presult.status+"),interrupted("+presult.interruptedException+")"
+                        +",timeout("+presult.timeout+")");
+            }
+            interrupted = presult.interrupted;
+            if (presult.timeout) {
+                throw new MidiSendException(
+                        "midi-send:send(File) timeout:"
+                        +stderrBuffer.getOutput());
+            }
+            if (isErrorStatus(presult.status)) {
+                throw new MidiSendException(
+                        "midi-send:send(File) failed, return status:"+presult.status+":"
+                        +stderrBuffer.getOutput());
             }
         } finally {
             try {
@@ -385,16 +392,20 @@ public class RWMidiSend extends MidiSend {
                 "midi-send:getDeviceList() failed, could start process", ex);
             } 
             processInput = new StringInputBuffer(process.getInputStream());
-            try {
-                int status = waitFor(process);
-                if (status != 0) {
-                    throw new MidiSendException(
-                    "midi-send:getDeviceList() failed, exit status "+status+"\n"+err(process));
-                }
-            } catch (InterruptedException ex) {
-                interrupted = true;
+            
+
+            CSUtils.ProcessResult presult = CSUtils.waitFor(process, 10000, 100);
+            interrupted = presult.interrupted;
+            if (presult.timeout) {
+                throw new MidiSendException(
+                        "midi-send:getDeviceList() timeout");
             }
-          
+            if (isErrorStatus(presult.status)) {
+                throw new MidiSendException(
+                        "midi-send:getDeviceList() failed, return status:"+presult.status+":"
+                        +err(process));
+            }
+            
             processInput.run();
             String text = processInput.getOutput();
             for (String line: text.split("[\\n\\r]+")) {
@@ -419,24 +430,6 @@ public class RWMidiSend extends MidiSend {
                 process.destroy();
             if (interrupted) {
                 Thread.currentThread().interrupt();
-            }
-        }
-    }
-
-    private static int waitFor(Process process) 
-        throws MidiSendException, InterruptedException {
-        final long resolution = 100;
-        long timeout = 10000;
-        while (true) {
-            try {
-                return process.exitValue();
-            } catch (IllegalThreadStateException ex) {
-                // ignorable
-            }
-            Thread.sleep(resolution);
-            timeout  -= resolution;
-            if (timeout<=0) {
-                throw new MidiSendException("process did not respond");
             }
         }
     }
