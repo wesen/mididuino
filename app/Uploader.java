@@ -111,7 +111,7 @@ public abstract class Uploader implements MessageConsumer  {
       else {
         avrBasePath = new String(userdir + "hardware/tools/avr/bin/"); 
       }
-      
+
       commandArray[0] = avrBasePath + commandArray[0];
       
       if (Preferences.getBoolean("upload.verbose")) {

@@ -1138,7 +1138,7 @@ public class Editor extends JFrame
 														 });
 			menu.add(item);
 
-			item = newJMenuItem("Visit ruinwesen.com");
+			item = new JMenuItem("Visit ruinwesen.com");
 			item.addActionListener(new ActionListener() {
 								   public void actionPerformed(ActionEvent e) {
 								   Base.openURL("http://www.ruinwesen.com/");

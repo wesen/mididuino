@@ -29,6 +29,7 @@
 				336EA3E309FF84FA0052D765 /* CopyFiles */,
 				33FF07170965BFFE0016AC38 /* ShellScript */,
 				648417E40F714F48006A7398 /* ShellScript */,
+				6484188D0F7160CE006A7398 /* ShellScript */,
 			);
 			dependencies = (
 			);
@@ -789,6 +790,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "unzip -od $BUILT_PRODUCTS_DIR/hardware dist/tools-universal.zip\n";
+		};
+		6484188D0F7160CE006A7398 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ../../hardware/tools/mididuino && make -f Makefile midi-send && cp midi-send $BUILT_PRODUCTS_DIR/hardware/tools/avr/bin\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

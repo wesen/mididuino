@@ -268,33 +268,23 @@
 							<array>
 								<string>33FFFD3D0965B1E40016AC38</string>
 								<string>33FFFE220965BD100016AC38</string>
-								<string>33FFFE340965BD110016AC38</string>
-								<string>33FFFE5F0965BD110016AC38</string>
-								<string>33FFFE710965BD110016AC38</string>
-								<string>335A29060C8CCC0800D8A7F4</string>
-								<string>33FFFE800965BD110016AC38</string>
-								<string>33FFFE920965BD110016AC38</string>
-								<string>33FFFE940965BD110016AC38</string>
-								<string>33FFFEAC0965BD110016AC38</string>
-								<string>33FF01DA0965BD160016AC38</string>
-								<string>33FF01DB0965BD160016AC38</string>
-								<string>336EA4DB09FF87E30052D765</string>
-								<string>33FF01DD0965BD160016AC38</string>
 								<string>3383BF8B0CB7C71200A8FB57</string>
 								<string>1C37FBAC04509CD000000102</string>
+								<string>648418470F715AD8006A7398</string>
+								<string>648418480F715AD8006A7398</string>
 								<string>648418490F715AD8006A7398</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>134</integer>
-									<integer>132</integer>
-									<integer>129</integer>
+									<integer>22</integer>
+									<integer>3</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 1737}, {186, 660}}</string>
+							<string>{{0, 0}, {186, 660}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -331,7 +321,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Editor.java</string>
+								<string>MidiUploader.java</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -339,23 +329,20 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>Editor.java</string>
+										<string>MidiUploader.java</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>648418670F715B3F006A7398</string>
+										<string>648418A40F7163DD006A7398</string>
 										<key>history</key>
 										<array>
 											<string>64A56FAE0EE45086002733F4</string>
 											<string>64A570630EE45AA1002733F4</string>
 											<string>64A5706A0EE45C8B002733F4</string>
 											<string>64A5706B0EE45C8B002733F4</string>
-											<string>64A571070EE464AE002733F4</string>
 											<string>644779BB0EE6ABCB00695DDD</string>
 											<string>644779BC0EE6ABCB00695DDD</string>
 											<string>6494D6160EE749DA0020FDD0</string>
-											<string>6431F4F80EF6455A0046D296</string>
-											<string>640A271C0F3B154C0001309F</string>
 											<string>6458AE7E0F3CB7D1002646E4</string>
 											<string>6458AE7F0F3CB7D1002646E4</string>
 											<string>64D238030F48575100B11B04</string>
@@ -364,12 +351,15 @@
 											<string>64D238290F485D1200B11B04</string>
 											<string>6461392F0F49B6D9005706D1</string>
 											<string>648417D90F714F1C006A7398</string>
-											<string>648417DA0F714F1C006A7398</string>
-											<string>648417F40F71573E006A7398</string>
 											<string>648417FA0F715871006A7398</string>
 											<string>648418630F715B3F006A7398</string>
 											<string>648418640F715B3F006A7398</string>
-											<string>6484180F0F7158C7006A7398</string>
+											<string>6484188E0F7160D8006A7398</string>
+											<string>648418900F7160D8006A7398</string>
+											<string>648418910F7160D8006A7398</string>
+											<string>6484189F0F7162B9006A7398</string>
+											<string>648418A00F7162B9006A7398</string>
+											<string>6484188F0F7160D8006A7398</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -398,6 +388,12 @@
 											<string>648417FB0F715871006A7398</string>
 											<string>648418650F715B3F006A7398</string>
 											<string>648418660F715B3F006A7398</string>
+											<string>648418930F7160D8006A7398</string>
+											<string>648418940F7160D8006A7398</string>
+											<string>648418950F7160D8006A7398</string>
+											<string>648418960F7160D8006A7398</string>
+											<string>648418A10F7162B9006A7398</string>
+											<string>648418A20F7162B9006A7398</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -618,7 +614,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>Editor.java</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -635,6 +631,8 @@
 							<string>335pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -685,7 +683,7 @@
 			<key>WindowToolGUID</key>
 			<string>6444634D0E75D3C800721A89</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
