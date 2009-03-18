@@ -76,25 +76,45 @@ public class Platform
         BeOSFlavor,
         UnknownFlavor
     }
-    
-    private static OS flavor;
+
+    private static final OS flavor;
+    private static final String GNOME_ENV_VAR = "GNOME_DESKTOP_SESSION_ID";
+    private static final String KDE_ENV_VAR = "KDE_FULL_SESSION";
+    private static final boolean isGnomeEnvVarSet;
+    private static final boolean isKDEEnvVarSet;
     
     static
     {
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.indexOf("windows")>=0 || os.indexOf("nt")>=0 || os.indexOf("os/2")>=0)
-            Platform.flavor = OS.WindowsFlavor;
-        else if (os.indexOf("beos")>=0)
-            Platform.flavor = OS.BeOSFlavor;
-        else if (os.indexOf("mac")>=0)
-            Platform.flavor = OS.MacOSFlavor;
-        else if (os.indexOf("linux")>=0 || 
-                os.indexOf("solaris")>=0 || 
-                os.indexOf("freebsd")>=0 ||
-                os.indexOf("unix")>=0)
-            Platform.flavor = OS.UnixFlavor;
-        else
-            Platform.flavor = OS.UnknownFlavor;
+        String os = System.getProperty("os.name"); 
+        if (os != null) {
+            os = os.toLowerCase();
+            if (os.indexOf("windows")>=0 || os.indexOf("nt")>=0 || os.indexOf("os/2")>=0)
+                flavor = OS.WindowsFlavor;
+            else if (os.indexOf("beos")>=0)
+                flavor = OS.BeOSFlavor;
+            else if (os.indexOf("mac")>=0)
+                flavor = OS.MacOSFlavor;
+            else if (os.indexOf("linux")>=0 || 
+                    os.indexOf("solaris")>=0 || 
+                    os.indexOf("freebsd")>=0 ||
+                    os.indexOf("unix")>=0)
+                flavor = OS.UnixFlavor;
+            else
+                flavor = OS.UnknownFlavor;
+        } else {
+            flavor = OS.UnknownFlavor;
+        }
+        
+        if (Platform.isFlavor(OS.UnixFlavor)) {
+            // desktop
+            String gnomeEnvValue = System.getenv(GNOME_ENV_VAR);
+            String kdeEnvValue   = System.getenv(KDE_ENV_VAR);
+            isGnomeEnvVarSet = gnomeEnvValue != null && !gnomeEnvValue.trim().isEmpty();
+            isKDEEnvVarSet = kdeEnvValue != null && !kdeEnvValue.trim().isEmpty();
+        } else {
+            isGnomeEnvVarSet = false;
+            isKDEEnvVarSet = false;
+        }
     }
     
     public static OS flavor()
@@ -157,5 +177,13 @@ public class Platform
     		return SwingUtilities.isLeftMouseButton(e);
     	}
 	}
-  
+
+    public static boolean maybeDeskopKDE() {
+        return isKDEEnvVarSet;
+    }
+
+    public static boolean maybeDeskopGnome() {
+        return isGnomeEnvVarSet;
+    }
+    
 }
