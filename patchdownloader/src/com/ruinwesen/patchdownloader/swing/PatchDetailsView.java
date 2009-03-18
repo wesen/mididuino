@@ -82,15 +82,14 @@ public class PatchDetailsView {
     
     private JPanel panel = new JPanel();
     private StoredPatch patch;
-    private PatchMetadata metadata = new DefaultPatchMetadata();
+    private PatchMetadata metadata = null;
 
     private PDFrame patchdownloader;
     private MidiBar midiBar;
     
     
     private JLabel labelTitle = new JLabel();
-    private JLabel labelAuthor = new JLabel();
-    private JLabel labelDate = new JLabel();
+    private JLabel labelAuthorAndDate = new JLabel();
     private JTextArea textTags = new JTextArea();
     private JTextArea textCategory = new JTextArea();
     private JTextArea textComment = new JTextArea();
@@ -120,22 +119,14 @@ public class PatchDetailsView {
     
     public PatchDetailsView(PDFrame patchdownloader) {
         this.patchdownloader = patchdownloader;
+        init();
+    }
+
+    private void init() {
         panel.setLayout(new BorderLayout());
         HeaderPaneBuilder hpb = new HeaderPaneBuilder(I18N.translate("translation.details","Details"));
         panel.add(hpb.headerPane,BorderLayout.NORTH);
         
-        init();
-        
-        panel.add(new JScrollPane(detailsPane),BorderLayout.CENTER);
-        
-        midiBar = new MidiBar(patchdownloader);
-        panel.add(midiBar.getContainer(), BorderLayout.SOUTH);
-       
-        
-        updateView();
-    }
-
-    private void init() {
         UIDefaults uidefaults = UIManager.getDefaults();
         detailsPane = new JPanel();
         detailsPane.setOpaque(true);
@@ -165,10 +156,9 @@ public class PatchDetailsView {
         Color bluer = CSUtils.change(fglist, 0, 0, 0.8f);
         Color paler = CSUtils.change(fglist, .67f);
 
-        textTags.setBackground(detailsPane.getBackground());
-        textCategory.setBackground(detailsPane.getBackground());
-        textTags.setOpaque(false);
-        textCategory.setOpaque(false);
+        new TextPopup().installAt(textComment);
+        textTags.setOpaque(true);
+        textCategory.setOpaque(true);
         
         textComment.setEditable(false);
         textComment.setWrapStyleWord(true);
@@ -188,8 +178,26 @@ public class PatchDetailsView {
         textTags.setForeground(bluer);
         textTags.setBorder(null);
         textTags.setFocusable(false);
+        Color paneBackground = detailsPane.getBackground();
+        fixBackground(textTags, paneBackground);
+        fixBackground(textCategory, paneBackground);
         
-        detailsPane.setLayout(new BoxLayout(detailsPane, BoxLayout.Y_AXIS));
+        detailsPane.setLayout(new BorderLayout());
+
+        // We use these three panels so we can add the comment text area
+        // to the center pane. the center pane gets most of the space
+        // in the borderlayout thus the comment text area has the most space.
+        // This fixes a problem where the comment area, tag area, category area
+        // all have the same height and the layout looks disrupted. 
+        JPanel north = new JPanel();
+        north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
+        JPanel center = new JPanel();
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        JPanel south = new JPanel();
+        south.setLayout(new BoxLayout(south, BoxLayout.Y_AXIS));
+        detailsPane.add(north, BorderLayout.NORTH);
+        detailsPane.add(center, BorderLayout.CENTER);
+        detailsPane.add(south, BorderLayout.SOUTH);
         {
             labelTitle.setFont(CSUtils.changeFontStyle(labelTitle.getFont(), Font.BOLD));
             
@@ -197,15 +205,13 @@ public class PatchDetailsView {
             hbox.add(labelTitle);
             hbox.add(Box.createHorizontalGlue());
             hbox.add(this.btnSend=new JButton(new RedirectAction(this, "sendPatch")));
-            detailsPane.add(hbox);
+            north.add(hbox);
         }
         {
             Box hbox = Box.createHorizontalBox();
-            hbox.add(labelAuthor);
-            hbox.add(new JLabel(", "));
-            hbox.add(labelDate);
+            hbox.add(labelAuthorAndDate);
             hbox.add(Box.createHorizontalGlue());
-            detailsPane.add(hbox);
+            north.add(hbox);
         }
         /* {
             Box hbox = Box.createHorizontalBox();
@@ -222,34 +228,33 @@ public class PatchDetailsView {
             label.setForeground(paler);
             hbox.add(label);
             hbox.add(Box.createHorizontalGlue());
-            detailsPane.add(hbox);
+            center.add(hbox);
         }
         
-        detailsPane.add(textComment);
-        detailsPane.add(Box.createVerticalGlue());
+        center.add(textComment);
 
         {
             Box hbox = Box.createHorizontalBox();
             JLabel label = new JLabel(I18N.translate("translation.category", "Category")+": ");
-            label.setAlignmentX(Component.LEFT_ALIGNMENT);
-            textCategory.setAlignmentX(Component.LEFT_ALIGNMENT);
             label.setForeground(paler);
             hbox.add(label);
             hbox.add(textCategory);
-            detailsPane.add(hbox);
+            south.add(hbox);
+            label.setAlignmentX(Component.LEFT_ALIGNMENT);
             label.setAlignmentY(Component.TOP_ALIGNMENT);
+            textCategory.setAlignmentX(Component.LEFT_ALIGNMENT);
             textCategory.setAlignmentY(Component.TOP_ALIGNMENT);
         }
         {
             Box hbox = Box.createHorizontalBox();
             JLabel label = new JLabel(I18N.translate("translation.tags", "Tags")+": ");
-            label.setAlignmentX(Component.LEFT_ALIGNMENT);
-            textTags.setAlignmentX(Component.LEFT_ALIGNMENT);
             label.setForeground(paler);
             hbox.add(label);
             hbox.add(textTags);
-            detailsPane.add(hbox);
+            south.add(hbox);
+            label.setAlignmentX(Component.LEFT_ALIGNMENT);
             label.setAlignmentY(Component.TOP_ALIGNMENT);
+            textTags.setAlignmentX(Component.LEFT_ALIGNMENT);
             textTags.setAlignmentY(Component.TOP_ALIGNMENT);
         }
         {
@@ -268,10 +273,28 @@ public class PatchDetailsView {
             vbox.add(hbox1);
             vbox.add(hbox2);
             
-            detailsPane.add(vbox);
+            south.add(vbox);
         }
+        
+        
+        textComment.setAlignmentY(0);
+        //textComment.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+        panel.add(new JScrollPane(detailsPane),BorderLayout.CENTER);
+        
+        midiBar = new MidiBar(patchdownloader);
+        panel.add(midiBar.getContainer(), BorderLayout.SOUTH);
+        panel.setPreferredSize(new Dimension(260,100));
+        
+        updateView();
     }
     
+    private void fixBackground(JTextArea textComponent, Color bgcolor) {
+        // don't pass javax.swing.plaf.ColorUIResource as argument
+        // see also: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6464612
+        textComponent.setBackground(new Color(bgcolor.getRGB()));
+        textComponent.setEditable(false);
+    }
+
     @RedirectActionMeta(title="Save as...", resourcekey="patchdetails.midifile.saveas")
     public void saveMidifileAs() {
         saveMetadataPathAs(PatchMetadata.PATH_MIDIFILE);
@@ -294,18 +317,20 @@ public class PatchDetailsView {
     }
 
     private void updateView() {
-        String author = "";
-        String date = "";
+        String author_date = "";
         String title = "";
-        String tags = "";
-        String categories = "";
+        String tags = "-";
+        String categories = "-";
         String comment = "";
         if (metadata != null) {
             if (metadata.getAuthor() != null) {
-                author = metadata.getAuthor().trim();
+                author_date = metadata.getAuthor().trim();
             }
             if (metadata.getLastModifiedDate() != null) {
-                date = dateToString(metadata.getLastModifiedDate());
+                if (!author_date.isEmpty()) {
+                    author_date = author_date+", ";
+                }
+                author_date += dateToString(metadata.getLastModifiedDate());
             }
             if (metadata.getTitle() != null) {
                 title = metadata.getTitle().trim();
@@ -333,15 +358,14 @@ public class PatchDetailsView {
         btnSaveMidifileAs.setEnabled(metadata != null && metadata.getPath(PatchMetadata.PATH_MIDIFILE)!=null);
         btnSavesourceAs.setEnabled(metadata != null && metadata.getPath(PatchMetadata.PATH_SOURCECODE)!=null);
         
-        labelAuthor.setText(author);
-        labelDate.setText(date);
+        labelAuthorAndDate.setText(author_date);
         labelTitle.setText(title);
         textTags.setText(tags);
         textCategory.setText(categories);
         textComment.setText(comment);
-
+/*
         updateSize(textCategory);
-        updateSize(textTags);
+        updateSize(textTags);*/
     }
     
     private void updateSize(JTextArea area) {
@@ -354,48 +378,6 @@ public class PatchDetailsView {
         return midiBar;
     }
     
-    /*
-    private void setHTML() {
-        if (patch == null) {
-            htmlField.setText("");
-            return;
-        } 
-        
-        StringBuilder html = new StringBuilder();
-
-        boolean hasSource = metadata.getPath(PatchMetadata.PATH_SOURCECODE) != null;
-        boolean hasMidiFile =  metadata.getPath(PatchMetadata.PATH_MIDIFILE) != null;
-        
-        html.append("<html background=\""+htmlBackground+"\">");
-        if (hasMidiFile) {
-            html.append("<table><tr><td><b>Send to device:</b> </td><td><input id=\"btn.send\" type=\"submit\" value=\"Send\"></td></tr></table>");
-        }
-        html.append("<br>");
-        html.append("<div><b>Title:</b> "+metadata.getTitle()+" </div>");
-        html.append("<div><b>Author:</b> "+metadata.getAuthor()+"</div>");
-        html.append("<div><b>Tags:</b> "+metadata.getTags().toSortedString()+"</div>");
-        
-        html.append("<br>");
-        html.append("<div><b>Comment:</b> </div>");
-        if (metadata.getComment() != null) {
-            html.append("<p>"+metadata.getComment()+"</p>");
-        }
-        html.append("<table>");
-        if (hasSource) {
-            html.append("<tr><td><b>Source code:</b> </td><td><input id=\"btn.sourcecode\" type=\"submit\" value=\"Save as...\"></td></tr>");
-        }
-        if (hasMidiFile) {
-            html.append("<tr><td><b>Midi file:</b> </td><td><input id=\"btn.midifile\" type=\"submit\" value=\"Save as...\"></td></tr>");
-        } else {
-            html.append("<tr><td><b>Midi file:</b> </td><td><i>not available</i></td></tr>");
-        }
-        html.append("</table>");
-        html.append("</html>");
-        
-        htmlField.setEditorKit(new MyHTMLEditorKit(this));
-        htmlField.setText(html.toString());
-    }*/
-
     @RedirectActionMeta(title="Send", resourcekey="patchdetails.send")
     public void sendPatch() {
         try {
@@ -412,7 +394,7 @@ public class PatchDetailsView {
     
     public void __sendPatch() throws Exception {
         
-        if (!(patch != null && metadata != null)) {
+        if (patch == null  || metadata == null) {
             return;
         }
         String midifilepath = metadata.getPath(PatchMetadata.PATH_MIDIFILE);
@@ -443,7 +425,7 @@ public class PatchDetailsView {
     }
     
     private void saveMetadataPathAs(String key) {
-        if (patch == null) {
+        if (patch == null || metadata == null) {
             return;
         }
         String path = metadata.getPath(key);
