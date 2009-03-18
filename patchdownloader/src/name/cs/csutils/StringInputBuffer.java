@@ -42,6 +42,7 @@ public class StringInputBuffer implements Runnable {
 
     private static Log log = LogFactory.getLog(StringInputBuffer.class);
     private BufferedReader reader;
+    // StringBuffer is thread save
     private StringBuffer buffer = new StringBuffer();
     private PrintStream out;
     private volatile long stopRequested = 0;
