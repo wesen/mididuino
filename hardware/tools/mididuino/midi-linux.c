@@ -286,6 +286,8 @@ void midiInitialize(char *inputDevice, char *outputDevice) {
 unsigned char inbuf[256];
 void midiMainLoop(void) {
   int end = 0;
+  int timeout_us = 10*1000*1000; // 10 seconds in micro seconds
+  int timer_resolution_us = 50; // 50 micro seconds
 
   while (!end) {
     int len;
@@ -298,7 +300,12 @@ void midiMainLoop(void) {
     }
     if (len == -EAGAIN) {
       //      printf("usleep\n");
-      usleep(50);
+      usleep(timer_resolution_us);
+      timeout -= timer_resolution_us;
+      if (timeout_us <0) {
+        fprintf(stderr, "timeout\n");
+        exit(1);
+      }
     } else if (len < 0) {
       fprintf(stderr, "read error: %s\n", snd_strerror(len));
       exit(1);
