@@ -61,6 +61,8 @@ public class SearchBar  {
         this.patchdownloader = patchdownloader;
         textQueryField = new JTextField();
 
+        new TextPopup().installAt(textQueryField);
+        
         JLabel labelSearch = new JLabel(I18N.translate("translation.search", "Search")+":");
         labelSearch.setLabelFor(textQueryField);
 
