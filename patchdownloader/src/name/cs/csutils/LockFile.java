@@ -79,8 +79,7 @@ public class LockFile {
 
             try {
                 lock = channel.tryLock();
-            }
-            catch (OverlappingFileLockException e) {
+            } catch (OverlappingFileLockException ex) {
                 // already locked
                 closeLock();
                 return true;
@@ -117,15 +116,18 @@ public class LockFile {
 
     private void closeLock() {
         try { 
-            lock.release();  
-        }
-        catch (IOException ex) {  
+            if (lock != null) {
+                lock.release();  
+            }
+        } catch (IOException ex) {  
             if (log.isWarnEnabled()) {
                 log.warn("Could not release lockfile:"+file.getAbsolutePath(), ex);
             }
         }
         try { 
-            channel.close(); 
+            if (channel != null) {
+                channel.close(); 
+            }
         } catch (IOException ex) { 
             if (log.isWarnEnabled()) {
                 log.warn("Could not close lockfile channel:"+file.getAbsolutePath(), ex);
