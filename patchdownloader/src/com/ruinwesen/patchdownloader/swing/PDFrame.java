@@ -171,7 +171,6 @@ public class PDFrame extends PatchDownloader {
             menuDebug.add(new RedirectAction(this, "showCreatePatchFileDialog"));
             menuDebug.add(new RedirectAction(this, "debugGenerateRandomPatches"));
             menuDebug.add(new RedirectAction(this, "debugDeletePatchIndex"));
-            menuDebug.add(new RedirectAction(this, "debugPatchIndex"));
             menuDebug.add(new RedirectAction(this, "debugGC"));
             jmenubar.add(menuDebug);
         }
@@ -186,34 +185,6 @@ public class PDFrame extends PatchDownloader {
     @RedirectActionMeta(title="gc()")
     public void debugGC() {
         System.gc();
-    }
-    
-static int doccounter = 0;
-    @RedirectActionMeta(title="debugPatchIndex...")
-    public void debugPatchIndex() {
-        if (!PatchDownloader.isDebugModeOn()) {
-            return;
-        }
-        /*
-        IndexReader2 index = getPatchIndex();
-        
-        long time = System.currentTimeMillis();
-        index.search(new Query("beat"), new SearchCollector(){
-            
-            @Override
-            public void collect(int docid, float score) {
-                // TODO Auto-generated method stub
-                doccounter++;
-            }
-
-            @Override
-            public boolean takesMore() {
-                return true;
-            }
-            
-        });
-        System.out.println("doccounter:"+(doccounter));
-        System.out.println("time:"+(System.currentTimeMillis()-time));*/
     }
 
     @RedirectActionMeta(title="Generate random patches...")
