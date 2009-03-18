@@ -301,7 +301,7 @@ void midiMainLoop(void) {
     if (len == -EAGAIN) {
       //      printf("usleep\n");
       usleep(timer_resolution_us);
-      timeout -= timer_resolution_us;
+      timeout_us -= timer_resolution_us;
       if (timeout_us <0) {
         fprintf(stderr, "timeout\n");
         exit(1);
