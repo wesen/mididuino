@@ -28,6 +28,7 @@
 				33FF07130965BFA80016AC38 /* CopyFiles */,
 				336EA3E309FF84FA0052D765 /* CopyFiles */,
 				33FF07170965BFFE0016AC38 /* ShellScript */,
+				648417E40F714F48006A7398 /* ShellScript */,
 			);
 			dependencies = (
 			);
@@ -88,13 +89,13 @@
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIconFile</key>
-	<string>arduino.icns</string>
+	<string>mididuino.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>cc.arduino.Arduino</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Arduino</string>
+	<string>Mididuino</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -229,6 +230,7 @@
 		33FF07310965C1E30016AC38 /* tab-unsel-menu.gif in Resources */ = {isa = PBXBuildFile; fileRef = 33FF02860965BD160016AC38 /* tab-unsel-menu.gif */; };
 		33FF07320965C1E30016AC38 /* tab-unsel-mid.gif in Resources */ = {isa = PBXBuildFile; fileRef = 33FF02870965BD160016AC38 /* tab-unsel-mid.gif */; };
 		33FF07330965C1E30016AC38 /* tab-unsel-right.gif in Resources */ = {isa = PBXBuildFile; fileRef = 33FF02880965BD160016AC38 /* tab-unsel-right.gif */; };
+		648417F00F715716006A7398 /* mididuino.icns in Resources */ = {isa = PBXBuildFile; fileRef = 648417EF0F715716006A7398 /* mididuino.icns */; };
 		64A56F950EE445FD002733F4 /* MidiUploader.java in Sources */ = {isa = PBXBuildFile; fileRef = 64A56F940EE445FD002733F4 /* MidiUploader.java */; };
 		64A570070EE4530E002733F4 /* CommandRunner.java in Sources */ = {isa = PBXBuildFile; fileRef = 64A570060EE4530E002733F4 /* CommandRunner.java */; };
 		A337296F0D22505C00E82412 /* librxtxSerial.jnilib in Copy Java Resources */ = {isa = PBXBuildFile; fileRef = A33729630D224FA700E82412 /* librxtxSerial.jnilib */; };
@@ -419,6 +421,7 @@
 		33FFFE810965BD110016AC38 /* howto.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = howto.txt; sourceTree = "<group>"; };
 		33FFFE930965BD110016AC38 /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = .cvsignore; sourceTree = "<group>"; };
 		33FFFE940965BD110016AC38 /* Arduino.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Arduino.xcodeproj; sourceTree = "<group>"; };
+		648417EF0F715716006A7398 /* mididuino.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = mididuino.icns; path = dist/mididuino.icns; sourceTree = "<group>"; };
 		64A56F940EE445FD002733F4 /* MidiUploader.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = MidiUploader.java; sourceTree = "<group>"; };
 		64A570060EE4530E002733F4 /* CommandRunner.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = CommandRunner.java; sourceTree = "<group>"; };
 		A33729630D224FA700E82412 /* librxtxSerial.jnilib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; path = librxtxSerial.jnilib; sourceTree = "<group>"; };
@@ -528,6 +531,7 @@
 		33FFFD3D0965B1E40016AC38 = {
 			isa = PBXGroup;
 			children = (
+				648417EF0F715716006A7398 /* mididuino.icns */,
 				33CF03B009662CA800F2C9A9 /* arduino.icns */,
 				33FFFE220965BD100016AC38 /* app */,
 				335A29060C8CCC0800D8A7F4 /* core */,
@@ -736,6 +740,7 @@
 				33FF07310965C1E30016AC38 /* tab-unsel-menu.gif in Resources */,
 				33FF07320965C1E30016AC38 /* tab-unsel-mid.gif in Resources */,
 				33FF07330965C1E30016AC38 /* tab-unsel-right.gif in Resources */,
+				648417F00F715716006A7398 /* mididuino.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -753,7 +758,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $BUILT_PRODUCTS_DIR/../../\n\nREVISION=`head -1 ../../todo.txt | cut -c 1-4`\nSHORT_REVISION=`head -1 ../../todo.txt | cut -c 3-4`\nVERSIONED=`cat ../../app/Base.java | grep $REVISION`\n\nif [ -z \"$VERSIONED\" ]\nthen\n  echo Fix the revision number in Base.java\n  exit\nfi\n\nrm -rf arduino\nrm -rf arduino-*\n\nmv $BUILT_PRODUCTS_DIR arduino\n\nfind arduino -name \"*~\" -exec rm -f {} ';'\n# need to leave ds store stuff cuz one of those is important\n#find arduino -name \".DS_Store\" -exec rm -f {} ';'\nfind arduino -name \"._*\" -exec rm -f {} ';'\nfind arduino -name \"Thumbs.db\" -exec rm -f {} ';'\n\n# clean out the cvs entries\nfind arduino -name \"CVS\" -exec rm -rf {} ';' 2> /dev/null\nfind arduino -name \".cvsignore\" -exec rm -rf {} ';'\n\n# clean out the svn entries\nfind arduino -name \".svn\" -exec rm -rf {} ';' 2> /dev/null\n\n#mv arduino/Arduino.app/Contents/MacOS/Arduino \"arduino/Arduino.app/Contents/MacOS/Arduino $SHORT_REVISION\"\nmv arduino/Arduino.app \"arduino/Arduino $SHORT_REVISION.app\"\nmv arduino arduino-$REVISION\nzip -r arduino-$REVISION-mac.zip arduino-$REVISION\n";
+			shellScript = "cd $BUILT_PRODUCTS_DIR/../../\n\nREVISION=`head -1 ../../todo.txt | cut -c 1-4`\nSHORT_REVISION=`head -1 ../../todo.txt | cut -c 3-4`\nVERSIONED=`cat ../../app/Base.java | grep $REVISION`\n\nif [ -z \"$VERSIONED\" ]\nthen\n  echo Fix the revision number in Base.java\n  exit\nfi\n\nrm -rf arduino\nrm -rf mididuino-*\n\nmv $BUILT_PRODUCTS_DIR arduino\n\nfind arduino -name \"*~\" -exec rm -f {} ';'\n# need to leave ds store stuff cuz one of those is important\n#find arduino -name \".DS_Store\" -exec rm -f {} ';'\nfind arduino -name \"._*\" -exec rm -f {} ';'\nfind arduino -name \"Thumbs.db\" -exec rm -f {} ';'\n\n# clean out the cvs entries\nfind arduino -name \"CVS\" -exec rm -rf {} ';' 2> /dev/null\nfind arduino -name \".cvsignore\" -exec rm -rf {} ';'\n\n# clean out the svn entries\nfind arduino -name \".svn\" -exec rm -rf {} ';' 2> /dev/null\n\n#mv arduino/Arduino.app/Contents/MacOS/Arduino \"arduino/MidiDuino.app/Contents/MacOS/Arduino $SHORT_REVISION\"\nmv arduino/Arduino.app \"arduino/MidiDuino $SHORT_REVISION.app\"\nmv arduino mididuino-$REVISION\nzip -r mididuino-$REVISION-mac.zip mididuino-$REVISION\n";
 		};
 		33FF07170965BFFE0016AC38 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -771,6 +776,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "unzip -od $BUILT_PRODUCTS_DIR ../shared/reference.zip\n";
+		};
+		648417E40F714F48006A7398 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "unzip -od $BUILT_PRODUCTS_DIR/hardware dist/tools-universal.zip\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -19,7 +19,7 @@ static inline uint32_t phase_mult(uint32_t val) {
 
 ISR(TIMER1_OVF_vect) {
   //  setLed2();
-  
+
   clock++;
 #ifdef MIDIDUINO_MIDI_CLOCK
   if (MidiClock.state == MidiClock.STARTED)

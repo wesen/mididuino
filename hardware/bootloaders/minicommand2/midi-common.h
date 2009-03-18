@@ -55,7 +55,7 @@
 /* sysex wesen types */
 #define SYSEX_VENDOR_1 0x00
 #define SYSEX_VENDOR_2 0x13
-#define SYSEX_VENDOR_3 0x40
+#define SYSEX_VENDOR_3 0x41
 
 #define CMD_BOOT_DATA_BLOCK    0x01
 #define CMD_DATA_BLOCK_ACK     0x02

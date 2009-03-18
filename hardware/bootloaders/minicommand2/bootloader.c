@@ -292,6 +292,10 @@ int main() {
   wdt_disable();
 
   DDRE = 0xFF;
+
+  TCCR3B = _BV(WGM32) | _BV(CS30);
+  TCCR3A = _BV(WGM30) | _BV(COM3A1);
+  OCR3A = 160;
   
   MCUCR = _BV(IVCE) | _BV(IVSEL);
 

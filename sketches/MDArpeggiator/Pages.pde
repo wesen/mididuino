@@ -139,4 +139,10 @@ void handleGuiPages() {
       GUI.setPage(&configPage_1);
     }
   }
+  
+  if (BUTTON_PRESSED(Buttons.BUTTON3)) {
+    triggerRecording = true;
+    recording = false;
+    endRecording = false;
+  }
 }

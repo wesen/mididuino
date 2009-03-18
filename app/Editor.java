@@ -59,7 +59,7 @@ public class Editor extends JFrame
 	MRJOpenDocumentHandler //, MRJOpenApplicationHandler
 	{
 		// yeah
-		static final String WINDOW_TITLE = "Arduino" + " - " + Base.VERSION_NAME;
+		static final String WINDOW_TITLE = "Mididuino" + " - " + Base.VERSION_NAME;
 		
 		// p5 icon for the window
 		Image icon;
@@ -1071,6 +1071,7 @@ public class Editor extends JFrame
 			JMenu menu = new JMenu("Help");
 			JMenuItem item;
 			
+			/*
 			if (!Base.isLinux()) {
 				item = new JMenuItem("Getting Started");
 				item.addActionListener(new ActionListener() {
@@ -1127,6 +1128,7 @@ public class Editor extends JFrame
 														 }
 														 });
 			menu.add(item);
+			 */
 			
 			item = newJMenuItem("Visit www.arduino.cc", '5');
 			item.addActionListener(new ActionListener() {
@@ -1134,6 +1136,14 @@ public class Editor extends JFrame
 														 Base.openURL("http://www.arduino.cc/");
 														 }
 														 });
+			menu.add(item);
+
+			item = newJMenuItem("Visit ruinwesen.com");
+			item.addActionListener(new ActionListener() {
+								   public void actionPerformed(ActionEvent e) {
+								   Base.openURL("http://www.ruinwesen.com/");
+								   }
+								   });
 			menu.add(item);
 			
 			// macosx already has its own about menu

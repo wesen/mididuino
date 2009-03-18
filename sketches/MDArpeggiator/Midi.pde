@@ -1,5 +1,27 @@
 void on16Callback() {
-  arpeggiator.playNext();
+  if (triggerRecording && (MidiClock.div16th_counter % 16) == 0) {
+    triggerRecording = false;
+    recording = true;
+    recordStart = MidiClock.div16th_counter;
+    for (int i = 0; i < 64; i++) {
+      arpeggiator.recordPitches[i] = 128;
+    }
+  }
+  
+  if (recording || endRecording) {
+    int pos = MidiClock.div16th_counter - recordStart;
+    if (pos >= (recordLength * 3)) {
+      endRecording = false;
+    } else if (pos >= (recordLength * 2)) {
+      recording = false;
+      endRecording = true;
+      return;
+    }
+  }
+  
+  if (!triggerRecording) {
+    arpeggiator.playNext(recording);
+  }
 }
 
 void setupMidi() {

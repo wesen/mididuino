@@ -223,3 +223,25 @@ minicommand.build.mcu=atmega64
 minicommand.build.f_cpu=16000000L
 minicommand.build.core=minicommand
 minicommand.build.libraries=Midi GUI CommonTools
+
+############################################################
+
+minicommand2.name=Minicommand2 1.1 (atmega64 16 Mhz + SRAM)
+
+minicommand2.upload.protocol=midisend
+minicommand2.upload.maximum_size=57344
+minicommand2.upload.speed=19200
+minicommand2.upload.midiid=0x41
+
+minicommand2.bootloader.low_fuses=0x2f
+minicommand2.bootloader.high_fuses=0x8a
+minicommand2.bootloader.extended_fuses=0xff
+minicommand2.bootloader.path=minicommand2
+minicommand2.bootloader.file=minicommand.hex
+minicommand2.bootloader.unlock_bits=0x3F
+minicommand2.bootloader.lock_bits=0x0F
+
+minicommand2.build.mcu=atmega64
+minicommand2.build.f_cpu=16000000L
+minicommand2.build.core=minicommand2
+minicommand2.build.libraries=Midi GUI CommonTools

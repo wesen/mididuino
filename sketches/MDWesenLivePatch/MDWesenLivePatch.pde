@@ -176,10 +176,10 @@ void on16Callback() {
 void setup() {
   GUI.setPage(&page);
   
-  MidiClock.mode = MidiClock.EXTERNAL;
+//  MidiClock.mode = MidiClock.EXTERNAL;
   MidiClock.transmit = false;
-  MidiClock.setOn16Callback(on16Callback);
-  MidiClock.start();
+//  MidiClock.setOn16Callback(on16Callback);
+//  MidiClock.start();
 }
 
 void loop() {

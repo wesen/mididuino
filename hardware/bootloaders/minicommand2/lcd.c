@@ -16,7 +16,7 @@
 #define LCD_DELAY_US 50
 
 #define LCD_RS     PE2
-#define LCD_ENABLE PE3
+#define LCD_ENABLE PE6
 
 #define LCD_SET_ENABLE()   { SET_BIT8(LCD_CTRL_PORT, LCD_ENABLE); }
 #define LCD_CLEAR_ENABLE() { CLEAR_BIT8(LCD_CTRL_PORT, LCD_ENABLE); }
@@ -169,6 +169,7 @@ void lcd_init(void) {
   LCD_DATA_PORT = 0x00;
   LCD_CTRL_DDR |= _BV(LCD_RS) | _BV(LCD_ENABLE);
 
+  _delay_ms(100);
   // wait for display
   lcd_putnibble(0x03);
   lcd_putnibble(0x02);

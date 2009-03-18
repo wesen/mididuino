@@ -106,7 +106,7 @@ class TempoEncoder : public RangeEncoder {
   public:
   TempoEncoder() : RangeEncoder(255, 20) {
   }
-  
+
   void handle(uint8_t val);
 };
 

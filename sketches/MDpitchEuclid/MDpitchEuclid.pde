@@ -7,8 +7,6 @@ RangeEncoder lengthEncoder(2, 32, "LEN");
 RangeEncoder offsetEncoder(0, 32, "OFF");
 RangeEncoder trackEncoder(0, 15, "TRK");
 
-#define ROM_TRACK 4
-
 EuclidDrumTrack track(3, 8);
 EncoderPage page;
 EncoderPage trackPage;
@@ -27,16 +25,12 @@ void setPitchLength(uint8_t len) {
 
 void on16Callback() {
   if (track.isHit(MidiClock.div16th_counter)) {
-    if (BUTTON_DOWN(Buttons.BUTTON3)) {
-      MD.sendNoteOn(trackEncoder.getValue(), pitches[pitches_idx], 100);
-      pitches_idx = (pitches_idx + 1) % pitches_len;
-    }
+    MD.sendNoteOn(trackEncoder.getValue(), pitches[pitches_idx], 100);
+    pitches_idx = (pitches_idx + 1) % pitches_len;
   }
 }
 
 void setup() {
-  MD.trackModels[ROM_TRACK] = ROM_MODEL;
-  
   page.encoders[0] = &pitchLengthEncoder;
   page.encoders[1] = &pulseEncoder;
   page.encoders[2] = &lengthEncoder;

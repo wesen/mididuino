@@ -3,6 +3,8 @@
 
 #include "helpers.h"
 
+#define BOARD_ID 0x41
+
 void init(void);
 
 inline void setLed(void) {

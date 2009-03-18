@@ -49,7 +49,7 @@ public class MidiUploader extends AvrdudeUploader {
 	
   public boolean midisend(Collection params) throws RunnerException {
     List commandDownloader = new ArrayList();
-    commandDownloader.add("midi-send");
+    commandDownloader.add("hardware/tools/mididuino/midi-send");
 		commandDownloader.add("-b");
 		String midiPort = Preferences.get("midi.port");
 		
@@ -70,7 +70,7 @@ public class MidiUploader extends AvrdudeUploader {
 	
 	public String[] getMidiPorts(String flag) {
 	    List commandDownloader = new ArrayList();
-		commandDownloader.add("midi-send");
+		commandDownloader.add("hardware/tools/mididuino/midi-send");
 		commandDownloader.add(flag);
 		
 		CommandRunner runner = new CommandRunner();

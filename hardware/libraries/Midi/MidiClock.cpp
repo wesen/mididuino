@@ -126,6 +126,12 @@ void MidiClockClass::setTempo(uint16_t _tempo) {
 void MidiClockClass::handleTimerInt()  {
   if (counter == 0) {
     counter = interval;
+
+    if (mod6_counter == 0) {
+      if (on16Callback)
+	on16Callback();
+    }
+    
     div96th_counter++;
     mod6_counter++;
     
@@ -154,13 +160,8 @@ void MidiClockClass::handleTimerInt()  {
     if (on96Callback)
       on96Callback();
 
-    if (mod6_counter == 6)
+    if (mod6_counter == 6) {
       mod6_counter = 0;
-    
-    //    if (mod6_counter == 0) {
-    if (mod6_counter == 0) {
-      if (on16Callback)
-	on16Callback();
       div16th_counter++;
     }
   } else {
