@@ -1,12 +1,12 @@
 <project name="patchdownloader" basedir="." default="">
 
   <property name="build.dir" value="build" />
-  <property name="dist.dir" value="dist" />
+  <property name="dist.dir" value="dist/patchdownloader" />
   <property name="source.dir" value="src" />
   <property name="javadoc.dir" value="docs/api" />
   <property name="lib.dir" value="lib" />
   <property name="classpath" value="lib/commons-codec.jar:lib/httpclient.jar:lib/httpcore-nio.jar:lib/log4j.jar:lib/commons-logging.jar:lib/httpcore.jar:lib/httpmime.jar:lib/lucene-core.jar"/>
-  <property name="jarclasspath" value="lib/commons-codec.jar lib/httpclient.jar lib/httpcore-nio.jar lib/log4j.jar:lib/commons-logging.jar lib/httpcore.jar lib/httpmime.jar lib/lucene-core.jar"/>
+  <property name="jarclasspath" value="lib/commons-codec.jar lib/httpclient.jar lib/httpcore-nio.jar lib/log4j.jar lib/commons-logging.jar lib/httpcore.jar lib/httpmime.jar lib/lucene-core.jar resources/ midi-send/ ."/>
   <path id ="class.path">
     <fileset dir="${lib.dir}">
       <include name="**/*.jar"/>
@@ -15,9 +15,8 @@
   <path id ="jar.class.path">
     <fileset dir="${dist.dir}">
       <include name="lib/*.jar"/>
-    </fileset>      
+    </fileset>     
     <pathelement path="${dist.dir}/resources"/>
-    <pathelement path="${dist.dir}/."/>
     <pathelement path="${dist.dir}/midi-send"/>
   </path> 
   
@@ -98,7 +97,7 @@
 
 
 	<attribute name="Main-Class" value="com.ruinwesen.patchdownloader.App"/>   
-	<attribute name="Class-Path" value="${jar.manifest.class.path}"/>    
+	<attribute name="Class-Path" value="${jarclasspath}"/>    
       </manifest>
     </jar>
   </target>
