@@ -56,6 +56,8 @@ import java.util.List;
  */
 public class MidiSend {
 
+    protected MidiSendCallback callback;
+    
     /**
      * Creates a dummy MidiSend instance which provides no inputs/outputs.
      */
@@ -63,6 +65,14 @@ public class MidiSend {
         super();
     }
 
+    public void setCallback(MidiSendCallback callback) {
+        this.callback = callback;
+    }
+    
+    public MidiSendCallback getCallback() {
+        return this.callback;
+    }
+    
     /**
      * Returns a list containing all output devices.
      * 

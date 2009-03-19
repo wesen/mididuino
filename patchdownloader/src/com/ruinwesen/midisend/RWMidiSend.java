@@ -344,6 +344,11 @@ public class RWMidiSend extends MidiSend {
                         "midi-send:send(File) failed, return status:"+presult.status+":"
                         +stderrBuffer.getOutput());
             }
+            
+            if (callback != null) {
+                callback.midisendCompleted();
+            }
+            
         } finally {
             try {
                 stderrBuffer.close();
