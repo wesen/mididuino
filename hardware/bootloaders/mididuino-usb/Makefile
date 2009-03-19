@@ -7,6 +7,7 @@ CFLAGS += -Os -ffunction-sections -DAVR -I. -mmcu=$(AVR_ARCH) -frtl-abstract-seq
 CFLAGS += -Wall -DLITTLE_ENDIAN -Werror -Winline --param max-inline-insns-auto=2
 CLDFLAGS += -Wl,--gc-sections -mmcu=$(AVR_ARCH)
 LDFLAGS = -m $(LDAVR_ARCH) -M
+FLASH_PROTOCOL = usbasp
 
 PROJ=mididuino-usb
 
@@ -60,23 +61,23 @@ mididuino-usb.elf: bootloader-main.o midi_link_desc.o lcd.o d12_boot.o sr165.o u
 	$(CC) $(CLDFLAGS) -Wl,--section-start=.text=$(BOOTLOADER32_START) -o $@ $+
 
 avrdude: clean $(PROJ).hex # $(PROJ).ee_srec $(PROJ).hex
-	avrdude -V -p m32 -P usb -c usbasp -U flash:w:$(PROJ).hex
+	avrdude -V -p m32 -P usb -c $(FLASH_PROTOCOL) -U flash:w:$(PROJ).hex
 
 avrread: 
-	avrdude -p m32 -P usb -c usbasp -U flash:r:$(PROJ)-read.hex:i
+	avrdude -p m32 -P usb -c $(FLASH_PROTOCOL) -U flash:r:$(PROJ)-read.hex:i
 
 init:
 #       enable watchdog, external crystal
 # lfuse = 00100000 // external clock
 # 4 kb bootloader
-	avrdude -p m32 -P usb -c usbasp -U hfuse:w:0xd8:m -U lfuse:w:0x20:m
+	avrdude -p m32 -P usb -c $(FLASH_PROTOCOL) -U hfuse:w:0xd8:m -U lfuse:w:0x20:m
 
 readfuses:
-	avrdude -p m32 -P usb -c usbasp -U hfuse:r:high.raw -U lfuse:r:low.raw
+	avrdude -p m32 -P usb -c $(FLASH_PROTOCOL) -U hfuse:r:high.raw -U lfuse:r:low.raw
 
 restart:
 #       read the fuses to reset the programming adapter
-	avrdude -p m32 -P usb -c usbasp 
+	avrdude -p m32 -P usb -c $(FLASH_PROTOCOL) 
 
 clean:
 	rm -f *.o *.d *~ $(PROJ).elf *.elf *.srec *.ee_srec *.hex
