@@ -634,4 +634,8 @@ public class PDFrame extends PatchDownloader {
         return filterListView;
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
 }

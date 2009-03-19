@@ -54,6 +54,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -68,6 +69,7 @@ import name.cs.csutils.directoryreader.DirectoryReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.ruinwesen.midisend.MidiSend;
 import com.ruinwesen.patchdownloader.PatchDownloader;
 import com.ruinwesen.patchdownloader.patch.DefaultPatchMetadata;
 import com.ruinwesen.patchdownloader.patch.PatchMetadata;
@@ -380,16 +382,68 @@ public class PatchDetailsView {
     
     @RedirectActionMeta(title="Send", resourcekey="patchdetails.send")
     public void sendPatch() {
-        try {
-            __sendPatch();
-        } catch (Exception ex) {
-            if (log.isDebugEnabled()) {
-                log.debug("sendPatch() failed", ex);
-            }
-            JOptionPane.showMessageDialog(null, 
-                    "Could not send patch: "+ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        new PatchSender().start();
+    }
+    
+    private class PatchSender implements Runnable {
+
+        private int state = 0;
+        private MidiSend midisend = 
+            PatchDownloader.getSharedInstance().getMidiSend();
+        private SendMidiDialog dialog = new SendMidiDialog(patchdownloader.getFrame());
+
+        public void start() {
+            if (state == 0)
+                SwingUtilities.invokeLater(this);            
         }
+        
+        private synchronized int getState() {
+            return state;
+        }
+        
+        private synchronized void incState() {
+            state++;
+        }
+        
+        private void init() {
+            midisend.setCallback(dialog);
+            dialog.show();
+            new Thread(this).start();
+        }
+        
+        private void send() {
+            try {                
+                __sendPatch();
+                SwingUtilities.invokeLater(this);
+            } catch (Exception ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("sendPatch() failed", ex);
+                }
+                dialog.close();
+                JOptionPane.showMessageDialog(null, 
+                        "Could not send patch: "+ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
+        private void shutdown() {
+            midisend.setCallback(null);
+            dialog.midisendCompleted();
+        }
+        
+        @Override
+        public void run() {
+            if (getState()==0) {
+                incState();
+                init();
+            } else if (getState() == 1) {
+                incState();
+                send();
+            } else if (getState() == 2) {
+                shutdown();
+            }
+        }
+        
     }
     
     public void __sendPatch() throws Exception {
