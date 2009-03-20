@@ -28,9 +28,13 @@
  */
 package name.cs.csutils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import name.cs.csutils.Platform.OS;
 
@@ -124,18 +128,41 @@ public class Launcher {
 
     private final static class MacBrowserLauncher extends Launcher {
 
+        private static Log log = LogFactory.getLog(MacBrowserLauncher.class);
+        private static final String CLASS_FILEMANAGER = "com.apple.eio.FileManager";
+        
         @Override
         public boolean launchURL(URL url) {
             if (super.launchURL(url)) {
                 return true;
             }
-        
+
             // try first launch-method
             try {
-                Class<?> fileManager = Class.forName("com.apple.eio.FileManager");
+                Class<?> fileManager = Class.forName(CLASS_FILEMANAGER);
                 Method openURL = fileManager.getDeclaredMethod("openURL", new Class[] {String.class});
                 openURL.invoke(null, new Object[] {url.toExternalForm()});
-            } catch (Exception ex) {
+                return true;
+            } catch (ClassNotFoundException ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not launch url with "+CLASS_FILEMANAGER+". (Class not found)");
+                }
+            } catch (NoSuchMethodException ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not launch url with "+CLASS_FILEMANAGER
+                            +". (openURL(java.lang.String) Method not found)");
+                }
+            } catch (IllegalAccessException ex) {
+                if (log.isErrorEnabled()) {
+                    log.error("Could not launch url with "+CLASS_FILEMANAGER,
+                            ex);
+                }
+            } catch (InvocationTargetException ex) {
+                if (log.isErrorEnabled()) {
+                    log.error("Could not launch url with "+CLASS_FILEMANAGER,
+                            ex.getTargetException());
+                }
+            } catch (RuntimeException ex) {
                 // no op
             } 
 
