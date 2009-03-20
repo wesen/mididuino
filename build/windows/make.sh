@@ -98,6 +98,12 @@ zip -0rq ../lib/pde.jar .
 # back to build/windows
 cd ../..
 
+echo `pwd`
+cd work/hardware/tools/mididuino
+make -f Makefile.windows
+cp midi-send.exe ../avr/bin
+cd ../../../..
+
 
 
 echo

@@ -8,6 +8,8 @@
 HMIDIOUT outHandle;
 HMIDIIN  inHandle;
 
+int sleepCount = 0;
+
 #define MAX_LONG_SIZE 1024
 unsigned char inputBuffer[MAX_LONG_SIZE];
 MIDIHDR midiHdr;
@@ -28,7 +30,7 @@ void listInputMidiDevices(void) {
   /* Get the number of MIDI Out devices in this computer */
   iNumDevs = midiInGetNumDevs();
 
-  printf("%lu input midi devices found\r\n", iNumDevs);
+  //  printf("%lu input midi devices found\r\n", iNumDevs);
   
   /* Go through all of those devices, displaying their names */
   for (i = 0; i < iNumDevs; i++)
@@ -36,7 +38,7 @@ void listInputMidiDevices(void) {
       /* Get info about the next device */
       if (!midiInGetDevCaps(i, &mic, sizeof(MIDIINCAPS))) {
 	/* Display its Device ID and name */
-	printf("Device ID #%lu: %s\r\n", i, mic.szPname);
+	printf("%lu) %s\r\n", i, mic.szPname);
       }
     }  
 }
@@ -48,7 +50,7 @@ void listOutputMidiDevices(void) {
   /* Get the number of MIDI Out devices in this computer */
   iNumDevs = midiOutGetNumDevs();
 
-  printf("%lu output midi devices found\r\n", iNumDevs);
+  //  printf("%lu output midi devices found\r\n", iNumDevs);
   
   /* Go through all of those devices, displaying their names */
   for (i = 0; i < iNumDevs; i++)
@@ -57,7 +59,7 @@ void listOutputMidiDevices(void) {
       if (!midiOutGetDevCaps(i, &moc, sizeof(MIDIOUTCAPS)))
 	{
 	  /* Display its Device ID and name */
-	  printf("Device ID #%lu: %s\r\n", i, moc.szPname);
+	  printf("%lu) %s\r\n", i, moc.szPname);
 	}
     }  
 }
@@ -101,6 +103,7 @@ void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
     {
       MIDIHDR *midiHdr = (MIDIHDR *)dwParam1;
       int len = 0;
+      sleepCount = 0;
       for (len = 0; len < midiHdr->dwBufferLength; len++) {
 	midiReceive(midiHdr->lpData[len]);
 	if (((unsigned char)midiHdr->lpData[len]) == 0xF7)
@@ -184,6 +187,8 @@ void midiInitialize(char *inputDeviceStr, char *outputDeviceStr) {
 
 void midiMainLoop(void) {
   unsigned long result;
+
+  sleepCount = 0;
   
   midiHdr.lpData = inputBuffer;
   midiHdr.dwBufferLength = sizeof(inputBuffer);
@@ -206,13 +211,21 @@ void midiMainLoop(void) {
 
   for (;;) {
     Sleep(1);
+    //    printf("count: %d\n", sleepCount);
+    sleepCount++;
+    if (sleepCount > 200) {
+      printf("timeout\n");
+      break;
+    }
   }
-  midiInReset(inHandle);
+  //  midiInReset(inHandle);
 
  end:
   midiInUnprepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
   midiOutClose(outHandle);
   midiInClose(inHandle);
+
+  exit(1);
   
 }
 
