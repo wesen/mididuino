@@ -68,6 +68,11 @@ public class Query {
     }
     
     @Override
+    public int hashCode() {
+        return __tokenize().hashCode();
+    }
+    
+    @Override
     public boolean equals(Object o) {
         if (o == this) return true;
         if (o instanceof Query) {
