@@ -208,7 +208,7 @@ public class I18N {
                 // check if index is valid
                 if (amp>=0 && amp<eName.length()-1)
                 {
-                    eMnemonicKey = new Integer(eName.codePointAt(amp+1));
+                    eMnemonicKey = Integer.valueOf(eName.codePointAt(amp+1));
 
                     // remove ampersand
                     eName = eName.substring(0, amp) + eName.substring(amp+1, eName.length());
