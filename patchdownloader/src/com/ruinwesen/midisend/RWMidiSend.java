@@ -44,7 +44,8 @@ import name.cs.csutils.Platform;
 import name.cs.csutils.StringInputBuffer;
 import name.cs.csutils.Platform.OS;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Implements the MidiSend class using the 'midi-send' commandline utility.
@@ -52,35 +53,16 @@ import org.apache.log4j.Logger;
  */
 public class RWMidiSend extends MidiSend {
 
-    /**
-     * The cached logger.
-     */
-    private static Logger log;
+    /** The logger. */
+    private static Log log = LogFactory.getLog(RWMidiSend.class);
     
-    /**
-     * Returns the logger for this class.
-     * @return the logger for this class
-     */
-    private static Logger getLog() {
-        if (log == null) {
-            log = Logger.getLogger(JavaMidiSend.class);
-        }
-        return log;
-    }
-    
-    /**
-     * The midi-send command.
-     */
+    /** The midi-send command. */
     private String command = null;
     
-    /**
-     * The input device.
-     */
+    /** The input device. */
     private RWMidiDevice input;
 
-    /**
-     * The output device.
-     */
+    /** The output device. */
     private RWMidiDevice output;
     
     private String getCommand(boolean locate) throws MidiSendException {
@@ -95,8 +77,8 @@ public class RWMidiSend extends MidiSend {
             } catch (IOException ex) {
                 throw new MidiSendException("could not locate midi-send", ex);
             }
-            if (command != null && getLog().isDebugEnabled() ) {
-                getLog().debug("midi-send located at: "+command);
+            if (command != null && log.isDebugEnabled() ) {
+                log.debug("midi-send located at: "+command);
             }
         }
         return command;
@@ -192,8 +174,8 @@ public class RWMidiSend extends MidiSend {
         try {
             setCommand(command.getCanonicalPath());
         } catch (IOException ex) {
-            if (getLog().isDebugEnabled()) {
-                getLog().debug(ex);
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
             }
             setCommand(command.getAbsolutePath());
         }
@@ -205,16 +187,6 @@ public class RWMidiSend extends MidiSend {
      */
     public void setCommand(String command) {
         this.command = command; 
-    }
-    
-    /**
-     * Ensures the command to invoke the midi-send program is set. 
-     * @throws MidiSendException the command was not set
-     */
-    private void ensureCommandIsSet() throws MidiSendException {
-        if (command == null) {
-            throw new MidiSendException("the midi-send command is not set");
-        }
     }
 
     /**
@@ -237,31 +209,36 @@ public class RWMidiSend extends MidiSend {
         } catch (IOException ex) {
             throw new MidiSendException("could not create temporary file", ex);
         }
-        
-        OutputStream out = null;
         try {
-            out = new BufferedOutputStream(new FileOutputStream(tempFile));
-            out.write(data, fromIndex, length);
-            out.flush();
-        } catch (IOException ex) {
-            throw new MidiSendException("could not write temporary file: "+tempFile.getAbsolutePath(), ex);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    // no op
+            OutputStream out = null;
+            try {
+                out = new BufferedOutputStream(new FileOutputStream(tempFile));
+                out.write(data, fromIndex, length);
+                out.flush();
+            } catch (IOException ex) {
+                throw new MidiSendException("could not write temporary file: "+tempFile.getAbsolutePath(), ex);
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        // no op
+                    }
                 }
             }
-        }
-        
-        // then send the file
-        try {
-            send(tempFile);
-        } catch (FileNotFoundException ex) {
-            throw new MidiSendException("temporary file vanished magically", ex);
+            
+            // then send the file
+            try {
+                send(tempFile);
+            } catch (FileNotFoundException ex) {
+                throw new MidiSendException("temporary file vanished magically", ex);
+            } 
         } finally {
-            tempFile.delete();
+            if (tempFile.exists() && !tempFile.delete()) {
+                if (log.isWarnEnabled()) {
+                    log.warn("Could not delete temporary file: "+tempFile.getAbsolutePath());
+                }
+            }
         }
     }
 
@@ -285,8 +262,8 @@ public class RWMidiSend extends MidiSend {
         String inputArg = Integer.toString(input.index);
         String outputArg = Integer.toString(output.index);
         
-        if (getLog().isDebugEnabled()) {
-            getLog().debug("midi-in:"+input+", midi-out:"+output);
+        if (log.isDebugEnabled()) {
+            log.debug("midi-in:"+input+", midi-out:"+output);
         }
         
         if (Platform.isFlavor(OS.UnixFlavor)) {
@@ -294,8 +271,8 @@ public class RWMidiSend extends MidiSend {
             inputArg = parseAlsaName(input.getName());
             outputArg = parseAlsaName(output.getName());
 
-            if (getLog().isDebugEnabled()) {
-                getLog().debug("Decoding alsa device names. midi-in:"+inputArg+", midi-out:"+outputArg);
+            if (log.isDebugEnabled()) {
+                log.debug("Decoding alsa device names. midi-in:"+inputArg+", midi-out:"+outputArg);
             }
         }
 
@@ -312,8 +289,8 @@ public class RWMidiSend extends MidiSend {
                     "-o",outputArg,
                     file.getCanonicalPath()};
             
-            if (getLog().isDebugEnabled()) {
-                getLog().debug("Invoking midi-send:"+CSUtils.join(" ", (String[])commandArgs));
+            if (log.isDebugEnabled()) {
+                log.debug("Invoking midi-send:"+CSUtils.join(" ", (String[])commandArgs));
             }
             
         process = new ProcessBuilder(commandArgs).start();
@@ -329,8 +306,8 @@ public class RWMidiSend extends MidiSend {
             stdoutBuffer.start();
             
             CSUtils.ProcessResult presult = CSUtils.waitFor(process, 10000, 100);
-            if (getLog().isDebugEnabled()) {
-                getLog().debug("midi-send:status("+presult.status+"),interrupted("+presult.interruptedException+")"
+            if (log.isDebugEnabled()) {
+                log.debug("midi-send:status("+presult.status+"),interrupted("+presult.interruptedException+")"
                         +",timeout("+presult.timeout+")");
             }
             interrupted = presult.interrupted;
@@ -353,15 +330,15 @@ public class RWMidiSend extends MidiSend {
             try {
                 stderrBuffer.close();
             } catch (IOException ex) {
-                if (getLog().isDebugEnabled()) {
-                    getLog().debug("error closing stderrBuffer", ex);
+                if (log.isDebugEnabled()) {
+                    log.debug("error closing stderrBuffer", ex);
                 }
             }
             try {
                 stdoutBuffer.close();
             } catch (IOException ex) {
-                if (getLog().isDebugEnabled()) {
-                    getLog().debug("error closing stdoutBuffer", ex);
+                if (log.isDebugEnabled()) {
+                    log.debug("error closing stdoutBuffer", ex);
                 }
             }
             process.destroy();
@@ -426,8 +403,8 @@ public class RWMidiSend extends MidiSend {
                 try {
                     processInput.close();
                 } catch (IOException ex) {
-                    if (getLog().isDebugEnabled()) {
-                        getLog().debug("could not close process input buffer", ex);
+                    if (log.isDebugEnabled()) {
+                        log.debug("could not close process input buffer", ex);
                     }
                 }
             }
