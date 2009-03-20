@@ -37,6 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
 
 
 import org.apache.commons.logging.Log;
@@ -57,6 +58,7 @@ public class RedirectAction extends AbstractAction  {
     public static @interface RedirectActionMeta {
         String title() default UNASSIGNED;
         String resourcekey() default UNASSIGNED;
+        boolean useInvokeLater() default true;
     }
     
     private static Log log = LogFactory.getLog(RedirectAction.class);
@@ -65,6 +67,7 @@ public class RedirectAction extends AbstractAction  {
     private Object methodOwner;
     private Class<?> parameterType;
     private Object arg;
+    private boolean useInvokeLater = true;
 
     public RedirectAction(Object ownerObject, String methodName) {
         this(ownerObject, methodName, null, null);
@@ -96,6 +99,7 @@ public class RedirectAction extends AbstractAction  {
             if (method.isAnnotationPresent(RedirectActionMeta.class)) {
                 RedirectActionMeta annotation =
                     method.getAnnotation(RedirectActionMeta.class);
+                this.useInvokeLater = annotation.useInvokeLater();
                 if (annotation.resourcekey() != null) {
                     I18N.update(this, annotation.resourcekey());
                     IconLoader.update(this, annotation.resourcekey());
@@ -146,6 +150,18 @@ public class RedirectAction extends AbstractAction  {
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (useInvokeLater) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    performAction();
+                }
+            });
+        } else {
+            performAction();
+        }
+    }
+
+    private void performAction() {
         Method method = lookupMethod();
         if (method == null) {
             return; // operation failed
@@ -165,7 +181,7 @@ public class RedirectAction extends AbstractAction  {
             log.error("invoke failed, "+info(), ex.getTargetException());
         }
     }
-
+    
     @Override
     public String toString() {
         return "RedirectAction["
