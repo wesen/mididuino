@@ -39,12 +39,16 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import name.cs.csutils.CSUtils;
 
 import com.ruinwesen.patchdownloader.repository.StoredPatch;
 
 public class PatchFileBuilder {
     
+    private Log log = LogFactory.getLog(PatchFileBuilder.class);
     private PatchMetadata metadata;
     private File midifile;
     private File sourcecode;
@@ -134,16 +138,36 @@ public class PatchFileBuilder {
                 out.close();
             }
         } catch (TransformerException ex) {
-            output.delete(); // don't leave corrupted files behind
+            if (log.isErrorEnabled()) {
+                log.error("Could not write metadata.", ex);
+            }
+            if (!output.delete()) { // don't leave corrupted files behind
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not delete output file: "+output.getAbsolutePath());
+                }
+            }
             throw ex;
         } catch (ParserConfigurationException ex) {
-            output.delete(); // don't leave corrupted files behind
+            if (log.isErrorEnabled()) {
+                log.error("Could not write metadata.", ex);
+            }
+            if (!output.delete()) { // don't leave corrupted files behind
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not delete output file: "+output.getAbsolutePath());
+                }
+            }
             throw ex;
         } catch (IOException ex) {
-            output.delete(); // don't leave corrupted files behind
+            if (log.isErrorEnabled()) {
+                log.error("Could not write metadata.", ex);
+            }
+            if (!output.delete()) { // don't leave corrupted files behind
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not delete output file: "+output.getAbsolutePath());
+                }
+            }
             throw ex;
         }        
-        
         
         
     }
