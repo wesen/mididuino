@@ -127,7 +127,7 @@ public abstract class LocalRepository extends Repository {
             CSUtils.copy(jp.getFile(), out);
         } else {
             // TODO compress directory into a jar file and export it
-            throw CSUtils.NotImplementedYet();
+            throw CSUtils.notImplementedYet();
         }
     }
 
