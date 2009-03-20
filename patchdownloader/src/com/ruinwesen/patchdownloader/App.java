@@ -28,18 +28,18 @@
  */
 package com.ruinwesen.patchdownloader;
 
-import java.io.IOException;
+import com.ruinwesen.patchdownloader.swing.SwingPatchdownloader;
 
-import com.ruinwesen.patchdownloader.swing.PDFrame;
-
+/**
+ * Starts the swing patchdownloader application.
+ */
 public class App {
 
     /**
-     * @param args
-     * @throws IOException 
+     * Starts the swing patchdownloader application. 
      */
-    public static void main(String[] args) throws IOException {
-        new PDFrame().start();
+    public static void main(String[] args) throws Exception {
+        new SwingPatchdownloader().start();
     }
 
 }
