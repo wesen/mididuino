@@ -28,13 +28,28 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
+/**
+ * A concrete indexed document.
+ * @author chresan
+ */
 public class StaticDoc extends Doc {
 
+    /** the document id */
     int id;
+    /** the date */
     long date;
+    /** the path where the document is stored */
     String path;
+    /** the document title */
     String title;
 
+    /**
+     * Creates a new document.
+     * @param id the document id
+     * @param date the date 
+     * @param path the path where the document is stored
+     * @param title the document title
+     */
     public StaticDoc(int id, long date, String path, String title) {
         this.id = id;
         this.date = date;
@@ -42,21 +57,33 @@ public class StaticDoc extends Doc {
         this.title = title;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long date() {
         return date;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int id() {
         return id;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String path() {
         return path;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String title() {
         return title;
