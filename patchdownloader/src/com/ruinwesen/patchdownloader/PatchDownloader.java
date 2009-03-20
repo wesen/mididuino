@@ -48,7 +48,6 @@ import java.util.Properties;
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.I18N;
 import name.cs.csutils.LockFile;
-import name.cs.csutils.LockFile.MultipleApplicationInstancesException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,6 +62,7 @@ import com.ruinwesen.patchdownloader.repository.LocalRepository;
 import com.ruinwesen.patchdownloader.repository.RemoteBackupRepository;
 import com.ruinwesen.patchdownloader.repository.StoredPatch;
 import com.ruinwesen.patchdownloader.repository.StoredPatchCollector;
+import com.ruinwesen.patchdownloader.repository.UpdateRepositoryCallback;
 import com.ruinwesen.patchdownloader.repository.WorkspaceRepository;
 
 public class PatchDownloader {
@@ -124,15 +124,15 @@ public class PatchDownloader {
         this.midiSend = midiSend;
     }
 
-    public static final String Version() {
+    public static final String getVersion() {
         return INSTANCE.version;
     }
 
-    public static final String BuildNumber() {
+    public static final String getBuildNumber() {
         return INSTANCE.build_number;
     }
 
-    public static final String BuildTimestamp() {
+    public static final String getBuildTimestamp() {
         return INSTANCE.build_timestamp;
     }
     
@@ -155,8 +155,8 @@ public class PatchDownloader {
     public IndexReader getPatchIndex() {
         return patchIndex;
     }
-    
-    public int getAvailablePatches(Date since) {
+
+    public int getAvailablePatches(Date since) throws IOException {
         return remoteRepository
         .collectPatches(new StoredPatchCollector.Counter())
         .getCount();
@@ -252,7 +252,7 @@ public class PatchDownloader {
         }
     }
     
-    public void updateRemoteRepositoryBackup() throws IOException {
+    public void updateRemoteRepositoryBackup(UpdateRepositoryCallback callback) throws IOException {
         String DB_NAME = "remotebackup.properties";
         String KEY_LASTUPDATE_DATE = "remotebackup.lastupdate.date";
         Date since = null; // TODO get and store this date
@@ -267,7 +267,7 @@ public class PatchDownloader {
                 }
             }
         } catch (FileNotFoundException ex) {
-            // ignore;
+            // ignore
         } catch (IOException ex) {
             if (getLog().isErrorEnabled()) {
                 getLog().error("reading the properties failed: "+DB_NAME, ex);
@@ -282,9 +282,21 @@ public class PatchDownloader {
         remoteRepository.collectPatches(new StoredPatchCollector.Collection(srclist),since);
         
         MetadataIndexWriter writer = patchIndex.createAppendableIndexWriter();
-        
+
+        int count = 0;
         // write new documents to index
         for (StoredPatch patch: srclist) {
+            if (callback != null) {
+                if (callback.isCanceled()) {
+                    break;
+                }
+
+                count ++;
+                callback.updateProgress(
+                        patch.getName()+" ("+count+"/"+srclist.size()+")",
+                        count/(float)srclist.size());
+            }
+            
             // the target file name, we assume there are no collisions
             File dstfile = new File(remoteRepositoryBackup.getBaseDir(),
                     patch.getName());
@@ -302,7 +314,12 @@ public class PatchDownloader {
                     getLog().error("could not read metadata: "+dstfile.getAbsolutePath(), ex);
                 }
                 // clean up
-                dstfile.delete();
+                if (dstfile.exists() && !dstfile.delete()) {
+                    if (getLog().isWarnEnabled()) {
+                        getLog().warn("Could not delete (possibly corrupted) file: "+
+                                dstfile.getAbsolutePath(), ex); 
+                    }
+                }
                 continue; // go on
             }
             // create a document using the metadata
@@ -311,6 +328,10 @@ public class PatchDownloader {
             writer.putMetadata(docid, metadata);
         }
 
+        if (callback != null) {
+            callback.updateProgress(null, UpdateRepositoryCallback.COMPLETE);
+        }
+        
         // commit the changes
         writer.flush();
         writer.close();
@@ -339,7 +360,7 @@ public class PatchDownloader {
         
     }
     
-    public final void start() throws IOException {
+    public final void start() throws Exception {
         
         // read version, build number and build time
 
@@ -401,7 +422,8 @@ public class PatchDownloader {
             // tests if the application is already running
             File lock = new File(configDir, "patchdownloader.lock");
             if (new LockFile(lock).isLockActive()) {
-                throw new LockFile.MultipleApplicationInstancesException();
+                throw new LockFile.MultipleApplicationInstancesException(
+                        "An instance of this application isalready running.");
             }
             
             // get the config file
@@ -412,12 +434,7 @@ public class PatchDownloader {
                 getLog().error("error in start()", ex);
             }
             startExceptionHandler(ex);
-        } catch (IOException ex) {
-            if (getLog().isErrorEnabled()) {
-                getLog().error("error in start()", ex);
-            }
-            startExceptionHandler(ex);
-        } catch (MultipleApplicationInstancesException ex) {
+        } catch (Exception ex) {
             if (getLog().isErrorEnabled()) {
                 getLog().error("error in start()", ex);
             }
@@ -425,7 +442,7 @@ public class PatchDownloader {
         }
     }
     
-    protected void start(Properties config) throws IOException {
+    protected void start(Properties config) throws Exception {
         // configure the remote repository backup
         File rrb = new File(configDir, "remote-repository");
         if (getLog().isDebugEnabled()) {
@@ -490,14 +507,17 @@ public class PatchDownloader {
             I18N.getSharedInstance().setResourceBundleName("resources/lang/MessageBundle");
         } catch (MissingResourceException ex) {
             if (getLog().isErrorEnabled()) {
-                getLog().error(ex);
+                getLog().error("MessageBundle resource not found", ex);
             }
         }
     }
 
-    protected void handleFatalExceptionOnStart(String message, Throwable  ex) {
-        getLog().fatal(message, ex);
-        System.exit(1);
+    protected void handleFatalExceptionOnStart(String message, Exception ex)
+        throws Exception {
+        if (getLog().isFatalEnabled()) {
+            getLog().fatal(message, ex);
+        }
+        throw ex;
     }
     
     public boolean isStopping() {
@@ -551,11 +571,8 @@ public class PatchDownloader {
         }
     }
 
-    protected void startExceptionHandler(Throwable ex) {
-        // no op
-        if (ex instanceof MultipleApplicationInstancesException) {
-            System.exit(1);
-        }
+    protected void startExceptionHandler(Exception ex) throws Exception {
+        throw ex;
     }
 
     protected void stopExceptionHandler(Throwable ex) {
