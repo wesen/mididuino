@@ -46,6 +46,9 @@ public class LockFile {
 
     public static final class MultipleApplicationInstancesException extends Exception {
         private static final long serialVersionUID = -145283693213936163L;
+        public MultipleApplicationInstancesException(String message) {
+            super(message);
+        }
     }
     
     private Log log = LogFactory.getLog(LockFile.class);
@@ -136,7 +139,11 @@ public class LockFile {
     }
     
     private void deleteFile() {
-        file.delete(); 
+        if (file.exists() && !file.delete()) {
+            if (log.isWarnEnabled()) {
+                log.warn("Could not delete lock file: "+file.getAbsolutePath());
+            }
+        }
     }
 
     
