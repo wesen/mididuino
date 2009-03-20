@@ -32,29 +32,51 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.Reader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Reads the string-content of a {@link Reader} stores it in a buffer.
+ * The content is read in a seperate thread. The class is intented to be
+ * used to read the output and error stream of a {@link Process}.
+ * 
+ * @author Christian Schneider 
+ */
 public class StringInputBuffer implements Runnable {
 
+    /** log instance for this class */
     private static Log log = LogFactory.getLog(StringInputBuffer.class);
-    private BufferedReader reader;
-    // StringBuffer is thread save
-    private StringBuffer buffer = new StringBuffer();
-    private PrintStream out;
-    private volatile long stopRequested = 0;
-    private int maxAppendLines = -1;
-    private int lineno = 0;
-    private String prefix;
-
-    public StringInputBuffer(Reader reader) {
-        this(reader, null, null);
-    }
     
-    public StringInputBuffer(Reader reader, String prefix, PrintStream out) {
+    /** the reader */
+    private BufferedReader reader;
+    
+    /** the string buffer (thread safe) */
+    private StringBuffer buffer = new StringBuffer();
+    
+    /** stopRequested != 0 indicates if stopping the thread is requested */
+    private volatile long stopRequested = 0;
+    
+    /**
+     * Only maxAppendLines are written to the buffer. <code>-1</code> indicates
+     * that the number of lines written to the buffer is unlimited.
+     * This variable is currently not modifyable.
+     */
+    private int maxAppendLines = -1;
+    
+    /** counts the number of lines. */
+    private int lineno = 0;
+    
+    /** the reader thread */
+    private Thread readerThread = null;
+
+    /**
+     * Creates a new StringInputBuffer which is reading from the specified {@link Reader}.
+     * @param reader a reader
+     * @throws IllegalArgumentException if the specified argument is null
+     */
+    public StringInputBuffer(Reader reader) {
         if (reader == null) {
             throw new IllegalArgumentException("reader == null");
         }
@@ -63,10 +85,14 @@ public class StringInputBuffer implements Runnable {
         } else {
             this.reader = new BufferedReader(reader);
         }
-        this.out = out;
-        this.prefix = prefix;
     }
-    
+
+    /**
+     * Creates a new StringInputBuffer which is reading from the specified
+     * {@link InputStream}.
+     * @param in a InputStream
+     * @throws IllegalArgumentException if the specified argument is null
+     */
     public StringInputBuffer(InputStream in) {
         if (in == null) {
             throw new IllegalArgumentException("in == null");
@@ -74,21 +100,40 @@ public class StringInputBuffer implements Runnable {
         this.reader = new BufferedReader(new InputStreamReader(in));
     }
     
-    public Thread start() {
-        Thread thread = new Thread(this);
-        thread.start();
-        return thread;
+    /**
+     * Starts a thread which reads the content and writes it to the buffer.
+     * This method can be called only once.
+     * @return the new thread
+     */
+    public synchronized Thread start() {
+        if (readerThread != null) {
+            throw new IllegalStateException("start() can be called only once");
+        }
+        
+        readerThread = new Thread(this);
+        readerThread.start();
+        return readerThread;
     }
     
-    public void stop() {
+    /**
+     * Requests that the thread should stop.
+     */
+    public void requestStop() {
         stopRequested = 1;
     }
     
+    /**
+     * Stops a running thread and closes the reader.
+     * @throws IOException If an I/O error occurs 
+     */
     public void close() throws IOException {
-        stop();
+        requestStop();
         reader.close();
     }
     
+    /**
+     * The run method which is executed by the thread.
+     */
     public void run() {
         boolean interruped = false;
         try {
@@ -111,20 +156,22 @@ public class StringInputBuffer implements Runnable {
         }
     }
     
+    /**
+     * Adds the specified line to the buffer.
+     * @param line a string
+     */
     private void emit(String line) {
-        lineno++;
-        if (maxAppendLines != -1 && lineno>=maxAppendLines) {
-            return;
-        }
-        buffer.append(line).append('\n');
-        if (out != null) {
-            if (prefix != null) {
-                out.print(prefix);
-            }
-            out.println(line);
+        if (maxAppendLines == -1 || lineno<maxAppendLines) {
+            lineno++;
+            buffer.append(line).append('\n');
         }
     }
     
+    /**
+     * Returns the currently buffered output.
+     * The method can be called while a thread is running.
+     * @return the currently buffered output
+     */
     public String getOutput() {
         return buffer.toString();
     }
