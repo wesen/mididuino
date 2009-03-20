@@ -28,8 +28,8 @@
  */
 package com.ruinwesen.patchdownloader.swing;
 
-import java.awt.Component;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Insets;
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -56,22 +55,26 @@ import com.ruinwesen.patchdownloader.indexer.Doc;
 import com.ruinwesen.patchdownloader.indexer.Query;
 import com.ruinwesen.patchdownloader.patch.PatchMetadata;
 import com.ruinwesen.patchdownloader.repository.StoredPatch;
+import com.ruinwesen.patchdownloader.swing.extra.LargeListModel;
+import com.ruinwesen.patchdownloader.swing.extra.PatchCellRenderer;
+import com.ruinwesen.patchdownloader.swing.panels.SearchPanel;
+import com.ruinwesen.patchdownloader.swing.panels.SectionBorder;
 
 public class PatchListView implements ListSelectionListener {
 
     private JComponent container;
     private JList listView;
-    private PDFrame patchdownloader;
+    private SwingPatchdownloader patchdownloader;
     private Timer listSelectionTimer;
     private long lastSelectionEventTime = 0;
     private long acceptSelectionEventDelay = 250; // 1/2 second until a selection is 'accepted'
-    private JLabel headerTitleLabel;
+    private SectionBorder sectionBorder ;
     private int minCellWidth = 200;
     private LargeListModel<Doc,List<Doc>> listmodel;
     private int patchResultCounter = 0;
     private PatchCellRenderer cellRenderer;
     
-    public PatchListView(PDFrame patchdownloader) {
+    public PatchListView(SwingPatchdownloader patchdownloader) {
         super();
         this.patchdownloader = patchdownloader;
         
@@ -102,7 +105,8 @@ public class PatchListView implements ListSelectionListener {
     private void updateTitleLabel() {
         String text =  I18N.format("translation.patchlistview.headerlabel",
                 "Patches (%d)", patchResultCounter);
-        headerTitleLabel.setText(text);
+        sectionBorder.setTitle(text);
+        container.repaint();
     }
     
     private void notifySelectionTimeAccepted() {
@@ -144,16 +148,15 @@ public class PatchListView implements ListSelectionListener {
         // listView.setFont(font); 
         container = new JPanel(new BorderLayout());
 
-        HeaderPaneBuilder hpb = new HeaderPaneBuilder("Patches");
-        this.headerTitleLabel = hpb.headerTitleLabel;
+        sectionBorder = new SectionBorder("Patches");
+        container.setBorder(sectionBorder);
         
         updateTitleLabel();
-        JScrollPane listViewScroller = new JScrollPane(listView); 
-        container.add(hpb.headerPane, BorderLayout.NORTH);
+        JScrollPane listViewScroller = new JScrollPane(listView);
         container.add(listViewScroller, BorderLayout.CENTER);
 
-        SearchBar topBar;
-        topBar = new SearchBar(patchdownloader);
+        SearchPanel topBar;
+        topBar = new SearchPanel(patchdownloader);
         container.add(topBar.getContainer(), BorderLayout.SOUTH);
 
         // TODO don't use this approximation because different fonts
@@ -217,85 +220,6 @@ public class PatchListView implements ListSelectionListener {
         return patchResultCounter;
     }
     
-    /*
-    private class IndexedPatchListCellRenderer extends DefaultListCellRenderer {
-
-        private StringBuilder html = new StringBuilder();
-        private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        
-        private String dateToString(Date date) {
-            return dateFormat.format(date);
-        }
-            
-        public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, "", index, isSelected, cellHasFocus);
-            
-            Color foreground = list.getForeground();
-            if (foreground == null) {
-                foreground = list.getSelectionForeground();
-                if (foreground == null)
-                    foreground = Color.BLACK;
-            }
-            
-            String bluer = CSUtils.toHTMLColor(isSelected ? list.getSelectionForeground() : CSUtils.change(foreground, 0, 0, 0.8f));
-            String paler = CSUtils.toHTMLColor(CSUtils.change(foreground, .75f));
-            
-            Doc patch = (Doc) value;
-            PatchMetadata metadata = patchdownloader.getMetadataCache().getMetadata(patch, true);
-            
-            if (metadata == null) {
-                setText("[Unavailable]");
-            } else {
-                String title = metadata.getTitle();
-                if (title == null || title.trim().length() == 0) {
-                    title = "Title: -unknown-";
-                } else {
-                    title = CSUtils.limitString(title.trim(), 40);
-                }
-                String comment = metadata.getComment();
-                if (comment != null) {
-                    if (comment.trim().length() == 0) comment = null;
-                    else { comment = CSUtils.limitString(comment.trim(), 40);}
-                }
-                
-                html.setLength(0);
-                html.append("<html>");
-                html.append("<div><b>").append(title).append("</b>");
-
-                if (metadata.getLastModifiedDate() != null) {
-                    html.append(" <span style=\"font-size:.8em;\"> - "+dateToString(metadata.getLastModifiedDate())+"</span>");
-                }
-                html.append("</div>\n");
-               
-                //html.append(" <span style=\"font-size:0.8em;\">(score:"+patch.score+")</span>");
-                if (comment != null) {
-                    html.append("<div style=\"color:"+paler+"\">"+comment+"</div>\n");
-                }
-
-                html.append("<div style=\"font-size:.9em;\">");
-                html.append("Tags: ");
-                Tagset tagset = metadata.getTags();
-                if (!tagset.isEmpty()) {
-                    String tags = tagset.toSortedString();
-                    String hltags = query.highlight(tags, "<b>","</b>");
-                    html.append("<span style=\"color:"+bluer+";\">"+hltags+"</span>");
-                }
-                html.append("</div>\n");
-                html.append("</html>");
-                setText(html.toString()); 
-            }
-            
-            return this;
-        }
-        
-    }
-    */
-
     @Override
     public void valueChanged(ListSelectionEvent e) {
         this.notifySelectionChanged();

@@ -32,7 +32,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,36 +49,39 @@ import name.cs.csutils.I18N;
 
 import com.ruinwesen.patchdownloader.indexer.Category;
 import com.ruinwesen.patchdownloader.patch.Tagset;
+import com.ruinwesen.patchdownloader.swing.extra.SetSelectionModel;
+import com.ruinwesen.patchdownloader.swing.panels.SectionBorder;
 
 public class FilterListView {
 
     private Category[] allCategories;
-    private BitSet selectedCategories ;
+ //   private BitSet selectedCategories ;
     private Category[] visibleCategories;
     
     public JList listView = new JList();
     private JComponent container;
-    private PDFrame patchdownloader;
+    private SwingPatchdownloader patchdownloader;
     private MySetSelectionModel selectionModel;
     private boolean selectionModelUpdating = false;
     
-    public FilterListView(PDFrame patchdownloader) {
+    public FilterListView(SwingPatchdownloader patchdownloader) {
         this.patchdownloader = patchdownloader;
         JPanel pane = new JPanel(new BorderLayout());
-        HeaderPaneBuilder hpb = new HeaderPaneBuilder(I18N.translate("translation.categories", "Categories"));
+        SectionBorder border = new SectionBorder(I18N.translate("translation.categories", "Categories"));
+        pane.setBorder(border);
 
         listView.setModel(createModel());
         listView.setCellRenderer(new FilterListCellRenderer());
         selectionModel = new MySetSelectionModel();
         listView.setSelectionModel(selectionModel);
         
-        pane.add(hpb.headerPane, BorderLayout.NORTH);
-        pane.add(new JScrollPane(listView), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(listView);
+        pane.add(scrollPane, BorderLayout.CENTER);
         container = pane;
         
         visibleCategories = new Category[0];
         allCategories = patchdownloader.getPatchIndex().getCategories();
-        selectedCategories = new BitSet(allCategories.length);
+  //      selectedCategories = new BitSet(allCategories.length);
     }
     
     private int indexOf(Category c) {
@@ -117,7 +119,7 @@ public class FilterListView {
                 return;
             }
             if (index>=0 && index<visibleCategories.length) {
-                int idx = indexOf(visibleCategories[index]);
+              //  int idx = indexOf(visibleCategories[index]);
             //    selectedCategories.set(idx, isSelectedIndex(index));
                 System.out.println(getFilteringTags());
                 patchdownloader.getSearchController().setDisplayedCategories(getFilteringTags());

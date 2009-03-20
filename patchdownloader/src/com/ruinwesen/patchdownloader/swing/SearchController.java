@@ -40,19 +40,18 @@ import com.ruinwesen.patchdownloader.indexer.KeyMatcher;
 import com.ruinwesen.patchdownloader.indexer.Query;
 import com.ruinwesen.patchdownloader.patch.Tag;
 import com.ruinwesen.patchdownloader.patch.Tagset;
+import com.ruinwesen.patchdownloader.swing.extra.LargeListModel;
 
 public class SearchController {
 
-    private PDFrame patchdownloader;
+    private SwingPatchdownloader patchdownloader;
     private boolean changed;
     private Query query = new Query("");
     private Tagset displayedCategories = new Tagset();
-    private final static DocComparator<Doc> BY_RELEVANCE = new DocComparator.ByRelevance();
-    private final static DocComparator<Doc> BY_DATE = new DocComparator.ByDate();
     private boolean orderByRelevance = true;
     private ConcurrentSearch concurrentSearch = null;
 
-    public SearchController(PDFrame patchdownloader) {
+    public SearchController(SwingPatchdownloader patchdownloader) {
         this.patchdownloader = patchdownloader;
     }
     
@@ -128,7 +127,7 @@ public class SearchController {
         
         
         concurrentSearch = new ConcurrentSearch(query, keymatcher,
-                orderByRelevance ? BY_RELEVANCE : BY_DATE);
+                orderByRelevance ? DocComparator.BY_RELEVANCE : DocComparator.BY_DATE);
         new Thread(concurrentSearch).start();
         
     }
@@ -139,10 +138,10 @@ public class SearchController {
         private volatile long stopped = 0;
         private volatile long exited = 0;
         private KeyMatcher keymatcher;
-        private DocComparator<Doc> comparator;
+        private DocComparator comparator;
         
         public ConcurrentSearch(Query query, KeyMatcher keymatcher,
-                DocComparator<Doc> comparator) {
+                DocComparator comparator) {
             this.query = query;
             this.keymatcher = keymatcher;
             this.comparator = comparator;
@@ -162,7 +161,7 @@ public class SearchController {
         
         public void run() {
             IndexReader patchIndex = patchdownloader.getPatchIndex();
-
+   
             final List<Doc> docList = 
                 patchIndex.search(query, keymatcher, 0.5f, 1.0f, comparator);
 

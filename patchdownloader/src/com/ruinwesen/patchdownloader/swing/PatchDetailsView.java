@@ -33,7 +33,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -54,7 +53,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -66,28 +64,26 @@ import name.cs.csutils.RedirectAction;
 import name.cs.csutils.RedirectAction.RedirectActionMeta;
 import name.cs.csutils.directoryreader.DirectoryReader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.ruinwesen.midisend.MidiSend;
-import com.ruinwesen.patchdownloader.PatchDownloader;
 import com.ruinwesen.patchdownloader.patch.DefaultPatchMetadata;
 import com.ruinwesen.patchdownloader.patch.PatchMetadata;
 import com.ruinwesen.patchdownloader.patch.Tagset;
 import com.ruinwesen.patchdownloader.repository.StoredPatch;
+import com.ruinwesen.patchdownloader.swing.misc.BoxLayoutBuilder;
+import com.ruinwesen.patchdownloader.swing.misc.TextPopup;
+import com.ruinwesen.patchdownloader.swing.panels.MidiSetupPanel;
+import com.ruinwesen.patchdownloader.swing.panels.SectionBorder;
+import com.ruinwesen.patchdownloader.tasks.SendMidifileTask;
 
 public class PatchDetailsView {
 
-    private Log log = LogFactory.getLog(PatchDetailsView.class);
-    
     private JPanel detailsPane;
     
     private JPanel panel = new JPanel();
     private StoredPatch patch;
     private PatchMetadata metadata = null;
 
-    private PDFrame patchdownloader;
-    private MidiBar midiBar;
+    private SwingPatchdownloader patchdownloader;
+    private MidiSetupPanel midiBar;
     
     
     private JLabel labelTitle = new JLabel();
@@ -107,9 +103,9 @@ public class PatchDetailsView {
         this.metadata = metadata;
         if (metadata == null && patch != null) {
             try {
-                metadata = patch.getMetadata();
+                this.metadata = patch.getMetadata();
             } catch (IOException e) {
-                metadata = new DefaultPatchMetadata();
+                this.metadata = new DefaultPatchMetadata();
             }
         }
         updateView();
@@ -119,16 +115,17 @@ public class PatchDetailsView {
         return panel;
     }
     
-    public PatchDetailsView(PDFrame patchdownloader) {
+    public PatchDetailsView(SwingPatchdownloader patchdownloader) {
         this.patchdownloader = patchdownloader;
         init();
     }
 
     private void init() {
         panel.setLayout(new BorderLayout());
-        HeaderPaneBuilder hpb = new HeaderPaneBuilder(I18N.translate("translation.details","Details"));
-        panel.add(hpb.headerPane,BorderLayout.NORTH);
-        
+        SectionBorder sectionborder = new SectionBorder(
+                I18N.translate("translation.details","Details"));
+        panel.setBorder(sectionborder);
+        panel.setMinimumSize(new Dimension(150, 150));
         UIDefaults uidefaults = UIManager.getDefaults();
         detailsPane = new JPanel();
         detailsPane.setOpaque(true);
@@ -184,6 +181,9 @@ public class PatchDetailsView {
         fixBackground(textTags, paneBackground);
         fixBackground(textCategory, paneBackground);
         
+        labelTitle.setFont(CSUtils.changeFontStyle(labelTitle.getFont(), Font.BOLD));
+        btnSend=new JButton(new RedirectAction(this, "sendPatch"));
+        
         detailsPane.setLayout(new BorderLayout());
 
         // We use these three panels so we can add the comment text area
@@ -200,90 +200,87 @@ public class PatchDetailsView {
         detailsPane.add(north, BorderLayout.NORTH);
         detailsPane.add(center, BorderLayout.CENTER);
         detailsPane.add(south, BorderLayout.SOUTH);
+        
+        BoxLayoutBuilder northBuilder = new BoxLayoutBuilder(north);
+        northBuilder.beginHorizontalBox();
         {
-            labelTitle.setFont(CSUtils.changeFontStyle(labelTitle.getFont(), Font.BOLD));
-            
-            Box hbox = Box.createHorizontalBox();
-            hbox.add(labelTitle);
-            hbox.add(Box.createHorizontalGlue());
-            hbox.add(this.btnSend=new JButton(new RedirectAction(this, "sendPatch")));
-            north.add(hbox);
+            northBuilder.add(labelTitle);
+            northBuilder.addGlue();
+            northBuilder.add(btnSend);
         }
+        northBuilder.endContainer();
+        northBuilder.beginHorizontalBox();
         {
-            Box hbox = Box.createHorizontalBox();
-            hbox.add(labelAuthorAndDate);
-            hbox.add(Box.createHorizontalGlue());
-            north.add(hbox);
+            northBuilder.add(labelAuthorAndDate);
+            northBuilder.addGlue();
         }
-        /* {
-            Box hbox = Box.createHorizontalBox();
-            hbox.add(new JLabel(I18N.translate("translation.rating", "Rating")+": "));
-            RatingBar ratingBar = new RatingBar();
-            ratingBar.useDefaultSmallIconSet();
-            hbox.add(Box.createHorizontalGlue());
-            hbox.add(ratingBar);
-            detailsPane.add(hbox);
-        }*/
+        northBuilder.endContainer();
+        
+        BoxLayoutBuilder centerBuilder = new BoxLayoutBuilder(center);
+        centerBuilder.beginHorizontalBox();
         {
-            Box hbox = Box.createHorizontalBox();
             JLabel label = new JLabel(I18N.translate("translation.comment", "Comment")+": ");
             label.setForeground(paler);
-            hbox.add(label);
-            hbox.add(Box.createHorizontalGlue());
-            center.add(hbox);
+            centerBuilder.add(label);
+            centerBuilder.addGlue();
         }
-        
-        center.add(textComment);
+        centerBuilder.endContainer();
+        centerBuilder.add(new JScrollPane(textComment));
 
+        BoxLayoutBuilder southBuilder = new BoxLayoutBuilder(south);
+        southBuilder.beginHorizontalBox();
         {
-            Box hbox = Box.createHorizontalBox();
             JLabel label = new JLabel(I18N.translate("translation.category", "Category")+": ");
             label.setForeground(paler);
-            hbox.add(label);
-            hbox.add(textCategory);
-            south.add(hbox);
             label.setAlignmentX(Component.LEFT_ALIGNMENT);
             label.setAlignmentY(Component.TOP_ALIGNMENT);
             textCategory.setAlignmentX(Component.LEFT_ALIGNMENT);
             textCategory.setAlignmentY(Component.TOP_ALIGNMENT);
+
+            southBuilder.add(label);
+            southBuilder.add(textCategory);
         }
+        southBuilder.endContainer();
+
+        southBuilder.beginHorizontalBox();
         {
-            Box hbox = Box.createHorizontalBox();
             JLabel label = new JLabel(I18N.translate("translation.tags", "Tags")+": ");
             label.setForeground(paler);
-            hbox.add(label);
-            hbox.add(textTags);
-            south.add(hbox);
             label.setAlignmentX(Component.LEFT_ALIGNMENT);
             label.setAlignmentY(Component.TOP_ALIGNMENT);
             textTags.setAlignmentX(Component.LEFT_ALIGNMENT);
             textTags.setAlignmentY(Component.TOP_ALIGNMENT);
+
+            southBuilder.add(label);
+            southBuilder.add(textTags);
         }
+        southBuilder.endContainer();
+        
+        southBuilder.beginVerticalBox();
         {
-            Box vbox = Box.createVerticalBox();
-
-            Box hbox1 = Box.createHorizontalBox();
-            hbox1.add(new JLabel(I18N.translate("translation.patchdetails.midifile.label", "Midi file")+": "));
-            hbox1.add(Box.createHorizontalGlue());
-            hbox1.add(this.btnSaveMidifileAs=new JButton(new RedirectAction(this, "saveMidifileAs")));
-
-            Box hbox2 = Box.createHorizontalBox();
-            hbox2.add(new JLabel(I18N.translate("translation.patchdetails.sourcecode.label", "Source code")+": "));
-            hbox2.add(Box.createHorizontalGlue());
-            hbox2.add(this.btnSavesourceAs=new JButton(new RedirectAction(this, "saveSourcecodeAs")));
-
-            vbox.add(hbox1);
-            vbox.add(hbox2);
-            
-            south.add(vbox);
+            southBuilder.beginHorizontalBox();
+            {
+                southBuilder.add(new JLabel(I18N.translate("translation.patchdetails.midifile.label", "Midi file")+": "));
+                southBuilder.add(Box.createHorizontalGlue());
+                southBuilder.add(this.btnSaveMidifileAs=new JButton(new RedirectAction(this, "saveMidifileAs")));
+            }
+            southBuilder.endContainer();
+            southBuilder.beginHorizontalBox();
+            {
+                southBuilder.add(new JLabel(I18N.translate("translation.patchdetails.sourcecode.label", "Source code")+": "));
+                southBuilder.add(Box.createHorizontalGlue());
+                southBuilder.add(this.btnSavesourceAs=new JButton(new RedirectAction(this, "saveSourcecodeAs")));
+            }
+            southBuilder.endContainer();
         }
+        southBuilder.endContainer();
         
         
         textComment.setAlignmentY(0);
         //textComment.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-        panel.add(new JScrollPane(detailsPane),BorderLayout.CENTER);
+        panel.add(detailsPane,BorderLayout.CENTER);
         
-        midiBar = new MidiBar(patchdownloader);
+        midiBar = new MidiSetupPanel(patchdownloader);
         panel.add(midiBar.getContainer(), BorderLayout.SOUTH);
         panel.setPreferredSize(new Dimension(260,100));
         
@@ -305,12 +302,6 @@ public class PatchDetailsView {
     @RedirectActionMeta(title="Save as...", resourcekey="patchdetails.sourcecode.saveas")
     public void saveSourcecodeAs() {
         saveMetadataPathAs(PatchMetadata.PATH_SOURCECODE);
-    }
-
-    public void actionPerformed(ActionEvent actionEvent) {
-        if ("btn.send".equals(actionEvent.getActionCommand())) {
-            sendPatch();
-        } 
     }
 
     private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
@@ -365,117 +356,15 @@ public class PatchDetailsView {
         textTags.setText(tags);
         textCategory.setText(categories);
         textComment.setText(comment);
-/*
-        updateSize(textCategory);
-        updateSize(textTags);*/
     }
     
-    private void updateSize(JTextArea area) {
-        Dimension d = area.getMinimumSize();
-        d.setSize(detailsPane.getWidth(), d.height);
-        area.setMaximumSize(d);
-    }
-
-    public MidiBar getMidiBar() {
+    public MidiSetupPanel getMidiBar() {
         return midiBar;
     }
     
     @RedirectActionMeta(title="Send", resourcekey="patchdetails.send")
     public void sendPatch() {
-        new PatchSender().start();
-    }
-    
-    private class PatchSender implements Runnable {
-
-        private int state = 0;
-        private MidiSend midisend = 
-            PatchDownloader.getSharedInstance().getMidiSend();
-        private SendMidiDialog dialog = new SendMidiDialog(patchdownloader.getFrame());
-
-        public void start() {
-            if (state == 0)
-                SwingUtilities.invokeLater(this);            
-        }
-        
-        private synchronized int getState() {
-            return state;
-        }
-        
-        private synchronized void incState() {
-            state++;
-        }
-        
-        private void init() {
-            midisend.setCallback(dialog);
-            dialog.show();
-            new Thread(this).start();
-        }
-        
-        private void send() {
-            try {                
-                __sendPatch();
-                SwingUtilities.invokeLater(this);
-            } catch (Exception ex) {
-                if (log.isDebugEnabled()) {
-                    log.debug("sendPatch() failed", ex);
-                }
-                dialog.close();
-                JOptionPane.showMessageDialog(null, 
-                        "Could not send patch: "+ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        
-        private void shutdown() {
-            midisend.setCallback(null);
-            dialog.midisendCompleted();
-        }
-        
-        @Override
-        public void run() {
-            if (getState()==0) {
-                incState();
-                init();
-            } else if (getState() == 1) {
-                incState();
-                send();
-            } else if (getState() == 2) {
-                shutdown();
-            }
-        }
-        
-    }
-    
-    public void __sendPatch() throws Exception {
-        
-        if (patch == null  || metadata == null) {
-            return;
-        }
-        String midifilepath = metadata.getPath(PatchMetadata.PATH_MIDIFILE);
-        if (midifilepath == null) {
-            return;
-        }
-
-        DirectoryReader reader;
-        File tmp = null;
-        try {
-            reader = patch.getDirectoryReader();
-            if (reader == null) {
-                throw new IOException("no reader available for patch: "+patch.getPath());
-            }
-            try {
-                tmp = File.createTempFile("send", CSUtils.getLastPathComponent(midifilepath));
-            } catch (IOException ex) {
-                throw new IOException("could not create temporary file", ex);
-            }
-            reader.copyFile(midifilepath, tmp);
-            reader.close();
-            
-            PatchDownloader.getSharedInstance().getMidiSend().send(tmp);
-        } finally {
-            if (tmp != null)
-                tmp.delete();
-        }
+        new SendMidifileTask(patch, metadata).start();
     }
     
     private void saveMetadataPathAs(String key) {
