@@ -30,8 +30,10 @@ package com.ruinwesen.patchdownloader.indexer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class IndexWriter {
     }
     
     public void flush() throws IOException {
-        Collections.sort(keyList); // sort by key name
+        Collections.sort(keyList, new KeyNameComparator()); // sort by key name
         Iterator<Key> iter = keyList.iterator();
         
         
@@ -100,24 +102,32 @@ public class IndexWriter {
         }
     }
     
-    private static class Key implements Comparable<Key> {
+    public void close() throws IOException {
+        outDocumentIndex.flush();
+        outKeyIndex.flush();
+        outDocumentIndex.close();
+        outKeyIndex.close();
+    }
+
+    private static class Key {
         int docid;
         String key;
         public Key(int docid, String key) {
             this.docid = docid;
             this.key=key;
         }
-        @Override
-        public int compareTo(Key o) {
-            return key.compareTo(o.key);
-        }
     }
 
-    public void close() throws IOException {
-        outDocumentIndex.flush();
-        outKeyIndex.flush();
-        outDocumentIndex.close();
-        outKeyIndex.close();
+    private static final class KeyNameComparator 
+        implements Comparator<Key>, Serializable {
+
+        private static final long serialVersionUID = 4625170710796375432L;
+
+        @Override
+        public int compare(Key a, Key b) {
+            return a.key.compareTo(b.key);
+        }
+        
     }
     
 }
