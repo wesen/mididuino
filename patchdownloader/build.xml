@@ -120,7 +120,7 @@
   <!-- creates the javadoc api -->
   <target name="javadoc">
     <javadoc
-	packagenames="com.ruinwesen.*,com.csutils.*"
+	packagenames="com.ruinwesen.*,name.cs.csutils.*"
 	sourcepath="${source.dir}"
 	excludepackagenames=""
 	destdir="${javadoc.dir}"
