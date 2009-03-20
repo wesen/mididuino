@@ -385,7 +385,7 @@ public class IndexReader {
     }
     
     public List<Doc> search(Query query, KeyMatcher keymatcher,
-            float minscore, float maxscore, DocComparator<? extends Doc> comparator) {
+            float minscore, float maxscore, DocComparator comparator) {
         String[] keys = null;
         if (query != null && !query.isEmpty()) {
             List<String> keyList = query.tokenize();
@@ -401,7 +401,7 @@ public class IndexReader {
      * @param comparator sorts the resulting document list
      */
     public List<Doc> search(String[] keys, KeyMatcher keymatcher,
-            float minscore, float maxscore, DocComparator<? extends Doc> comparator) {
+            float minscore, float maxscore, DocComparator comparator) {
 
         if (keys == null && keymatcher == null) {
             List<Doc> docList = new ArrayList<Doc>(getUpperDocumentId());
@@ -430,7 +430,7 @@ public class IndexReader {
                 // empty set, nothing more to do
                 return Collections.emptyList();
             }
-        }
+        } 
         
         if (keys == null) { // => keymatcher != null => collectibleDocuments != null
             List<Doc> docList = new ArrayList<Doc>(getUpperDocumentId());

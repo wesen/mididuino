@@ -28,10 +28,14 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public abstract class DocComparator<T extends Doc> implements Comparator<Doc> {
+public abstract class DocComparator implements Comparator<Doc> {
 
+    public static final DocComparator BY_DATE = new ByDate();
+    public static final DocComparator BY_RELEVANCE = new ByRelevance();
+    
     private static int cmpString(String a, String b) {
         if (a == null) {
             if (b == null) return 0;
@@ -48,7 +52,10 @@ public abstract class DocComparator<T extends Doc> implements Comparator<Doc> {
         return 0;
     }
     
-    public static final class ByDate extends DocComparator<Doc> {
+    private static final class ByDate extends DocComparator 
+        implements Serializable {
+
+        private static final long serialVersionUID = -5761452632100017132L;
 
         @Override
         public int compare(Doc a, Doc b) {
@@ -64,9 +71,22 @@ public abstract class DocComparator<T extends Doc> implements Comparator<Doc> {
             return DocComparator.cmpId(a.id(), b.id());
         }
         
+        @Override
+        public int hashCode() {
+            return ByDate.class.hashCode();
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            return o != null && (o == this || o.getClass().equals(getClass()));
+        }
+        
     }
 
-    public static final class ByRelevance extends DocComparator<Doc> {
+    private static final class ByRelevance extends DocComparator
+        implements Serializable {
+
+        private static final long serialVersionUID = 3112776594518726393L;
 
         @Override
         public int compare(Doc a, Doc b) {
@@ -80,6 +100,16 @@ public abstract class DocComparator<T extends Doc> implements Comparator<Doc> {
             if (a.date()<b.date()) return +1;
             
             return DocComparator.cmpId(a.id(), b.id());
+        }
+
+        @Override
+        public int hashCode() {
+            return ByRelevance.class.hashCode();
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            return o != null && (o == this || o.getClass().equals(getClass()));
         }
         
     }
