@@ -42,7 +42,6 @@ import name.cs.csutils.CSUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.ClientProtocolException;
 
 public class HTTPRepository extends Repository {
 
@@ -128,26 +127,16 @@ public class HTTPRepository extends Repository {
 
 
     @Override
-    public <C extends StoredPatchCollector> C collectPatches(C collector) {
+    public <C extends StoredPatchCollector> C collectPatches(C collector) throws IOException {
         return collectPatches(collector, null);
     }
 
-    public <C extends StoredPatchCollector> C collectPatches(C collector, Date since) {
+    public <C extends StoredPatchCollector> C collectPatches(C collector, Date since) throws IOException {
         String requestURL = since != null 
             ? getRequestPatchesSinceRequestURL(since)
             : getRequestPatchesAllRequestURL();
         String patchListText;
-        try {
-            patchListText = new CSHttpGet().get(requestURL);
-        } catch (ClientProtocolException ex) {
-            if (log.isErrorEnabled()) {
-                log.error("could not get url: "+requestURL, ex);
-            }
-            return collector;
-        } catch (IOException ex) {
-            log.error("could not get url: "+requestURL, ex);
-            return collector;
-        }
+        patchListText = new CSHttpGet().get(requestURL);
         
         String[] pathList = patchListText.split("[\r\n]+");
         for (String path: pathList) {

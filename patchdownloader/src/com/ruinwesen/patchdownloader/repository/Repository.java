@@ -33,7 +33,7 @@ import java.io.OutputStream;
 
 public abstract class Repository {
 
-    public abstract <C extends StoredPatchCollector> C collectPatches(C collector) ;
+    public abstract <C extends StoredPatchCollector> C collectPatches(C collector) throws IOException ;
 
     public abstract void export(StoredPatch patch, OutputStream out) throws IOException;
     
