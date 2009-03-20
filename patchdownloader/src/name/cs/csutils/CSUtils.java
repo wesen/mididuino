@@ -377,7 +377,7 @@ public class CSUtils {
         
     }
 
-    public static UnsupportedOperationException NotImplementedYet() {
+    public static UnsupportedOperationException notImplementedYet() {
         return new UnsupportedOperationException("TODO: not implemented yet");
     }
 
