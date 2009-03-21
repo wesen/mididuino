@@ -87,6 +87,9 @@ uint16_t SR165Class::read16() {
 
 EncodersClass::EncodersClass() {
   clearEncoders();
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
+    sr_old2s[i] = 0;
+  }
   sr_old = 0;
 }
 
@@ -97,6 +100,12 @@ void EncodersClass::clearEncoders() {
   }
 }
 
+#define ENCODER_FIX_INIT 0
+#define ENCODER_FIX_MINUS_1 1
+#define ENCODER_FIX_MINUS_0 2
+#define ENCODER_FIX_PLUS_3  3
+#define ENCODER_FIX_PLUS_1  4
+
 void EncodersClass::poll(uint16_t sr) {
   uint16_t sr_tmp = sr;
   
@@ -105,6 +114,15 @@ void EncodersClass::poll(uint16_t sr) {
     uint8_t sro2 = sr_old & 3;
 
     if (sr2 != sro2) {
+      /*
+	LCD.line1();
+      LCD.putnumber(sr2);
+      LCD.puts(" ");
+      LCD.putnumber(sro2);
+      LCD.puts(" ");
+      LCD.putnumber(sr_old2s[i]);
+      */
+      
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
       if (BUTTON_DOWN(i)) {
@@ -116,15 +134,24 @@ void EncodersClass::poll(uint16_t sr) {
 	val = &(ENCODER_SHIFT(i));
       }
 
+	
 #if 1
-      if ((sr2 == 3 && sro2 == 0) ||
-	  (sr2 == 1 && sro2 == 3)) {
+      if ((sr2 == 0 && sro2 == 1 && sr_old2s[i] != ENCODER_FIX_MINUS_1) ||
+	  (sr2 == 3 && sro2 == 0 && sr_old2s[i] != ENCODER_FIX_MINUS_0)) {
 	if (*val > -64)
 	  (*val)--;
-      } else if ((sr2 == 3 && sro2 == 1) ||
-		 (sr2 == 0 && sro2 == 3)) {
+	if (sro2 == 1)
+	  sr_old2s[i] = ENCODER_FIX_MINUS_1;
+	if (sro2 == 0)
+	  sr_old2s[i] = ENCODER_FIX_MINUS_0;
+      } else if ((sr2 == 0 && sro2 == 3 && sr_old2s[i] != ENCODER_FIX_PLUS_3) ||
+		 (sr2 == 3 && sro2 == 1 && sr_old2s[i] != ENCODER_FIX_PLUS_1)) {
 	if (*val < 64)
 	  (*val)++;
+	if (sro2 == 1)
+	  sr_old2s[i] = ENCODER_FIX_PLUS_1;
+	if (sro2 == 3)
+	  sr_old2s[i] = ENCODER_FIX_PLUS_3;
       }
 #endif
     }

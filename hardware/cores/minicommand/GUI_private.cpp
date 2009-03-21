@@ -97,7 +97,6 @@ void EncodersClass::clearEncoders() {
 
 void EncodersClass::poll(uint16_t sr) {
   uint16_t sr_tmp = sr;
-  uint16_t srold_tmp = sr_old;
   
   for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     if ((sr & 3) != (sr_old & 3)) {

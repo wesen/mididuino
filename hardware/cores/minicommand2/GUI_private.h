@@ -123,6 +123,10 @@ class ButtonsClass {
   static const int BUTTON2 = 5;
   static const int BUTTON3 = 6;
   static const int BUTTON4 = 7;
+  static const int ENCODER1 = 0;
+  static const int ENCODER2 = 1;
+  static const int ENCODER3 = 2;
+  static const int ENCODER4 = 3;
   
   ButtonsClass();
   void clear();

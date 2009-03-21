@@ -25,6 +25,7 @@ typedef struct encoder_s {
 
 class EncodersClass {
   uint16_t sr_old;
+  uint8_t sr_old2s[GUI_NUM_ENCODERS];
 
   static const int MACRO = 4;
 
@@ -140,6 +141,10 @@ class ButtonsClass {
   static const int BUTTON2 = 5;
   static const int BUTTON3 = 6;
   static const int BUTTON4 = 7;
+  static const int ENCODER1 = 0;
+  static const int ENCODER2 = 1;
+  static const int ENCODER3 = 2;
+  static const int ENCODER4 = 3;
 };
 
 extern SR165Class SR165;
