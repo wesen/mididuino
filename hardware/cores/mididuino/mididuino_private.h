@@ -15,4 +15,6 @@ void clearLed(void);
 
 void start_bootloader(void);
 
+#define BOARD_ID 0x38
+
 #endif /* MIDIDUIDNO_PRIVATE_H__ */

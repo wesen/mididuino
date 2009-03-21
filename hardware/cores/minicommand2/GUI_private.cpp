@@ -94,16 +94,18 @@ void EncodersClass::clearEncoders() {
 
 void EncodersClass::poll(uint16_t sr) {
   uint16_t sr_tmp = sr;
-
   /*
-  LCD.line1();
-  LCD.putnumber(sr & 0x3);
-  LCD.puts(" ");
-  LCD.putnumber(sr_old & 0x3);
+  if (sr != sr_old) {
+    LCD.line1();
+    LCD.putnumber(sr & 0x3);
+    LCD.puts(" ");
+    LCD.putnumber(sr_old & 0x3);
+  }
   */
   
+  
   for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
-    if (IS_BIT_SET8(sr, 1) == !IS_BIT_SET8(sr_old, 1)) {
+    if ((sr & 3) != (sr_old & 3)) {
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
       if (BUTTON_DOWN(i)) {
@@ -115,10 +117,12 @@ void EncodersClass::poll(uint16_t sr) {
 	val = &(ENCODER_SHIFT(i));
       }
 
-      if (IS_BIT_SET8(sr, 0) == IS_BIT_SET8(sr, 1)) {
+      if (((sr_old & 3) == 1 && (sr & 3) == 3) ||
+	   ((sr_old & 3) == 2 && (sr & 3) == 0)){
 	if (*val < 64)
 	  (*val)++;
-      } else {
+      } else if (((sr_old & 3) == 2 && (sr & 3) == 3) ||
+		 ((sr_old & 3) == 1 && (sr & 3) == 0)) {
 	if (*val > -64)
 	  (*val)--;
       }
