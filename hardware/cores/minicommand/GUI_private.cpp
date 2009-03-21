@@ -82,6 +82,9 @@ uint16_t SR165Class::read16() {
 
 EncodersClass::EncodersClass() {
   clearEncoders();
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
+    sr_old2s[i] = 0;
+  }
   sr_old = 0;
 }
 
@@ -94,9 +97,10 @@ void EncodersClass::clearEncoders() {
 
 void EncodersClass::poll(uint16_t sr) {
   uint16_t sr_tmp = sr;
-
+  uint16_t srold_tmp = sr_old;
+  
   for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
-    if (IS_BIT_SET8(sr, 1) == !IS_BIT_SET8(sr_old, 1)) {
+    if ((sr & 3) != (sr_old & 3)) {
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
       if (BUTTON_DOWN(i)) {
@@ -108,13 +112,16 @@ void EncodersClass::poll(uint16_t sr) {
 	val = &(ENCODER_SHIFT(i));
       }
 
-      if (IS_BIT_SET8(sr, 0) == IS_BIT_SET8(sr, 1)) {
+      if (((sr_old2s[i] & 3) == 0 && (sr_old & 3) == 1 && (sr & 3) == 3) ||
+	  (((sr_old2s[i] & 3) == 3) && (sr_old & 3) == 2 && (sr & 3) == 0)){
 	if (*val < 64)
 	  (*val)++;
-      } else {
+      } else if (((sr_old2s[i] & 3) == 0 && (sr_old & 3) == 2 && (sr & 3) == 3) ||
+		 ((sr_old2s[i] & 3) == 3 && (sr_old & 3) == 1 && (sr & 3) == 0)) {
 	if (*val > -64)
 	  (*val)--;
       }
+      sr_old2s[i] = sr_old & 3;
     }
     sr >>= 2;
     sr_old >>= 2;

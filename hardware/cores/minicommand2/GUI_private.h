@@ -26,6 +26,7 @@ typedef struct encoder_s {
 
 class EncodersClass {
   uint16_t sr_old;
+  uint8_t sr_old2s[GUI_NUM_ENCODERS];
 
  public:
   encoder_t encoders[GUI_NUM_ENCODERS];

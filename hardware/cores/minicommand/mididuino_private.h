@@ -26,6 +26,8 @@ inline void clearLed2(void) {
 #define FIRMWARE_CHECKSUM_ADDR ((uint16_t *)0x02)
 #define START_MAIN_APP_ADDR ((uint16_t *)0x04)
 
+#define BOARD_ID 0x40
+
 void start_bootloader(void);
 
 #endif /* MIDIDUIDNO_PRIVATE_H__ */

@@ -3,8 +3,6 @@
 
 #include "helpers.h"
 
-#define BOARD_ID 0x41
-
 void init(void);
 
 inline void setLed(void) {
@@ -27,6 +25,8 @@ inline void clearLed2(void) {
 #define FIRMWARE_LENGTH_ADDR ((uint16_t *)0x00)
 #define FIRMWARE_CHECKSUM_ADDR ((uint16_t *)0x02)
 #define START_MAIN_APP_ADDR ((uint16_t *)0x04)
+
+#define BOARD_ID 0x41
 
 void start_bootloader(void);
 

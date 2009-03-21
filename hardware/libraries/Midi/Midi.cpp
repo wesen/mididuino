@@ -231,7 +231,7 @@ void MididuinoSysexClass::start() {
 uint8_t mididuino_hdr[3] = {
   MIDIDUINO_SYSEX_VENDOR_1,
   MIDIDUINO_SYSEX_VENDOR_2,
-  MIDIDUINO_SYSEX_VENDOR_3
+  BOARD_ID
 };
 
 void MididuinoSysexClass::handleByte(uint8_t byte) {

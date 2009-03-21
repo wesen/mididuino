@@ -82,6 +82,9 @@ uint16_t SR165Class::read16() {
 
 EncodersClass::EncodersClass() {
   clearEncoders();
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
+    sr_old2s[i] = 0;
+  }
   sr_old = 0;
 }
 
@@ -117,15 +120,16 @@ void EncodersClass::poll(uint16_t sr) {
 	val = &(ENCODER_SHIFT(i));
       }
 
-      if (((sr_old & 3) == 1 && (sr & 3) == 3) ||
-	   ((sr_old & 3) == 2 && (sr & 3) == 0)){
+      if (((sr_old2s[i] & 3) == 0 && (sr_old & 3) == 1 && (sr & 3) == 3) ||
+	  (((sr_old2s[i] & 3) == 3) && (sr_old & 3) == 2 && (sr & 3) == 0)){
 	if (*val < 64)
 	  (*val)++;
-      } else if (((sr_old & 3) == 2 && (sr & 3) == 3) ||
-		 ((sr_old & 3) == 1 && (sr & 3) == 0)) {
+      } else if (((sr_old2s[i] & 3) == 0 && (sr_old & 3) == 2 && (sr & 3) == 3) ||
+		 ((sr_old2s[i] & 3) == 3 && (sr_old & 3) == 1 && (sr & 3) == 0)) {
 	if (*val > -64)
 	  (*val)--;
       }
+      sr_old2s[i] = sr_old & 3;
     }
     sr >>= 2;
     sr_old >>= 2;
