@@ -34,10 +34,15 @@ else
   cp dist/arduino work/
 fi
 
+cd ../../hardware/tools/mididuino
+make -f Makefile.linux
+cd ../../../build/linux
+
 echo Copying shared and core files...
 cp -r ../shared/* work
 rm -rf work/dist
 cp -r ../../hardware work
+cp ../../hardware/tools/mididuino/midi-send work/hardware/tool
 rm work/reference.zip
 
 echo Copying examples...
