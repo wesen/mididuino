@@ -19,9 +19,7 @@ class SR165Class {
 
 typedef struct encoder_s {
   int8_t normal;
-  int8_t shift;
   int8_t button;
-  int8_t button_shift;
 } encoder_t;
 
 class EncodersClass {
@@ -37,9 +35,7 @@ class EncodersClass {
   void clearEncoders();
 
   inline int8_t getNormal(uint8_t i) { return encoders[i].normal; }
-  inline int8_t getShift(uint8_t i) { return encoders[i].shift; }
   inline int8_t getButton(uint8_t i) { return encoders[i].button; }
-  inline int8_t getButtonShift(uint8_t i) { return encoders[i].button_shift; }
 
   int8_t limitValue(int8_t value, int8_t min, int8_t max) {
     if (value > max)
@@ -118,7 +114,6 @@ class ButtonsClass {
  public:
   button_t buttons[GUI_NUM_BUTTONS];
 
-  static const int SHIFT = 4;
   static const int BUTTON1 = 4;
   static const int BUTTON2 = 5;
   static const int BUTTON3 = 6;

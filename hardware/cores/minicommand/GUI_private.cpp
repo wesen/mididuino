@@ -76,9 +76,7 @@ uint16_t SR165Class::read16() {
 /**********************************************/
 
 #define ENCODER_NORMAL(i) (encoders[(i)].normal)
-#define ENCODER_SHIFT(i)  (encoders[(i)].shift)
 #define ENCODER_BUTTON(i) (encoders[(i)].button)
-#define ENCODER_BUTTON_SHIFT(i) (encoders[(i)].button_shift)
 
 EncodersClass::EncodersClass() {
   clearEncoders();
@@ -90,8 +88,7 @@ EncodersClass::EncodersClass() {
 
 void EncodersClass::clearEncoders() {
   for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
-    ENCODER_NORMAL(i) = ENCODER_BUTTON(i) = ENCODER_SHIFT(i) =
-      ENCODER_BUTTON_SHIFT(i) = 0;
+    ENCODER_NORMAL(i) = ENCODER_BUTTON(i) = 0;
   }
 }
 
@@ -103,12 +100,7 @@ void EncodersClass::poll(uint16_t sr) {
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
       if (BUTTON_DOWN(i)) {
-       	if (BUTTON_DOWN(Buttons.SHIFT))
-		  val = &(ENCODER_BUTTON_SHIFT(i));
-	else
 	  val = &(ENCODER_BUTTON(i));
-      } else if (BUTTON_DOWN(Buttons.SHIFT)) {
-	val = &(ENCODER_SHIFT(i));
       }
 
       if (((sr_old2s[i] & 3) == 0 && (sr_old & 3) == 1 && (sr & 3) == 3) ||
