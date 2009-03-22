@@ -42,7 +42,7 @@ echo Copying shared and core files...
 cp -r ../shared/* work
 rm -rf work/dist
 cp -r ../../hardware work
-cp ../../hardware/tools/mididuino/midi-send work/hardware/tool
+cp ../../hardware/tools/mididuino/midi-send work/hardware/tools
 rm work/reference.zip
 
 echo Copying examples...
