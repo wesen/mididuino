@@ -46,9 +46,9 @@ else
   mkdir work/lib/build
   #mkdir work/classes
 
-  echo Compiling arduino.exe
+  echo Compiling mididuino.exe
   cd launcher
-  make && cp arduino.exe ../work/
+  make && cp mididuino.exe ../work/
   cd ..
 
   # get jikes and depedencies

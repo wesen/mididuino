@@ -103,7 +103,7 @@ find arduino -name ".svn" -exec rm -rf {} ';' 2> /dev/null
 # zip it all up for release
 echo Packaging standard release...
 echo
-P5=arduino-$REVISION
+P5=mididuino-$REVISION
 mv arduino $P5
 zip -rq $P5.zip $P5
 # nah, keep the new directory around
