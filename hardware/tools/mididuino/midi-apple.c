@@ -52,6 +52,8 @@ void midiSendShort(unsigned char status,
 }
 
 void timer_callback(CFRunLoopTimerRef ref, void *info) {
+  if (exitMainLoop)
+    midiClose();
   if (++callbacks > MAX_TIMEOUT_CALLBACKS)
     midiTimeout();
 }
