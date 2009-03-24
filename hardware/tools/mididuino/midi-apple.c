@@ -163,4 +163,5 @@ void midiMainLoop(void) {
 
 void midiClose(void) {
   // XXX add closing code here
+  exit(0);
 }

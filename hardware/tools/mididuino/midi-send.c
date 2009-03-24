@@ -24,6 +24,8 @@ uint8_t deviceID = 56;
 #define SYSEX_VENDOR_1 0x00
 #define SYSEX_VENDOR_2 0x13
 
+int exitMainLoop = 0;
+
 int verbose = 1;
 int convertHexFile = 0;
 
@@ -340,8 +342,7 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
       buf[3] = deviceID;
       midiSendLong(buf, 6);
       usleep(5000);
-      midiClose();
-      exit(0);
+      exitMainLoop = 1;
     }
   } else {
     fprintf(stderr, "unknown cmd %d received\n", cmd);
@@ -349,7 +350,6 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
 }
 
 void midiReceive(unsigned char c) {
-  //  printf("receive %x, state %x\n", c, stm_state);
   switch (stm_state) {
   case midi_wait_start:
     if (c == 0xF0)
@@ -491,6 +491,8 @@ int main(int argc, char *argv[]) {
   }
 
   midiMainLoop();
+
+  printf("the end\n");
 
   fclose(fin);
 

@@ -92,6 +92,7 @@ void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte
 
 void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
 			   DWORD dwParam1, DWORD dwParam2) {
+  //  printf("callback called %d, handle %p\n", uMsg, handle);
   switch (uMsg) {
   case MIM_DATA:
     midiReceive(SHORT_MSG_STATUS(dwParam1));
@@ -102,6 +103,9 @@ void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
   case MIM_LONGDATA:
     {
       MIDIHDR *midiHdr = (MIDIHDR *)dwParam1;
+      if (midiHdr->dwBytesRecorded == 0) {
+	return;
+      }
       int len = 0;
       sleepCount = 0;
       for (len = 0; len < midiHdr->dwBufferLength; len++) {
@@ -109,6 +113,8 @@ void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
 	if (((unsigned char)midiHdr->lpData[len]) == 0xF7)
 	  break;
       }
+      midiInUnprepareHeader(handle, midiHdr, sizeof(*midiHdr));
+      midiInPrepareHeader(handle, midiHdr, sizeof(*midiHdr));
       midiInAddBuffer(handle, midiHdr, sizeof(*midiHdr));
     }
     break;
@@ -209,7 +215,7 @@ void midiMainLoop(void) {
     goto end;
   }
 
-  for (;;) {
+  for (; !exitMainLoop; ) {
     Sleep(1);
     //    printf("count: %d\n", sleepCount);
     sleepCount++;
@@ -219,20 +225,30 @@ void midiMainLoop(void) {
     }
   }
   //  midiInReset(inHandle);
+  printf("foo\n");
 
  end:
-  midiInUnprepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
-  midiOutClose(outHandle);
-  midiInClose(inHandle);
-
-  exit(1);
-  
+  midiClose();
 }
 
 
 void midiClose(void) {
-  midiInReset(inHandle);
+  printf("stop\n");
+  if (MMSYSERR_NOERROR != midiInStop(inHandle)) {
+    printf("stop error\n");
+  }
+  printf("reset\n");
+  if (MMSYSERR_NOERROR != midiInReset(inHandle)) {
+    printf("reset error\n");
+  }
+  printf("close\n");
+  if (MMSYSERR_NOERROR != midiInClose(inHandle)) {
+    printf("close error\n");
+  }
+  printf("foobnar\n");
   midiInUnprepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
+  printf("closing b\n");
+  //  midiInReset(inHandle);
   midiOutClose(outHandle);
-  midiInClose(inHandle);
+  printf("closing b\n");
 }

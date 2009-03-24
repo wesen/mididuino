@@ -285,11 +285,10 @@ void midiInitialize(char *inputDevice, char *outputDevice) {
 
 unsigned char inbuf[256];
 void midiMainLoop(void) {
-  int end = 0;
   int timeout_us = 10*1000*1000; // 10 seconds in micro seconds
   int timer_resolution_us = 50; // 50 micro seconds
 
-  while (!end) {
+  while (!exitMainLoop) {
     int len;
     len = snd_rawmidi_read(handle_in, inbuf, 256);
     if (len > 0) {
@@ -317,4 +316,5 @@ void midiMainLoop(void) {
 }
 
 void midiClose(void) {
+  exit(0);
 }

@@ -3,6 +3,7 @@
 
 extern int canSendSysex;
 extern int waitingForBootloader;
+extern int exitMainLoop;
 
 void listInputMidiDevices(void);
 void listOutputMidiDevices(void);
