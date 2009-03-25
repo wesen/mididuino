@@ -62,6 +62,44 @@ class MidiUartParentClass {
     sendCC(currentChannel, cc, value);
   }
 
+  void sendProgramChange(uint8_t channel, uint8_t program);
+  inline void sendProgramChange(uint8_t program) {
+    sendProgramChange(currentChannel, program);
+  }
+
+  void sendPolyKeyPressure(uint8_t channel, uint8_t note, uint8_t pressure);
+  inline void sendPolyKeyPressure(uint8_t note, uint8_t pressure) {
+    sendPolyKeyPressure(currentChannel, note, pressure);
+  }
+
+  void sendChannelPressure(uint8_t channel, uint8_t pressure);
+  inline void sendChannelPressure(uint8_t pressure) {
+    sendChannelPressure(currentChannel, pressure);
+  }
+
+  void sendPitchBend(uint8_t channel, int16_t pitchbend);
+  inline void sendPitchBend(int16_t pitchbend) {
+    sendPitchBend(currentChannel, pitchbend);
+  }
+
+  void sendNRPN(uint8_t channel, uint16_t parameter, uint8_t value);
+  inline void sendNRPN(uint16_t parameter, uint8_t value) {
+    sendNRPN(currentChannel, parameter, value);
+  }
+  void sendNRPN(uint8_t channel, uint16_t parameter, uint16_t value);
+  inline void sendNRPN(uint16_t parameter, uint16_t value) {
+    sendNRPN(currentChannel, parameter, value);
+  }
+
+  void sendRPN(uint8_t channel, uint16_t parameter, uint8_t value);
+  inline void sendRPN(uint16_t parameter, uint8_t value) {
+    sendRPN(currentChannel, parameter, value);
+  }
+  void sendRPN(uint8_t channel, uint16_t parameter, uint16_t value);
+  inline void sendRPN(uint16_t parameter, uint16_t value) {
+    sendRPN(currentChannel, parameter, value);
+  }
+
   inline void sendRaw(uint8_t *msg, uint8_t cnt) {
     puts(msg, cnt);
   }
