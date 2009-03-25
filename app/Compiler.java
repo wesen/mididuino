@@ -241,6 +241,12 @@ public class Compiler implements MessageConsumer {
 		}
 		
 		
+		for (int i = 0; i < sketchObjectNames.size(); i++) {
+			if (execAsynchronously(getCommandConvertObject(avrBasePath, (String)sketchObjectNames.get(i))) != 0) {
+				return false;
+			}
+		}
+		
 //      for(int i = 0; i < targetObjectNames.size(); i++) {
 //        List commandAR = new ArrayList(baseCommandAR);
 //        commandAR.add(targetObjectNames.get(i));
@@ -580,6 +586,15 @@ public class Compiler implements MessageConsumer {
     return baseCommandCompilerCPP;
   }
 
+	static private List getCommandConvertObject(String avrBasePath, String sourceName) {
+		return new ArrayList(Arrays.asList(new String[] {
+																avrBasePath + "avr-objcopy",
+																"--rename-section",
+																".bss.extram=.extram",
+																sourceName, sourceName}));
+		
+																
+	}
 	static private List getCommandCompilerASM(String avrBasePath,
 											  List includePaths, String sourceName, String objectName) {
 		List baseCommandCompilerASM = new ArrayList(Arrays.asList(new String[] {
