@@ -14,7 +14,7 @@ void Encoder::clear() {
   cur = 0;
 }
 
-void Encoder::handle(uint8_t val) {
+void Encoder::handle(int val) {
 }
 
 void Encoder::update(encoder_t *enc) {
@@ -22,16 +22,16 @@ void Encoder::update(encoder_t *enc) {
 }
 
 void RangeEncoder::update(encoder_t *enc) {
-  int8_t inc = enc->normal + 5 * enc->button;
+  int inc = enc->normal + 5 * enc->button;
   
-  cur = u_limit_value(cur, inc, min, max);
+  cur = limit_value(cur, inc, min, max);
 }
 
-void CCEncoder::handle(uint8_t val) {
+void CCEncoder::handle(int val) {
   MidiUart.sendCC(cc, val);
 }
 
-void TempoEncoder::handle(uint8_t val) {
+void TempoEncoder::handle(int val) {
   MidiClock.setTempo(val);
 }
 
@@ -161,6 +161,10 @@ void GuiClass::put_value(uint8_t idx, uint8_t value) {
   put_value_at(idx << 2, value);
 }
 
+void GuiClass::put_value(uint8_t idx, int value) {
+  put_value_at(idx << 2, value);
+}
+
 void GuiClass::put_value16(uint8_t idx, uint16_t value) {
   put_value16_at(idx << 2, value);
 }
@@ -173,6 +177,15 @@ void GuiClass::put_value_at(uint8_t idx, uint8_t value) {
   char *data = lines[curLine].data;
   lines[curLine].changed = true;
   data[idx] = value / 100 + '0';
+  data[idx+1] = (value % 100) / 10 + '0';
+  data[idx+2] = (value % 10) + '0';
+  data[idx+3] = ' ';
+}
+
+void GuiClass::put_value_at(uint8_t idx, int value) {
+  char *data = lines[curLine].data;
+  lines[curLine].changed = true;
+  data[idx] = (value % 1000) / 100 + '0';
   data[idx+1] = (value % 100) / 10 + '0';
   data[idx+2] = (value % 10) + '0';
   data[idx+3] = ' ';

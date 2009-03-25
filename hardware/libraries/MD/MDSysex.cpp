@@ -63,6 +63,10 @@ void MachineDrumSysexClass::handleKitDump(uint8_t c) {
   }
 }
 
+#ifdef MIDIDUINO_EXTERNAL_RAM
+uint8_t MDSysexBuf[16384] EXTRAM;
+#endif
+
 void MachineDrumSysexClass::handleByte(uint8_t byte) {
   if ((len < sizeof(machinedrum_sysex_hdr)) &&
       (byte != machinedrum_sysex_hdr[len])) {
@@ -75,6 +79,9 @@ void MachineDrumSysexClass::handleByte(uint8_t byte) {
 	break;
 
       case MD_KIT_MESSAGE_ID:
+#ifdef MIDIDUINO_EXTERNAL_RAM
+	startRecord(MDSysexBuf, sizeof(MDSysexBuf));
+#endif
 	break;
 
       case MD_STATUS_RESPONSE_ID:
@@ -88,7 +95,9 @@ void MachineDrumSysexClass::handleByte(uint8_t byte) {
 	break;
 
       case MD_KIT_MESSAGE_ID:
+#ifndef MIDIDUINO_EXTERNAL_RAM
 	handleKitDump(byte);
+#endif
 	break;
 
       default:

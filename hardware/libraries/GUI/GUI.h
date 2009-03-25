@@ -9,7 +9,7 @@
 
 class Encoder {
  protected:
-  uint8_t old, cur;
+  int old, cur;
   char name[4];
 
  public:
@@ -21,7 +21,7 @@ class Encoder {
       m_strncpy_fill(name, _name, 4);
   }
   virtual void update(encoder_t *enc);
-  virtual void handle(uint8_t val);
+  virtual void handle(int val);
   void checkHandle() {
     if (cur != old) {
       handle(cur);
@@ -32,23 +32,23 @@ class Encoder {
   bool hasChanged() {
     return old != cur;
   }
-  uint8_t getValue() {
+  int getValue() {
     return cur;
   }
-  uint8_t getOldValue() {
+  int getOldValue() {
     return old;
   }
-  void setValue(uint8_t value) {
+  void setValue(int value) {
     old = cur = value;
   }
 };
 
 class RangeEncoder : public Encoder {
  public:
-  uint8_t min;
-  uint8_t max;
+  int min;
+  int max;
 
- RangeEncoder(uint8_t _max = 127, uint8_t _min = 0, char *_name = NULL, uint8_t init = 0) : Encoder(_name) {
+ RangeEncoder(int _max = 127, int _min = 0, char *_name = NULL, int init = 0) : Encoder(_name) {
     if (_min > _max) {
       min = _max;
       max = _min;
@@ -58,18 +58,18 @@ class RangeEncoder : public Encoder {
     }
     setValue(init);
   }
-  void handle(uint8_t val) { }
+  void handle(int val) { }
   void update(encoder_t *enc);
 };
 
 class CCEncoder : public RangeEncoder {
  public:
-  uint8_t cc;
+  int cc;
 
- CCEncoder(uint8_t _cc, char *_name = NULL, uint8_t init = 0) : RangeEncoder(127, 0, name, init) {
+ CCEncoder(int _cc, char *_name = NULL, int init = 0) : RangeEncoder(127, 0, name, init) {
     cc = _cc;
   }
-  void handle(uint8_t val);
+  void handle(int val);
 };
 
 class Page {
@@ -109,7 +109,7 @@ class TempoEncoder : public RangeEncoder {
   TempoEncoder() : RangeEncoder(255, 20) {
   }
 
-  void handle(uint8_t val);
+  void handle(int val);
 };
 
 typedef struct line_s {
@@ -143,9 +143,11 @@ class GuiClass {
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
   
   void put_value(uint8_t idx, uint8_t value);
+  void put_value(uint8_t idx, int value);
   void put_value16(uint8_t idx, uint16_t value);
   void put_valuex(uint8_t idx, uint8_t value);
   void put_value_at(uint8_t idx, uint8_t value);
+  void put_value_at(uint8_t idx, int value);
   void put_value16_at(uint8_t idx, uint16_t value);
   void put_valuex_at(uint8_t idx, uint8_t value);
   void put_string(uint8_t idx, char *str);

@@ -43,6 +43,10 @@ public:
 };
 #endif
 
+#ifdef MIDIDUINO_EXTERNAL_RAM
+extern uint8_t MDSysexBuf[16384] EXTRAM;
+#endif
+
 class MDClass {
  public:
   MDClass() {
