@@ -32,7 +32,7 @@ typedef struct machine_name_s {
   uint8_t id;
 } machine_name_t;
 
-
+#ifdef MIDIDUINO_USE_GUI
 class MDEncoder : public RangeEncoder {
 public:
   uint8_t track;
@@ -41,6 +41,7 @@ public:
   MDEncoder(uint8_t _track, uint8_t _param, char *_name = NULL, uint8_t init = 0);
   void handle(uint8_t val);
 };
+#endif
 
 class MDClass {
  public:

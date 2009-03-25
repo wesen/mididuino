@@ -23,6 +23,8 @@ uint8_t MDClass::noteToTrack(uint8_t pitch) {
   return 128;
 }
 
+#ifdef MIDIDUINO_USE_GUI
+
 MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
   RangeEncoder(127, 0, _name, init) {
   track = _track;
@@ -32,6 +34,8 @@ MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) 
 void MDEncoder::handle(uint8_t val) {
   MD.setTrackParam(track, param, val);
 }
+
+#endif
 
 void MDClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
   if ((channel >= baseChannel) && (channel < baseChannel + 4)) {
