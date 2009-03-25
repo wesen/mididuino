@@ -31,7 +31,6 @@ void init(void) {
   DDRC = 0xFF;
   PORTC = 0x00;
   MCUCR = _BV(IVCE);
-  MCUCR = _BV(SRE);
 
   TCCR3B = _BV(WGM32) | _BV(CS30);
   TCCR3A = _BV(WGM30) | _BV(COM3A1);
