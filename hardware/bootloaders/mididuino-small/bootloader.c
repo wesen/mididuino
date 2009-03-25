@@ -12,14 +12,16 @@
 
 #include "uart.h"
 #include "midi.h"
-#include "sr165.h"
-#include "lcd.h"
 
 int main(void);
 
-#define ROM_SIZE 32768
+#ifdef _AVR_IOM168_H_
+#define ROM_SIZE 8192
+#else
+#define ROM_SIZE 4096
+#endif
 
-#define _B2048
+#define _B1024
 
 #ifdef _B128
   #define APP_PAGES ((2*ROM_SIZE / SPM_PAGESIZE)- (2*128 / SPM_PAGESIZE )) 
@@ -38,13 +40,12 @@ int main(void);
   #define APP_END APP_PAGES * SPM_PAGESIZE 
 #endif  
 #ifdef _B2048
-  #define APP_PAGES ((2*ROM_SIZE / SPM_PAGESIZE)- (2*2048 / SPM_PAGESIZE )) 
-  #define APP_END APP_PAGES * SPM_PAGESIZE 
+  #error "_B2048 not suppoted on this device"
 #endif   
 
 void (*jump_to_app)(void) = 0x0000;
 static uint16_t sysex_address = 0;
-static uint16_t recvd = 0;
+static uint8_t recvd = 0;
 
 void write_block_data(void);
 
@@ -83,11 +84,11 @@ void bl_uart_putc(uint8_t c) {
 }
 
 uint8_t ack_msg[6] = {
-  0xf0, SYSEX_VENDOR_1, SYSEX_VENDOR_2, SYSEX_VENDOR_3, CMD_DATA_BLOCK_ACK, 0xf7
+  0xf0, 0x00, 0x13, SYSEX_VENDOR_3, CMD_DATA_BLOCK_ACK, 0xf7
 };
 
 uint8_t nak_msg[6] = {
-  0xf0, SYSEX_VENDOR_1, SYSEX_VENDOR_2, SYSEX_VENDOR_3, CMD_DATA_BLOCK_NAK, 0xf7
+  0xf0, 0x00, 0x13, SYSEX_VENDOR_3, CMD_DATA_BLOCK_NAK, 0xf7
 };
 
 void midi_sysex_send_ack(void) {
@@ -107,24 +108,15 @@ uint8_t jump_to_main_program(void) {
     write_block_data();
   }
   
-  _delay_ms(100);
-
   if (check_firmware_checksum()) {
-    lcd_line1();
-    lcd_clear_line();
-    lcd_line2();
-    lcd_clear_line();
-    eeprom_write_word(START_MAIN_APP_ADDR, 1);
     jump_to_app();
     return 1;
   } else {
-    lcd_line2();
-    lcd_put((uint8_t *)"WRONG CHECK", 11);
     return 0;
   }
 }
 
-uint16_t block_cnt = 0;
+uint8_t block_cnt = 0;
 uint8_t sysex_data[SPM_PAGESIZE];
 
 uint8_t data[100];
@@ -148,36 +140,23 @@ uint8_t write_checksum(void) {
   return 1;
 }
 
-#if (SPM_PAGESIZE == 64)
-#define ADDR_SHIFT_BITS 6
-#elif (SPM_PAGESIZE == 128)
-#define ADDR_SHIFT_BITS 7
-#elif (SPM_PAGESIZE == 256)
-#define ADDR_SHIFT_BITS 8
-#endif
-
-
-
 void write_block_data(void) {
-  uint16_t i;
-  uint8_t sreg = SREG;
-  lcd_line2();
-  lcd_put((uint8_t *)"BLK ", 4);
-  lcd_putnumberx(sysex_address >> ADDR_SHIFT_BITS);
-  cli();
-  boot_page_erase(sysex_address);
-  boot_spm_busy_wait();
-  uint16_t address = sysex_address;
-  for (i = 0; i < SPM_PAGESIZE; i+=2) {
-    uint16_t tmp = sysex_data[i] | (sysex_data[i + 1] << 8);
-    boot_page_fill(address, tmp);
-    address += 2;
-  }
-  boot_page_write(sysex_address);
-  boot_spm_busy_wait();
-  boot_rww_enable();
-  SREG = sreg;
-  recvd = 0;
+  uint8_t i;
+    uint8_t sreg = SREG;
+    cli();
+    boot_page_erase(sysex_address);
+    boot_spm_busy_wait();
+    uint16_t address = sysex_address;
+    for (i = 0; i < SPM_PAGESIZE; i+=2) {
+      uint16_t tmp = sysex_data[i] | (sysex_data[i + 1] << 8);
+      boot_page_fill(address, tmp);
+      address += 2;
+    }
+    boot_page_write(sysex_address);
+    boot_spm_busy_wait();
+    boot_rww_enable();
+    SREG = sreg;
+    recvd = 0;
 }
 
 uint8_t write_block(void) {
@@ -211,7 +190,7 @@ uint8_t write_block(void) {
     if (i >= length)
       break;
   }
-  
+
   uint8_t check = data[sysex_cnt - 1];
   checksum &= 0x7f;
 
@@ -283,58 +262,64 @@ void handle_midi(uint8_t c) {
   }
 }
 
-uint8_t is_button_pressed() {
-  return !(sr165_read() & 0x80);
-}
-
 int main() {
   cli();
   asm("wdr");
   wdt_disable();
 
-  DDRE = 0xFF;
-  
+  /* move interrupts to bootloader section */
+#ifdef _AVR_IOM168_H_
   MCUCR = _BV(IVCE) | _BV(IVSEL);
+#else
+  GICR = _BV(IVCE) | _BV(IVSEL);
+#endif
 
+
+#if 0
+  DDRB = 0xFF;
+  for (;;) {
+    _delay_ms(300);
+    PORTB = 0xFF;
+    _delay_ms(300);
+    PORTB = 0x00;
+  }
+#endif
+  
   /* init uart */
-  UBRR0H = (UART_BAUDRATE_REG >> 8);
-  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
+  UBRRH = (UART_BAUDRATE_REG >> 8);
+  UBRRL = (UART_BAUDRATE_REG & 0xFF);
 
   /** 8 bit, no parity **/
+#ifdef _AVR_IOM168_H_
   UCSR0C = (3<<UCSZ00); 
-  UCSR0B = _BV(RXEN) | _BV(TXEN);
+#else
+  UCSRC = _BV(UCSZ0) | _BV(UCSZ1) | _BV(URSEL);
+#endif
+  UCSRB = _BV(RXEN) | _BV(TXEN);
 
-  /* sr init */
-  sr165_init();
-  
-  lcd_init();
-  lcd_line1();
-  lcd_clear_line();
-  lcd_line2();
-  lcd_clear_line();
-  lcd_line1();
-  lcd_put((uint8_t *)"BOOTLOADER", 10);
-
-  if (eeprom_read_word(START_MAIN_APP_ADDR) == 1 && !is_button_pressed()) {
-    jump_to_main_program();
-  }
 
   midi_sysex_send_ack();
 
-  uint8_t button = 0;
+  //  uint8_t button = 0;
+  uint16_t count = 0;
   for (;;) {
-    if (!is_button_pressed()) {
-      button = 1;
-    } else {
-      if (button) {
+    if (UART_CHECK_RX()) {
+      uint8_t c = bl_uart_getc();
+      handle_midi(c);
+    }
+    if (count <= 50000) {
+      count++;
+      _delay_us(10);
+    }
+
+    if (count == 50000) {
+      if (eeprom_read_word(START_MAIN_APP_ADDR) == 1 && IS_BIT_SET8(PINB, PB4)) {
+	bl_uart_putc(0x90);
+	bl_uart_putc(0x30);
+	bl_uart_putc(0x30);
 	jump_to_main_program();
       }
     }
 
-    if (UART_CHECK_RX()) {
-      uint8_t c = bl_uart_getc();
-      handle_midi(c);
-      //      bl_uart_putc(c);
-    }
   }
 }

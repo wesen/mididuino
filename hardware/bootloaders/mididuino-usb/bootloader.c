@@ -56,7 +56,7 @@
 
 void (*jump_to_app)(void) = 0x0000;
 static uint16_t sysex_address = 0;
-static uint8_t recvd = 0;
+static uint16_t recvd = 0;
 
 void write_block_data(void);
 
@@ -96,7 +96,12 @@ uint8_t nak_msg[6] = {
 };
 
 uint8_t jump_to_main_program(void) {
+  if (recvd != 0) {
+    write_block_data();
+  }
+  
   _delay_ms(100);
+
   if (check_firmware_checksum()) {
     eeprom_write_word(START_MAIN_APP_ADDR, 1);
     jump_to_app();
@@ -141,27 +146,13 @@ uint8_t write_checksum(void) {
 }
 
 void write_block_data(void) {
+  uint16_t i;
+  uint8_t sreg = SREG;
   lcd_line2();
   lcd_put((uint8_t *)"BLK ", 4);
   lcd_putnumberx(sysex_address >> 8);
 
-#if 0
-  if (!IS_BIT_SET8(butstat, 5)) {
-    //  sysex_address &= 0xFF80;
-    lcd_line1();
-    lcd_putnumberx(sysex_data[0]);
-    lcd_putnumberx(sysex_data[1]);
-    lcd_putnumberx(sysex_data[2]);
-    lcd_putnumberx(sysex_data[3]);
   
-    _delay_ms(1000);
-  }
-#endif
-
-  uint8_t i;
-
-  
-  uint8_t sreg = SREG;
   cli();
   boot_page_erase(sysex_address);
   boot_spm_busy_wait();
@@ -175,6 +166,7 @@ void write_block_data(void) {
   boot_spm_busy_wait();
   boot_rww_enable();
   SREG = sreg;
+  recvd = 0;
 }
 
 uint8_t write_block(void) {
@@ -231,7 +223,6 @@ uint8_t write_block(void) {
 
   if (recvd == SPM_PAGESIZE) {
     write_block_data();
-    recvd = 0;
   }
   
   return 1;

@@ -10,15 +10,14 @@ LDAVR_ARCH = avrmega168
 #CFLAGS += -DENABLE_MENU
 #CFLAGS += -DENABLE_MIDI_CLOCK -DENABLE_MIDI_LEARN -DENABLE_MENU
 CFLAGS += -DENABLE_MENU -DENABLE_MIDI_CLOCK -DENABLE_MIDI_LEARN
-FLASH_PROTOCOL = jtag2isp
+#FLASH_PROTOCOL = jtag2isp
+FLASH_PROTOCOL = usbasp
 
 CFLAGS += -Os -ffunction-sections -DAVR -I. -mmcu=$(AVR_ARCH) -mcall-prologues -fshort-enums -fpack-struct -Wall -Werror
 CFLAGS += -Wall -DLITTLE_ENDIAN -g
 CLDFLAGS += -Wl,--gc-sections -ffunction-sections
 CLDFLAGS += -mmcu=$(AVR_ARCH)
 LDFLAGS = -m $(LDAVR_ARCH) -M
-
-PROJ=midi-kontrol
 
 # atmega 8 512 word boot size = 0x1c00 
 BOOTLOADER8_START = 0x1C00
@@ -62,8 +61,12 @@ all: bootloader168.hex
 %.ee_srec: %.elf
 	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O srec $< $@
 
-bootloader168.elf: bootloader.o lcd.o
+bootloader168.elf: bootloader.o
 	$(CC) $(CLDFLAGS) -Wl,--section-start=.text=$(BOOTLOADER168_START) -o $@ $+
+
+test.elf: bootloader.o
+	$(CC) $(CLDFLAGS) -o $@ $+
+
 
 bootloader.elf: bootloader.o 
 	$(CC) $(CLDFLAGS) -Wl,--section-start=.text=$(BOOTLOADER8_START) -o $@ $+
@@ -77,7 +80,10 @@ bootavrdude: bootloader.hex # $(PROJ).ee_srec $(PROJ).hex
 	avrdude -p m8 -P usb -c $(FLASH_PROTOCOL) -U flash:w:bootloader.hex
 
 bootavrdude168: bootloader168.hex # $(PROJ).ee_srec $(PROJ).hex
-	avrdude -p m168 -P usb -c $(FLASH_PROTOCOL) -U flash:w:bootloader168.hex -B 4
+	avrdude -p m168 -P usb -c $(FLASH_PROTOCOL) -U flash:w:bootloader168.hex -B 8
+
+testavrdude168: test.hex
+	avrdude -p m168 -P usb -c $(FLASH_PROTOCOL) -U flash:w:test.hex -B 8
 
 
 init512:
@@ -97,6 +103,10 @@ restart168:
 #       read the fuses to reset the programming adapter
 #	$(UISP) $(UISP_TARGET) --rd_fuses
 	avrdude -p m168 -P usb -c $(FLASH_PROTOCOL) 
+
+avrread168: 
+	avrdude -p m168 -P usb -c $(FLASH_PROTOCOL) -U flash:r:bootloader-read.hex:i -B 1
+
 
 clean:
 	rm -f *.o *.d *~ $(PROJ) *.srec *.ee_srec *.hex *lst *elf *syx

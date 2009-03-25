@@ -126,8 +126,8 @@ int main(void) {
   }
   uint8_t button = 0;
 
-  lcd_line1();
-  lcd_puts("BOOTLOADER");
+  //  lcd_line1();
+  //  lcd_puts("BOOTLOADER");
 
   //  sei();
   
