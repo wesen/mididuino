@@ -245,6 +245,7 @@ minicommand2.build.mcu=atmega64
 minicommand2.build.f_cpu=16000000L
 minicommand2.build.core=minicommand2
 minicommand2.build.libraries=Midi GUI CommonTools
+minicommand2.build.flags=-Wl,--section-start=.extram=0x802000
 
 ############################################################
 
