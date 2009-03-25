@@ -109,7 +109,7 @@ class BreakPage : public EncoderPage {
 BreakPage breakPage;
 
 void doBreakdown() {
-  uint8_t val = (MidiClock.div16th_counter + 1) % 64;
+  uint8_t val = (MidiClock.div16th_counter) % 64;
 
   switch (breakdown) {
   case BREAKDOWN_2_BARS:
@@ -147,7 +147,7 @@ void doBreakdown() {
 }
 
 void doSupatrigga() {
-  uint8_t val = (MidiClock.div16th_counter + 1) % 32;
+  uint8_t val = (MidiClock.div16th_counter) % 32;
   if ((val % 4) == 0) {
     uint8_t from = 0, to = 0;
     if (random(100) > 50) {
@@ -166,7 +166,7 @@ void on16Callback() {
   } else if (breakdownActive || storedBreakdownActive) {
     doBreakdown();
   } else {
-    uint8_t val = (MidiClock.div16th_counter + 1) % 32;
+    uint8_t val = (MidiClock.div16th_counter) % 32;
     if ((val % 8) == 0) {
       MD.sliceTrack32(RAM_P1_TRACK, val, val + 8);
     }
@@ -176,10 +176,10 @@ void on16Callback() {
 void setup() {
   GUI.setPage(&page);
   
-//  MidiClock.mode = MidiClock.EXTERNAL;
+  MidiClock.mode = MidiClock.EXTERNAL;
   MidiClock.transmit = false;
-//  MidiClock.setOn16Callback(on16Callback);
-//  MidiClock.start();
+  MidiClock.setOn16Callback(on16Callback);
+  MidiClock.start();
 }
 
 void loop() {

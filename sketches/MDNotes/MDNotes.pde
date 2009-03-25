@@ -1,5 +1,4 @@
 #include <MD.h>
-#include <GUI.h>
 
 enum {
   MD_NOTES_STATUS_NORMAL = 0,

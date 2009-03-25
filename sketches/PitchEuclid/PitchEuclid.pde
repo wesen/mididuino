@@ -1,11 +1,10 @@
 #include <Sequencer.h>
-#include <GUI.h>
 
 TempoEncoder tempoEncoder;
-RangeEncoder pitchLengthEncoder(1, 32);
-RangeEncoder pulseEncoder(1, 32);
-RangeEncoder lengthEncoder(2, 32);
-RangeEncoder offsetEncoder(0, 32);
+RangeEncoder pitchLengthEncoder(1, 32, "PTC");
+RangeEncoder pulseEncoder(1, 32, "PLS");
+RangeEncoder lengthEncoder(2, 32, "LEN");
+RangeEncoder offsetEncoder(0, 32, "OFS");
 
 EuclidDrumTrack track(3, 8);
 PitchTrack pitchTrack(&track, 4);
@@ -21,14 +20,12 @@ void setPitchLength(uint8_t len) {
 }
 
 void handleGui() {
-  if (BUTTON_PRESSED(4))  
+  if (BUTTON_PRESSED(Buttons.BUTTON1))  
     MidiClock.pause();
     
   if (BUTTON_PRESSED(0)) {
     setPitchLength(pitchLengthEncoder.getValue());
   }
-
-  page.update();
 }
 
 
@@ -43,24 +40,28 @@ void setup() {
   page.encoders[3] = &offsetEncoder;
   page.encoders[4] = &tempoEncoder;
   
+  GUI.setPage(&page);
   setPitchLength(4);
   
-  MidiClock.mode = MidiClock.INTERNAL;
-  MidiClock.setTempo(100);
+  MidiClock.mode = MidiClock.EXTERNAL;
+  MidiClock.transmit = false;
+//  MidiClock.setTempo(100);
   tempoEncoder.setValue(MidiClock.tempo);
   pulseEncoder.setValue(3);
   lengthEncoder.setValue(8);
   offsetEncoder.setValue(0);
   pitchLengthEncoder.setValue(4);
   
-  MidiClock.transmit = true;
+//  MidiClock.transmit = true;
   MidiClock.setOn16Callback(on16Callback);
   MidiClock.start();
 }
 
 void loop() {
+  GUI.updatePage();
+  
   if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
-    track.setEuclid(pulseEncoder.getCurValue(), lengthEncoder.getCurValue(), offsetEncoder.getCurValue());
+    track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(), offsetEncoder.getValue());
   }
   if (pitchLengthEncoder.hasChanged()) {
     setPitchLength(pitchLengthEncoder.getValue());
@@ -70,8 +71,6 @@ void loop() {
     GUI.put_value(0, tempoEncoder.getValue());
   }
 
-  page.handle();
-
   GUI.setLine(GUI.LINE2);
-  page.display();
+  GUI.update();
 }
