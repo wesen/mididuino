@@ -126,15 +126,18 @@ public class Compiler implements MessageConsumer {
         ((Library) sketch.importedLibraries.get(i)).getFolder().getPath());
     }
     
+	String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+	String additionalFlags[] = additionalFlagString.split(" ");
     List baseCommandLinker = new ArrayList(Arrays.asList(new String[] {
       avrBasePath + "avr-gcc",
       "-Os",
       "-Wl,--gc-sections",
-      "-mmcu=" + Preferences.get("boards." + Preferences.get("board") + ".build.mcu"),
+	  "-mmcu=" + Preferences.get("boards." + Preferences.get("board") + ".build.mcu"),
       "-o",
       buildPath + File.separator + sketch.name + ".elf"
     }));
-    
+    baseCommandLinker.addAll(Arrays.asList(additionalFlags));
+										   
     String runtimeLibraryName = buildPath + File.separator + "core.a";
 
     List baseCommandAR = new ArrayList(Arrays.asList(new String[] {
@@ -162,8 +165,10 @@ public class Compiler implements MessageConsumer {
     // library for the target platform)
     List sourceNames = new ArrayList();
     List sourceNamesCPP = new ArrayList();
+	List sourceNamesASM = new ArrayList();
     List objectNames = new ArrayList();
     List objectNamesCPP = new ArrayList();
+	List objectNamesASM = new ArrayList();
     List targetObjectNames = new ArrayList();
     List sketchObjectNames = new ArrayList();
     for (int i = 0; i < sketch.codeCount; i++) {
@@ -176,6 +181,10 @@ public class Compiler implements MessageConsumer {
           sourceNamesCPP.add(buildPath + File.separator + sketch.code[i].preprocName);
           objectNamesCPP.add(buildPath + File.separator + sketch.code[i].preprocName + ".o");
           sketchObjectNames.add(buildPath + File.separator + sketch.code[i].preprocName + ".o");
+        } else if (sketch.code[i].preprocName.endsWith(".S")) {
+			sourceNamesASM.add(buildPath + File.separator + sketch.code[i].preprocName);
+			objectNamesASM.add(buildPath + File.separator + sketch.code[i].preprocName + ".o");
+			sketchObjectNames.add(buildPath + File.separator + sketch.code[i].preprocName + ".o");
         } 
       }
     }
@@ -189,6 +198,9 @@ public class Compiler implements MessageConsumer {
         } else if (filename.endsWith(".cpp")) {
           sourceNamesCPP.add(target.getPath() + File.separator + filename);
           objectNamesCPP.add(buildPath + File.separator + filename + ".o");
+        } else if (filename.endsWith(".S")) {
+			sourceNamesASM.add(target.getPath() + File.separator + filename);
+			objectNamesASM.add(buildPath + File.separator + filename + ".o");
         } 
       }
     }
@@ -222,6 +234,13 @@ public class Compiler implements MessageConsumer {
           return false;
       }
 
+		for(int i = 0; i < sourceNamesASM.size(); i++) {
+			if (execAsynchronously(getCommandCompilerASM(avrBasePath, includePaths,
+								(String) sourceNamesASM.get(i), (String) objectNamesASM.get(i))) != 0)
+				return false;
+		}
+		
+		
 //      for(int i = 0; i < targetObjectNames.size(); i++) {
 //        List commandAR = new ArrayList(baseCommandAR);
 //        commandAR.add(targetObjectNames.get(i));
@@ -517,6 +536,10 @@ public class Compiler implements MessageConsumer {
       "-mmcu=" + Preferences.get("boards." + Preferences.get("board") + ".build.mcu"),
       "-DF_CPU=" + Preferences.get("boards." + Preferences.get("board") + ".build.f_cpu"),
     }));
+	String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+	String additionalFlags[] = additionalFlagString.split(" ");
+	baseCommandCompiler.addAll(Arrays.asList(additionalFlags));
+
 
     for (int i = 0; i < includePaths.size(); i++) {
       baseCommandCompiler.add("-I" + (String) includePaths.get(i));
@@ -543,6 +566,9 @@ public class Compiler implements MessageConsumer {
       "-mmcu=" + Preferences.get("boards." + Preferences.get("board") + ".build.mcu"),
       "-DF_CPU=" + Preferences.get("boards." + Preferences.get("board") + ".build.f_cpu"),
     }));
+	String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+	String additionalFlags[] = additionalFlagString.split(" ");
+	baseCommandCompilerCPP.addAll(Arrays.asList(additionalFlags));
 
     for (int i = 0; i < includePaths.size(); i++) {
       baseCommandCompilerCPP.add("-I" + (String) includePaths.get(i));
@@ -554,7 +580,35 @@ public class Compiler implements MessageConsumer {
     return baseCommandCompilerCPP;
   }
 
-  
+	static private List getCommandCompilerASM(String avrBasePath,
+											  List includePaths, String sourceName, String objectName) {
+		List baseCommandCompilerASM = new ArrayList(Arrays.asList(new String[] {
+																  avrBasePath + "avr-g++",
+																  "-c", // compile, don't link
+																  "-g", // include debugging info (so errors include line numbers)
+																  "-Os", // optimize for size
+																  "-w", // surpress all warnings
+																  "-fno-exceptions",
+																  "-ffunction-sections", // place each function in its own section
+																  "-fdata-sections",
+																  "-mmcu=" + Preferences.get("boards." + Preferences.get("board") + ".build.mcu"),
+																  "-DF_CPU=" + Preferences.get("boards." + Preferences.get("board") + ".build.f_cpu"),
+																  }));
+		String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+		String additionalFlags[] = additionalFlagString.split(" ");
+		baseCommandCompilerASM.addAll(Arrays.asList(additionalFlags));
+		
+		for (int i = 0; i < includePaths.size(); i++) {
+			baseCommandCompilerASM.add("-I" + (String) includePaths.get(i));
+		}
+		
+		baseCommandCompilerASM.add(sourceName);
+		baseCommandCompilerASM.add("-o"+ objectName);
+		
+		return baseCommandCompilerASM;
+	}
+	
+	
   
 
 
