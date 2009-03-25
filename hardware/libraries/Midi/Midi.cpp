@@ -239,7 +239,7 @@ void MididuinoSysexClass::handleByte(uint8_t byte) {
     if (len < 3 && byte != mididuino_hdr[len]) {
       isMididuinoSysex = false;
     } else if (len == 3 && byte == CMD_START_BOOTLOADER) {
-      LCD.line1_fill((char *)"BOOTLOADER");
+      //      LCD.line1_fill((char *)"BOOTLOADER");
       start_bootloader();
     }
   }
