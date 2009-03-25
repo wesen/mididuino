@@ -35,6 +35,9 @@
 /** Compress a C structure to byte aligned boundaries. **/
 #define PACKED __attribute__ ((packed))
 
+/** put data in external ram section **/
+#define EXTRAM __attribute__ ((section(".extram")))
+
 /** Math macros. **/
 #define MIN(x, y) ((x) > (y) ? (y) : (x))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
