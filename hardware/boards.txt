@@ -245,3 +245,25 @@ minicommand2.build.mcu=atmega64
 minicommand2.build.f_cpu=16000000L
 minicommand2.build.core=minicommand2
 minicommand2.build.libraries=Midi GUI CommonTools
+
+############################################################
+
+mididuino-small.name=Mididuino-Small 1.0 (atmega168 arduino clone)
+
+mididuino-small.upload.protocol=midisend
+mididuino-small.upload.maximum_size=14000
+mididuino-small.upload.speed=19200
+mididuino-small.upload.midiid=0x43
+
+mididuino-small.bootloader.low_fuses=0x2f
+mididuino-small.bootloader.high_fuses=0x8a
+mididuino-small.bootloader.extended_fuses=0xff
+mididuino-small.bootloader.path=mididuino-small
+mididuino-small.bootloader.file=minicommand.hex
+mididuino-small.bootloader.unlock_bits=0x3F
+mididuino-small.bootloader.lock_bits=0x0F
+
+mididuino-small.build.mcu=atmega168
+mididuino-small.build.f_cpu=16000000L
+mididuino-small.build.core=mididuino-small
+mididuino-small.build.libraries=CommonTools Midi
