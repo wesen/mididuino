@@ -194,7 +194,14 @@ void MidiSysexClass::start() {
   recordLen = 0;
 }
 
-void MidiSysexClass::startRecord() {
+void MidiSysexClass::startRecord(uint8_t *buf, uint16_t maxLen) {
+  if (buf == NULL) {
+    recordBuf = data;
+    maxRecordLen = max_len;
+  } else {
+    recordBuf = buf;
+    maxRecordLen = maxLen;
+  }
   recording = true;
   recordLen = 0;
 }
@@ -215,9 +222,9 @@ void MidiSysexClass::handleByte(uint8_t byte) {
 
   len++;
 
-  if (recording && data != NULL) {
-    if (recordLen < max_len) {
-      data[recordLen++] = byte;
+  if (recording && recordBuf != NULL) {
+    if (recordLen < maxRecordLen) {
+      recordBuf[recordLen++] = byte;
     }
   }
   

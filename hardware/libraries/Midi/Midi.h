@@ -59,6 +59,8 @@ class MidiSysexClass {
   uint16_t max_len;
   uint16_t recordLen;
   uint8_t *data;
+  uint8_t *recordBuf;
+  uint16_t maxRecordLen;
 
   uint16_t len;
 
@@ -68,9 +70,11 @@ class MidiSysexClass {
     len = 0;
     aborted = false;
     recording = false;
+    recordBuf = NULL;
+    maxRecordLen = 0;
   }
 
-  void startRecord();
+  void startRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
   void stopRecord();
   virtual void start();
   virtual void abort();
