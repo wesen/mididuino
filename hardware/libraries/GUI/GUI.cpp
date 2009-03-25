@@ -80,7 +80,7 @@ void EncoderPage::displayNames() {
     if (encoders[i] != NULL)
       GUI.put_string(i, encoders[i]->getName());
     else
-      GUI.put_string(i, (char *)" ");
+      GUI.put_p_string(i, PSTR("    "));
   }
 }
 
