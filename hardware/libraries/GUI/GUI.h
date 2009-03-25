@@ -5,6 +5,8 @@
 
 #include "WProgram.h"
 
+#ifdef MIDIDUINO_USE_GUI
+
 class Encoder {
  protected:
   uint8_t old, cur;
@@ -207,5 +209,7 @@ class GuiClass {
 };
 
 extern GuiClass GUI;
+
+#endif
 
 #endif /* GUI_H__ */

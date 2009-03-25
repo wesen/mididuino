@@ -1,6 +1,8 @@
 #include "WProgram.h"
 #include "GUI.h"
 
+#ifdef MIDIDUINO_USE_GUI
+
 Encoder::Encoder(char *_name) {
   old = 0;
   cur = 0;
@@ -380,3 +382,5 @@ void GuiClass::flash_p_strings_fill(PGM_P str1, PGM_P str2, uint16_t duration) {
 }
 
 GuiClass GUI;
+
+#endif
