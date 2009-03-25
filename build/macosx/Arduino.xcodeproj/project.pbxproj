@@ -802,7 +802,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ../../hardware/tools/mididuino && make -f Makefile midi-send && cp midi-send $BUILT_PRODUCTS_DIR/hardware/tools/avr/bin\n";
+			shellScript = "cp ../../hardware/tools/avr-extras/avr5.x $BUILT_PRODUCTS_DIR/hardware/tools/avr/avr/lib/ldscripts\ncd ../../hardware/tools/mididuino && make -f Makefile midi-send && cp midi-send $BUILT_PRODUCTS_DIR/hardware/tools/avr/bin\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

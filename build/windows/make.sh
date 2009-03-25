@@ -104,6 +104,8 @@ make -f Makefile.windows
 cp midi-send.exe ../avr/bin
 cd ../../../..
 
+# copy custom linker script
+cp work/hardware/tools/avr-extras/avr5.x work/hardware/tools/avr/avr/lib/ldscripts
 
 
 echo

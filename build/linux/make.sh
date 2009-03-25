@@ -43,6 +43,7 @@ cp -r ../shared/* work
 rm -rf work/dist
 cp -r ../../hardware work
 cp ../../hardware/tools/mididuino/midi-send work/hardware/tools
+cp ../../hardware/tools/avr-extras/avr5.x work/hardware/avr/avr/lib/ldscripts
 rm work/reference.zip
 
 echo Copying examples...
