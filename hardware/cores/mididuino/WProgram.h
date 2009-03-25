@@ -7,6 +7,16 @@ extern "C" {
 #include "helpers.h"
 }
 
+/* default config flags */
+#define MIDIDUINO_POLL_GUI     1
+#define MIDIDUINO_POLL_GUI_IRQ 1
+#define MIDIDUINO_HANDLE_SYSEX 1
+#define MIDIDUINO_MIDI_CLOCK   1
+#define MIDIDUINO_ENABLE_USB   1
+#define MIDIDUINO_RESET_COMBO  1
+#define MIDIDUINO_USE_GUI      1
+//#define MIDIDUINO_ENABLE_LFOS  0
+
 #include "mididuino_private.h"
 
 #ifdef __cplusplus
@@ -20,15 +30,6 @@ extern "C" {
 #include "Stack.h"
 #include "GUI.h"
 #endif
-
-/* default config flags */
-#define MIDIDUINO_POLL_GUI     1
-#define MIDIDUINO_POLL_GUI_IRQ 1
-#define MIDIDUINO_HANDLE_SYSEX 1
-#define MIDIDUINO_MIDI_CLOCK   1
-#define MIDIDUINO_ENABLE_USB   1
-#define MIDIDUINO_RESET_COMBO  1
-//#define MIDIDUINO_ENABLE_LFOS  0
 
 #endif /* WProgram_h */
 
