@@ -119,3 +119,14 @@ uint8_t u_limit_value(uint8_t value, int8_t encoder, uint8_t min, uint8_t max) {
     return result;
   }
 }
+
+int limit_value(int value, int encoder, int min, int max) {
+  int result = value + encoder;
+  if (result < min) {
+    return min;
+  } else if (result > max) {
+    return max;
+  } else {
+    return result;
+  }
+}
