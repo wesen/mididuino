@@ -28,6 +28,7 @@
  */
 package com.ruinwesen.patchdownloader.swing.panels;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -78,31 +79,30 @@ public class SearchPanel  {
         cbOrder.setFont(smallComboboxFont);
         
         container = new JPanel();
-        container.setBorder(BorderFactory.createEmptyBorder(2,6,2,2));
+        container.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
         
         {
             JLabel labelSortby = new JLabel(I18N.translate("translation.sortby", "Sort by")+":");
             labelSortby.setLabelFor(cbOrder);
             labelSortby.setFont(smallLabelFont);
+            cbOrder.setAlignmentX(Component.LEFT_ALIGNMENT);
+            labelSortby.setAlignmentX(Component.LEFT_ALIGNMENT);
             
-            Box boxSearch = Box.createHorizontalBox();
-            boxSearch.add(labelSearch);
-            boxSearch.add(Box.createHorizontalStrut(5));
-            boxSearch.add(textQueryField);
+            labelSearch.setAlignmentX(Component.LEFT_ALIGNMENT);
+            textQueryField.setAlignmentX(Component.LEFT_ALIGNMENT);
+            textQueryField.setMinimumSize(new Dimension(120,0));
             
-            Box boxSearchOption = Box.createHorizontalBox();
-            boxSearchOption.add(Box.createHorizontalGlue());
-            boxSearchOption.add(labelSortby);
-            boxSearchOption.add(Box.createHorizontalStrut(5));
-            boxSearchOption.add(cbOrder);
             cbOrder.setMaximumSize(new Dimension(100,30));
             
             Box box = Box.createHorizontalBox();
-            box.add(boxSearch);
+            box.add(labelSearch);
             box.add(Box.createHorizontalStrut(5));
-            box.add(boxSearchOption);
-            box.add(Box.createVerticalGlue());
+            box.add(textQueryField);
+            box.add(Box.createHorizontalStrut(10));
+            box.add(labelSortby);
+            box.add(Box.createHorizontalStrut(5));
+            box.add(cbOrder);
             container.add(box);
 
         }
