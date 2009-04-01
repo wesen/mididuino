@@ -93,6 +93,7 @@ public class XMLPatchMetadata implements PatchMetadata {
     private static final String ATT_PATH_NAME = "name";
     private static final String EL_TITLE = "title";
     private static final String EL_NAME = "name";
+    private static final String EL_DEVICE_ID = "device-id";
     private static final String EL_AUTHOR = "author";
     private static final String EL_LASTMODIFIED = "lastmodified";
     private static final String EL_COMMENT = "comment";
@@ -340,6 +341,7 @@ public class XMLPatchMetadata implements PatchMetadata {
         setLastModifiedDate(metadata.getLastModifiedDate());
         setComment(metadata.getComment());
         setTags(metadata.getTags());
+        setDeviceId(metadata.getDeviceId());
         for (Map.Entry<String,String> entry:metadata.getPaths().entrySet()) {
             setPath(entry.getKey(), entry.getValue());
         }
@@ -495,6 +497,16 @@ public class XMLPatchMetadata implements PatchMetadata {
         }
         return null;
     }
-    
+
+    @Override
+    public String getDeviceId() {
+        return emptyToNull(getTag(EL_DEVICE_ID, null));
+    }
+
+    @Override
+    public void setDeviceId(String deviceId) {
+        setTag(EL_DEVICE_ID, convertEmptyString(deviceId,""));
+    }
+
      
 }

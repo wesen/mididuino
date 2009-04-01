@@ -42,7 +42,8 @@ public class DefaultPatchMetadata implements PatchMetadata {
     private String author;
     private Date lastModifiedDate;
     private String comment;
-    String metadataFormatVersion = "1.0";
+    private String deviceId;
+    private String metadataFormatVersion = "1.0";
     private Tagset tags = new Tagset();
     private Map<String,String> paths = new HashMap<String, String>();
     
@@ -172,6 +173,16 @@ public class DefaultPatchMetadata implements PatchMetadata {
     @Override
     public Map<String, String> getPaths() {
         return Collections.unmodifiableMap(new HashMap<String,String>(paths));
+    }
+
+    @Override
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    @Override
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
 }

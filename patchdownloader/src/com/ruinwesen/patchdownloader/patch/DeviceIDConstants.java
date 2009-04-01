@@ -28,37 +28,9 @@
  */
 package com.ruinwesen.patchdownloader.patch;
 
-import java.util.Date;
-import java.util.Map;
+public interface DeviceIDConstants {
 
-public interface PatchMetadata {
-
-    public static final String PATH_SOURCECODE = "sourcecode";
-    public static final String PATH_MIDIFILE = "midifile";
-
-    String getMetadataFormatVersion();
-    String getComment();
-    void setComment(String comment);
-    String getDeviceId();
-    void setDeviceId(String deviceId);
-    String getTitle();
-    void setTitle(String title);
-    void setLastModifiedDate(Date date);
-    Date getLastModifiedDate();
-    String getName();
-    void setName(String name);
-    String getAuthor();
-    void setAuthor(String author);
-    void setMetadata(PatchMetadata metadata);
-    Tagset getTags();
-    void setTags(Tagset tag);
-    void removeTag(String tag);
-    void removeAllTags(Tagset tag);
-    void addAllTags(Tagset tag);
-
-    String getPath(String name);
-    void setPath(String name, String path);
-    
-    Map<String,String> getPaths();
+    public static final String
+        DEVICE_ID_MINICOMMAND_1_0 = "minicommand-1.0";
     
 }
