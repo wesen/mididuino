@@ -241,7 +241,7 @@ public class I18N {
             action.putValue(Action.LONG_DESCRIPTION, eLongDesc);
         return action;
     }
-    
+
     public static KeyStroke extractKeyStroke(String keybinding)
     {
         Matcher m = kbPattern.matcher(keybinding);
