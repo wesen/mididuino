@@ -85,7 +85,6 @@ public class PatchDetailsView {
     private SwingPatchdownloader patchdownloader;
     private MidiSetupPanel midiBar;
     
-    
     private JLabel labelTitle = new JLabel();
     private JLabel labelAuthorAndDate = new JLabel();
     private JTextArea textTags = new JTextArea();
