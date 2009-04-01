@@ -101,19 +101,44 @@
       </manifest>
     </jar>
   </target>
-  
+   
+  <target name="dist-patchbuilder" depends="dist">
+    <jar destfile="${dist.dir}/patchbuilder.jar">
+      <manifest>      
+        <attribute name="Built-By" value="${user.name}"/> 
+        <attribute name="Specification-Vendor" value="Ruin&amp;Wesen"/>      
+		<attribute name="Specification-Title" value="Patchbuilder"/>
+		<attribute name="Specification-Version" value="0.0.1"/>
+	        <attribute name="Implementation-Vendor" value="Ruin&amp;Wesen"/>      
+		<attribute name="Implementation-Title" value="com.ruinwesen.patchbuilder"/>
+		<attribute name="Implementation-Version" value="0.0.1"/>
+	
+	
+		<attribute name="Main-Class" value="com.ruinwesen.patchbuilder.App"/>   
+		<attribute name="Class-Path" value="${jarclasspath} patchdownloader.jar"/>    
+      </manifest>
+    </jar>
+  </target>
+	
   <target name="run" depends="dist">
     <java jar="${dist.dir}/patchdownloader.jar"
       dir="${dist.dir}"
       fork="true"
-      failonerror="true"
-      maxmemory="128m" >
+      failonerror="true">
       <!--
          <arg value="-h"/>
          <classpath>
            <pathelement location="dist/test.jar"/>
            <pathelement path="${java.class.path}"/>
          </classpath> -->   
+    </java>
+  </target>
+	
+  <target name="run-patchbuilder" depends="dist-patchbuilder">
+    <java jar="${dist.dir}/patchbuilder.jar"
+      dir="${dist.dir}"
+      fork="true"
+      failonerror="true">
     </java>
   </target>
 
