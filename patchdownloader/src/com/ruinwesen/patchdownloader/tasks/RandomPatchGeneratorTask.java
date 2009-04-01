@@ -43,6 +43,7 @@ import name.cs.csutils.CSUtils;
 import com.ruinwesen.patchdownloader.PatchDownloader;
 import com.ruinwesen.patchdownloader.indexer.IndexReader;
 import com.ruinwesen.patchdownloader.indexer.MetadataIndexWriter;
+import com.ruinwesen.patchdownloader.patch.DeviceIDConstants;
 import com.ruinwesen.patchdownloader.patch.PatchFileBuilder;
 import com.ruinwesen.patchdownloader.patch.PatchMetadata;
 import com.ruinwesen.patchdownloader.patch.Tag;
@@ -50,7 +51,7 @@ import com.ruinwesen.patchdownloader.patch.Tagset;
 import com.ruinwesen.patchdownloader.swing.SwingPatchdownloader;
 import com.ruinwesen.patchdownloader.swing.dialogs.ProgressDialog;
 
-public class RandomPatchGeneratorTask {
+public class RandomPatchGeneratorTask implements DeviceIDConstants {
     
     private static Random random = new Random();
     
@@ -101,6 +102,8 @@ public class RandomPatchGeneratorTask {
         sb.setLength(0);
         generateToken(sb, 3, 10);
         metadata.setName(sb.toString());
+        
+        metadata.setDeviceId(DEVICE_ID_MINICOMMAND_1_0);
 
         sb.setLength(0);
         generateTokenList(sb, 0, 10, 3, 4);
@@ -116,7 +119,7 @@ public class RandomPatchGeneratorTask {
             int index = random.nextInt(CATEGORY_SET.length);
             tagset.add(CATEGORY_SET[index]); 
         }
-        tagset.add("category:minicommand"); 
+        //tagset.add("category:minicommand"); 
         
         metadata.setTags(tagset);
         
