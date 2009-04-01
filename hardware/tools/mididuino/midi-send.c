@@ -29,7 +29,7 @@ int exitMainLoop = 0;
 int verbose = 1;
 int convertHexFile = 0;
 
-FILE *fin;
+FILE *fin = NULL;
 int canSendSysex = 1;
 int firmwareChecksumSent = 0;
 
@@ -99,7 +99,14 @@ void loadHexFile(void) {
     }
   }
 
-  fclose(fin);
+  closeFile();
+}
+
+void closeFile() {
+  if (fin != NULL) {
+    fclose(fin);
+    fin = NULL; 
+  }
 }
 
 int isHexFile(char *str) {
@@ -396,7 +403,7 @@ void midiReceive(unsigned char c) {
 
 void midiTimeout(void) {
   fprintf(stderr, "Midi timeout: Device is not responding\n");
-  fclose(fin);
+  closeFile();
 
   exit(1);
 }
@@ -494,7 +501,7 @@ int main(int argc, char *argv[]) {
 
   printf("the end\n");
 
-  fclose(fin);
+  closeFile();
 
   return 0;
 }
