@@ -62,10 +62,11 @@ import org.apache.commons.logging.LogFactory;
 import com.ruinwesen.midisend.MidiDevice;
 import com.ruinwesen.midisend.MidiSend;
 import com.ruinwesen.midisend.MidiSendException;
+import com.ruinwesen.patchbuilder.CreatePatchFileDialog;
 import com.ruinwesen.patchdownloader.PatchDownloader;
 import com.ruinwesen.patchdownloader.swing.dialogs.AboutDialog;
-import com.ruinwesen.patchdownloader.swing.dialogs.CreatePatchFileDialog;
 import com.ruinwesen.patchdownloader.swing.misc.MetadataCache;
+import com.ruinwesen.patchdownloader.swing.panels.SearchPanel;
 import com.ruinwesen.patchdownloader.tasks.DeletePatchIndexTask;
 import com.ruinwesen.patchdownloader.tasks.RandomPatchGeneratorTask;
 import com.ruinwesen.patchdownloader.tasks.RepositoryUpdateTask;
@@ -152,12 +153,18 @@ public class SwingPatchdownloader extends PatchDownloader {
         frame.add(patchDetailsViewComponent, BorderLayout.EAST);
         frame.add(filterListViewComponent,BorderLayout.WEST);
         
+
+        SearchPanel topBar = new SearchPanel(this);
+        frame.add(topBar.getContainer(), BorderLayout.NORTH);
+
+        
       ///  BottomBar bottomBar = new BottomBar(this);
        // frame.add(bottomBar.getContainer(), BorderLayout.SOUTH);
         
         // create menu
         JMenuBar jmenubar = new JMenuBar();
-        JMenu menuFile = new JMenu(I18N.action("File","menu.file"));
+        JMenu menuFile = new JMenu(I18N.action("File","menu.file")) ;
+            //I18N.update(new JMenu(),"File","menu.file");
         menuFile.add(new RedirectAction(this, "updateLocalRepository"));
         menuFile.addSeparator();
         menuFile.add(new RedirectAction(this, "exit"));

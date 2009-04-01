@@ -57,7 +57,6 @@ import com.ruinwesen.patchdownloader.patch.PatchMetadata;
 import com.ruinwesen.patchdownloader.repository.StoredPatch;
 import com.ruinwesen.patchdownloader.swing.extra.LargeListModel;
 import com.ruinwesen.patchdownloader.swing.extra.PatchCellRenderer;
-import com.ruinwesen.patchdownloader.swing.panels.SearchPanel;
 import com.ruinwesen.patchdownloader.swing.panels.SectionBorder;
 
 public class PatchListView implements ListSelectionListener {
@@ -155,10 +154,6 @@ public class PatchListView implements ListSelectionListener {
         JScrollPane listViewScroller = new JScrollPane(listView);
         container.add(listViewScroller, BorderLayout.CENTER);
 
-        SearchPanel topBar;
-        topBar = new SearchPanel(patchdownloader);
-        container.add(topBar.getContainer(), BorderLayout.SOUTH);
-
         // TODO don't use this approximation because different fonts
         // require a different cell height 
         
@@ -171,8 +166,6 @@ public class PatchListView implements ListSelectionListener {
             maxCharWidth = Math.max(maxCharWidth, w);
         
         minCellWidth = maxCharWidth*20;
-        
-        
         
         listView.setFixedCellHeight((int)(metrics.getHeight()*4
                 +metrics.getLeading()+metrics.getAscent()+
