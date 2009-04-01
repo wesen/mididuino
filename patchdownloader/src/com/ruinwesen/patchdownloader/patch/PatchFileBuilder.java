@@ -83,7 +83,8 @@ public class PatchFileBuilder {
         return output;
     }
     
-    public void build() throws IOException, ParserConfigurationException, TransformerException {
+    public void build() throws IOException, ParserConfigurationException, TransformerException,
+    PatchMetadataValidationException {
         if (midifile==null && sourcecode == null) {
             throw new FileNotFoundException("neither midifile nor sourcecode specified");
         }
@@ -137,39 +138,40 @@ public class PatchFileBuilder {
             } finally {
                 out.close();
             }
+            validate(output);
         } catch (TransformerException ex) {
-            if (log.isErrorEnabled()) {
-                log.error("Could not write metadata.", ex);
-            }
-            if (!output.delete()) { // don't leave corrupted files behind
-                if (log.isDebugEnabled()) {
-                    log.debug("Could not delete output file: "+output.getAbsolutePath());
-                }
-            }
+            handleException(ex);
             throw ex;
         } catch (ParserConfigurationException ex) {
-            if (log.isErrorEnabled()) {
-                log.error("Could not write metadata.", ex);
-            }
-            if (!output.delete()) { // don't leave corrupted files behind
-                if (log.isDebugEnabled()) {
-                    log.debug("Could not delete output file: "+output.getAbsolutePath());
-                }
-            }
+            handleException(ex);
             throw ex;
         } catch (IOException ex) {
-            if (log.isErrorEnabled()) {
-                log.error("Could not write metadata.", ex);
-            }
-            if (!output.delete()) { // don't leave corrupted files behind
-                if (log.isDebugEnabled()) {
-                    log.debug("Could not delete output file: "+output.getAbsolutePath());
-                }
-            }
+            handleException(ex);
             throw ex;
-        }        
+        } catch (PatchMetadataValidationException ex) {
+            handleException(ex);
+            throw ex;
+        }     
         
+    }
+
+    private void handleException(Exception ex) {
+        if (log.isErrorEnabled()) {
+            log.error("Could not write metadata.", ex);
+        }
+        if (!output.delete()) { // don't leave corrupted files behind
+            if (log.isDebugEnabled()) {
+                log.debug("Could not delete output file: "+output.getAbsolutePath());
+            }
+        }
+    }
+
+    private void validate(File outputFile) throws IOException, 
+        PatchMetadataValidationException, ParserConfigurationException {
+        PatchMetadataValidator validator = new PatchMetadataValidator();
         
+        StoredPatch patch = new StoredPatch.JarFilePatch(outputFile);
+        validator.validate(patch);
     }
 
     private void writeMetadata(ZipOutputStream out) throws IOException, ParserConfigurationException, TransformerException {
