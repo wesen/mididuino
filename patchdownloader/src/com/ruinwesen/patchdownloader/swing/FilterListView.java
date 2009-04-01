@@ -32,7 +32,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.LinkedList;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
@@ -42,27 +46,23 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.I18N;
 
 import com.ruinwesen.patchdownloader.indexer.Category;
 import com.ruinwesen.patchdownloader.patch.Tagset;
-import com.ruinwesen.patchdownloader.swing.extra.SetSelectionModel;
 import com.ruinwesen.patchdownloader.swing.panels.SectionBorder;
 
-public class FilterListView {
+public class FilterListView implements ListSelectionListener {
 
-    private Category[] allCategories;
- //   private BitSet selectedCategories ;
-    private Category[] visibleCategories;
-    
     public JList listView = new JList();
     private JComponent container;
     private SwingPatchdownloader patchdownloader;
-    private MySetSelectionModel selectionModel;
-    private boolean selectionModelUpdating = false;
+    private boolean isUpdatingCategories = false;
     
     public FilterListView(SwingPatchdownloader patchdownloader) {
         this.patchdownloader = patchdownloader;
@@ -70,113 +70,132 @@ public class FilterListView {
         SectionBorder border = new SectionBorder(I18N.translate("translation.categories", "Categories"));
         pane.setBorder(border);
 
-        listView.setModel(createModel());
         listView.setCellRenderer(new FilterListCellRenderer());
-        selectionModel = new MySetSelectionModel();
-        listView.setSelectionModel(selectionModel);
+        listView.setModel(new SimpleListModel(Collections.<Category>emptyList()));
         
         JScrollPane scrollPane = new JScrollPane(listView);
         pane.add(scrollPane, BorderLayout.CENTER);
         container = pane;
         
-        visibleCategories = new Category[0];
-        allCategories = patchdownloader.getPatchIndex().getCategories();
   //      selectedCategories = new BitSet(allCategories.length);
-    }
-    
-    private int indexOf(Category c) {
-        for (int i=0;i<allCategories.length;i++) {
-            if (allCategories[i].equals(c)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /*
-    private void setAll(List<Category> dst, 
-            BitSet set, Category[] list, boolean value) {
-        for (int i=0;i<list.length;i++) {
-            int idx = indexOf(list[i]);
-            if (idx>=0 && idx<set.length()) {
-                if (dst != null) {
-                    dst.add(list[i]);
-                }
-                set.set(idx, value);
-            }
-        }
-    }*/
-    
-    private class MySetSelectionModel extends SetSelectionModel {
-
-        public MySetSelectionModel() {
-            super(listView);
-        }
-
-        @Override
-        protected void notifySelectionChanged(int index) {
-            if (selectionModelUpdating ) {
-                return;
-            }
-            if (index>=0 && index<visibleCategories.length) {
-              //  int idx = indexOf(visibleCategories[index]);
-            //    selectedCategories.set(idx, isSelectedIndex(index));
-                System.out.println(getFilteringTags());
-                patchdownloader.getSearchController().setDisplayedCategories(getFilteringTags());
-                patchdownloader.getSearchController().update();
-            }
-        }
         
-    }
-    
-    public Tagset getFilteringTags() {
-        Tagset set = new Tagset();
-        for (int i=0;i<visibleCategories.length;i++) {
-            if (selectionModel.isSelectedIndex(i)) {
-                set.add(visibleCategories[i].tag());
-            }
-        }
-        return set;
+        listView.addListSelectionListener(this);
+        new EventHandler().install();
     }
     
     public JComponent getComponent() {
         return container;
     }
 
-    private ListModel createModel() {
-        return new AbstractListModel() {
-            private static final long serialVersionUID = 2858943808230551393L;
-            public int getSize() { return visibleCategories.length; }
-            public Object getElementAt(int i) { return visibleCategories[i]; }
-          };
+    private int insert(List<Category> list, Category item) {
+        for (int i=0;i<list.size();i++) {
+            Category cmp = list.get(i);
+            if (cmp.name().compareTo(item.name())>=0) {
+                list.add(i, item);
+                return i;
+            }
+        }
+        list.add(item);
+        return list.size()-1;
     }
-    
-    public void setDisplayedCategories(Category[] categories) {
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        ListSelectionModel selectionModel = listView.getSelectionModel();
+        if (!selectionModel.getValueIsAdjusting() && !isUpdatingCategories) {
+            Category selected = (Category) listView.getSelectedValue();
+            SearchController sc = patchdownloader.getSearchController();
+            
+            Tagset tags = new Tagset();
+            if (selected != null) {
+                tags.add(selected.tag());
+            }
+            
+            sc.setDisplayedCategories(tags);
+            sc.update();
+        }
+    }
+
+    public synchronized void setDisplayedCategories(Category[] categories) {
         if (categories == null) {
             throw new IllegalArgumentException("categories==null");
         }
-
-        List<Category> selected = new LinkedList<Category>();
-        for (int i=0;i<visibleCategories.length;i++) {
-            if (selectionModel.isSelectedIndex(i)) {
-                selected.add(visibleCategories[i]);
+        
+        // the categories which contain currently displayed patches
+        List<Category> displayedCategories = new ArrayList<Category>(
+                Arrays.asList(categories));
+        
+        if (listView.getModel().getSize() == displayedCategories.size()) {
+            List<Category> current = ((SimpleListModel)listView.getModel()).list;
+            current.containsAll(displayedCategories);
+            // we only have to update the count values
+            for (int i = 0;i<current.size();i++) {
+                current.remove(i);
+                current.add(i, categories[i]);
+            }
+            ((SimpleListModel)listView.getModel()).fireContentsChanged();
+            return;
+        }
+        
+        isUpdatingCategories = true;
+        // remove categories which are not in the displayedCategories list
+        // and which are not selected (keepSelectionAt)
+        Category selected = (Category) listView.getSelectedValue();
+        // insert selected in to the displayedCategories list if
+        // it is not null or already present
+        int newSelectedIndex = -1;
+        if (selected != null) {
+            newSelectedIndex = displayedCategories.indexOf(selected);
+            if (newSelectedIndex<0) {
+                // the category is empty
+                selected = new Category(selected.tag(), 0);
+                newSelectedIndex = insert(displayedCategories, selected);
             }
         }
         
-        selectionModelUpdating = true;
-        this.visibleCategories = categories;
-        listView.setModel(createModel()); // new model so list will update
+        SimpleListModel model = new SimpleListModel(displayedCategories);
+        listView.setModel(model);
+        listView.setSelectedIndex(newSelectedIndex);
+        isUpdatingCategories = false;
 
-        for (Category cat: selected) {
-            for (int i=0;i<visibleCategories.length;i++) {
-                if (cat.equals(visibleCategories[i])) {
-                    selectionModel.setAdd(i);
-                }
+        // all available categories
+        // List<Category> allCategories  = new ArrayList<Category>(
+        //        Arrays.asList(patchdownloader.getPatchIndex().getCategories()));
+    }
+    
+    private class EventHandler extends MouseAdapter implements ListSelectionListener {
+
+        private int mousePressedSelectionIndex = -1;
+        private int mouseReleasedSelectionIndex = -1;
+        private boolean valueChanged = false;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            mousePressedSelectionIndex = listView.getSelectedIndex();
+            valueChanged = false;
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            mouseReleasedSelectionIndex = listView.getSelectedIndex();
+            if (mousePressedSelectionIndex == mouseReleasedSelectionIndex
+                    && !valueChanged) {
+                listView.clearSelection();
+            }
+            valueChanged = false;
+        }
+
+        public void install() {
+            listView.addMouseListener(this);
+            listView.getSelectionModel().addListSelectionListener(this);
+        }
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                valueChanged = true;
             }
         }
-        
-        selectionModelUpdating = false;
-        listView.repaint(); // TODO fire events
     }
     
     private static class FilterListCellRenderer implements ListCellRenderer {
@@ -207,4 +226,29 @@ public class FilterListView {
 
     }
 
+    private static class SimpleListModel extends AbstractListModel {
+
+        private static final long serialVersionUID = 4798765566936658850L;
+        private List<Category> list;
+        
+        public SimpleListModel(List<Category> list) {
+            this.list = list;
+        }
+        
+        public void fireContentsChanged() {
+            fireContentsChanged(this, 0, list.size()-1);
+        }
+        
+        @Override
+        public Object getElementAt(int index) {
+            return list.get(index);
+        }
+
+        @Override
+        public int getSize() {
+            return list.size();
+        }
+        
+    }
+    
 }
