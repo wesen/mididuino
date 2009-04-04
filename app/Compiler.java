@@ -150,8 +150,17 @@ public class Compiler implements MessageConsumer {
     for (Iterator i = sketch.importedLibraries.iterator(); i.hasNext(); ) {
       Library library = (Library) i.next();
       File[] objectFiles = library.getObjectFiles();
-      for (int j = 0; j < objectFiles.length; j++)
-        baseCommandLinker.add(objectFiles[j].getPath());
+		for (int j = 0; j < objectFiles.length; j++) {
+			baseCommandLinker.add(objectFiles[j].getPath());
+			try {
+			if (execAsynchronously(getCommandConvertObject(avrBasePath, objectFiles[j].getPath())) != 0) {
+					return false;
+			}
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
     }
     
     List baseCommandObjcopy = new ArrayList(Arrays.asList(new String[] {
@@ -246,7 +255,7 @@ public class Compiler implements MessageConsumer {
 				return false;
 			}
 		}
-		
+
 //      for(int i = 0; i < targetObjectNames.size(); i++) {
 //        List commandAR = new ArrayList(baseCommandAR);
 //        commandAR.add(targetObjectNames.get(i));
