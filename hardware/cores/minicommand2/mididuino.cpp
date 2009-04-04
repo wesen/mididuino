@@ -33,6 +33,11 @@ void init(void) {
   MCUCR = _BV(IVCE);
   MCUCR = _BV(SRE);
 
+  // activate lever converter
+  SET_BIT(DDRD, PD4);
+  SET_BIT(PORTD, PD4);
+
+  // activate background pwm
   TCCR3B = _BV(WGM32) | _BV(CS30);
   TCCR3A = _BV(WGM30) | _BV(COM3A1);
   OCR3A = 160;
