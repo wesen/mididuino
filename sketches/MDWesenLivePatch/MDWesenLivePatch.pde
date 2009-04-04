@@ -7,7 +7,6 @@ bool storedBreakdownActive = false;
 #define RAM_R1_TRACK 14
 #define RAM_P1_TRACK 15
 
-
 RangeEncoder flfEncoder(0, 127, "FLF", 0);
 RangeEncoder flwEncoder(0, 127, "FLW", 127);
 RangeEncoder fbEncoder(0, 127, "FB", 32);
@@ -199,6 +198,15 @@ void loop() {
     MD.setEchoParam(MD_ECHO_MFRQ, frqEncoder.getValue());
   if (modEncoder.hasChanged())
     MD.setEchoParam(MD_ECHO_MOD, modEncoder.getValue());
+
+  if (pFlfEncoder.hasChanged())
+    MD.setTrackParam(RAM_P1_TRACK, MODEL_FLTF, pFlfEncoder.getValue());
+  if (pFlwEncoder.hasChanged())
+    MD.setTrackParam(RAM_P1_TRACK, MODEL_FLTW, pFlwEncoder.getValue());
+  if (pSrrEncoder.hasChanged())
+    MD.setTrackParam(RAM_P1_TRACK, MODEL_SRR, pSrrEncoder.getValue());
+  if (pVolEncoder.hasChanged())
+    MD.setTrackParam(RAM_P1_TRACK, MODEL_VOL, pVolEncoder.getValue());
   
   GUI.update();
 }
