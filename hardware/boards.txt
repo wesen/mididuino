@@ -178,6 +178,7 @@ midicommand168.bootloader.lock_bits=0x0F
 midicommand168.build.mcu=atmega168
 midicommand168.build.f_cpu=16000000L
 midicommand168.build.core=midicommand168
+midicommand168.build.flags=
 
 
 ############################################################
@@ -201,6 +202,7 @@ mididuino.build.mcu=atmega32
 mididuino.build.f_cpu=16000000L
 mididuino.build.core=mididuino
 mididuino.build.libraries=Midi GUI CommonTools
+mididuino.build.flags=
 
 ############################################################
 
@@ -223,6 +225,7 @@ minicommand.build.mcu=atmega64
 minicommand.build.f_cpu=16000000L
 minicommand.build.core=minicommand
 minicommand.build.libraries=Midi GUI CommonTools
+minicommand.build.flags=
 
 ############################################################
 
@@ -268,3 +271,4 @@ mididuino-small.build.mcu=atmega168
 mididuino-small.build.f_cpu=16000000L
 mididuino-small.build.core=mididuino-small
 mididuino-small.build.libraries=CommonTools Midi
+mididuino-small.build.flags=
