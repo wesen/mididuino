@@ -13,8 +13,8 @@ extern "C" {
 #define MIDIDUINO_HANDLE_SYSEX 1
 #define MIDIDUINO_MIDI_CLOCK   1
 #define MIDIDUINO_USE_GUI      1
-#define MIDIDUINO_EXTERNAL_RAM 1
-#define MDIIDUINO_SD_CARD      1
+// #define MIDIDUINO_EXTERNAL_RAM 1
+// #define MDIIDUINO_SD_CARD      1
 
 #include "mididuino_private.h"
 

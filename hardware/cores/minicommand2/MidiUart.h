@@ -91,7 +91,7 @@ class MidiUartClass {
 
 extern MidiUartClass MidiUart;
 
-class MidiUartClass2 {
+class MidiUartClass2 : MidiUartClass {
   void initSerial();
   
  public:
