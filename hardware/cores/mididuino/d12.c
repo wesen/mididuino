@@ -187,9 +187,17 @@ NOINLINE uint8_t d12_read_cmd_1(uint8_t cmd) {
 
 uint8_t d12_write_ep_buf(uint8_t ep, uint8_t cnt) {
   /* select endpoint */
-  uint8_t status = d12_read_cmd_1(D12_CMD_SELECT_EP + ep);
+  uint8_t status = 0;
+  uint8_t cnt2 = 0;
+  do {
+    status = d12_read_cmd_1(D12_CMD_SELECT_EP + ep);
+    if (status & 1)
+      _delay_us(2);
+    cnt2++;
+  } while ((status & 1) && (cnt2 < 128));
   if (status & 1)
     return 0;
+
   d12_write_cmd_byte(D12_CMD_WRITE_BUFFER);
   d12_write_data(0x00);
   d12_write_data(cnt);
