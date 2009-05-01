@@ -58,7 +58,7 @@ class RangeEncoder : public Encoder {
     }
     setValue(init);
   }
-  void handle(int val) { }
+  virtual void handle(int val) { }
   void update(encoder_t *enc);
 };
 
@@ -69,7 +69,7 @@ class CCEncoder : public RangeEncoder {
  CCEncoder(int _cc, char *_name = NULL, int init = 0) : RangeEncoder(127, 0, name, init) {
     cc = _cc;
   }
-  void handle(int val);
+  virtual void handle(int val);
 };
 
 class Page {

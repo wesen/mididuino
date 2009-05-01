@@ -46,7 +46,7 @@ void MidiClass::handleByte(uint8_t byte) {
   if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
     uint8_t tmp = SREG;
     cli();
-    if (MidiClock.mode == MidiClock.EXTERNAL) {
+    if (MidiClock.mode == MidiClock.EXTERNAL_MIDI) {
       switch (byte) {
       case MIDI_CLOCK:
 	// handled in interrupt routine
@@ -227,6 +227,8 @@ void MidiSysexClass::handleByte(uint8_t byte) {
       recordBuf[recordLen++] = byte;
     }
   }
+
+  /* sds handling XXX */ 
   
 }
 
@@ -247,7 +249,9 @@ void MididuinoSysexClass::handleByte(uint8_t byte) {
       isMididuinoSysex = false;
     } else if (len == 3 && byte == CMD_START_BOOTLOADER) {
       //      LCD.line1_fill((char *)"BOOTLOADER");
+#ifdef MIDIDUINO
       start_bootloader();
+#endif
     }
   }
   

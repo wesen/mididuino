@@ -1,4 +1,4 @@
-CC = gcc
+CC = gcc -arch i386 -arch ppc
 #CFLAGS += -mno-cygwin
 CFLAGS += -W -Wall
 #LDFLAGS += -lwinmm

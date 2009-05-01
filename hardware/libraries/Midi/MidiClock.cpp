@@ -130,6 +130,15 @@ void MidiClockClass::handleTimerInt()  {
     if (mod6_counter == 0) {
       if (on16Callback)
 	on16Callback();
+      if (on32Callback)
+	on32Callback();
+      div16th_counter++;
+      div32th_counter++;
+    }
+    if (mod6_counter == 3) {
+      if (on32Callback)
+	on32Callback();
+      div32th_counter++;
     }
     
     div96th_counter++;
@@ -162,7 +171,6 @@ void MidiClockClass::handleTimerInt()  {
 
     if (mod6_counter == 6) {
       mod6_counter = 0;
-      div16th_counter++;
     }
   } else {
     counter--;

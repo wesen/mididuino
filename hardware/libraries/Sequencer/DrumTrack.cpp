@@ -1,3 +1,5 @@
+#include "helpers.h"
+#include <MidiUart.h>
 #include "WProgram.h"
 #include "DrumTrack.hh"
 

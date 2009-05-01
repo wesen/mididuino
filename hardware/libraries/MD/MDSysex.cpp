@@ -1,6 +1,6 @@
+#include "helpers.h"
 #include "MD.h"
 #include "MDSysex.hh"
-#include "GUI.h"
 
 MachineDrumSysexClass MDSysex(mididuino_sysex_data, sizeof(mididuino_sysex_data));
 

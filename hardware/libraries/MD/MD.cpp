@@ -272,7 +272,7 @@ void MDClass::sliceTrack32(uint8_t track, uint8_t from, uint8_t to, bool correct
   }
   setTrackParam(track, 4, pfrom);
   setTrackParam(track, 5, pto);
-  triggerTrack(track, 100);
+  triggerTrack(track, 127);
 }
 
 void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
@@ -305,6 +305,14 @@ void MDClass::setLFO(uint8_t track, lfo_t *lfo) {
   }
 }
 
+void MDClass::saveCurrentKit(uint8_t pos) {
+  MidiUart.putc(0xF0);
+  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+  MidiUart.putc(0x59);
+  MidiUart.putc(pos & 0x7F);
+  MidiUart.putc(0xF7);
+}
+
 void MDClass::assignMachine(uint8_t track, uint8_t model) {
   MidiUart.putc(0xF0);
   MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
@@ -334,6 +342,50 @@ void MDClass::muteTrack(uint8_t track, bool mute) {
   uint8_t b = track & 3;
   uint8_t cc = 16 + b;
   MidiUart.sendCC(channel + baseChannel, cc, mute ? 1 : 0);
+}
+
+void MDClass::setStatus(uint8_t id, uint8_t value) {
+  MidiUart.putc(0xF0);
+  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+  MidiUart.putc(0x71);
+  MidiUart.putc(id & 0x7F);
+  MidiUart.putc(value & 0x7F);
+  MidiUart.putc(0xf7);
+}
+
+void MDClass::loadGlobal(uint8_t id) {
+  setStatus(1, id);
+}
+
+void MDClass::loadKit(uint8_t kit) {
+  setStatus(2, kit);
+}
+
+void MDClass::loadPattern(uint8_t pattern) {
+  setStatus(4, pattern);
+}
+
+void MDClass::loadSong(uint8_t song) {
+  setStatus(8, song);
+}
+
+
+void MDClass::setSequencerMode(uint8_t mode) {
+  setStatus(16, mode);
+}
+
+void MDClass::setLockMode(uint8_t mode) {
+  setStatus(32, mode);
+}
+
+void getPatternName(uint8_t pattern, char str[5]) {
+  uint8_t bank = pattern / 16;
+  uint8_t num = pattern % 16 + 1;
+  str[0] = 'A' + bank;
+  str[1] = '0' + (num / 10);
+  str[2] = '0' + (num % 10);
+  str[3] = ' ';
+  str[4] = 0;
 }
 
 MDClass MD;

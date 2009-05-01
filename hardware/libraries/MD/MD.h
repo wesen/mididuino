@@ -2,6 +2,7 @@
 #define MD_H__
 
 #include <inttypes.h>
+#include <avr/pgmspace.h>
 
 #include "Elektron.hh"
 #include "MDSysex.hh"
@@ -101,9 +102,20 @@ class MDClass {
   void unmuteTrack(uint8_t track) {
     muteTrack(track, false);
   }
+
+  void setStatus(uint8_t id, uint8_t value);
+  void loadGlobal(uint8_t id);
+  void loadKit(uint8_t kit);
+  void loadPattern(uint8_t pattern);
+  void loadSong(uint8_t song);
+  void setSequencerMode(uint8_t mode);
+  void setLockMode(uint8_t mode);
+  
+  void saveCurrentKit(uint8_t pos);
 };
 
 PGM_P getMachineName(uint8_t machine);
+void getPatternName(uint8_t pattern, char str[5]);
 
 extern MDClass MD;
 

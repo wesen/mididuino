@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#include <MidiUart.h>
 #include <WProgram.h>
 #include <inttypes.h>
 
