@@ -1,6 +1,7 @@
 #include <MD.h>
 
 bool supaTriggaActive = false;
+bool restorePlayback = false;
 bool breakdownActive = false;
 bool storedBreakdownActive = false;
 
@@ -159,16 +160,37 @@ void doSupatrigga() {
     MD.sliceTrack32(RAM_P1_TRACK, from * 4, to * 4);
   }
 }
+
+void on32Callback() {
+//  GUI.flash_put_value(0, MidiClock.div32th_counter);
+}
+
 void on16Callback() {
+  if (restorePlayback && !storedBreakdownActive) {
+    uint8_t val = (MidiClock.div16th_counter) % 32;
+    if ((val % 4) == 0) {
+      restorePlayback = false;
+      MD.sliceTrack32(RAM_P1_TRACK, val, 32, true);
+    }
+    
+  }
   if (supaTriggaActive) {
     doSupatrigga();
   } else if (breakdownActive || storedBreakdownActive) {
     doBreakdown();
   } else {
     uint8_t val = (MidiClock.div16th_counter) % 32;
-    if ((val % 8) == 0) {
-      MD.sliceTrack32(RAM_P1_TRACK, val, val + 8);
+    if (val == 0) 
+      MD.sliceTrack32(RAM_P1_TRACK, 0 , 32);
+/*
+if ((val % 8) == 0) {
+      if (BUTTON_DOWN(Buttons.BUTTON1)) {
+        MD.sliceTrack32(RAM_P1_TRACK, val, val + 8, false);
+      } else {
+        MD.sliceTrack32(RAM_P1_TRACK, val, val + 8, true);
+      }
     }
+    */
   }
 }
 
@@ -178,6 +200,7 @@ void setup() {
   MidiClock.mode = MidiClock.EXTERNAL;
   MidiClock.transmit = false;
   MidiClock.setOn16Callback(on16Callback);
+//  MidiClock.setOn32Callback(on32Callback);
   MidiClock.start();
 }
 
@@ -213,8 +236,60 @@ void loop() {
 
 Page *previousPage = NULL;
 
+enum {
+  PAGE_NOTHING = 0,
+  PAGE_BUTTON1,
+  PAGE_BUTTON4
+} pageMode = PAGE_NOTHING;
+
 void handleGui() {
-  if (BUTTON_DOWN(Buttons.BUTTON4)) {
+again:
+  switch (pageMode) {
+    case PAGE_NOTHING:
+    if (BUTTON_PRESSED(Buttons.BUTTON4)) {
+      previousPage = GUI.page;
+      GUI.setPage(&breakPage);
+      breakdownActive = true;
+      pageMode = PAGE_BUTTON4;
+      goto again;
+    }
+    if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+      pageMode = PAGE_BUTTON1;
+      goto again;
+    }
+    if (BUTTON_PRESSED(Buttons.BUTTON3)) {
+      supaTriggaActive = true;
+    } else if (BUTTON_RELEASED(Buttons.BUTTON3)) {
+      restorePlayback = true;
+      supaTriggaActive = false;
+    }
+  
+    break;
+    
+    case PAGE_BUTTON1:
+    if (BUTTON_RELEASED(Buttons.BUTTON1)) {
+      pageMode = PAGE_NOTHING;
+      goto again;
+    }
+      if (BUTTON_PRESSED(Buttons.BUTTON2)) {
+        GUI.setPage(&page);
+      } else if (BUTTON_PRESSED(Buttons.BUTTON3)) {
+        GUI.setPage(&page2);
+      } else if (BUTTON_PRESSED(Buttons.BUTTON4)) {
+         GUI.setPage(&page4);
+      }
+    break;
+    
+    case PAGE_BUTTON4:
+    if (BUTTON_RELEASED(Buttons.BUTTON4)) {
+      if (previousPage != NULL) {
+        GUI.setPage(previousPage);
+      }
+      breakdownActive = false;
+      restorePlayback = true;
+      pageMode = PAGE_NOTHING;
+      goto again;
+    }
     if (BUTTON_PRESSED(Buttons.BUTTON1)) {
       storedBreakdownActive = !storedBreakdownActive;
       if (storedBreakdownActive) {
@@ -223,32 +298,6 @@ void handleGui() {
         GUI.flash_p_strings_fill(PSTR("BREAKDOWN OFF"), PSTR(""));
       }
     }
-  } else {
-    if (BUTTON_PRESSED(Buttons.BUTTON1)) {
-      GUI.setPage(&page);
-    } else if (BUTTON_PRESSED(Buttons.BUTTON2)) {
-      if (GUI.page == &page2) {
-         GUI.setPage(&page4);
-      } else {
-        GUI.setPage(&page2);
-      }
-    }
-  }
-  
-  if (BUTTON_PRESSED(Buttons.BUTTON3)) {
-    supaTriggaActive = true;
-  } else if (BUTTON_RELEASED(Buttons.BUTTON3)) {
-    supaTriggaActive = false;
-  }
-  
-  if (BUTTON_PRESSED(Buttons.BUTTON4)) {
-    previousPage = GUI.page;
-    GUI.setPage(&breakPage);
-    breakdownActive = true;
-  } else if (BUTTON_RELEASED(Buttons.BUTTON4)) {
-    if (previousPage != NULL) {
-      GUI.setPage(previousPage);
-    }
-    breakdownActive = false;
+    break;
   }
 }

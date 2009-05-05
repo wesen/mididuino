@@ -25,7 +25,16 @@ void setPitchLength(uint8_t len) {
 
 void on16Callback() {
   if (track.isHit(MidiClock.div16th_counter)) {
-    MD.sendNoteOn(trackEncoder.getValue(), pitches[pitches_idx], 100);
+    /*
+    uint8_t decay = random(40, 120);
+    MD.setTrackParam(trackEncoder.getValue(), 1, decay);
+    if (decay < 80) {
+      MD.setTrackParam(trackEncoder.getValue(), 15, 100);
+    } else {
+      MD.setTrackParam(trackEncoder.getValue(), 15, 0);
+    }
+    */
+    MD.sendNoteOn(trackEncoder.getValue(), pitches[pitches_idx], random(40, 110));
     pitches_idx = (pitches_idx + 1) % pitches_len;
   }
 }

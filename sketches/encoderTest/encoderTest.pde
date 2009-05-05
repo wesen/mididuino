@@ -79,8 +79,11 @@ void handleGui() {
    GUI.setLine(GUI.LINE2);
    GUI.flash_string_fill("E1");
  }
-  if (BUTTON_PRESSED(Buttons.ENCODER2))
+  if (BUTTON_PRESSED(Buttons.ENCODER2)) {
     GUI.flash_string_fill("E2");
+    MidiUart.sendNoteOn(100, 100);
+  }
+    
   if (BUTTON_PRESSED(Buttons.ENCODER3))
     GUI.flash_string_fill("E3");
   if (BUTTON_PRESSED(Buttons.ENCODER4))
