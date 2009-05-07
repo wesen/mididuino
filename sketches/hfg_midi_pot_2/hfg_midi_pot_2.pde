@@ -16,14 +16,30 @@ void setup() {
 int tasterStatus = HIGH;
 int pitch = 0;
 
+int pitches[7] = { 0, 2, 3, 5, 7, 8, 9 };
+
+int alterCCWert = -1;
+
 void loop() {
   int tasterWert = digitalRead(tasterPin);
+  
+  int potWert = analogRead(0);
+  int ccWert = map(potWert, 0, 1023, 0, 127);
+  
+  if (abs(ccWert - alterCCWert) >= 1) {
+    alterCCWert = ccWert;
+    MidiUart.sendCC(4, ccWert);
+  }
   
   // taster entweder losgelassen oder gedrueckt
   if (tasterStatus != tasterWert) {
     if (tasterWert == LOW) { 
       // taster gedrueckt
-      pitch = map(analogRead(0), 0, 1023, 40, 100);
+
+      pitch = pitches[random(0, 6)];
+      int octave = random(0, 2) * 12 + 48;
+      pitch = pitch + octave;
+      
       MidiUart.sendNoteOn(pitch, 100);
     } else {
       // taster losgelassen
