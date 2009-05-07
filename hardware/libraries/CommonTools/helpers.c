@@ -1,3 +1,5 @@
+#include "WProgram.h"
+
 #include "helpers.h"
 
 #include <avr/pgmspace.h>

@@ -71,11 +71,6 @@ uint16_t clock_diff(uint16_t old_clock, uint16_t new_clock);
 uint8_t u_limit_value(uint8_t value, int8_t encoder, uint8_t min, uint8_t max);
 int limit_value(int value, int encoder, int min, int max);
 
-#ifdef MIDIDUINO
-  void delayMicroseconds(unsigned int us);
-  void delay(unsigned int ms);
-#endif
-
 #ifdef __cplusplus
 }
 #endif

@@ -26,6 +26,13 @@ void MidiClockClass::init() {
   pll_x = 220;
 }
 
+uint16_t midi_clock_diff(uint16_t old_clock, uint16_t new_clock) {
+  if (new_clock >= old_clock)
+    return new_clock - old_clock;
+  else
+    return new_clock + (65535 - old_clock);
+}
+
 /* in interrupt */
 void MidiClockClass::handleClock() {
   uint16_t cur_clock = clock;
@@ -62,7 +69,7 @@ void MidiClockClass::handleClock() {
 }
 
 void MidiClockClass::handleMidiStart() {
-  if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
+  if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
     init();
     state = STARTING;
     mod6_counter = 0;
@@ -74,7 +81,7 @@ void MidiClockClass::handleMidiStart() {
 }
 
 void MidiClockClass::handleMidiStop() {
-  if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
+  if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
     state = PAUSED;
   }
 }
@@ -85,7 +92,7 @@ static uint32_t phase_mult(uint32_t val) {
 }
 
 void MidiClockClass::start() {
-  if (mode == INTERNAL) {
+  if (mode == INTERNAL_MIDI) {
     state = STARTED;
     mod6_counter = 0;
     div96th_counter = 0;
@@ -97,7 +104,7 @@ void MidiClockClass::start() {
 }
 
 void MidiClockClass::stop() {
-  if (mode == INTERNAL) {
+  if (mode == INTERNAL_MIDI) {
     state = PAUSED;
     if (transmit)
       MidiUart.sendRaw(MIDI_STOP);
@@ -105,7 +112,7 @@ void MidiClockClass::stop() {
 }
 
 void MidiClockClass::pause() {
-  if (mode == INTERNAL) {
+  if (mode == INTERNAL_MIDI) {
     if (state == PAUSED) {
       start();
     } else {
@@ -144,9 +151,9 @@ void MidiClockClass::handleTimerInt()  {
     div96th_counter++;
     mod6_counter++;
     
-    if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
+    if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
       uint16_t cur_clock = clock;
-      uint16_t diff = clock_diff(last_clock, cur_clock);
+      uint16_t diff = midi_clock_diff(last_clock, cur_clock);
       
       if ((div96th_counter < indiv96th_counter) ||
 	  (div96th_counter > (indiv96th_counter + 1))) {
@@ -161,7 +168,7 @@ void MidiClockClass::handleTimerInt()  {
 	  counter += phase_mult(counter - diff);
 	}
       }
-    } else if (mode == INTERNAL) {
+    } else if (mode == INTERNAL_MIDI) {
       if (transmit)
 	MidiUart.putc_immediate(MIDI_CLOCK);
     }

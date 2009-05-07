@@ -1,6 +1,7 @@
 #ifndef MIDICLOCK_H__
 #define MIDICLOCK_H__
 
+#include "WProgram.h"
 #include <inttypes.h>
 #include "midi-common.hh"
 
@@ -39,8 +40,10 @@ class MidiClockClass {
     EXTERNAL_UART2
   } mode;
   // arduino
+
 #define BOARD_ID 0x80
 #else
+
   enum {
     OFF = 0,
     INTERNAL,
@@ -49,6 +52,7 @@ class MidiClockClass {
   } mode;
   #define INTERNAL_MIDI INTERNAL
   #define EXTERNAL_MIDI EXTERNAL
+
 #endif
 
   MidiClockClass();

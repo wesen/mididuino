@@ -145,7 +145,10 @@ void MidiClass::handleByte(uint8_t byte) {
 
   case midi_wait_byte_1:
     msg[in_msg_len++] = byte;
-    /* XXX check callback, note off, params, etc... */
+    //    /* XXX check callback, note off, params, etc... */
+    if (midi_parse[callback].midi_status == MIDI_NOTE_ON && msg[2] == 0) {
+      callback = 0; // XXX ugly hack to recgnize NOTE on with velocity 0 as Note Off
+    }
     if (callback < 7 && callbacks[callback] != NULL) {
       callbacks[callback](msg);
     }
