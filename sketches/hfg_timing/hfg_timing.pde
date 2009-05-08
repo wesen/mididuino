@@ -11,7 +11,6 @@ void on16Callback() {
 }
 
 void setup() {
-  pinMode(13, OUTPUT);
   MidiUart.init();
   MidiClock.setOn16Callback(on16Callback);
   MidiClock.setTempo(100);
