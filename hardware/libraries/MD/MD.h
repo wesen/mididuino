@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 #include <avr/pgmspace.h>
+#include "WProgram.h"
 
 #include "Elektron.hh"
 #include "MDSysex.hh"
