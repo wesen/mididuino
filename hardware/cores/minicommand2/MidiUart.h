@@ -1,8 +1,9 @@
 #ifndef MIDI_UART_H__
 #define MIDI_UART_H__
 
+class MidiUartClass;
+
 #include <inttypes.h>
-#include "MidiClock.h"
 #include "RingBuffer.h"
 #include "helpers.h"
 

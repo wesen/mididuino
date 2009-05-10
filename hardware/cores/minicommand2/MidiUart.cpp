@@ -1,3 +1,5 @@
+#include "WProgram.h"
+
 #include <avr/interrupt.h>
 #include <util/delay.h>
 

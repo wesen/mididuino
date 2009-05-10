@@ -1,11 +1,20 @@
 #ifndef WProgram_h
 #define WProgram_h
 
+#define MIDIDUINO 1
+
+#ifdef __cplusplus
 extern "C" {
+#endif
 #include <inttypes.h>
 #include <avr/interrupt.h>
 #include "helpers.h"
+
+  void delayMicroseconds(unsigned int us);
+  void delay(unsigned int ms);
+#ifdef __cplusplus
 }
+#endif
 
 /* default config flags */
 #define MIDIDUINO_POLL_GUI     1
