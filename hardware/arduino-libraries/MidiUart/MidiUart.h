@@ -3,14 +3,15 @@
 
 #include "WProgram.h"
 #include <inttypes.h>
+#include "RingBuffer.h"
 
 #define TX_IRQ 1
 
 class MidiUartClass {
-  void initSerial();
   
  public:
   MidiUartClass();
+  void init(long speed = 31250);
   void puts(uint8_t *data, uint8_t cnt);
   void putc(uint8_t c);
   void putc_immediate(uint8_t c);
@@ -80,8 +81,17 @@ class MidiUartClass {
     putc(byte);
   }
 
+#ifdef TX_IRQ
+  volatile RingBuffer<32> txRb;
+#endif
+
+  
 };
 
 extern MidiUartClass MidiUart;
+
+extern "C" {
+extern volatile uint16_t clock;
+}
 
 #endif /* MIDI_UART_H__ */
