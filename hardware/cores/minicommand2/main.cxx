@@ -58,6 +58,10 @@ int main(void) {
   clearLed();
   clearLed2();
 
+  for (int i = 0; i < GUI_NUM_BUTTONS; i++) {
+    SET_B_CURRENT(i);
+  }
+  
 #ifdef MIDIDUINO_HANDLE_SYSEX
   Midi.setSysex(&mididuinoSysex);
 #endif
