@@ -250,7 +250,6 @@ void loop() {
   if (pVolEncoder.hasChanged())
     MD.setTrackParam(RAM_P1_TRACK, MODEL_DEL, pVolEncoder.getValue());
 
-    
   GUI.update();
 }
 
@@ -286,7 +285,8 @@ again:
       GUI.flash_strings_fill("DELAY CTRL", "", 300);
       GUI.setPage(&page);
     }
-  
+
+
     if (BUTTON_PRESSED(Buttons.BUTTON3)) {
       GUI.setLine(GUI.LINE1);
       GUI.put_string_fill("SUPATRIGGA");
@@ -297,7 +297,8 @@ again:
       restorePlayback = true;
       GUI.page->display(true);
       supaTriggaActive = false;
-    }
+    } 
+    
   
     break;
     
