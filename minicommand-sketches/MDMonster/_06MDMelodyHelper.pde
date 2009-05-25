@@ -71,6 +71,8 @@ void setup() {
   setupMidi();
   GUI.setLine(GUI.LINE1);
   GUI.put_p_string_fill(PSTR("RELOAD KIT"));
+      GUI.setLine(GUI.LINE2);
+      GUI.put_p_string_fill(PSTR(""));
 }
 
 

@@ -2,7 +2,10 @@ namespace MDSnareNotes {
   class MDSnareNotesSketch : public SubSketch {
     public:
     void setup() {
-  LCD.line1("MD NOTE TEST");
+      GUI.setLine(GUI.LINE1);
+      GUI.put_p_string_fill(PSTR("SNARE NOTES"));
+      GUI.setLine(GUI.LINE2);
+      GUI.put_p_string_fill(PSTR(""));
   MD.trackModels[0] = EFM_SD_MODEL;
   MD.trackModels[1] = ROM_MODEL;
   MD.trackModels[2] = EFM_SD_MODEL;
