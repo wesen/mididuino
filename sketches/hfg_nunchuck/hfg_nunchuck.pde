@@ -4,198 +4,113 @@
 #include <Midi.h>
 MidiClass Midi;
 
-#undef int
-#include <stdio.h>
+#define pwrpin PORTC3
+#define gndpin PORTC2
 
-uint8_t outbuf[6];		// array to store arduino output
-int cnt = 0;
-int ledPin = 13;
+void nunchuckInit() {
+  DDRC |= _BV(pwrpin) | _BV(gndpin);
+  PORTC &=~ _BV(gndpin);
+  PORTC |= _BV(pwrpin);
+  delay(100); 
 
-void
-setup ()
-{
-  MidiUart.init();
-//  Serial.print ("Finished setup\n");
-  Wire.begin ();		// join i2c bus with address 0x52
-  nunchuck_init (); // send the initilization handshake
+  Wire.begin();
+  Wire.beginTransmission(0x52);
+  Wire.send(0x40);
+  Wire.send(0x00);
+  Wire.endTransmission();
 }
 
-void
-nunchuck_init ()
-{
-  Wire.beginTransmission (0x52);	// transmit to device 0x52
-  Wire.send (0x40);		// sends memory address
-  Wire.send (0x00);		// sends sent a zero.  
-  Wire.endTransmission ();	// stop transmitting
-}
-
-void
-send_zero ()
-{
-  Wire.beginTransmission (0x52);	// transmit to device 0x52
-  Wire.send (0x00);		// sends one byte
-  Wire.endTransmission ();	// stop transmitting
-}
-
-void
-loop ()
-{
-  Wire.requestFrom (0x52, 6);	// request data from nunchuck
-  while (Wire.available ())
-    {
-      outbuf[cnt] = nunchuk_decode_byte (Wire.receive ());	// receive byte as an integer
-      digitalWrite (ledPin, HIGH);	// sets the LED on
-      cnt++;
-    }
-
-  // If we recieved the 6 bytes, then go print them
-  if (cnt >= 5)
-    {
-      print ();
-//      MidiUart.sendNoteOn(100, 100);
-//  delay (100);
-    }
-
-  cnt = 0;
-  send_zero (); // send the request for next bytes
+int nunchuckReadData(byte outbuf[]) {
+  nunchuckSendZero();
   delay (30);
-}
 
-int oldJoyX = 0;
-int oldJoyY = 0;
-int oldAccelX = 0;
-int oldAccelY = 0;
-int oldAccelZ = 0;
-int oldButtonZ = 0;
-int oldButtonC = 0;
-
-// Print the input data we have recieved
-// accel data is 10 bits long
-// so we read 8 bits, then we have to add
-// on the last 2 bits.  That is why I
-// multiply them by 2 * 2
-void
-print ()
-{
-  int joy_x_axis = outbuf[0];
-  int joy_y_axis = outbuf[1];
-  int accel_x_axis = outbuf[2] * 2 * 2; 
-  int accel_y_axis = outbuf[3] * 2 * 2;
-  int accel_z_axis = outbuf[4] * 2 * 2;
-
-  int z_button = 0;
-  int c_button = 0;
-
- // byte outbuf[5] contains bits for z and c buttons
- // it also contains the least significant bits for the accelerometer data
- // so we have to check each bit of byte outbuf[5]
-  if ((outbuf[5] >> 0) & 1)
-    {
-      z_button = 1;
-    }
-  if ((outbuf[5] >> 1) & 1)
-    {
-      c_button = 1;
-    }
-
-  if ((outbuf[5] >> 2) & 1)
-    {
-      accel_x_axis += 2;
-    }
-  if ((outbuf[5] >> 3) & 1)
-    {
-      accel_x_axis += 1;
-    }
-
-  if ((outbuf[5] >> 4) & 1)
-    {
-      accel_y_axis += 2;
-    }
-  if ((outbuf[5] >> 5) & 1)
-    {
-      accel_y_axis += 1;
-    }
-
-  if ((outbuf[5] >> 6) & 1)
-    {
-      accel_z_axis += 2;
-    }
-  if ((outbuf[5] >> 7) & 1)
-    {
-      accel_z_axis += 1;
-    }
-
-  if (abs(oldJoyX - joy_x_axis) >= 2) {
-    MidiUart.sendCC(3, map(joy_x_axis, 0, 255, 0, 127));
-    oldJoyX = joy_x_axis;
+  Wire.requestFrom (0x52, 6);	// request data from nunchuck
+  int cnt = 0;
+  while (Wire.available ()) {
+    outbuf[cnt] = nunchukDecodeByte(Wire.receive ());
+    cnt++;
   }
-  if (abs(oldJoyY - joy_y_axis) >= 2) {
-    MidiUart.sendCC(4, map(joy_y_axis, 0, 255, 0, 127));
-    oldJoyY = joy_y_axis;
-  }
-  if (abs(oldAccelX - accel_x_axis) >= 7) {
-    int value = map(accel_x_axis, 300, 800, 0, 127);
-    MidiUart.sendCC(5, constrain(value, 0, 127));
-    oldAccelX = accel_x_axis;
-  }
-  if (abs(oldAccelY - accel_y_axis) >= 7) {
-    int value = map(accel_y_axis, 300, 800, 0, 127);
-    MidiUart.sendCC(6, constrain(value, 0, 127));
-    oldAccelY = accel_y_axis;
-  }
-  if (abs(oldAccelZ - accel_z_axis) >= 7) {
-    int value = map(accel_z_axis, 300, 800, 0, 127);
-    MidiUart.sendCC(7, constrain(value, 0, 127));
-    oldAccelZ = accel_z_axis;
-  }
+  
+  return cnt;
+} 
 
-  if (oldButtonZ != z_button) {
-    if (z_button == 0) {
-      MidiUart.sendNoteOn(60, 100);
-    } else {
-      MidiUart.sendNoteOff(60);
-    }
-    oldButtonZ = z_button;
-  }
-  if (oldButtonC != c_button) {
-    if (c_button == 0) {
-      MidiUart.sendNoteOn(62, 100);
-    } else {
-      MidiUart.sendNoteOff(62);
-    }
-    oldButtonC = c_button;
-  }
-  /*
-  Serial.print (joy_x_axis, DEC);
-  Serial.print ("\t");
-
-  Serial.print (joy_y_axis, DEC);
-  Serial.print ("\t");
-
-  Serial.print (accel_x_axis, DEC);
-  Serial.print ("\t");
-
-  Serial.print (accel_y_axis, DEC);
-  Serial.print ("\t");
-
-  Serial.print (accel_z_axis, DEC);
-  Serial.print ("\t");
-
-  Serial.print (z_button, DEC);
-  Serial.print ("\t");
-
-  Serial.print (c_button, DEC);
-  Serial.print ("\t");
-
-  Serial.print ("\r\n");
-  */
-}
-
-// Encode data to format that most wiimote drivers except
-// only needed if you use one of the regular wiimote drivers
-char
-nunchuk_decode_byte (char x)
-{
+byte nunchukDecodeByte(byte x) {
   x = (x ^ 0x17) + 0x17;
   return x;
 }
+
+void nunchuckSendZero() {
+  Wire.beginTransmission(0x52);	// transmit to device 0x52
+  Wire.send(0x00);		// sends one byte
+  Wire.endTransmission();	// stop transmitting
+}
+
+int joystick[2] = { 0 };
+int oldJoystick[2] = { 0 };
+byte joystickCC[2] = { 2, 3 };
+
+int accel[3] = { 0 };
+int oldAccel[3] = { 0 };
+byte accelCC[3] = { 4, 5, 6 };
+
+int button[2] = { 0 };
+int oldButton[2] = { 0 };
+byte buttonNote[2] = { 60, 62 };
+
+void nunchuckParseData(byte outbuf[]) {
+  joystick[0] = outbuf[0];
+  joystick[1] = outbuf[1];
+  accel[0] = outbuf[2] << 2; 
+  accel[1] = outbuf[3] << 2;
+  accel[2] = outbuf[4] << 2;
+
+  button[0] = bitRead(outbuf[5], 0);
+  button[1] = bitRead(outbuf[5], 1);
+
+  for (int i = 0; i < 3; i++) {  
+    accel[i] += bitRead(outbuf[5], i + 2) * 2 + bitRead(outbuf[5], i + 3);
+  }
+}
+
+void nunchuckSendMidi() {
+  for (int i = 0; i < 2; i++) {
+    if (abs(oldJoystick[i] - joystick[i]) >= 2) {
+      MidiUart.sendCC(joystickCC[i], map(joystick[i], 0, 255, 0, 127));
+      oldJoystick[i] = joystick[i];
+    }
+  }
+  
+  for (int i = 0; i < 3; i++) {
+    if (abs(oldAccel[i] - accel[i]) >= 7) {
+      int value = map(accel[i], 300, 800, 0, 127);
+      MidiUart.sendCC(accelCC[i], constrain(value, 0, 127));
+      oldAccel[i] = accel[i];
+    }
+  }
+  
+  for (int i = 0; i < 2; i++) {
+    if (oldButton[i] != button[i]) {
+      if (button[i] == 0) {
+        MidiUart.sendNoteOn(buttonNote[i], 100);
+      } else {
+        MidiUart.sendNoteOff(buttonNote[i]);
+      }
+      oldButton[i] = button[i];
+    }
+  }
+}
+
+void setup () {
+  MidiUart.init();
+  nunchuckInit();
+}
+
+void loop () {
+  byte outbuf[6];
+
+  if (nunchuckReadData(outbuf) >= 5) {
+    nunchuckParseData(outbuf);
+    nunchuckSendMidi();
+  }
+}
+
