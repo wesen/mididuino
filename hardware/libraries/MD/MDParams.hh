@@ -28,14 +28,14 @@
 #define MD_SAVE_SONG_ID                      0x6d
 #define MD_SET_ACTIVE_GLOBAL_ID              0x56
 #define MD_SET_CURRENT_KIT_NAME_ID           0x55
-#define MD_SET_DYNAMIX_PARAM_ID              0x60
-#define MD_SET_EQ_PARAM_ID                   0x5f
+#define MD_SET_RHYTHM_ECHO_PARAM_ID          0x5d
 #define MD_SET_GATE_BOX_PARAM_ID             0x5e
+#define MD_SET_EQ_PARAM_ID                   0x5f
+#define MD_SET_DYNAMIX_PARAM_ID              0x60
 #define MD_SET_LFO_PARAM_ID                  0x62
 #define MD_SET_MIDI_NOTE_TO_TRACK_MAPPING_ID 0x5a
 #define MD_SET_MUTE_GROUP_ID                 0x66
 #define MD_SET_RECEIVE_DUMP_POSITION_ID      0x6b
-#define MD_SET_RHYTHM_ECHO_PARAM_ID          0x5d
 #define MD_SET_STATUS_ID                     0x71
 #define MD_SET_TEMPO_ID                      0x61
 #define MD_SET_TRACK_ROUTING_ID              0x5c

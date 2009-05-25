@@ -14,7 +14,7 @@ MidiUartClass MidiUart;
 
 #include <avr/io.h>
 
-#ifdef _AVR_IOM168_H_
+#if defined(_AVR_IOM168_H_) || defined(_AVR_IOM328P_H_)
 #define UBRR  UBRR0
 #define UBRRL UBRR0L
 #define UBRRH UBRR0H
