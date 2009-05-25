@@ -39,7 +39,7 @@ class Encoder {
     return old;
   }
   void setValue(int value) {
-    old = cur = value;
+    cur = value;
   }
 };
 
