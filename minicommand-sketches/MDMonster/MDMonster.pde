@@ -22,7 +22,7 @@ void loop() {
 void handleGui() {
   bool everyDown = true;
   bool onePressed = false;
-  for (int i = Buttons.BUTTON1; i < Buttons.BUTTON4; i++) {
+  for (int i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
     if (BUTTON_PRESSED(i))
       onePressed = true;
     if (BUTTON_UP(i))
