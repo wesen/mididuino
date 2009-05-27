@@ -7,8 +7,10 @@ class MidiUartParent {
 public:
   uint8_t running_status;
   uint8_t currentChannel;
+  bool useRunningStatus;
   
   MidiUartParent() {
+    useRunningStatus = true;
     running_status = 0;
     currentChannel = 0x0;
   }
@@ -34,9 +36,13 @@ public:
     if (MIDI_IS_REALTIME_STATUS_BYTE(byte) || byte == 0xF6) {
       putc_immediate(byte);
     } else {
-      if (running_status != byte) 
+      if (useRunningStatus) {
+	if (running_status != byte) 
+	  putc(byte);
+	running_status = byte;
+      } else {
 	putc(byte);
-      running_status = byte;
+      }
     }
   }
 
