@@ -822,7 +822,8 @@ public class Editor extends JFrame
 				bootloaderMenu.add(item);
 			}
 			menu.add(bootloaderMenu);
-			
+
+			/*
 			menu.addMenuListener(new MenuListener() {
 													 public void menuCanceled(MenuEvent e) {}
 													 public void menuDeselected(MenuEvent e) {}
@@ -830,6 +831,7 @@ public class Editor extends JFrame
 													 //System.out.println("Tools menu selected.");
 													 populateSerialMenu();
 													 }});
+			 */
 			
 			
 			return menu;
