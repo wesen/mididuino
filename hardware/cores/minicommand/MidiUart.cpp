@@ -2,6 +2,7 @@
 #include <util/delay.h>
 
 #include <MidiUart.h>
+#include <MidiClock.h>
 #include <midi-common.hh>
 
 MidiUartClass MidiUart;

@@ -50,6 +50,12 @@ extern "C" {
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 
+#ifdef MIDIDUINO
+  void delay(unsigned int ms);
+  void delayMicroseconds(unsigned int us);
+#endif
+
+
 void m_memcpy(void *dst, void *src, uint8_t cnt);
 void m_strncpy(void *dst, char *src, uint8_t cnt);
 void m_strncpy_fill(void *dst, char *src, uint8_t cnt);

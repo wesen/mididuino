@@ -5,6 +5,7 @@
 
 #include <MidiUart.h>
 #include <midi-common.hh>
+#include <MidiUartParent.hh>
 
 MidiUartClass MidiUart;
 MidiUartClass2 MidiUart2;
@@ -22,12 +23,12 @@ MidiUartClass2 MidiUart2;
 
 #include <avr/io.h>
 
-MidiUartClass::MidiUartClass() {
-  currentChannel = 0x0;
+MidiUartClass::MidiUartClass() : MidiUartParent() {
   initSerial();
 }
 
 void MidiUartClass::initSerial() {
+  running_status = 0;
   UBRR0H = (UART_BAUDRATE_REG >> 8);
   UBRR0L = (UART_BAUDRATE_REG & 0xFF);
   //  UBRRH = 0;
@@ -91,71 +92,6 @@ uint8_t MidiUartClass::getc() {
   return rxRb.get();
 }
 
-void MidiUartClass::sendNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
-  putc(MIDI_NOTE_ON | channel);
-  putc(note);
-  putc(velocity);
-}
-
-void MidiUartClass::sendNoteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
-  putc(MIDI_NOTE_OFF | channel);
-  putc(note);
-  putc(velocity);
-}
-
-void MidiUartClass::sendCC(uint8_t channel, uint8_t cc, uint8_t value) {
-  putc(MIDI_CONTROL_CHANGE | channel);
-  putc(cc);
-  putc(value);
-}
-
-void MidiUartClass::sendProgramChange(uint8_t channel, uint8_t program) {
-  putc(MIDI_PROGRAM_CHANGE | channel);
-  putc(program);
-}
-
-void MidiUartClass::sendPolyKeyPressure(uint8_t channel, uint8_t note, uint8_t pressure) {
-  putc(MIDI_AFTER_TOUCH | channel);
-  putc(note);
-  putc(pressure);
-}
-
-void MidiUartClass::sendChannelPressure(uint8_t channel, uint8_t pressure) {
-  putc(MIDI_CHANNEL_PRESSURE | channel);
-  putc(pressure);
-}
-
-void MidiUartClass::sendPitchBend(uint8_t channel, int16_t pitchbend) {
-  putc(MIDI_PITCH_WHEEL | channel);
-  pitchbend += 8192;
-  putc(pitchbend & 0x7F);
-  putc((pitchbend >> 7) & 0x7F);
-}
-
-void MidiUartClass::sendNRPN(uint8_t channel, uint16_t parameter, uint8_t value) {
-  sendCC(channel, 99, (parameter >> 7) & 0x7F);
-  sendCC(channel, 98, (parameter & 0x7F));
-  sendCC(channel, 6, value);
-}
-void MidiUartClass::sendNRPN(uint8_t channel, uint16_t parameter, uint16_t value) {
-  sendCC(channel, 99, (parameter >> 7) & 0x7F);
-  sendCC(channel, 98, (parameter & 0x7F));
-  sendCC(channel, 6, (value >> 7) & 0x7F);
-  sendCC(channel, 38, (value & 0x7F));
-}
-
-void MidiUartClass::sendRPN(uint8_t channel, uint16_t parameter, uint8_t value) {
-  sendCC(channel, 101, (parameter >> 7) & 0x7F);
-  sendCC(channel, 100, (parameter & 0x7F));
-  sendCC(channel, 6, value);
-}
-void MidiUartClass::sendRPN(uint8_t channel, uint16_t parameter, uint16_t value) {
-  sendCC(channel, 101, (parameter >> 7) & 0x7F);
-  sendCC(channel, 100, (parameter & 0x7F));
-  sendCC(channel, 6, (value >> 7) & 0x7F);
-  sendCC(channel, 38, (value & 0x7F));
-}
-
 SIGNAL(USART0_RX_vect) {
   uint8_t c = UART_READ_CHAR();
 
@@ -175,11 +111,11 @@ SIGNAL(USART0_TX_vect) {
 }
 #endif
 
-MidiUartClass2::MidiUartClass2() {
-  initSerial();
+MidiUartClass2::MidiUartClass2() : MidiUartClass() {
 }
 
 void MidiUartClass2::initSerial() {
+  running_status = 0;
   UBRR1H = (UART_BAUDRATE_REG >> 8);
   UBRR1L = (UART_BAUDRATE_REG & 0xFF);
   //  UBRRH = 0;

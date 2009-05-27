@@ -1,189 +1,192 @@
 ##############################################################
 
-atmega8.name=Arduino NG or older w/ ATmega8
+#atmega8.name=Arduino NG or older w/ ATmega8
 
-atmega8.upload.protocol=stk500
-atmega8.upload.maximum_size=7168
-atmega8.upload.speed=19200
+#atmega8.upload.protocol=stk500
+#atmega8.upload.maximum_size=7168
+#atmega8.upload.speed=19200
 
-atmega8.bootloader.low_fuses=0xdf
-atmega8.bootloader.high_fuses=0xca
-atmega8.bootloader.path=atmega8
-atmega8.bootloader.file=ATmegaBOOT.hex
-atmega8.bootloader.unlock_bits=0x3F
-atmega8.bootloader.lock_bits=0x0F
+#atmega8.bootloader.low_fuses=0xdf
+#atmega8.bootloader.high_fuses=0xca
+#atmega8.bootloader.path=atmega8
+#atmega8.bootloader.file=ATmegaBOOT.hex
+#atmega8.bootloader.unlock_bits=0x3F
+#atmega8.bootloader.lock_bits=0x0F
 
-atmega8.build.mcu=atmega8
-atmega8.build.f_cpu=16000000L
-atmega8.build.core=arduino
-
-##############################################################
-
-atmega168.name=Arduino NG or older w/ ATmega168
-
-atmega168.upload.protocol=stk500
-atmega168.upload.maximum_size=14336
-atmega168.upload.speed=19200
-
-atmega168.bootloader.low_fuses=0xff
-atmega168.bootloader.high_fuses=0xdd
-atmega168.bootloader.extended_fuses=0x00
-atmega168.bootloader.path=atmega168
-atmega168.bootloader.file=ATmegaBOOT_168_ng.hex
-atmega168.bootloader.unlock_bits=0x3F
-atmega168.bootloader.lock_bits=0x0F
-
-atmega168.build.mcu=atmega168
-atmega168.build.f_cpu=16000000L
-atmega168.build.core=arduino
+#atmega8.build.mcu=atmega8
+#atmega8.build.f_cpu=16000000L
+#atmega8.build.core=arduino
 
 ##############################################################
 
-mini.name=Arduino Mini
+#atmega168.name=Arduino NG or older w/ ATmega168
 
-mini.upload.protocol=stk500
-mini.upload.maximum_size=14336
-mini.upload.speed=19200
+#atmega168.upload.protocol=stk500
+#atmega168.upload.maximum_size=14336
+#atmega168.upload.speed=19200
 
-mini.bootloader.low_fuses=0xff
-mini.bootloader.high_fuses=0xdd
-mini.bootloader.extended_fuses=0x00
-mini.bootloader.path=atmega168
-mini.bootloader.file=ATmegaBOOT_168_ng.hex
-mini.bootloader.unlock_bits=0x3F
-mini.bootloader.lock_bits=0x0F
+#atmega168.bootloader.low_fuses=0xff
+#atmega168.bootloader.high_fuses=0xdd
+#atmega168.bootloader.extended_fuses=0x00
+#atmega168.bootloader.path=atmega168
+#atmega168.bootloader.file=ATmegaBOOT_168_ng.hex
+#atmega168.bootloader.unlock_bits=0x3F
+#atmega168.bootloader.lock_bits=0x0F
 
-mini.build.mcu=atmega168
-mini.build.f_cpu=16000000L
-mini.build.core=arduino
-
-##############################################################
-
-bt.name=Arduino BT
-
-bt.upload.protocol=stk500
-bt.upload.maximum_size=14336
-bt.upload.speed=19200
-bt.upload.disable_flushing=true
-
-bt.bootloader.low_fuses=0xff
-bt.bootloader.high_fuses=0xdd
-bt.bootloader.extended_fuses=0x00
-bt.bootloader.path=bt
-bt.bootloader.file=ATmegaBOOT_168.hex
-bt.bootloader.unlock_bits=0x3F
-bt.bootloader.lock_bits=0x0F
-
-bt.build.mcu=atmega168
-bt.build.f_cpu=16000000L
-bt.build.core=arduino
+#atmega168.build.mcu=atmega168
+#atmega168.build.f_cpu=16000000L
+#atmega168.build.libraries=Midi CommonTools
+#atmega168.build.core=arduino
 
 ##############################################################
 
-diecimila.name=Arduino Diecimila or Duemilanove
+#mini.name=Arduino Mini
 
-diecimila.upload.protocol=stk500
-diecimila.upload.maximum_size=14336
-diecimila.upload.speed=19200
+#mini.upload.protocol=stk500
+#mini.upload.maximum_size=14336
+#mini.upload.speed=19200
 
-diecimila.bootloader.low_fuses=0xff
-diecimila.bootloader.high_fuses=0xdd
-diecimila.bootloader.extended_fuses=0x00
-diecimila.bootloader.path=atmega168
-diecimila.bootloader.file=ATmegaBOOT_168_diecimila.hex
-diecimila.bootloader.unlock_bits=0x3F
-diecimila.bootloader.lock_bits=0x0F
+#mini.bootloader.low_fuses=0xff
+#mini.bootloader.high_fuses=0xdd
+#mini.bootloader.extended_fuses=0x00
+#mini.bootloader.path=atmega168
+#mini.bootloader.file=ATmegaBOOT_168_ng.hex
+#mini.bootloader.unlock_bits=0x3F
+#mini.bootloader.lock_bits=0x0F
 
-diecimila.build.mcu=atmega168
-diecimila.build.f_cpu=16000000L
-diecimila.build.core=arduino
-
-##############################################################
-
-nano.name=Arduino Nano
-
-nano.upload.protocol=stk500
-nano.upload.maximum_size=14336
-nano.upload.speed=19200
-
-nano.bootloader.low_fuses=0xff
-nano.bootloader.high_fuses=0xdd
-nano.bootloader.extended_fuses=0x00
-nano.bootloader.path=atmega168
-nano.bootloader.file=ATmegaBOOT_168_diecimila.hex
-nano.bootloader.unlock_bits=0x3F
-nano.bootloader.lock_bits=0x0F
-
-nano.build.mcu=atmega168
-nano.build.f_cpu=16000000L
-nano.build.core=arduino
+#mini.build.mcu=atmega168
+#mini.build.f_cpu=16000000L
+#mini.build.core=arduino
 
 ##############################################################
 
-lilypad.name=LilyPad Arduino
+#bt.name=Arduino BT
+#
+#bt.upload.protocol=stk500
+#bt.upload.maximum_size=14336
+#bt.upload.speed=19200
+#bt.upload.disable_flushing=true
 
-lilypad.upload.protocol=stk500
-lilypad.upload.maximum_size=14336
-lilypad.upload.speed=19200
+#bt.bootloader.low_fuses=0xff
+#bt.bootloader.high_fuses=0xdd
+#bt.bootloader.extended_fuses=0x00
+#bt.bootloader.path=bt
+#bt.bootloader.file=ATmegaBOOT_168.hex
+#bt.bootloader.unlock_bits=0x3F
+#bt.bootloader.lock_bits=0x0F
 
-lilypad.bootloader.low_fuses=0xe2
-lilypad.bootloader.high_fuses=0xdd
-lilypad.bootloader.extended_fuses=0x00
-lilypad.bootloader.path=lilypad
-lilypad.bootloader.file=LilyPadBOOT_168.hex
-lilypad.bootloader.unlock_bits=0x3F
-lilypad.bootloader.lock_bits=0x0F
-
-lilypad.build.mcu=atmega168
-lilypad.build.f_cpu=8000000L
-lilypad.build.core=arduino
-
-##############################################################
-
-pro.name=Arduino Pro or Pro Mini (8 MHz)
-
-pro.upload.protocol=stk500
-pro.upload.maximum_size=14336
-pro.upload.speed=19200
-
-pro.bootloader.low_fuses=0xc6
-pro.bootloader.high_fuses=0xdd
-pro.bootloader.extended_fuses=0x00
-pro.bootloader.path=atmega168
-pro.bootloader.file=ATmegaBOOT_168_pro_8MHz.hex
-pro.bootloader.unlock_bits=0x3F
-pro.bootloader.lock_bits=0x0F
-
-pro.build.mcu=atmega168
-pro.build.f_cpu=8000000L
-pro.build.core=arduino
+#bt.build.mcu=atmega168
+#bt.build.f_cpu=16000000L
+#bt.build.core=arduino
 
 ##############################################################
 
-midicommand168.name=MidiCommand Second Revision (atmega168)
+#diecimila.name=Arduino Diecimila or Duemilanove
 
-midicommand168.upload.protocol=midisend
-midicommand168.upload.maximum_size=14336
-midicommand168.upload.speed=19200
-midicommand168.upload.midiid=0x37
+#diecimila.upload.protocol=stk500
+#diecimila.upload.maximum_size=14336
+#diecimila.upload.speed=19200
 
-midicommand168.bootloader.low_fuses=0xc6
-midicommand168.bootloader.high_fuses=0xdd
-midicommand168.bootloader.extended_fuses=0x00
-midicommand168.bootloader.path=atmega168
-midicommand168.bootloader.file=midicommand168.hex
-midicommand168.bootloader.unlock_bits=0x3F
-midicommand168.bootloader.lock_bits=0x0F
+#diecimila.bootloader.low_fuses=0xff
+#diecimila.bootloader.high_fuses=0xdd
+#diecimila.bootloader.extended_fuses=0x00
+#diecimila.bootloader.path=atmega168
+#diecimila.bootloader.file=ATmegaBOOT_168_diecimila.hex
+#diecimila.bootloader.unlock_bits=0x3F
+#diecimila.bootloader.lock_bits=0x0F
 
-midicommand168.build.mcu=atmega168
-midicommand168.build.f_cpu=16000000L
-midicommand168.build.core=midicommand168
-midicommand168.build.flags=
+#diecimila.build.mcu=atmega168
+#diecimila.build.f_cpu=16000000L
+#diecimila.build.libraries=Midi CommonTools MidiUartArduino
+#diecimila.build.core=arduino
+
+##############################################################
+
+#nano.name=Arduino Nano
+
+#nano.upload.protocol=stk500
+#nano.upload.maximum_size=14336
+#nano.upload.speed=19200
+
+#nano.bootloader.low_fuses=0xff
+#nano.bootloader.high_fuses=0xdd
+#nano.bootloader.extended_fuses=0x00
+#nano.bootloader.path=atmega168
+#nano.bootloader.file=ATmegaBOOT_168_diecimila.hex
+#nano.bootloader.unlock_bits=0x3F
+#nano.bootloader.lock_bits=0x0F
+
+#nano.build.mcu=atmega168
+#nano.build.f_cpu=16000000L
+#nano.build.core=arduino
+
+##############################################################
+
+#lilypad.name=LilyPad Arduino
+
+#lilypad.upload.protocol=stk500
+#lilypad.upload.maximum_size=14336
+#lilypad.upload.speed=19200
+
+#lilypad.bootloader.low_fuses=0xe2
+#lilypad.bootloader.high_fuses=0xdd
+#lilypad.bootloader.extended_fuses=0x00
+#lilypad.bootloader.path=lilypad
+#lilypad.bootloader.file=LilyPadBOOT_168.hex
+#lilypad.bootloader.unlock_bits=0x3F
+#lilypad.bootloader.lock_bits=0x0F
+
+#lilypad.build.mcu=atmega168
+#lilypad.build.f_cpu=8000000L
+#lilypad.build.core=arduino
+
+##############################################################
+
+#pro.name=Arduino Pro or Pro Mini (8 MHz)
+
+#pro.upload.protocol=stk500
+#pro.upload.maximum_size=14336
+#pro.upload.speed=19200
+
+#pro.bootloader.low_fuses=0xc6
+#pro.bootloader.high_fuses=0xdd
+#pro.bootloader.extended_fuses=0x00
+#pro.bootloader.path=atmega168
+#pro.bootloader.file=ATmegaBOOT_168_pro_8MHz.hex
+#pro.bootloader.unlock_bits=0x3F
+#pro.bootloader.lock_bits=0x0F
+
+#pro.build.mcu=atmega168
+#pro.build.f_cpu=8000000L
+#pro.build.core=arduino
+
+##############################################################
+
+#midicommand168.name=MidiCommand Second Revision (atmega168)
+
+#midicommand168.upload.protocol=midisend
+#midicommand168.upload.maximum_size=14336
+#midicommand168.upload.speed=19200
+#midicommand168.upload.midiid=0x37
+
+#midicommand168.bootloader.low_fuses=0xc6
+#midicommand168.bootloader.high_fuses=0xdd
+#midicommand168.bootloader.extended_fuses=0x00
+#midicommand168.bootloader.path=atmega168
+#midicommand168.bootloader.file=midicommand168.hex
+#midicommand168.bootloader.unlock_bits=0x3F
+#midicommand168.bootloader.lock_bits=0x0F
+
+#midicommand168.build.mcu=atmega168
+#midicommand168.build.f_cpu=16000000L
+#midicommand168.build.core=midicommand168
+#midicommand168.build.libraries=Midi GUI CommonTools
+#midicommand168.build.flags=
 
 
 ############################################################
 
-mididuino.name=MidiDuino 1.0 (atmega32 16 Mhz)
+mididuino.name=MidiDuino USB 1.0 (atmega32 16 Mhz)
 
 mididuino.upload.protocol=midisend
 mididuino.upload.maximum_size=28672
@@ -206,26 +209,26 @@ mididuino.build.flags=
 
 ############################################################
 
-minicommand.name=Minicommand 1.0 (atmega64 16 Mhz)
+#minicommand.name=Minicommand 1.0 (atmega64 16 Mhz)
 
-minicommand.upload.protocol=midisend
-minicommand.upload.maximum_size=57344
-minicommand.upload.speed=19200
-minicommand.upload.midiid=0x40
+#minicommand.upload.protocol=midisend
+#minicommand.upload.maximum_size=57344
+#minicommand.upload.speed=19200
+#minicommand.upload.midiid=0x40
 
-minicommand.bootloader.low_fuses=0x2f
-minicommand.bootloader.high_fuses=0x8a
-minicommand.bootloader.extended_fuses=0xff
-minicommand.bootloader.path=minicommand
-minicommand.bootloader.file=minicommand.hex
-minicommand.bootloader.unlock_bits=0x3F
-minicommand.bootloader.lock_bits=0x0F
+#minicommand.bootloader.low_fuses=0x2f
+#minicommand.bootloader.high_fuses=0x8a
+#minicommand.bootloader.extended_fuses=0xff
+#minicommand.bootloader.path=minicommand
+#minicommand.bootloader.file=minicommand.hex
+#minicommand.bootloader.unlock_bits=0x3F
+#minicommand.bootloader.lock_bits=0x0F
 
-minicommand.build.mcu=atmega64
-minicommand.build.f_cpu=16000000L
-minicommand.build.core=minicommand
-minicommand.build.libraries=Midi GUI CommonTools
-minicommand.build.flags=
+#minicommand.build.mcu=atmega64
+#minicommand.build.f_cpu=16000000L
+#minicommand.build.core=minicommand
+#minicommand.build.libraries=Midi GUI CommonTools
+#minicommand.build.flags=  
 
 ############################################################
 
@@ -252,23 +255,45 @@ minicommand2.build.flags=-Wl,--section-start=.extram=0x802000
 
 ############################################################
 
-mididuino-small.name=Mididuino-Small 1.0 (atmega168 arduino clone)
+#mididuino-small.name=Mididuino-Small 1.0 (atmega168 arduino clone)
 
-mididuino-small.upload.protocol=midisend
-mididuino-small.upload.maximum_size=14000
-mididuino-small.upload.speed=19200
-mididuino-small.upload.midiid=0x43
+#mididuino-small.upload.protocol=midisend
+#mididuino-small.upload.maximum_size=14000
+#mididuino-small.upload.speed=19200
+#mididuino-small.upload.midiid=0x43
 
-mididuino-small.bootloader.low_fuses=0x2f
-mididuino-small.bootloader.high_fuses=0x8a
-mididuino-small.bootloader.extended_fuses=0xff
-mididuino-small.bootloader.path=mididuino-small
-mididuino-small.bootloader.file=minicommand.hex
-mididuino-small.bootloader.unlock_bits=0x3F
-mididuino-small.bootloader.lock_bits=0x0F
+#mididuino-small.bootloader.low_fuses=0x2f
+#mididuino-small.bootloader.high_fuses=0x8a
+#mididuino-small.bootloader.extended_fuses=0xff
+#mididuino-small.bootloader.path=mididuino-small
+#mididuino-small.bootloader.file=minicommand.hex
+#mididuino-small.bootloader.unlock_bits=0x3F
+#mididuino-small.bootloader.lock_bits=0x0F
 
-mididuino-small.build.mcu=atmega168
-mididuino-small.build.f_cpu=16000000L
-mididuino-small.build.core=mididuino-small
-mididuino-small.build.libraries=CommonTools Midi
-mididuino-small.build.flags=
+#mididuino-small.build.mcu=atmega168
+#mididuino-small.build.f_cpu=16000000L
+#mididuino-small.build.core=mididuino-small
+#mididuino-small.build.libraries=CommonTools Midi GUI
+#mididuino-small.build.flags=
+
+############################################################
+
+#atmega328.name=Arduino Duemilanove w/ Atmega328
+
+#atmega328.upload.protocol=stk500
+#atmega328.upload.maximum_size=30720
+#atmega328.upload.speed=57600
+
+#atmega328.bootloader.low_fuses=0xFF
+#atmega328.bootloader.high_fuses=0xDA
+#atmega328.bootloader.extended_fuses=0x05
+#atmega328.bootloader.path=atmega168
+#atmega328.bootloader.file=ATmegaBOOT_168_atmega328.hex
+#atmega328.bootloader.unlock_bits=0x3F
+#atmega328.bootloader.lock_bits=0x0F
+
+#atmega328.build.mcu=atmega328p
+#atmega328.build.f_cpu=16000000L
+#atmega328.build.libraries=Midi CommonTools MidiUartArduino
+#atmega328.build.core=arduino
+

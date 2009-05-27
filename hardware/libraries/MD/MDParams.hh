@@ -710,6 +710,42 @@
 #define MODEL_LFOD 22
 #define MODEL_LFOM 23
 
+#define MD_ECHO_TIME 0
+#define MD_ECHO_MOD  1
+#define MD_ECHO_MFRQ 2
+#define MD_ECHO_FB   3
+#define MD_ECHO_FLTF 4
+#define MD_ECHO_FLTW 5
+#define MD_ECHO_MONO 6
+#define MD_ECHO_LEV  7
+
+#define MD_REV_DVOL 0
+#define MD_REV_PRED 1
+#define MD_REV_DEC  2
+#define MD_REV_DAMP 3
+#define MD_REV_HP   4
+#define MD_REV_LP   5
+#define MD_REV_GATE 6
+#define MD_REV_LEV  7
+
+#define MD_EQ_LF    0
+#define MD_EQ_LG    1
+#define MD_EQ_HF    2
+#define MD_EQ_HG    3
+#define MD_EQ_PF    4
+#define MD_EQ_PG    5
+#define MD_EQ_PQ    6
+#define MD_EQ_GAIN  7
+
+#define MD_DYN_ATCK 0
+#define MD_DYN_REL  1
+#define MD_DYN_TRHD 2
+#define MD_DYN_RTIO 3
+#define MD_DYN_KNEE 4
+#define MD_DYN_HP   5
+#define MD_DYN_OUTG 6
+#define MD_DYN_MIX  7
+
 #define LFO_TRACK  0
 #define LFO_PARAM  1
 #define LFO_SHP1   2

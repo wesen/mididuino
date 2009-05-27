@@ -3,8 +3,8 @@
 
 #include <stdlib.h>
 
-#include <MidiUart.h>
 #include <WProgram.h>
+#include <MidiUart.h>
 #include <inttypes.h>
 
 extern "C" {
