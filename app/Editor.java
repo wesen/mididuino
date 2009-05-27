@@ -803,9 +803,9 @@ public class Editor extends JFrame
 			}
 			menu.add(boardsMenu);
 			
-			serialMenu = new JMenu("Serial Port");
-			populateSerialMenu();
-			menu.add(serialMenu);
+//			serialMenu = new JMenu("Serial Port");
+//			populateSerialMenu();
+//			menu.add(serialMenu);
 			
 			
 			midiMenu = new JMenu("MIDI Ports");

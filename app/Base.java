@@ -249,7 +249,7 @@ public class Base {
           findFolderMethod.invoke(null, new Object[] { new Short(kUserDomain),
                                                        domainLibrary });
 
-        dataFolder = new File(libraryFolder, "Arduino");
+        dataFolder = new File(libraryFolder, "Mididuino");
 
       } catch (Exception e) {
         // this could be FileNotFound or NoSuchMethod
@@ -257,7 +257,7 @@ public class Base {
         //e.printStackTrace();
         //System.exit(1);
         showError("Problem getting data folder",
-                  "Error getting the Arduino data folder.", e);
+                  "Error getting the Mididuino data folder.", e);
       }
 
     } else if (Base.isWindows()) {
@@ -285,11 +285,11 @@ public class Base {
         //topKey.closeKey();  // necessary?
         //localKey.closeKey();
 
-        dataFolder = new File(appDataPath, "Arduino");
+        dataFolder = new File(appDataPath, "Mididuino");
 
       } catch (Exception e) {
         showError("Problem getting data folder",
-                  "Error getting the Arduino data folder.", e);
+                  "Error getting the Mididuino data folder.", e);
       }
       //return null;
 
@@ -317,7 +317,7 @@ public class Base {
 
     if (!result) {
       showError("Settings issues",
-                "Arduino cannot run because it could not\n" +
+                "Mididuino cannot run because it could not\n" +
                 "create a folder to store your settings.", null);
     }
 
@@ -416,7 +416,7 @@ public class Base {
         File documentsFolder = (File)
           findFolderMethod.invoke(null, new Object[] { new Short(kUserDomain),
                                                        domainDocuments });
-        sketchbookFolder = new File(documentsFolder, "Arduino");
+        sketchbookFolder = new File(documentsFolder, "Mididuino");
 
       } catch (Exception e) {
         //showError("Could not find folder",
@@ -447,7 +447,7 @@ public class Base {
         String personalPath = cleanKey(localKey.getStringValue("Personal"));
         //topKey.closeKey();  // necessary?
         //localKey.closeKey();
-        sketchbookFolder = new File(personalPath, "Arduino");
+        sketchbookFolder = new File(personalPath, "Mididuino");
 
       } catch (Exception e) {
         //showError("Problem getting folder",
@@ -496,7 +496,7 @@ public class Base {
 
     if (!result) {
       showError("error",
-                "Arduino cannot run because it could not\n" +
+                "Mididuino cannot run because it could not\n" +
                 "create a folder to store your sketchbook.", null);
     }
 
