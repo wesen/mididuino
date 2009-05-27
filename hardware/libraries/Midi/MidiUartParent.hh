@@ -30,7 +30,8 @@ public:
   }
 
   void sendCommandByte(uint8_t byte) {
-    if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
+    // XXX not sure if the 0xF6 is correct
+    if (MIDI_IS_REALTIME_STATUS_BYTE(byte) || byte == 0xF6) {
       putc_immediate(byte);
     } else {
       if (running_status != byte) 
