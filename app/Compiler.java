@@ -126,8 +126,6 @@ public class Compiler implements MessageConsumer {
         ((Library) sketch.importedLibraries.get(i)).getFolder().getPath());
     }
     
-	String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
-	String additionalFlags[] = additionalFlagString.split(" ");
     List baseCommandLinker = new ArrayList(Arrays.asList(new String[] {
       avrBasePath + "avr-gcc",
       "-Os",
@@ -136,8 +134,14 @@ public class Compiler implements MessageConsumer {
       "-o",
       buildPath + File.separator + sketch.name + ".elf"
     }));
-    baseCommandLinker.addAll(Arrays.asList(additionalFlags));
-										   
+		String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+		if (additionalFlagString != null && !additionalFlagString.equals("")) {
+			String additionalFlags[] = additionalFlagString.split(" ");
+			if (additionalFlags.length > 0) {
+				baseCommandLinker.addAll(Arrays.asList(additionalFlags));
+			}
+		}
+		
     String runtimeLibraryName = buildPath + File.separator + "core.a";
 
     List baseCommandAR = new ArrayList(Arrays.asList(new String[] {
@@ -236,20 +240,21 @@ public class Compiler implements MessageConsumer {
           (String) sourceNames.get(i), (String) objectNames.get(i))) != 0)
           return false;
       }
+		
 
       for(int i = 0; i < sourceNamesCPP.size(); i++) {
         if (execAsynchronously(getCommandCompilerCPP(avrBasePath, includePaths,
           (String) sourceNamesCPP.get(i), (String) objectNamesCPP.get(i))) != 0)
           return false;
       }
+		
 
 		for(int i = 0; i < sourceNamesASM.size(); i++) {
 			if (execAsynchronously(getCommandCompilerASM(avrBasePath, includePaths,
 								(String) sourceNamesASM.get(i), (String) objectNamesASM.get(i))) != 0)
 				return false;
 		}
-		
-		
+
 		for (int i = 0; i < sketchObjectNames.size(); i++) {
 			if (execAsynchronously(getCommandConvertObject(avrBasePath, (String)sketchObjectNames.get(i))) != 0) {
 				return false;
@@ -331,7 +336,7 @@ public class Compiler implements MessageConsumer {
     String[] command = new String[commandList.size()];
     commandList.toArray(command);
     int result = 0;
-    
+		
     if (Preferences.getBoolean("build.verbose")) {
       for(int j = 0; j < command.length; j++) {
         System.out.print(command[j] + " ");
@@ -350,7 +355,6 @@ public class Compiler implements MessageConsumer {
     while (compiling) {
       try {
         result = process.waitFor();
-        //System.out.println("result is " + result);
         compiling = false;
       } catch (InterruptedException ignored) { }
     }
@@ -376,8 +380,6 @@ public class Compiler implements MessageConsumer {
   public void message(String s) {
     // This receives messages as full lines, so a newline needs
     // to be added as they're printed to the console.
-    //System.err.print(s);
-
     // ignore cautions
     if (s.indexOf("warning") != -1) return;
 
@@ -552,8 +554,12 @@ public class Compiler implements MessageConsumer {
       "-DF_CPU=" + Preferences.get("boards." + Preferences.get("board") + ".build.f_cpu"),
     }));
 	String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
-	String additionalFlags[] = additionalFlagString.split(" ");
-	baseCommandCompiler.addAll(Arrays.asList(additionalFlags));
+	  if (additionalFlagString != null && !additionalFlagString.equals("")) {
+		  String additionalFlags[] = additionalFlagString.split(" ");
+		  if (additionalFlags.length > 0) {
+		  baseCommandCompiler.addAll(Arrays.asList(additionalFlags));
+		  }
+	  }
 
 
     for (int i = 0; i < includePaths.size(); i++) {
@@ -563,6 +569,7 @@ public class Compiler implements MessageConsumer {
     baseCommandCompiler.add(sourceName);
     baseCommandCompiler.add("-o"+ objectName);
     
+	  
     return baseCommandCompiler;
   }
   
@@ -581,9 +588,13 @@ public class Compiler implements MessageConsumer {
       "-mmcu=" + Preferences.get("boards." + Preferences.get("board") + ".build.mcu"),
       "-DF_CPU=" + Preferences.get("boards." + Preferences.get("board") + ".build.f_cpu"),
     }));
-	String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
-	String additionalFlags[] = additionalFlagString.split(" ");
-	baseCommandCompilerCPP.addAll(Arrays.asList(additionalFlags));
+	  String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+	  if (additionalFlagString != null && !additionalFlagString.equals("")) {
+		  String additionalFlags[] = additionalFlagString.split(" ");
+		  if (additionalFlags.length > 0) {
+			  baseCommandCompilerCPP.addAll(Arrays.asList(additionalFlags));
+		  }
+	  }
 
     for (int i = 0; i < includePaths.size(); i++) {
       baseCommandCompilerCPP.add("-I" + (String) includePaths.get(i));
@@ -619,8 +630,12 @@ public class Compiler implements MessageConsumer {
 																  "-DF_CPU=" + Preferences.get("boards." + Preferences.get("board") + ".build.f_cpu"),
 																  }));
 		String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
-		String additionalFlags[] = additionalFlagString.split(" ");
-		baseCommandCompilerASM.addAll(Arrays.asList(additionalFlags));
+		if (additionalFlagString != null && !additionalFlagString.equals("")) {
+			String additionalFlags[] = additionalFlagString.split(" ");
+			if (additionalFlags.length > 0) {
+				baseCommandCompilerASM.addAll(Arrays.asList(additionalFlags));
+			}
+		}
 		
 		for (int i = 0; i < includePaths.size(); i++) {
 			baseCommandCompilerASM.add("-I" + (String) includePaths.get(i));
