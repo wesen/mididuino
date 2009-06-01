@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2006-2008 by Roland Riegel <feedback@roland-riegel.de>
+ * Copyright (c) 2006-2009 by Roland Riegel <feedback@roland-riegel.de>
  *
  * This file is free software; you can redistribute it and/or modify
  * it under the terms of either the GNU General Public License version 2
@@ -12,6 +12,11 @@
 #define SD_RAW_CONFIG_H
 
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /**
  * \addtogroup sd_raw
@@ -51,7 +56,7 @@
  * \note When SD_RAW_WRITE_SUPPORT is 1, SD_RAW_SAVE_RAM will
  *       be reset to 0.
  */
-#define SD_RAW_SAVE_RAM 0
+#define SD_RAW_SAVE_RAM 1
 
 /**
  * \ingroup sd_raw_config
@@ -70,7 +75,8 @@
 #if defined(__AVR_ATmega8__) || \
     defined(__AVR_ATmega48__) || \
     defined(__AVR_ATmega88__) || \
-    defined(__AVR_ATmega168__)
+    defined(__AVR_ATmega168__) || \
+    defined(__AVR_ATmega328__)
     #define configure_pin_mosi() DDRB |= (1 << DDB3)
     #define configure_pin_sck() DDRB |= (1 << DDB5)
     #define configure_pin_ss() DDRB |= (1 << DDB2)
@@ -92,25 +98,20 @@
       defined(__AVR_ATmega169__)
     #define configure_pin_mosi() DDRB |= (1 << DDB2)
     #define configure_pin_sck() DDRB |= (1 << DDB1)
-    #define configure_pin_ss() DDRE |= (1 << DDE7)
+    #define configure_pin_ss() DDRB |= (1 << DDB0)
     #define configure_pin_miso() DDRB &= ~(1 << DDB3)
 
-#define select_card()   PORTE &= ~(1 << PE7)
-#define unselect_card() PORTE |= (1 << PE7)
+    #define select_card() PORTB &= ~(1 << PB0)
+    #define unselect_card() PORTB |= (1 << PB0)
 #else
     #error "no sd/mmc pin mapping available!"
 #endif
 
-// #define configure_pin_available() DDRC &= ~(1 << DDC4)
-// #define configure_pin_locked() DDRC &= ~(1 << DDC5)
-// #define get_pin_available() ((PINC >> PC4) & 0x01)
-// #define get_pin_locked() ((PINC >> PC5) & 0x01)
+#define configure_pin_available() DDRC &= ~(1 << DDC4)
+#define configure_pin_locked() DDRC &= ~(1 << DDC5)
 
-#define configure_pin_available()
-#define configure_pin_locked()
-#define get_pin_available() 0
-#define get_pin_locked() 0
-
+#define get_pin_available() ((PINC >> PC4) & 0x01)
+#define get_pin_locked() ((PINC >> PC5) & 0x01)
 
 #if SD_RAW_SDHC
     typedef uint64_t offset_t;
@@ -125,6 +126,10 @@
 #else
 #undef SD_RAW_WRITE_BUFFERING
 #define SD_RAW_WRITE_BUFFERING 0
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif
