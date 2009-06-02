@@ -1,19 +1,22 @@
-CC = gcc -arch i386 -arch ppc
+CC = gcc
+ARCHFLAGS = -arch i386 -arch ppc
+#ARCHFLAGS = -arch i386 
+#ARCHFLAGS = -arch ppc
 #CFLAGS += -mno-cygwin
-CFLAGS += -W -Wall
+CFLAGS += -W -Wall $(ARCHFLAGS)
 #LDFLAGS += -lwinmm
 DLLTOOL = dlltool
 
 all: midi-send
 
 %.o: %.c
-	$(CC) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 midi-send: midi-send.o midi-apple.o
-	$(CC) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
+	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
 
 midi-merge: midi-merge.c
-	$(CC) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
+	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
 
 midi-console: midi-console.c
 	$(CC) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+

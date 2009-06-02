@@ -43,6 +43,37 @@ unsigned char flashram[MAX_KB_SIZE * 1024];
 unsigned int max_address = 0;
 unsigned int cur_address = 0;
 
+void closeFile() {
+  if (fin != NULL) {
+    fclose(fin);
+    fin = NULL; 
+  }
+}
+
+int isHexFile(char *str) {
+  int len = strlen(str);
+  if (len > 4) {
+    if (!strncmp(str + (len - 4), ".hex", 4)) {
+      return 1;
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
+  }
+}
+
+void hexdump(unsigned char *buf, int len) {
+  int i;
+  for (i = 0; i < len; i+=16) {
+    int j;
+    for (j = i; j < MIN(i+16, len); j++) {
+      printf("%2x ", buf[j]);
+    }
+    printf("\n");
+  }
+}
+
 void loadHexFile(void) {
   char buf[128];
   unsigned long i;
@@ -51,6 +82,7 @@ void loadHexFile(void) {
 
   max_address = 0;
   cur_address = 0;
+  
   while (fgets(buf, sizeof(buf), fin)) {
     unsigned int len = strlen(buf);
     if (len < 10) {
@@ -59,7 +91,6 @@ void loadHexFile(void) {
     }
 
     unsigned long address;
-    unsigned char data_buf[128];
   
     char size_str[3];
     size_str[2] = 0;
@@ -92,9 +123,13 @@ void loadHexFile(void) {
 	data_str[2] = 0;
 	data_str[0] = buf[9 + i];
 	data_str[1] = buf[10 + i];
-	
-	sscanf(data_str, "%x", flashram + address + cnt++);
+
+	unsigned int byte;
+	sscanf(data_str, "%x", &byte);
+	flashram[address + cnt++] = byte & 0xFF;
       }
+      //      printf("address: %x, size: %x, type: %x\n", address, size, type);
+      //      hexdump(flashram + address, size);
       max_address = address + cnt;
     }
   }
@@ -102,42 +137,13 @@ void loadHexFile(void) {
   closeFile();
 }
 
-void closeFile() {
-  if (fin != NULL) {
-    fclose(fin);
-    fin = NULL; 
-  }
-}
-
-int isHexFile(char *str) {
-  int len = strlen(str);
-  if (len > 4) {
-    if (!strncmp(str + (len - 4), ".hex", 4)) {
-      return 1;
-    } else {
-      return 0;
-    }
-  } else {
-    return 0;
-  }
-}
-
-void hexdump(unsigned char *buf, int len) {
-  int i;
-  for (i = 0; i < len; i+=16) {
-    int j;
-    for (j = i; j < MIN(i+16, len); j++) {
-      printf("%2x ", buf[j]);
-    }
-    printf("\n");
-  }
-}
 
 int send_sysex_bootload(void) {
   canSendSysex = 0;
   waitingForBootloader = 1;
   bootmsg[3] = deviceID;
   midiSendLong(bootmsg, 6);
+  return 0;
 }
 
 
@@ -290,7 +296,6 @@ int send_sysex_part(void) {
 	unsigned int code_len = 0;
 	unsigned int cnt;
 	uint8_t bits;
-	uint8_t byte;
 	
 	for (cnt = 0; cnt < (len - 12); cnt++) {
 	  uint8_t byte = part_buf[10 + cnt];
@@ -490,7 +495,6 @@ int main(int argc, char *argv[]) {
 
   midiInitialize(inputDevice, outputDevice);
 
-  size_t len;
   if (bootloader) {
     send_sysex_bootload();
   } else {

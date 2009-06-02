@@ -10,6 +10,9 @@ MIDIPortRef     gOutPort = NULL;
 MIDIEndpointRef gDest = NULL;
 int gChannel = 0;
 
+extern int verbose;
+void hexdump(unsigned char *buf, int len);
+
 #define MAX_TIMEOUT_CALLBACKS 3
 
 int callbacks = 0;
@@ -30,6 +33,10 @@ void midiSendLong(unsigned char *buf, unsigned long len) {
 
   sysexReq->destination = gDest;
   sysexReq->data = ((unsigned char *)sysexReq) + sizeof(struct MIDISysexSendRequest);
+  if (verbose >= 3) {
+    printf("sending MIDI\n");
+    hexdump(buf, len);
+  }
   //  printf("sysexReq: %p, data: %p\n", sysexReq, sysexReq->data);
   memcpy(sysexReq->data, buf, len);
   sysexReq->bytesToSend = len;
