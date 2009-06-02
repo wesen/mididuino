@@ -110,10 +110,23 @@ uint8_t MidiUartClass::getc() {
 
 volatile uint16_t clock = 0;
 
+long lastRunningStatusReset = 0;
 ISR(TIMER1_OVF_vect) {
+  long time = millis();
+  if (abs(time - lastRunningStatusReset) > 3000) {
+    MidiUart.resetRunningStatus();
+    lastRunningStatusReset = time;
+  }
   if (MidiClock.state == MidiClock.STARTED) {
     clock++;
     MidiClock.handleTimerInt();
   }
 }
 
+extern "C" {
+  void handleClockByte() {
+    if (MidiClock.mode == MidiClock.EXTERNAL_MIDI) {
+      MidiClock.handleClock();
+    }
+  }
+}

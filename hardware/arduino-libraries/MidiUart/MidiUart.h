@@ -30,6 +30,7 @@ extern MidiUartClass MidiUart;
 
 extern "C" {
 extern volatile uint16_t clock;
+  void handleClockByte();
 }
 
 #endif /* MIDI_UART_H__ */
