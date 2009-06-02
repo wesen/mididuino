@@ -30,7 +30,4 @@ void loop() {
     byte b = MidiUart.getc();
       Midi.handleByte(b);
   }
-  if (MidiClock.state == MidiClock.STARTED || MidiClock.state == MidiClock.STARTING) {
-    digitalWrite(ledPin, HIGH);
-  }
 }
