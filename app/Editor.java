@@ -1132,14 +1132,31 @@ public class Editor extends JFrame
 			menu.add(item);
 			 */
 			
-			item = newJMenuItem("Visit www.arduino.cc", '5');
+			item = new JMenuItem("Open user manual");
 			item.addActionListener(new ActionListener() {
-														 public void actionPerformed(ActionEvent e) {
-														 Base.openURL("http://www.arduino.cc/");
-														 }
-														 });
+								   public void actionPerformed(ActionEvent e) {
+								   Base.openURL(System.getProperty("user.dir") + File.separator +
+												"reference" + File.separator + "minicommand-preliminary.pdf");
+								   }
+								   });
 			menu.add(item);
-
+			
+			item = new JMenuItem("Visit MidiDuino page");
+			item.addActionListener(new ActionListener() {
+								   public void actionPerformed(ActionEvent e) {
+								   Base.openURL("http://ruinwesen.com/mididuino");
+								   }
+								   });
+			menu.add(item);
+			
+			item = new JMenuItem("Visit www.arduino.cc");
+			item.addActionListener(new ActionListener() {
+								   public void actionPerformed(ActionEvent e) {
+								   Base.openURL("http://www.arduino.cc/");
+								   }
+								   });
+			menu.add(item);
+			
 			item = new JMenuItem("Visit ruinwesen.com");
 			item.addActionListener(new ActionListener() {
 								   public void actionPerformed(ActionEvent e) {
