@@ -1,8 +1,0 @@
-
-- add clocking from second midi port
-- merging to second midi port
-
-later:
-- refactor libraries so that the MIDI stack is external (this will
-  probably require a few changes to the arduino java application)
-- add SD-Card storage
