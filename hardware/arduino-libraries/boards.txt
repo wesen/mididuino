@@ -1,6 +1,6 @@
 ##############################################################
 
-diecimilamidi.name=Arduino Diecimila or Duemilanove w/ ATmega168
+diecimilamidi.name=Arduino Diecimila or Duemilanove w/ ATmega168 and MIDI
 
 diecimilamidi.upload.protocol=stk500
 diecimilamidi.upload.maximum_size=14336
