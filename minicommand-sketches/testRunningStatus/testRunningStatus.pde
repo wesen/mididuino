@@ -1,9 +1,14 @@
 void setup() {
+  MidiUart.useRunningStatus = true;
+  MidiClock.mode = MidiClock.INTERNAL;
+  MidiClock.setTempo(100);
+  MidiClock.transmit = true;
+  sei();
+  MidiUart.sendNoteOn(100, 100);
+  MidiClock.start();
 }
 
 void loop() {
-  MidiUart.sendNoteOn(100, 100);
-  delay(100);
 }
 
 void handleGui() {

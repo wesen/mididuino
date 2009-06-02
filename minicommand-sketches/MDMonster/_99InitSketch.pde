@@ -71,4 +71,3 @@ InitSketch initSketch;
 void setup() {
   setSketch(initSketch);
 }
-

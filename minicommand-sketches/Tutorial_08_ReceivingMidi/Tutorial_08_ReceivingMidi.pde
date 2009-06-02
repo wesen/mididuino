@@ -8,7 +8,7 @@ void onCCCallback(uint8_t *msg) {
 			param1.setValue(msg[2]);
 		} else if (msg[1] == 2) {
 			param2.setValue(msg[2]);
-		}
+ 		}
 	}
 }
 
