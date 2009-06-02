@@ -280,7 +280,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>12</integer>
+									<integer>8</integer>
 									<integer>3</integer>
 									<integer>0</integer>
 								</array>
@@ -323,7 +323,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>EditorButtons.java</string>
+								<string>Base.java</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -331,11 +331,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>EditorButtons.java</string>
+										<string>Base.java</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>6449B5930FCDA83300D4FB02</string>
+										<string>64E7E81D0FD597C8008F172F</string>
 										<key>history</key>
 										<array>
 											<string>64A56FAE0EE45086002733F4</string>
@@ -360,9 +360,9 @@
 											<string>6449B5840FCDA83300D4FB02</string>
 											<string>6449B5850FCDA83300D4FB02</string>
 											<string>6449B5860FCDA83300D4FB02</string>
-											<string>6449B5870FCDA83300D4FB02</string>
-											<string>6449B5880FCDA83300D4FB02</string>
-											<string>6449B5890FCDA83300D4FB02</string>
+											<string>64E2FFCB0FD56A610065501E</string>
+											<string>64E2FFCC0FD56A610065501E</string>
+											<string>64E2FFCF0FD56A610065501E</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -390,15 +390,7 @@
 											<string>648417DD0F714F1C006A7398</string>
 											<string>648417FB0F715871006A7398</string>
 											<string>648418650F715B3F006A7398</string>
-											<string>6449B58A0FCDA83300D4FB02</string>
-											<string>6449B58B0FCDA83300D4FB02</string>
-											<string>6449B58C0FCDA83300D4FB02</string>
 											<string>6449B58D0FCDA83300D4FB02</string>
-											<string>6449B58E0FCDA83300D4FB02</string>
-											<string>6449B58F0FCDA83300D4FB02</string>
-											<string>6449B5900FCDA83300D4FB02</string>
-											<string>6449B5910FCDA83300D4FB02</string>
-											<string>6449B5920FCDA83300D4FB02</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -456,9 +448,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>6449B5940FCDA83300D4FB02</string>
+				<string>64E7E81E0FD597C8008F172F</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>6449B5950FCDA83300D4FB02</string>
+				<string>64E7E81F0FD597C8008F172F</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -592,9 +584,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>6444634D0E75D3C800721A89</string>
 		<string>/Users/manuel/mididuino/build/macosx/Arduino.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
