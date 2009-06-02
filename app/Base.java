@@ -296,7 +296,7 @@ public class Base {
     } else {
       // otherwise make a .arduino directory int the user's home dir
       File home = new File(System.getProperty("user.home"));
-      dataFolder = new File(home, ".arduino");
+      dataFolder = new File(home, ".mididuino");
     }
 
     // create the folder if it doesn't exist already
