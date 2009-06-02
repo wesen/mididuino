@@ -112,6 +112,7 @@ SIGNAL(USART0_TX_vect) {
 #endif
 
 MidiUartClass2::MidiUartClass2() : MidiUartClass() {
+  initSerial();
 }
 
 void MidiUartClass2::initSerial() {

@@ -38,6 +38,8 @@ void gui_poll() {
   Encoders.poll(sr);
 }
 
+uint16_t lastRunningStatusReset = 0;
+
 ISR(TIMER2_OVF_vect) {
   //  setLed2();
 
@@ -47,6 +49,11 @@ ISR(TIMER2_OVF_vect) {
 #endif
   slowclock++;
 
+  if (abs(slowclock - lastRunningStatusReset) > 3000) {
+    MidiUart.resetRunningStatus();
+    lastRunningStatusReset = slowclock;
+  }
+  
   //  clearLed2();
 }
 
