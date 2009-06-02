@@ -10,7 +10,7 @@ public:
   bool useRunningStatus;
   
   MidiUartParent() {
-    useRunningStatus = true;
+    useRunningStatus = false;
     running_status = 0;
     currentChannel = 0x0;
   }
@@ -32,8 +32,10 @@ public:
   }
 
   void sendCommandByte(uint8_t byte) {
-    // XXX not sure if the 0xF6 is correct
-    if (MIDI_IS_REALTIME_STATUS_BYTE(byte) || byte == 0xF6) {
+    if (MIDI_IS_REALTIME_STATUS_BYTE(byte) || MIDI_IS_SYSCOMMON_STATUS_BYTE(byte)) {
+      if (!MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
+	running_status = 0;
+      }
       putc_immediate(byte);
     } else {
       if (useRunningStatus) {
@@ -44,6 +46,10 @@ public:
 	putc(byte);
       }
     }
+  }
+
+  inline void resetRunningStatus() {
+    running_status = 0;
   }
 
   inline void sendNoteOn(uint8_t note, uint8_t velocity) {
