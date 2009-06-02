@@ -2319,7 +2319,8 @@ uint8_t fat_get_fs_free_32_callback(uint8_t* buffer, offset_t offset, void* p)
     struct fat_usage_count_callback_arg* count_arg = (struct fat_usage_count_callback_arg*) p;
     uintptr_t buffer_size = count_arg->buffer_size;
 
-    for(uintptr_t i = 0; i < buffer_size; i += 4, buffer += 4)
+    uintptr_t i;
+    for(i = 0; i < buffer_size; i += 4, buffer += 4)
     {
         uint32_t cluster = *((uint32_t*) &buffer[0]);
         if(cluster == HTOL32(FAT32_CLUSTER_FREE))

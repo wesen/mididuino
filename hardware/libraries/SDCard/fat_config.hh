@@ -84,7 +84,7 @@ void get_datetime(uint16_t* year, uint8_t* month, uint8_t* day, uint8_t* hour, u
  * \ingroup fat_config
  * Maximum number of file handles.
  */
-#define FAT_FILE_COUNT 1
+#define FAT_FILE_COUNT 4
 
 /**
  * \ingroup fat_config
