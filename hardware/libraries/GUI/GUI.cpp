@@ -6,6 +6,7 @@
 Encoder::Encoder(char *_name) {
   old = 0;
   cur = 0;
+  redisplay = false;
   setName(_name);
 }
 
@@ -69,8 +70,10 @@ void EncoderPage::display(bool redisplay) {
   GUI.setLine(GUI.LINE2);
   for (uint8_t i = 0; i < 4; i++) {
     if (encoders[i] != NULL)
-      if (encoders[i]->hasChanged() || redisplay)
+      if (encoders[i]->hasChanged() || redisplay || encoders[i]->redisplay) {
 	GUI.put_value(i, encoders[i]->getValue());
+	encoders[i]->redisplay = false;
+      }
   }
 }
 

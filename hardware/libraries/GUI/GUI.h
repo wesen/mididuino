@@ -20,6 +20,7 @@ class Encoder {
     if (_name != NULL)
       m_strncpy_fill(name, _name, 4);
   }
+  bool redisplay;
   virtual void update(encoder_t *enc);
   virtual void handle(int val);
   void checkHandle() {
@@ -39,7 +40,8 @@ class Encoder {
     return old;
   }
   void setValue(int value) {
-    cur = value;
+    old = cur = value;
+    redisplay = true;
   }
 };
 
