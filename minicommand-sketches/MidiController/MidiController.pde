@@ -28,7 +28,7 @@ void initSettings() {
 
 void initEncoder(int page, int encoder) {
       ccEncoders[page][encoder].cc = ccs[page][encoder];
-      ccEncoders[page][encoder].cc = channels[page][encoder];
+      ccEncoders[page][encoder].channel = channels[page][encoder];
       ccEncoders[page][encoder].setName(names[page][encoder]);
       ccEncoders[page][encoder].min = mins[page][encoder];
       ccEncoders[page][encoder].max = maxs[page][encoder];

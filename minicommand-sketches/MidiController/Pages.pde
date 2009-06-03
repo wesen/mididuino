@@ -1,13 +1,15 @@
 void writeConfigSettings() {
   GUI.flash_p_strings_fill(PSTR(""), PSTR("WRITE SETTINGS"));
-  writeSettings();
   showCCPage(currentCCPage);
+  writeSettings();
 }
 
 void quitConfig() {
-  GUI.flash_p_strings_fill(PSTR("QUIT UNSAVED"), PSTR(""));
   showCCPage(currentCCPage);
+  GUI.flash_p_strings_fill(PSTR("QUIT UNSAVED"), PSTR(""));
 }
+
+bool resetSettingsFlag = false;
 
 class ConfigPage : public EncoderPage {
   public:
@@ -15,6 +17,16 @@ class ConfigPage : public EncoderPage {
   }
   
   virtual void display(bool redisplay = true) {
+    if (resetSettingsFlag) {
+      int key = showModalGui_p(PSTR("RESET ALL CCS?"), PSTR("YES           NO"));
+      if (key == 0) {
+        initSettings();
+        writeConfigSettings();
+        GUI.flash_p_strings_fill(PSTR("RESETTING"), PSTR(""));
+      }
+      resetSettingsFlag = false;
+    }
+    
     if (redisplay) {
       GUI.setLine(GUI.LINE1);
       GUI.put_p_string_fill(PSTR("SELECT PAGE"));
@@ -31,6 +43,9 @@ class ConfigPage : public EncoderPage {
     if (BUTTON_PRESSED(Buttons.BUTTON3)) {
       quitConfig();
       return true;
+    }
+    if (BUTTON_PRESSED(Buttons.BUTTON2)) {
+      resetSettingsFlag = true;
     }
     
     for (int i = 0; i < 4; i++) {
