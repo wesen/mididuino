@@ -51,6 +51,11 @@ extern "C" {
 #include <avr/pgmspace.h>
 
 #ifdef MIDIDUINO
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+#define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
+
+  long map(long x, long in_min, long in_max, long out_min, long out_max);
+  
   void delay(unsigned int ms);
   void delayMicroseconds(unsigned int us);
 #endif

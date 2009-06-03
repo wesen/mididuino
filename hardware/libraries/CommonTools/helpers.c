@@ -105,6 +105,11 @@ uint16_t clock_diff(uint16_t old_clock, uint16_t new_clock) {
 
 #ifdef MIDIDUINO
 
+long map(long x, long in_min, long in_max, long out_min, long out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 void delayMicroseconds(unsigned int us) {
   _delay_us(us);
 }
