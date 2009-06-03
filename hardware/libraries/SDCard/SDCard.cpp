@@ -110,14 +110,26 @@ bool SDCardClass::createDirectory(char *dir) {
   struct fat_dir_entry_struct new_dir_entry;
   
   int result = fat_create_dir(current_dir, dir, &new_dir_entry);
-  if (result) {
-    fat_close_dir(current_dir);
-    memcpy(&current_dir_entry, &new_dir_entry, sizeof(current_dir_entry));
-    fat_open_dir(fs, &current_dir_entry);
+  if (result || !strcmp(dir, new_dir_entry.long_name)) {
+    sd_raw_sync();
     return current_dir != NULL;
   } else {
     return false;
   }
+}
+
+bool SDCardClass::writeFile(char *path, uint8_t *buf, uint8_t len) {
+  SDCardFile file;
+  if (!file.open(path)) {
+    return false;
+  }
+  uint8_t l2 = file.write(buf, len);
+  if (l2 != len) {
+    file.close();
+    return false;
+  }
+  file.close();
+  return true;
 }
 
 offset_t SDCardClass::getSize() {
@@ -147,7 +159,7 @@ bool SDCardFile::open(char *path) {
   close();
 
   
-  if (!fat_create_file(SDCard.current_dir, path, &file_dir_entry))
+  if (!fat_create_file(SDCard.current_dir, path, &file_dir_entry) && strcmp(path, file_dir_entry.long_name))
     return false;
 
   fd = fat_open_file(SDCard.fs, &file_dir_entry);
@@ -161,6 +173,7 @@ bool SDCardFile::open(char *path) {
 void SDCardFile::close() {
   if (fd != NULL) {
     fat_close_file(fd);
+    sd_raw_sync();
     fd = NULL;
   }
 }
