@@ -30,19 +30,20 @@ class SDCardClass {
   offset_t getFree();
 };
 
-SDCardClass SDCard;
+extern SDCardClass SDCard;
 
 class SDCardFile {
  public:
   struct fat_dir_entry_struct file_dir_entry;
-  struct fat_file_struct *file;
+  struct fat_file_struct *fd;
 
   SDCardFile();
+  ~SDCardFile() { close(); }
   bool open(char *path);
   void close();
   intptr_t read(uint8_t *buf, uint8_t len);
   intptr_t write(uint8_t *buf, uint8_t len);
-  int32_t seek(int32_t offset, uint8_t whence);
+  bool seek(int32_t *offset, uint8_t whence);
 };
 
 #endif /* SDCARD_H__ */
