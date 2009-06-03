@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#include "ModalGui.hh"
+
 #include "WProgram.h"
 
 #ifdef MIDIDUINO_USE_GUI
@@ -19,6 +21,7 @@ class Encoder {
   void setName(char *_name) {
     if (_name != NULL)
       m_strncpy_fill(name, _name, 4);
+    name[3] = '\0';
   }
   bool redisplay;
   virtual void update(encoder_t *enc);
@@ -67,9 +70,11 @@ class RangeEncoder : public Encoder {
 class CCEncoder : public RangeEncoder {
  public:
   int cc;
+  int channel;
 
- CCEncoder(int _cc, char *_name = NULL, int init = 0) : RangeEncoder(127, 0, name, init) {
+ CCEncoder(int _cc = 0, int _channel = 0, char *_name = NULL, int init = 0) : RangeEncoder(127, 0, name, init) {
     cc = _cc;
+    channel = _channel;
   }
   virtual void handle(int val);
 };
@@ -81,6 +86,7 @@ class Page {
   virtual void update() { }
   virtual void clear()  { }
   virtual void display(bool redisplay = false) { }
+  virtual bool handleGui() { return false; }
 };
 
 class EncoderPage : public Page {
@@ -140,6 +146,12 @@ class GuiClass {
   void (*handleButtons)();
 
   void updatePage();
+  bool handleGui() {
+    if (page != NULL)
+      return page->handleGui();
+    else
+      return false;
+  }
 
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;

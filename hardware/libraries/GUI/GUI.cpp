@@ -29,7 +29,7 @@ void RangeEncoder::update(encoder_t *enc) {
 }
 
 void CCEncoder::handle(int val) {
-  MidiUart.sendCC(cc, val);
+  MidiUart.sendCC(channel, cc, val);
 }
 
 void TempoEncoder::handle(int val) {
