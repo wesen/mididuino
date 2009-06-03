@@ -51,7 +51,7 @@ extern "C"
  *
  * Set to 1 to enable FAT32 support.
  */
-#define FAT_FAT32_SUPPORT SD_RAW_SDHC
+#define FAT_FAT32_SUPPORT 1
 
 /**
  * \ingroup fat_config

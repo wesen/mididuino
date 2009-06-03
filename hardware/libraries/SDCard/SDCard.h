@@ -24,6 +24,7 @@ class SDCardClass {
   uint8_t init();
 
   bool writeFile(char *path, uint8_t *buf, uint8_t len);
+  int readFile(char *path, uint8_t *buf, uint8_t len);
   bool openDirectory(char *path);
   bool createDirectory(char *path);
   
@@ -41,6 +42,7 @@ class SDCardFile {
   SDCardFile();
   ~SDCardFile() { close(); }
   bool open(char *path);
+  bool create(char *path);
   void close();
   intptr_t read(uint8_t *buf, uint8_t len);
   intptr_t write(uint8_t *buf, uint8_t len);
