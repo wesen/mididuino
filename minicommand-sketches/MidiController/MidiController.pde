@@ -65,12 +65,17 @@ void onCCCallback(uint8_t *msg) {
     GUI.flash_put_value_at(12, msg[1]);
     return;
   } 
+ 
+ updateCCEncoder(msg[1], MIDI_VOICE_CHANNEL(msg[0]), msg[2]);
   
+}
+
+void updateCCEncoder(uint8_t cc, uint8_t channel, uint8_t value) {
   for (int page = 0; page < 4; page++) {
     for (int encoder = 0; encoder < 4; encoder++) {
-      if (MIDI_VOICE_CHANNEL(msg[0]) == channels[page][encoder] &&
-          msg[1] == ccs[page][encoder]) {
-        ccEncoders[page][encoder].setValue(constrain(msg[2], ccEncoders[page][encoder].min,
+      if (channel == channels[page][encoder] &&
+            cc == ccs[page][encoder]) {
+        ccEncoders[page][encoder].setValue(constrain(value, ccEncoders[page][encoder].min,
         ccEncoders[page][encoder].max));
       }
     }
@@ -99,6 +104,15 @@ void setup() {
 
 void loop() {
   GUI.updatePage();
+  for (int page = 0; page < 4; page++) {
+    for (int encoder = 0; encoder < 4; encoder++) {
+      if (ccEncoders[page][encoder].hasChanged()) {
+        ccEncoders[page][encoder].checkHandle();
+        updateCCEncoder(ccs[page][encoder], channels[page][encoder], ccEncoders[page][encoder].getValue());
+      }
+    }
+  }
+  
   GUI.update();
 }
 

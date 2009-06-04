@@ -10,6 +10,7 @@ void quitConfig() {
 }
 
 bool resetSettingsFlag = false;
+bool loadSettingsFlag = false;
 
 class ConfigPage : public EncoderPage {
   public:
@@ -22,9 +23,19 @@ class ConfigPage : public EncoderPage {
       if (key == 0) {
         initSettings();
         writeConfigSettings();
+        showCCPage(currentCCPage);
         GUI.flash_p_strings_fill(PSTR("RESETTING"), PSTR(""));
       }
       resetSettingsFlag = false;
+    }
+    if (loadSettingsFlag) {
+      int key = showModalGui_p(PSTR("LOAD SETTINGS?"), PSTR("YES           NO"));
+      if (key == 0) {
+        loadSettings();
+        showCCPage(currentCCPage);
+        GUI.flash_p_strings_fill(PSTR("LOADING"), PSTR(""));
+      }
+      loadSettingsFlag = false;
     }
     
     if (redisplay) {
@@ -46,6 +57,9 @@ class ConfigPage : public EncoderPage {
     }
     if (BUTTON_PRESSED(Buttons.BUTTON2)) {
       resetSettingsFlag = true;
+    }
+    if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+      loadSettingsFlag = true;
     }
     
     for (int i = 0; i < 4; i++) {
@@ -75,7 +89,13 @@ class PageConfigPage : public EncoderPage {
       GUI.setLine(GUI.LINE1);
       GUI.put_p_string_fill(PSTR("SELECT ENCODER"));
       GUI.setLine(GUI.LINE2);
-      GUI.put_p_string_fill(PSTR("EC1 EC2 EC3 EC4"));
+      char buf[17];
+      buf[16] = '\0';
+      for (int i = 0; i < 4; i++) {
+        m_strncpy(buf + i * 4, ccEncoders[currentEditedPage][i].getName(), 3);
+        buf[i*4 + 3] = ' ';
+      }
+      GUI.put_string_fill(buf);
     }
   }
   
