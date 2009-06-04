@@ -241,8 +241,6 @@ void midiInitialize(char *inputDeviceStr, char *outputDeviceStr) {
 void handleMidiHdrFifo();
 
 void midiMainLoop(void) {
-  unsigned long result;
-
   sleepCount = 0;
 
   for (; !exitMainLoop; ) {
@@ -258,10 +256,7 @@ void midiMainLoop(void) {
       break;
     }
   }
-  //  midiInReset(inHandle);
-  //  printf("foo\n");
 
- end:
   midiClose();
 }
 
