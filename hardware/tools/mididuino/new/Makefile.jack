@@ -1,0 +1,16 @@
+CC = gcc
+#CFLAGS += -mno-cygwin
+#LDFLAGS += -lwinmm
+
+all: midi-send
+
+%.o: %.c
+	$(CC) -c -o $@ $<
+
+midi-send: midi-send.o midi-jack.o
+	$(CC) -o $@ $+ -ljack
+
+
+clean:
+	- rm -f *.o *.exe
+
