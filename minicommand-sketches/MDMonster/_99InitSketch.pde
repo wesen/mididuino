@@ -9,6 +9,7 @@ void setSketch(SubSketch &sketch) {
 }
 
 SubSketch *sketches[] = {
+  &MidiController::sketch,
   &MDArpeggiator::sketch,
   &MDNotes::sketch,
   &MDWesenLivePatch::sketch,

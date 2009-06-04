@@ -134,6 +134,7 @@ public class Compiler implements MessageConsumer {
       "-o",
       buildPath + File.separator + sketch.name + ".elf"
     }));
+
 		String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
 		if (additionalFlagString != null && !additionalFlagString.equals("")) {
 			String additionalFlags[] = additionalFlagString.split(" ");
@@ -141,6 +142,15 @@ public class Compiler implements MessageConsumer {
 				baseCommandLinker.addAll(Arrays.asList(additionalFlags));
 			}
 		}
+
+		additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.linkflags");
+		if (additionalFlagString != null && !additionalFlagString.equals("")) {
+			String additionalFlags[] = additionalFlagString.split(" ");
+			if (additionalFlags.length > 0) {
+				baseCommandLinker.addAll(Arrays.asList(additionalFlags));
+			}
+		}
+		
 		
     String runtimeLibraryName = buildPath + File.separator + "core.a";
 
@@ -156,6 +166,7 @@ public class Compiler implements MessageConsumer {
       File[] objectFiles = library.getObjectFiles();
 		for (int j = 0; j < objectFiles.length; j++) {
 			baseCommandLinker.add(objectFiles[j].getPath());
+			/*
 			try {
 			if (execAsynchronously(getCommandConvertObject(avrBasePath, objectFiles[j].getPath())) != 0) {
 					return false;
@@ -164,6 +175,7 @@ public class Compiler implements MessageConsumer {
 				e.printStackTrace();
 				return false;
 			}
+			 */
 		}
     }
     
@@ -255,11 +267,13 @@ public class Compiler implements MessageConsumer {
 				return false;
 		}
 
+		/*
 		for (int i = 0; i < sketchObjectNames.size(); i++) {
 			if (execAsynchronously(getCommandConvertObject(avrBasePath, (String)sketchObjectNames.get(i))) != 0) {
 				return false;
 			}
 		}
+		 */
 
 //      for(int i = 0; i < targetObjectNames.size(); i++) {
 //        List commandAR = new ArrayList(baseCommandAR);

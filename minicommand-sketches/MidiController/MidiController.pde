@@ -9,6 +9,28 @@ char names[4][4][4];
 CCEncoder ccEncoders[4][4];
 EncoderPage pages[4];
 
+bool midiLearnActive = false;
+uint8_t midiLearnPage = 0;
+uint8_t midiLearnEncoder = 0;
+
+int currentCCPage = 0;
+uint8_t currentEditedPage = 0;
+uint8_t currentEditedEncoder = 0;
+
+bool resetSettingsFlag = false;
+bool loadSettingsFlag = false;
+
+RangeEncoder configCCEncoder(0, 127, "CC");
+RangeEncoder configChannelEncoder(0, 15, "CHN");
+RangeEncoder configMinEncoder(0, 127, "MIN");
+RangeEncoder configMaxEncoder(0, 127, "MAX");
+
+RangeEncoder char1Encoder(0, 35);
+RangeEncoder char2Encoder(0, 35);
+RangeEncoder char3Encoder(0, 35);
+RangeEncoder char4Encoder(0, 35);
+
+
 void initSettings() {
   for (int page = 0; page < 4; page++) {
     for (int encoder = 0; encoder < 4; encoder++) {
@@ -46,10 +68,6 @@ void initEncoders() {
   }
 }
 
-bool midiLearnActive = false;
-uint8_t midiLearnPage = 0;
-uint8_t midiLearnEncoder = 0;
-
 void onCCCallback(uint8_t *msg) {
   if (midiLearnActive) {
     ccs[midiLearnPage][midiLearnEncoder] = msg[1];
@@ -82,10 +100,6 @@ void updateCCEncoder(uint8_t cc, uint8_t channel, uint8_t value) {
   }
 }
 
-int currentCCPage = 0;
-uint8_t currentEditedPage = 0;
-uint8_t currentEditedEncoder = 0;
-
 void showCCPage(int page) {
   GUI.flash_p_strings_fill(PSTR("PAGE"), PSTR(""));
   GUI.setLine(GUI.LINE1);
@@ -95,6 +109,9 @@ void showCCPage(int page) {
 }
 
 void setup() {
+  uint8_t *ptr = (uint8_t *)0x2000;
+  for (int i = 0; i < 8000; i++) 
+    ptr[i] = 0;
   SDCard.init();
   initSettings();
   loadSettings();
