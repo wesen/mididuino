@@ -60,6 +60,25 @@ ISR(TIMER2_OVF_vect) {
 MidiClass Midi;
 MidiClass Midi2;
 
+void __mainInnerLoop() {
+    if (MidiUart.avail()) {
+      Midi.handleByte(MidiUart.getc());
+    }
+
+    if (MidiUart2.avail()) {
+      Midi2.handleByte(MidiUart2.getc());
+    }
+    
+#if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
+    cli();
+    gui_poll();
+    handleGui();
+    sei();
+#endif
+
+    loop();
+}
+
 int main(void) {
   init();
   clearLed();
@@ -77,23 +96,7 @@ int main(void) {
   sei();
 
   for (;;) {
-    if (MidiUart.avail()) {
-      Midi.handleByte(MidiUart.getc());
-    }
-
-    if (MidiUart2.avail()) {
-      Midi2.handleByte(MidiUart2.getc());
-    }
-    
-#if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
-    cli();
-    gui_poll();
-    handleGui();
-    sei();
-#endif
-
-    loop();
-
+    __mainInnerLoop();
   }
   return 0;
 }
