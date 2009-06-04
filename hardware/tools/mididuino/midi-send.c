@@ -342,7 +342,11 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
     }
     
     if (waitingForBootloader) {
+#ifdef WINDOWS
+      Sleep(1500);
+#else
       usleep(1500000);
+#endif
       waitingForBootloader = 0;
     }
     if (!send_sysex_part()) {
@@ -353,7 +357,11 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
       static unsigned char buf[6] = {0xf0, 0x00, 0x13, 0x37, 0x04, 0xf7 };
       buf[3] = deviceID;
       midiSendLong(buf, 6);
+#ifdef WINDOWS
+      Sleep(5);
+#else
       usleep(5000);
+#endif
       exitMainLoop = 1;
     }
   } else {
@@ -502,8 +510,6 @@ int main(int argc, char *argv[]) {
   }
 
   midiMainLoop();
-
-  printf("the end\n");
 
   closeFile();
 
