@@ -50,7 +50,7 @@ void init(void) {
 }
 
 
-void (*jump_to_boot)(void) = (void(*)(void))0x3800;
+void (*jump_to_boot)(void) = (void(*)(void))0xF000;
 
 void start_bootloader(void) {
   cli();
