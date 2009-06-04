@@ -146,17 +146,17 @@
 
 #if !SD_RAW_SAVE_RAM
 /* static data buffer for acceleration */
-static uint8_t raw_block[512];
+uint8_t raw_block[512] ;
 /* offset where the data within raw_block lies on the card */
-static offset_t raw_block_address;
+offset_t raw_block_address;
 #if SD_RAW_WRITE_BUFFERING
 /* flag to remember if raw_block was written to the card */
-static uint8_t raw_block_written;
+uint8_t raw_block_written;
 #endif
 #endif
 
 /* card type state */
-static uint8_t sd_raw_card_type;
+uint8_t sd_raw_card_type;
 
 /* private helper functions */
 static void sd_raw_send_byte(uint8_t b);
@@ -200,6 +200,7 @@ uint8_t sd_raw_init()
     if(!sd_raw_available())
         return 0;
 
+    
     /* card needs 74 cycles minimum to start up */
     uint8_t i;
     for(i = 0; i < 10; ++i)
@@ -228,6 +229,7 @@ uint8_t sd_raw_init()
         }
     }
     }
+
 
 #if SD_RAW_SDHC
     /* check for version of SD card specification */

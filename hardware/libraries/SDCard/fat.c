@@ -188,9 +188,9 @@ struct fat_usage_count_callback_arg
 };
 
 #if !USE_DYNAMIC_MEMORY
-static struct fat_fs_struct fat_fs_handles[FAT_FS_COUNT];
-static struct fat_file_struct fat_file_handles[FAT_FILE_COUNT];
-static struct fat_dir_struct fat_dir_handles[FAT_DIR_COUNT];
+struct fat_fs_struct fat_fs_handles[FAT_FS_COUNT] ;
+struct fat_file_struct fat_file_handles[FAT_FILE_COUNT] ;
+struct fat_dir_struct fat_dir_handles[FAT_DIR_COUNT] ;
 #endif
 
 static uint8_t fat_read_header(struct fat_fs_struct* fs);

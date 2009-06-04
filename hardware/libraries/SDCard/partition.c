@@ -38,7 +38,7 @@
  */
 
 #if !USE_DYNAMIC_MEMORY
-static struct partition_struct partition_handles[PARTITION_COUNT];
+struct partition_struct partition_handles[PARTITION_COUNT];
 #endif
 
 /**

@@ -101,8 +101,8 @@ extern "C"
     #define configure_pin_ss() DDRB |= (1 << DDB0)
     #define configure_pin_miso() DDRB &= ~(1 << DDB3)
 
-    #define select_card() PORTB &= ~(1 << PB0)
-    #define unselect_card() PORTB |= (1 << PB0)
+    #define select_card() 
+    #define unselect_card() 
 #else
     #error "no sd/mmc pin mapping available!"
 #endif
