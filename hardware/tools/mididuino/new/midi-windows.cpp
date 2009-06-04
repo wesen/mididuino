@@ -80,25 +80,21 @@ MIDIHDR outMidiHdr;
 
 
 void midiSendLong(unsigned char *buf, unsigned long len) {
-  unsigned char *buf2 = (unsigned char *)malloc(len);
-  MIDIHDR *hdr = (MIDIHDR*)malloc(sizeof(MIDIHDR));
-  memcpy(buf2, buf, len);
+  MIDIHDR midiHdr;
 
-  getc(stdin);
-  hdr->lpData = (CHAR *)buf2;
-  hdr->dwBufferLength = len;
-  hdr->lpNext = NULL;
-  hdr->dwFlags = 0;
+  midiHdr.lpData = (CHAR *)buf;
+  midiHdr.dwBufferLength = len;
+  midiHdr.lpNext = NULL;
+  midiHdr.dwFlags = 0;
   
-  UINT err = midiOutPrepareHeader(outHandle, hdr, sizeof(MIDIHDR));
+  UINT err = midiOutPrepareHeader(outHandle, &midiHdr, sizeof(MIDIHDR));
   if (!err) {
-    //    memcpy(hdr->lpData, buf, len);
     if (verbose >= 4) {
       printf("Sending\n");
       hexdump(buf, len);
     }
     
-    err = midiOutLongMsg(outHandle, hdr, sizeof(MIDIHDR));
+    err = midiOutLongMsg(outHandle, &midiHdr, sizeof(MIDIHDR));
     if (err) {
       char errBuf[256];
       midiOutGetErrorText(err, errBuf, sizeof(errBuf));
@@ -107,13 +103,9 @@ void midiSendLong(unsigned char *buf, unsigned long len) {
     }
     int ret;
     do {
-      ret = midiOutUnprepareHeader(outHandle, hdr, sizeof(MIDIHDR));
+      ret = midiOutUnprepareHeader(outHandle, &midiHdr, sizeof(MIDIHDR));
     } while (ret == MIDIERR_STILLPLAYING);
-
   }
-
-  free(hdr);
-  free (buf2);
 }
 
 void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2) {
@@ -161,7 +153,7 @@ void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
     break;
 
   default:
-    printf("received event %x\n", uMsg);
+    //    printf("received event %x\n", uMsg);
     /* ignore */
     return;
   }
@@ -228,14 +220,12 @@ void midiInitialize(char *inputDeviceStr, char *outputDeviceStr) {
       exit(-1);
     }
   }
-  
+
   result = midiInStart(inHandle);
   if (result) {
     printf("Could not start recording on input\n");
       exit(-1);
   }
-
-  
 }
 
 void handleMidiHdrFifo();
@@ -245,15 +235,18 @@ void midiMainLoop(void) {
 
   for (; !exitMainLoop; ) {
     handleMidiHdrFifo();
-    while (!midiFifo.isEmpty()) {
-      midiReceive(midiFifo.get());
-    }
-    Sleep(1);		      // 
-    //    printf("count: %d\n", sleepCount);
-    sleepCount++;
-    if (sleepCount > 2000) {
-      printf("timeout\n");
-      break;
+    if (!midiFifo.isEmpty()) {
+      while (!midiFifo.isEmpty()) {
+	midiReceive(midiFifo.get());
+      }
+    } else {
+      Sleep(1);		      // 
+      //    printf("count: %d\n", sleepCount);
+      sleepCount++;
+      if (sleepCount > 200) {
+	printf("timeout\n");
+	break;
+      }
     }
   }
 
@@ -265,7 +258,7 @@ void handleMidiHdrFifo() {
   
   while (!midiHdrFifo.isEmpty()) {
     MIDIHDR *midiHdr = midiHdrFifo.get();
-    printf("got midihdr in main: %p\n", midiHdr);
+    //    printf("got midihdr in main: %p\n", midiHdr);
     
     if (midiHdr->dwBytesRecorded == 0) {
       continue;
