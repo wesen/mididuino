@@ -19,7 +19,7 @@ public:
     running_status = 0;
   }
   
-  virtual void puts(uint8_t *data, uint8_t cnt) {
+  virtual void puts(uint8_t *data, uint16_t cnt) {
     while (cnt--)
       putc(*(data++));
   }
@@ -164,7 +164,7 @@ public:
     puts(data, cnt);
     sendCommandByte(0xF0);
   }
-  inline void sendRaw(uint8_t *msg, uint8_t cnt) {
+  inline void sendRaw(uint8_t *msg, uint16_t cnt) {
     puts(msg, cnt);
   }
   inline void sendRaw(uint8_t byte) {

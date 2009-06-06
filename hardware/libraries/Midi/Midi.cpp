@@ -261,4 +261,3 @@ void MididuinoSysexClass::handleByte(uint8_t byte) {
   MidiSysexClass::handleByte(byte);
 }
 
-
