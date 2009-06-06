@@ -7,6 +7,8 @@
 #include <MidiUart.h>
 #include <inttypes.h>
 
+#include "MidiSDS.hh"
+
 extern "C" {
 #include "midi-common.hh"
 }
