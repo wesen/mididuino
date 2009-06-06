@@ -36,3 +36,26 @@ void TempoEncoder::handle(int val) {
 }
 
 
+CharEncoder::CharEncoder()  : RangeEncoder(0, 37) {
+}
+
+char CharEncoder::getChar() {
+  uint8_t val = getValue();
+  if (val == 37) {
+    return ' ';
+  }
+  if (val < 26) 
+    return val + 'A';
+  else
+    return (val - 26) + '0';
+}
+
+void CharEncoder::setChar(char c) {
+  if (c >= 'A' && c <= 'Z') {
+    setValue(c - 'A');
+  } else if (c >= '0' && c <= '9') {
+    setValue(c - '0' + 26);
+  } else {
+    setValue(37);
+  }
+}

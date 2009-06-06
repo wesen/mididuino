@@ -82,5 +82,12 @@ class TempoEncoder : public RangeEncoder {
   void handle(int val);
 };
 
+class CharEncoder : public RangeEncoder {
+public:
+  CharEncoder();
+  char getChar();
+  void setChar(char c);
+};
+
 
 #endif /* ENCODERS_H__ */
