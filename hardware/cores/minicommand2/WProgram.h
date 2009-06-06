@@ -2,6 +2,7 @@
 #define WProgram_h
 
 #define MIDIDUINO 1
+#define SYSEX_BUF_SIZE 8192
 
 #ifdef __cplusplus
 extern "C" {

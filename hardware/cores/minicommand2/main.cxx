@@ -7,11 +7,6 @@ void setup();
 void loop();
 void handleGui();
 
-#ifdef MIDIDUINO_HANDLE_SYSEX
-uint8_t mididuino_sysex_data[128];
-MididuinoSysexClass mididuinoSysex(mididuino_sysex_data, sizeof(mididuino_sysex_data));
-#endif
-
 #define PHASE_FACTOR 16
 static inline uint32_t phase_mult(uint32_t val) {
   return (val * PHASE_FACTOR) >> 8;
@@ -87,11 +82,8 @@ int main(void) {
   for (int i = 0; i < GUI_NUM_BUTTONS; i++) {
     SET_B_CURRENT(i);
   }
-  
-#ifdef MIDIDUINO_HANDLE_SYSEX
-  Midi.setSysex(&mididuinoSysex);
-#endif
 
+  MidiSysex.addSysexListener(&MididuinoSysexListener);
   setup();
   sei();
 
