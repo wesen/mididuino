@@ -44,6 +44,8 @@
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
 #ifdef __cplusplus
+#include "BitArray.hh"
+
 extern "C" {
 #endif
   
