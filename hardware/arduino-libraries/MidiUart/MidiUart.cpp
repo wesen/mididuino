@@ -47,15 +47,10 @@ void MidiUartClass::init(long speed) {
   TCCR1B = _BV(CS10) | _BV(WGM12); // every cycle
   TIMSK1 |= _BV(TOIE1);
 
-  #ifdef TX_IRQ
+#ifdef TX_IRQ
   UCSRB |= _BV(TXCIE);
 #endif
 
-}
-
-void MidiUartClass::puts(uint8_t *data, uint8_t cnt) {
-  while (cnt--)
-    putc(*(data++));
 }
 
 #ifdef TX_IRQ
