@@ -3,6 +3,7 @@
 
 #include "WProgram.h"
 #include "Midi.h"
+#include "MidiSysex.hh"
 
 typedef void (*md_callback_t)();
 typedef void (*md_status_callback_t)(uint8_t type, uint8_t param);
@@ -18,10 +19,8 @@ typedef enum {
     
     MD_DONE
 } getCurrentKitStatus_t;
-class MachineDrumSysexClass : public MididuinoSysexClass {
+class MDSysexListenerClass : public MidiSysexListenerClass {
 public:
-  bool isMachineDrumSysex;
-
   md_callback_t onPatternMessageCallback;
   md_status_callback_t onStatusResponseCallback;
   md_callback_t onGlobalMessageCallback;
@@ -32,7 +31,10 @@ public:
   getCurrentKitStatus_t mdGetCurrentKitStatus;
 
 public:
-  MachineDrumSysexClass(uint8_t *data, uint16_t size) : MididuinoSysexClass(data, size) {
+  MDSysexListenerClass() : MidiSysexListenerClass() {
+    ids[0] = 0;
+    ids[1] = 0x20;
+    ids[2] = 0x3c;
     onStatusResponseCallback = NULL;
     onGlobalMessageCallback = NULL;
     onKitMessageCallback = NULL;
@@ -77,7 +79,7 @@ public:
 
 #include "MDMessages.hh"
 
-extern MachineDrumSysexClass MDSysex;
+extern MDSysexListenerClass MDSysexListener;
 
 
 #endif /* MDSYSEX_H__ */

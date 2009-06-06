@@ -77,25 +77,16 @@ void MidiClass::handleByte(uint8_t byte) {
     break;
 
   case midi_wait_sysex:
-    //    GUI.setLine(GUI.LINE2);
-    //    GUI.put_valuex(0, byte);
-    //    GUI.put_valuex(1, MidiUart.rxRb.overflow);
-    //    GUI.put_value16(1, sysex->len);
-    
     if (MIDI_IS_STATUS_BYTE(byte)) {
       if (byte != MIDI_SYSEX_END) {
 	in_state = midi_wait_status;
-	if (sysex != NULL)
-	  sysex->abort();
+	MidiSysex.abort();
 	goto again;
       } else {
-	if (sysex != NULL)
-	  sysex->end();
+	MidiSysex.end();
       }
     } else {
-      if (sysex != NULL) {
-	sysex->handleByte(byte);
-      }
+      MidiSysex.handleByte(byte);
     }
     break;
 
@@ -103,8 +94,7 @@ void MidiClass::handleByte(uint8_t byte) {
     {
       if (byte == MIDI_SYSEX_START) {
 	in_state = midi_wait_sysex;
-	if (sysex != NULL)
-	  sysex->start();
+	MidiSysex.reset();
 	last_status = running_status = 0;
 	return;
       }
@@ -188,76 +178,5 @@ void MidiClass::setOnChannelPressureCallback(midi_callback_t cb) {
 
 void MidiClass::setOnPitchWheelCallback(midi_callback_t cb) {
   callbacks[MIDI_PITCH_WHEEL_CB] = cb;
-}
-
-void MidiSysexClass::start() {
-  len = 0;
-  aborted = false;
-  recording = false;
-  recordLen = 0;
-}
-
-void MidiSysexClass::startRecord(uint8_t *buf, uint16_t maxLen) {
-  if (buf == NULL) {
-    recordBuf = data;
-    maxRecordLen = max_len;
-  } else {
-    recordBuf = buf;
-    maxRecordLen = maxLen;
-  }
-  recording = true;
-  recordLen = 0;
-}
-
-void MidiSysexClass::stopRecord() {
-  recording = false;
-}
-
-void MidiSysexClass::abort() {
-  // don't reset len, leave at maximum when aborted
-  //  len = 0;
-  aborted = true;
-}
-
-void MidiSysexClass::handleByte(uint8_t byte) {
-  if (aborted)
-    return;
-
-  len++;
-
-  if (recording && recordBuf != NULL) {
-    if (recordLen < maxRecordLen) {
-      recordBuf[recordLen++] = byte;
-    }
-  }
-
-  /* sds handling XXX */ 
-  
-}
-
-void MididuinoSysexClass::start() {
-  isMididuinoSysex = true;
-  MidiSysexClass::start();
-}
-
-uint8_t mididuino_hdr[3] = {
-  MIDIDUINO_SYSEX_VENDOR_1,
-  MIDIDUINO_SYSEX_VENDOR_2,
-  BOARD_ID
-};
-
-void MididuinoSysexClass::handleByte(uint8_t byte) {
-  if (isMididuinoSysex) {
-    if (len < 3 && byte != mididuino_hdr[len]) {
-      isMididuinoSysex = false;
-    } else if (len == 3 && byte == CMD_START_BOOTLOADER) {
-      //      LCD.line1_fill((char *)"BOOTLOADER");
-#ifdef MIDIDUINO
-      start_bootloader();
-#endif
-    }
-  }
-  
-  MidiSysexClass::handleByte(byte);
 }
 

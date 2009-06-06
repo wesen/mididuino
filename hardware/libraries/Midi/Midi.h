@@ -8,6 +8,7 @@
 #include <inttypes.h>
 
 #include "MidiSDS.hh"
+#include "MidiSysex.hh"
 
 extern "C" {
 #include "midi-common.hh"
@@ -33,8 +34,6 @@ class MidiClass {
   uint8_t callback;
   midi_callback_t callbacks[7];
 
-  MidiSysexClass *sysex;
-  
  public:
   uint8_t receiveChannel;
 
@@ -48,57 +47,7 @@ class MidiClass {
   void setOnProgramChangeCallback(midi_callback_t);
   void setOnChannelPressureCallback(midi_callback_t);
   void setOnPitchWheelCallback(midi_callback_t);
-  void setSysex(MidiSysexClass *s) {
-    sysex = s;
-  }
 };
-
-class MidiSysexClass {
- protected:
-  bool aborted;
-  bool recording;
-
- public:
-  uint16_t max_len;
-  uint16_t recordLen;
-  uint8_t *data;
-  uint8_t *recordBuf;
-  uint16_t maxRecordLen;
-
-  uint16_t len;
-
-  MidiSysexClass(uint8_t *_data, uint16_t size) {
-    data = _data;
-    max_len = size;
-    len = 0;
-    aborted = false;
-    recording = false;
-    recordBuf = NULL;
-    maxRecordLen = 0;
-  }
-
-  void startRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
-  void stopRecord();
-  virtual void start();
-  virtual void abort();
-  virtual void end() {
-  }
-  virtual void handleByte(uint8_t byte);
-};
-
-class MididuinoSysexClass : public MidiSysexClass {
-  bool isMididuinoSysex;
- public:
- MididuinoSysexClass(uint8_t *data, uint16_t size) :
-  MidiSysexClass(data, size) {
-    isMididuinoSysex = true;
-  }
-
-  virtual void start();
-  virtual void handleByte(uint8_t byte);
-};
-
-extern uint8_t mididuino_sysex_data[128];
 
 extern MidiClass Midi;
 extern MidiClass Midi2;
