@@ -53,7 +53,7 @@ init64:
 	avrdude -p m64 -P usb -c $(FLASH_PROTOCOL) -U efuse:w:0xff:m -U hfuse:w:0x9a:m -U lfuse:w:0x2e:m
 
 init64_2048:
-	avrdude -p m64 -P usb -c $(FLASH_PROTOCOL) -U efuse:w:0xff:m -U hfuse:w:0x8a:m -U lfuse:w:0x0f:m
+	avrdude -p m64 -P usb -c $(FLASH_PROTOCOL) -U efuse:w:0xff:m -U hfuse:w:0x9a:m -U lfuse:w:0x0f:m
 
 bootavrdude64: bootloader.hex # $(PROJ).ee_srec $(PROJ).hex
 	avrdude -p m64 -P usb -c $(FLASH_PROTOCOL) -V -U flash:w:bootloader.hex
