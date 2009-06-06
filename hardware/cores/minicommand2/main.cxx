@@ -55,7 +55,7 @@ ISR(TIMER2_OVF_vect) {
 MidiClass Midi;
 MidiClass Midi2;
 
-void __mainInnerLoop() {
+void __mainInnerLoop(bool callLoop) {
     if (MidiUart.avail()) {
       Midi.handleByte(MidiUart.getc());
     }
@@ -71,7 +71,8 @@ void __mainInnerLoop() {
     sei();
 #endif
 
-    loop();
+    if (callLoop)
+      loop();
 }
 
 int main(void) {

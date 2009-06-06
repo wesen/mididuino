@@ -11,9 +11,8 @@ extern "C" {
 #include <avr/interrupt.h>
 #include "helpers.h"
 
-  void delayMicroseconds(unsigned int us);
-  void delay(unsigned int ms);
 #ifdef __cplusplus
+  void __mainInnerLoop(bool callLoop = true);
 }
 #endif
 

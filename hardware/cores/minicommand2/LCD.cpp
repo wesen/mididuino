@@ -1,9 +1,10 @@
+#include "WProgram.h"
+
 #include "LCD.h"
 #include <string.h>
 #include <inttypes.h>
 #include "helpers.h"
 
-#include "WProgram.h"
 
 extern "C" {
 #include <avr/io.h>
