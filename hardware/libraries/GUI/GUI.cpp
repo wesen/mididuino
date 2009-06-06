@@ -304,7 +304,6 @@ void GuiClass::flash_put_valuex(uint8_t idx, uint8_t value, uint16_t duration) {
 
 void GuiClass::flash_put_value_at(uint8_t idx, uint8_t value, uint16_t duration) {
   char *data = lines[curLine].flash;
-  lines[curLine].changed = true;
   data[idx] = value / 100 + '0';
   data[idx+1] = (value % 100) / 10 + '0';
   data[idx+2] = (value % 10) + '0';
@@ -314,18 +313,18 @@ void GuiClass::flash_put_value_at(uint8_t idx, uint8_t value, uint16_t duration)
 
 void GuiClass::flash_put_value16_at(uint8_t idx, uint16_t value, uint16_t duration) {
   char *data = lines[curLine].flash;
-  lines[curLine].changed = true;
   data[idx]   = hex2c(value >> 12 & 0xF);
   data[idx+1] = hex2c(value >> 8 & 0xF);
   data[idx+2] = hex2c(value >> 4 & 0xF);
   data[idx+3] = hex2c(value >> 0 & 0xF);
+  flash(duration);
 }
 
 void GuiClass::flash_put_valuex_at(uint8_t idx, uint8_t value, uint16_t duration) {
   char *data = lines[curLine].flash;
-  lines[curLine].changed = true;
   data[idx]   = hex2c(value >> 4 & 0xF);
   data[idx+1] = hex2c(value >> 0 & 0xF);
+  flash(duration);
 }
 
 void GuiClass::flash_string_at(uint8_t idx, char *str, uint16_t duration) {

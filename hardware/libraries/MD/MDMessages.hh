@@ -1,7 +1,16 @@
 #ifndef MDMESSAGES_H__
 #define MDMESSAGES_H__
 
-class MachineDrumGlobal {
+#include "MDPattern.hh"
+
+extern uint8_t machinedrum_sysex_hdr[5];
+
+uint16_t to16Bit(uint8_t b1, uint8_t b2);
+uint32_t to32Bit(uint8_t *b);
+void from16Bit(uint16_t num, uint8_t *b);
+void from32Bit(uint32_t num, uint8_t *b);
+
+class MDGlobal {
 public:
   uint8_t origPosition;
   uint8_t drumRouting[16];
@@ -30,14 +39,14 @@ public:
 
   uint8_t keyMap[128];
 
-  MachineDrumGlobal() {
+  MDGlobal() {
   }
 
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
 };
 
-class MachineDrumLFO {
+class MDLFO {
 public:
   uint8_t destinationTrack;
   uint8_t destinationParam;
@@ -46,18 +55,18 @@ public:
   uint8_t type;
 };
 
-class MachineDrumMachine {
+class MDMachine {
 public:
   uint8_t params[24];
   uint8_t track;
   uint8_t level;
   uint32_t model;
-  MachineDrumLFO lfo;
+  MDLFO lfo;
   uint8_t trigGroup;
   uint8_t muteGroup;
 };
 
-class MachineDrumKit {
+class MDKit {
 public:
   uint8_t origPosition;
   char name[17];
@@ -66,7 +75,7 @@ public:
   uint8_t eq[8];
   uint8_t dynamics[8];
 
-  MachineDrumMachine machines[16];
+  MDMachine machines[16];
 
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
@@ -74,43 +83,7 @@ public:
 
 
 
-class MachineDrumPattern {
-public:
-  uint8_t origPosition;
-  uint32_t trigPatterns[16];
-  uint32_t lockPatterns[16];
-
-  uint32_t accentPattern;
-  uint32_t slidePattern;
-  uint32_t swingPattern;
-  uint32_t swingAmount;
-  uint8_t accentAmount;
-  uint8_t patternLength;
-
-  bool doubleTempo;
-  uint8_t scale;
-
-  uint8_t kit;
-  uint8_t numLockedRows; // unused
-  uint8_t locks[64][32];
-
-  bool accentEditAll;
-  bool slideEditAll;
-  bool swingEditAll;
-  uint32_t accentPatterns[16];
-  uint32_t slidePatterns[16];
-  uint32_t swingPatterns[16];
-
-  uint8_t numRows;
-  int8_t paramLocks[16][24];
-
-  /* XXX TODO extra pattern 64 */
-  
-  bool fromSysex(uint8_t *sysex, uint16_t len);
-  uint16_t toSysex(uint8_t *sysex, uint16_t len);
-};
-
-class MachineDrumRow {
+class MDRow {
 public:
   uint8_t pattern;
   uint8_t kit;
@@ -122,11 +95,11 @@ public:
   uint8_t endPosition;
 };
 
-class MachineDrumSong {
+class MDSong {
 public:
   uint8_t origPosition;
   char name[17];
-  MachineDrumRow rows[256];
+  MDRow rows[256];
   uint8_t numRows;
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
