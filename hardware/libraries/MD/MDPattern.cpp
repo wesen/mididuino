@@ -332,6 +332,9 @@ bool MDPattern::addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t valu
     paramLocks[track][param] = idx;
     lockTracks[idx] = track;
     lockParams[idx] = param;
+    for (int i = 0; i < 32; i++) {
+      locks[idx][i] = 255;
+    }
   }
   locks[idx][trig] = value;
   return true;
