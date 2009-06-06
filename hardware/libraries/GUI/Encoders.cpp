@@ -41,21 +41,21 @@ CharEncoder::CharEncoder()  : RangeEncoder(0, 37) {
 
 char CharEncoder::getChar() {
   uint8_t val = getValue();
-  if (val == 37) {
+  if (val == 0) {
     return ' ';
   }
-  if (val < 26) 
-    return val + 'A';
+  if (val < 27) 
+    return val - 1+ 'A';
   else
-    return (val - 26) + '0';
+    return (val - 27) + '0';
 }
 
 void CharEncoder::setChar(char c) {
   if (c >= 'A' && c <= 'Z') {
-    setValue(c - 'A');
+    setValue(c - 'A' + 1);
   } else if (c >= '0' && c <= '9') {
-    setValue(c - '0' + 26);
+    setValue(c - '0' + 26 + 1);
   } else {
-    setValue(37);
+    setValue(0);
   }
 }
