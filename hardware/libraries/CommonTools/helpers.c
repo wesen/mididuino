@@ -6,13 +6,13 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-void m_memcpy(void *dst, void *src, uint8_t cnt) {
+void m_memcpy(void *dst, void *src, uint16_t cnt) {
   while (cnt--) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
   }
 }
 
-void m_memcpy_p(void *dst, PGM_P src, uint8_t cnt) {
+void m_memcpy_p(void *dst, PGM_P src, uint16_t cnt) {
   while (cnt--) {
     *((uint8_t *)dst++) = pgm_read_byte(src);
     src++;
@@ -20,13 +20,13 @@ void m_memcpy_p(void *dst, PGM_P src, uint8_t cnt) {
 }
 
 
-void m_strncpy(void *dst, char *src, uint8_t cnt) {
+void m_strncpy(void *dst, char *src, uint16_t cnt) {
   while (cnt-- && *src) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
   }
 }
 
-void m_strncpy_fill(void *dst, char *src, uint8_t cnt) {
+void m_strncpy_fill(void *dst, char *src, uint16_t cnt) {
   while (cnt && *src) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
     cnt--;
@@ -36,7 +36,7 @@ void m_strncpy_fill(void *dst, char *src, uint8_t cnt) {
   }
 }
 
-void m_strncpy_p(void *dst, PGM_P src, uint8_t cnt) {
+void m_strncpy_p(void *dst, PGM_P src, uint16_t cnt) {
   while (cnt--) {
     char byte = pgm_read_byte(src);
     if (byte == 0)
@@ -46,7 +46,7 @@ void m_strncpy_p(void *dst, PGM_P src, uint8_t cnt) {
   }
 }
 
-void m_strncpy_p_fill(void *dst, PGM_P src, uint8_t cnt) {
+void m_strncpy_p_fill(void *dst, PGM_P src, uint16_t cnt) {
   while (cnt) {
     char byte = pgm_read_byte(src);
     if (byte == 0)
@@ -60,7 +60,7 @@ void m_strncpy_p_fill(void *dst, PGM_P src, uint8_t cnt) {
   }
 }
 
-void m_memclr(void *dst, uint8_t cnt) {
+void m_memclr(void *dst, uint16_t cnt) {
   while (cnt--)
     *((uint8_t *)dst++) = 0;
 }
