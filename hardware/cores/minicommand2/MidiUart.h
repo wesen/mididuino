@@ -14,7 +14,6 @@ class MidiUartClass : public MidiUartParent {
   
  public:
   MidiUartClass();
-  virtual void puts(uint8_t *data, uint8_t cnt);
   virtual void putc(uint8_t c);
   virtual void putc_immediate(uint8_t c);
   virtual bool avail();

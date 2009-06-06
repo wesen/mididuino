@@ -72,6 +72,7 @@ LCDClass::LCDClass() {
   LCD_CTRL_DDR |= _BV(LCD_RS) | _BV(LCD_ENABLE);
 
   // wait for display
+
   putnibble(0x03);
   putnibble(0x02);
   delayMicroseconds(200);

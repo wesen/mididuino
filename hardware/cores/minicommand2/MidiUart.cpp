@@ -44,11 +44,6 @@ void MidiUartClass::initSerial() {
 #endif
 }
 
-void MidiUartClass::puts(uint8_t *data, uint8_t cnt) {
-  while (cnt--)
-    putc(*(data++));
-}
-
 void MidiUartClass::putc_immediate(uint8_t c) {
 #ifdef TX_IRQ
   while (!UART_CHECK_EMPTY_BUFFER())
