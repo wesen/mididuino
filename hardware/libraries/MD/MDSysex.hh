@@ -45,6 +45,7 @@ public:
   md_status_callback_t onStatusResponseCallback;
   md_global_callback_t onGlobalMessageCallback;
   md_kit_callback_t    onKitMessageCallback;
+  md_callback_t onSongMessageCallback;
   md_callback_t onCurrentKitCallback;
   
   md_kit_t    lastReceivedKit;
@@ -84,6 +85,10 @@ public:
     onKitMessageCallback = callback;
   }
 
+  void setOnSongMessageCallback(md_callback_t callback) {
+    onSongMessageCallback = callback;
+  }
+  
   void handleGlobalDump(uint8_t c);
   void handleKitDump(uint8_t c);
   

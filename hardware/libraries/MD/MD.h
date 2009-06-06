@@ -117,6 +117,11 @@ class MDClass {
   PGM_P getMachineName(uint8_t machine);
   void getPatternName(uint8_t pattern, char str[5]);
 
+  void requestKit(uint8_t kit);
+  void requestPattern(uint8_t pattern);
+  void requestSong(uint8_t song);
+  void requestGlobal(uint8_t global);
+  
 };
 
 extern MDClass MD;

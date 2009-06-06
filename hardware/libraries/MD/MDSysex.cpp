@@ -87,6 +87,10 @@ void MachineDrumSysexClass::handleByte(uint8_t byte) {
       case MD_PATTERN_MESSAGE_ID:
 	startRecord(MDSysexBuf, sizeof(MDSysexBuf));
 	break;
+
+      case MD_SONG_MESSAGE_ID:
+	startRecord(MDSysexBuf, sizeof(MDSysexBuf));
+	break;
       }
     } else {
       switch (msgType) {
@@ -139,6 +143,11 @@ void MachineDrumSysexClass::end() {
     case MD_PATTERN_MESSAGE_ID:
       if (onPatternMessageCallback != NULL)
 	onPatternMessageCallback();
+      break;
+
+    case MD_SONG_MESSAGE_ID:
+      if (onSongMessageCallback != NULL)
+	onSongMessageCallback();
       break;
     }
   }

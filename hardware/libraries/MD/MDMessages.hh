@@ -49,6 +49,7 @@ public:
 class MachineDrumMachine {
 public:
   uint8_t params[24];
+  uint8_t track;
   uint8_t level;
   uint32_t model;
   MachineDrumLFO lfo;
@@ -60,10 +61,12 @@ class MachineDrumKit {
 public:
   uint8_t origPosition;
   char name[17];
-  uint8_t reverbSettings[8];
-  uint8_t delaySettings[8];
-  uint8_t eqSettings[8];
-  uint8_t dynamicsSettings[8];
+  uint8_t reverb[8];
+  uint8_t delay[8];
+  uint8_t eq[8];
+  uint8_t dynamics[8];
+
+  MachineDrumMachine machines[16];
 
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
@@ -107,8 +110,25 @@ public:
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
 };
 
+class MachineDrumRow {
+public:
+  uint8_t pattern;
+  uint8_t kit;
+  uint8_t loopTimes;
+  uint8_t jump;
+  uint16_t mutes;
+  uint16_t tempo;
+  uint8_t startPosition;
+  uint8_t endPosition;
+};
+
 class MachineDrumSong {
 public:
+  uint8_t origPosition;
+  char name[17];
+  MachineDrumRow rows[256];
+  uint8_t numRows;
+  
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
 };

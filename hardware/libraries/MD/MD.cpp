@@ -388,4 +388,20 @@ void MDClass::getPatternName(uint8_t pattern, char str[5]) {
   str[4] = 0;
 }
 
+void MDClass::requestKit(uint8_t kit) {
+  MD.sendRequest(MD_KIT_REQUEST_ID, kit);
+}
+
+void MDClass::requestPattern(uint8_t pattern) {
+  MD.sendRequest(MD_PATTERN_REQUEST_ID, pattern);
+}
+
+void MDClass::requestSong(uint8_t song) {
+  MD.sendRequest(MD_SONG_REQUEST_ID, song);
+}
+
+void MDClass::requestGlobal(uint8_t global) {
+  MD.sendRequest(MD_GLOBAL_REQUEST_ID, global);
+}
+
 MDClass MD;

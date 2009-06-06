@@ -5,12 +5,17 @@
 
 extern uint8_t machinedrum_sysex_hdr[5];
 
-uint16_t sysex16Bit(uint8_t b1, uint8_t b2) {
+uint16_t to16Bit(uint8_t b1, uint8_t b2) {
   return (b1 << 7) | b2; 
 }
 
 uint32_t to32Bit(uint8_t *b) {
   return ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) | (uint32_t)b[3];
+}
+
+void from16Bit(uint16_t num, uint8_t *b) {
+  b[0] = (num >> 8) & 0xFF;
+  b[1] = num & 0xFF;
 }
 
 void from32Bit(uint32_t num, uint8_t *b) {
@@ -21,7 +26,7 @@ void from32Bit(uint32_t num, uint8_t *b) {
 }
 
 bool MachineDrumGlobal::fromSysex(uint8_t *data, uint16_t len) {
-  if (len != 0xBE)  {
+  if (len != 0xC5 - 7)  {
     // wrong length 
     return false;
   }
@@ -31,7 +36,7 @@ bool MachineDrumGlobal::fromSysex(uint8_t *data, uint16_t len) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-  if (cksum != sysex16Bit(data[0xc0 - 6], data[0xc1 - 6])) {
+  if (cksum != to16Bit(data[0xc0 - 6], data[0xc1 - 6])) {
     // wrong checksum
     return false;
   }
@@ -128,11 +133,146 @@ uint16_t MachineDrumGlobal::toSysex(uint8_t *data, uint16_t len) {
 }
 
 bool MachineDrumKit::fromSysex(uint8_t *data, uint16_t len) {
-  return false;
+  if (len < 0x4d1 - 7)
+    return false;
+  
+  uint16_t cksum = 0;
+  for (int i = 9 - 6; i < 0x4CC - 6; i++) {
+    cksum += data[i];
+  }
+		
+  cksum &= 0x3FFF;
+  if (cksum != to16Bit(data[0x4CC - 6], data[0x4CD - 6]))
+    return false;
+		
+  origPosition = data[9 - 6];
+  m_strncpy(name, (char *)data + 0xA - 6, 16);
+
+  int idx = 0x1A - 6;
+  for (int i = 0; i < 16; i++) {
+    for (int j = 0; j < 24; j++) {
+      machines[i].params[j] = data[idx++];
+    }
+  }
+  for (int i = 0; i < 16; i++) {
+    machines[i].level = data[idx++];
+  }
+
+  uint8_t data2[16 * 36];
+  uint8_t *ptr = data2;
+  sysex_to_data_elektron(data + 0x1aa - 6, data2, 74);
+  for (int i = 0; i < 16; i++) {
+    machines[i].model = to32Bit(ptr);
+    ptr += 4;
+    machines[i].track = i;
+  }
+
+  ptr = data2;
+  sysex_to_data_elektron(data + 0x1f4 - 6, data2, 659);
+  for (int i = 0; i < 16; i++) {
+    machines[i].lfo.destinationTrack = ptr[0];
+    machines[i].lfo.destinationParam = ptr[1];
+    machines[i].lfo.shape1 = ptr[2];
+    machines[i].lfo.shape2 = ptr[3];
+    machines[i].lfo.type = ptr[4];
+    ptr += 36;
+  }
+
+  for (int i = 0; i < 8; i++) {
+    reverb[i] = data[0x487 + i - 6];
+    delay[i] = data[0x48F + i - 6];
+    eq[i] = data[0x497 + i - 6];
+    dynamics[i] = data[0x49F + i - 6];
+  }
+
+  ptr = data2;
+  sysex_to_data_elektron(data + 0x4a7 - 6, data2, 37);
+  for (int i = 0; i < 16; i++) {
+    machines[i].trigGroup = ptr[i * 2];
+    machines[i].muteGroup = ptr[i * 2 + 1];
+    ptr += 2;
+  }
+
+  return true;
 }
 
 uint16_t MachineDrumKit::toSysex(uint8_t *data, uint16_t len) {
-  return 0;
+  if (len < 0x4d1)
+    return 0;
+  
+  data[0] = 0xF0;
+  m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+
+  data[6] = MD_KIT_MESSAGE_ID;
+  data[7] = 0x04; // version
+  data[8] = 0x01;
+		
+  data[9] = origPosition;
+  bool afterEnd = false;
+  for (int i = 0; i < 16; i++) {
+    if (afterEnd) {
+      data[i + 0xA] = ' ';
+    } else {
+      data[i + 0xA] = name[i] & 0x7F;
+    }
+  }
+
+  int idx = 0x1A;
+  for (int i = 0; i < 16; i++) {
+    for (int j = 0; j < 24; j++) {
+      data[idx++] = machines[i].params[j];
+    }
+  }
+  for (int i = 0; i < 16; i++) {
+    data[idx++] = machines[i].level;
+  }
+
+  uint8_t data2[16 * 36];
+  uint8_t *ptr = data2;
+  for (int i = 0; i < 16; i++) {
+    from32Bit(machines[i].model, ptr);
+    ptr += 4;
+  }
+  data_to_sysex_elektron(data2, data + 0x1AA, 16 * 4);
+
+  ptr = data2;
+  for (int i = 0; i < 16; i++) {
+    ptr[0] = machines[i].lfo.destinationTrack;
+    ptr[1] = machines[i].lfo.destinationParam;
+    ptr[2] = machines[i].lfo.shape1;
+    ptr[3] = machines[i].lfo.shape2;
+    ptr[4] = machines[i].lfo.type;
+    ptr[5] = 1;
+    ptr += 36;
+  }
+  data_to_sysex_elektron(data2, data + 0x1F4, 16 * 36);
+		
+  for (int i = 0; i < 8; i++) {
+    data[0x487 + i] = reverb[i];
+    data[0x48F + i] = delay[i];
+    data[0x497 + i] = eq[i];
+    data[0x49F + i] = dynamics[i];
+  }
+
+  ptr = data2;
+  for (int i = 0; i < 16; i++) {
+    ptr[i*2] = machines[i].trigGroup;
+    ptr[i*2+1] = machines[i].muteGroup;
+    ptr += 2;
+  }
+  data_to_sysex_elektron(data2, data + 0x4a7, 32);
+
+  int checksum = 0;
+  for (int i = 9; i <  0x4cc; i++)
+    checksum += data[i];
+  data[0x4cc] = (uint8_t)((checksum >> 7) & 0x7F);
+  data[0x4cd] = (uint8_t)(checksum & 0x7F);
+  int length = 0x4d1 - 10;
+  data[0x4ce] = (uint8_t)((length >> 7) &0x7F);
+  data[0x4cf] = (uint8_t)(length & 0x7F);
+  data[0x4d0] = 0xF7;
+
+  return 0x4d1;
 }
 
 bool MachineDrumPattern::fromSysex(uint8_t *data, uint16_t len) {
@@ -146,7 +286,7 @@ bool MachineDrumPattern::fromSysex(uint8_t *data, uint16_t len) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-  if (cksum != sysex16Bit(data[0xAC6 - 6], data[0xAC7 - 6])) {
+  if (cksum != to16Bit(data[0xAC6 - 6], data[0xAC7 - 6])) {
     // wrong checksum
     return false;
   }
@@ -295,10 +435,90 @@ uint16_t MachineDrumPattern::toSysex(uint8_t *data, uint16_t len) {
   return 0xacb;
 }
 
-bool MachineDrumSong::fromSysex(uint8_t *sysex, uint16_t len) {
-  return false;
+bool MachineDrumSong::fromSysex(uint8_t *data, uint16_t len) {
+  if (len < 0x1a - 7)
+    return false;
+
+  numRows = (len - (0x1A - 7)) / 12;
+  uint16_t end = 0x1A + numRows * 12;
+  
+  uint16_t cksum = 0;
+  for (uint16_t i = 9 - 6; i < end - 6; i++) {
+    cksum += data[i];
+  }
+  cksum &= 0x3FFF;
+  if (cksum != to16Bit(data[end - 6], data[end + 1 - 6])) {
+    // wrong checksum
+    return false;
+  }
+
+  origPosition = data[9 - 6];
+  m_strncpy(name, (char *)data + 0xA - 6, 16);
+
+  uint8_t data2[10];
+  uint8_t *ptr = data + 0x1A - 6;
+  for (int i = 0; i < numRows; i++) {
+    sysex_to_data_elektron(ptr, data2, 12);
+    rows[i].pattern = data2[0];
+    rows[i].kit = data2[1];
+    rows[i].loopTimes = data2[2];
+    rows[i].jump = data2[3];
+    rows[i].mutes = to16Bit(data2[4], data2[5]);
+    rows[i].tempo = to16Bit(data2[6], data2[7]);
+    rows[i].startPosition = data2[8];
+    rows[i].endPosition = data2[9];
+    ptr += 12;
+  }
+  
+  return true;
 }
 
-uint16_t MachineDrumSong::toSysex(uint8_t *sysex, uint16_t len) {
-  return 0;
+uint16_t MachineDrumSong::toSysex(uint8_t *data, uint16_t len) {
+  if (len < (uint16_t)(0x1F + numRows * 12 ))
+    return 0;
+  
+  data[0] = 0xF0;
+  m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+
+  data[6] = MD_SONG_MESSAGE_ID;
+  data[7] = 0x02; // version
+  data[8] = 0x02;
+  data[9] = origPosition;
+
+  bool afterEnd = false;
+  for (int i = 0; i < 16; i++) {
+    if (afterEnd) {
+      data[i + 0xA] = ' ';
+    } else {
+      data[i + 0xA] = name[i] & 0x7F;
+    }
+  }
+
+  uint8_t *ptr = data + 0x1A;
+  uint8_t data2[10];
+  for (int i = 0; i < numRows; i++) {
+    data2[0] = rows[i].pattern;
+    data2[1] = rows[i].kit;
+    data2[2] = rows[i].loopTimes;
+    data2[3] = rows[i].jump;
+    from16Bit(rows[i].mutes, data2 + 4);
+    from16Bit(rows[i].tempo, data2 + 6);
+    data2[8] = rows[i].startPosition;
+    data2[9] = rows[i].endPosition;
+    data_to_sysex_elektron(data2, ptr, 10);
+    ptr += 12;
+  }
+
+  int end = 0x1A + 12 * numRows;
+  int checksum = 0;
+  for (int i = 9; i <  end; i++)
+    checksum += data[i];
+  data[end] = (uint8_t)((checksum >> 7) & 0x7F);
+  data[end + 1] = (uint8_t)(checksum & 0x7F);
+  int length = 0x1F + 12 * numRows - 10;
+  data[end + 2] = (uint8_t)((length >> 7) &0x7F);
+  data[end + 3] = (uint8_t)(length & 0x7F);
+  data[end + 4] = 0xF7;
+
+  return length + 10;
 }
