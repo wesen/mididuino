@@ -63,9 +63,7 @@ void MachineDrumSysexClass::handleKitDump(uint8_t c) {
   }
 }
 
-#ifdef MIDIDUINO_EXTERNAL_RAM
-uint8_t MDSysexBuf[16384] EXTRAM;
-#endif
+uint8_t MDSysexBuf[8192];
 
 void MachineDrumSysexClass::handleByte(uint8_t byte) {
   if ((len < sizeof(machinedrum_sysex_hdr)) &&
@@ -76,16 +74,18 @@ void MachineDrumSysexClass::handleByte(uint8_t byte) {
       msgType = byte;
       switch (byte) {
       case MD_GLOBAL_MESSAGE_ID:
+	startRecord(MDSysexBuf, sizeof(MDSysexBuf));
 	break;
 
       case MD_KIT_MESSAGE_ID:
-#ifdef MIDIDUINO_EXTERNAL_RAM
-	startRecord(MDSysexBuf, sizeof(MDSysexBuf));
-#endif
 	break;
 
       case MD_STATUS_RESPONSE_ID:
 	startRecord();
+	break;
+
+      case MD_PATTERN_MESSAGE_ID:
+	startRecord(MDSysexBuf, sizeof(MDSysexBuf));
 	break;
       }
     } else {
@@ -95,9 +95,7 @@ void MachineDrumSysexClass::handleByte(uint8_t byte) {
 	break;
 
       case MD_KIT_MESSAGE_ID:
-#ifndef MIDIDUINO_EXTERNAL_RAM
 	handleKitDump(byte);
-#endif
 	break;
 
       default:
@@ -117,11 +115,12 @@ void MachineDrumSysexClass::end() {
       case MD_CURRENT_KIT_REQUEST:
 	MD.currentKit = data[2];
 	break;
-
+	
       case MD_CURRENT_GLOBAL_SLOT_REQUEST:
 	MD.currentGlobal = data[2];
 	break;
       }
+
       if (onStatusResponseCallback != NULL)
 	onStatusResponseCallback(data[1], data[2]);
       break;
@@ -135,6 +134,11 @@ void MachineDrumSysexClass::end() {
     case MD_KIT_MESSAGE_ID:
       if (onKitMessageCallback != NULL)
 	onKitMessageCallback(&lastReceivedKit);
+      break;
+
+    case MD_PATTERN_MESSAGE_ID:
+      if (onPatternMessageCallback != NULL)
+	onPatternMessageCallback();
       break;
     }
   }

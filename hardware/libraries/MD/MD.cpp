@@ -378,7 +378,7 @@ void MDClass::setLockMode(uint8_t mode) {
   setStatus(32, mode);
 }
 
-void getPatternName(uint8_t pattern, char str[5]) {
+void MDClass::getPatternName(uint8_t pattern, char str[5]) {
   uint8_t bank = pattern / 16;
   uint8_t num = pattern % 16 + 1;
   str[0] = 'A' + bank;

@@ -41,6 +41,7 @@ class MachineDrumSysexClass : public MididuinoSysexClass {
 public:
   bool isMachineDrumSysex;
 
+  md_callback_t onPatternMessageCallback;
   md_status_callback_t onStatusResponseCallback;
   md_global_callback_t onGlobalMessageCallback;
   md_kit_callback_t    onKitMessageCallback;
@@ -65,6 +66,10 @@ public:
 
   void getCurrentKit(md_callback_t callback);
 
+  void setOnPatternMessageCallback(md_callback_t callback) {
+    onPatternMessageCallback = callback;
+  }
+  
   void setOnCurrentKitCallback(md_callback_t callback) {
     onCurrentKitCallback = callback;
   }
@@ -88,6 +93,8 @@ public:
 
   void setup();
 };
+
+#include "MDMessages.hh"
 
 extern MachineDrumSysexClass MDSysex;
 

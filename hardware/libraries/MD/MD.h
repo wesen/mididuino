@@ -113,10 +113,11 @@ class MDClass {
   void setLockMode(uint8_t mode);
   
   void saveCurrentKit(uint8_t pos);
-};
 
-PGM_P getMachineName(uint8_t machine);
-void getPatternName(uint8_t pattern, char str[5]);
+  PGM_P getMachineName(uint8_t machine);
+  void getPatternName(uint8_t pattern, char str[5]);
+
+};
 
 extern MDClass MD;
 

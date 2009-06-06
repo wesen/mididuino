@@ -143,7 +143,7 @@ machine_name_t machine_names[] PROGMEM = {
   { "ROM-48", 191}
 };
 
-PGM_P getMachineName(uint8_t machine) {
+PGM_P MDClass::getMachineName(uint8_t machine) {
   for (uint8_t i = 0; i < countof(machine_names); i++) {
     if (pgm_read_byte(&machine_names[i].id) == machine) {
       return machine_names[i].name;
