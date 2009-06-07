@@ -201,7 +201,7 @@ const tuning_t PROGMEM *MDClass::getModelTuning(uint8_t model) {
 }
 
 uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
-  tuning_t const *tuning = getModelTuning(trackModels[track]);
+  tuning_t const *tuning = getModelTuning(kit.machines[track].model);
   
   if (tuning == NULL)
     return 128;
@@ -231,7 +231,7 @@ uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
 }
 
 uint8_t MDClass::trackGetPitch(uint8_t track, uint8_t pitch) {
-  tuning_t const *tuning = getModelTuning(trackModels[track]);
+  tuning_t const *tuning = getModelTuning(kit.machines[track].model);
   
   if (tuning == NULL)
     return 128;
@@ -287,7 +287,7 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
 }
 
 bool MDClass::isMelodicTrack(uint8_t track) {
-  return (getModelTuning(trackModels[track]) != NULL);
+  return (getModelTuning(kit.machines[track].model) != NULL);
 }
 
 void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {
@@ -299,10 +299,15 @@ void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {
   MidiUart.putc(0xF7);
 }
 
-void MDClass::setLFO(uint8_t track, lfo_t *lfo) {
-  for (uint8_t i = 0; i < 8; i++) {
-    setLFOParam(track, i, lfo->params[i]);
-  }
+void MDClass::setLFO(uint8_t track, MDLFO *lfo) {
+  setLFOParam(track, 0, lfo->destinationTrack);
+  setLFOParam(track, 1, lfo->destinationParam);
+  setLFOParam(track, 2, lfo->shape1);
+  setLFOParam(track, 3, lfo->shape2);
+  setLFOParam(track, 4, lfo->type);
+  setLFOParam(track, 5, lfo->speed);
+  setLFOParam(track, 6, lfo->depth);
+  setLFOParam(track, 7, lfo->mix);
 }
 
 void MDClass::saveCurrentKit(uint8_t pos) {
@@ -329,7 +334,7 @@ void MDClass::assignMachine(uint8_t track, uint8_t model) {
   MidiUart.putc(0xF7);
 }
 
-void MDClass::setMachine(uint8_t track, md_machine_t *machine) {
+void MDClass::setMachine(uint8_t track, MDMachine *machine) {
   assignMachine(track, machine->model);
   for (uint8_t i = 0; i < 24; i++) {
     setTrackParam(track, i, machine->params[i]);

@@ -173,6 +173,9 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
     machines[i].lfo.shape1 = ptr[2];
     machines[i].lfo.shape2 = ptr[3];
     machines[i].lfo.type = ptr[4];
+    machines[i].lfo.speed = machines[i].params[21];
+    machines[i].lfo.depth = machines[i].params[22];
+    machines[i].lfo.mix = machines[i].params[23];
     ptr += 36;
   }
 

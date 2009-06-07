@@ -53,6 +53,9 @@ public:
   uint8_t shape1;
   uint8_t shape2;
   uint8_t type;
+  uint8_t speed;
+  uint8_t depth;
+  uint8_t mix;
 };
 
 class MDMachine {

@@ -8,6 +8,7 @@
 #include "Elektron.hh"
 #include "MDSysex.hh"
 #include "MDParams.hh"
+#include "MDMessages.hh"
 
 extern uint8_t machinedrum_sysex_hdr[5];
 
@@ -18,16 +19,6 @@ typedef struct tuning_s {
   uint8_t offset;
   const uint8_t *tuning;
 } tuning_t;
-
-typedef struct lfo_s {
-  uint8_t params[8];
-} lfo_t;
-
-typedef struct md_machine_s {
-  uint8_t model;
-  uint8_t params[24];
-  lfo_t lfo;
-} md_machine_t;
 
 typedef struct machine_name_s {
   char name[7];
@@ -45,27 +36,18 @@ public:
 };
 #endif
 
-#ifdef MIDIDUINO_EXTERNAL_RAM
-extern uint8_t MDSysexBuf[16384] EXTRAM;
-#endif
-
 class MDClass {
  public:
   MDClass() {
     currentGlobal = -1;
     currentKit = -1;
     baseChannel = 0;
-    for (uint8_t i = 0; i < 16; i++) {
-      trackModels[i] = 0;
-    }
   }
   int currentGlobal;
   int currentKit;
   uint8_t baseChannel;
-  uint8_t trackModels[16];
-  uint8_t trackParams[16][24];
-  uint8_t trackLevels[16];
-  char name[16];
+  MDKit kit;
+  MDGlobal global;
 
   void parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param);
   void triggerTrack(uint8_t track, uint8_t velocity);
@@ -93,11 +75,11 @@ class MDClass {
   bool isMelodicTrack(uint8_t track);
 
   void setLFOParam(uint8_t track, uint8_t param, uint8_t value);
-  void setLFO(uint8_t track, lfo_t *lfo);
+  void setLFO(uint8_t track, MDLFO *lfo);
   
   void assignMachine(uint8_t track, uint8_t model);
   
-  void setMachine(uint8_t track, md_machine_t *machine);
+  void setMachine(uint8_t track, MDMachine *machine);
 
   void muteTrack(uint8_t track, bool mute = true);
   void unmuteTrack(uint8_t track) {

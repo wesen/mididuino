@@ -1,6 +1,7 @@
 #include "helpers.h"
 #include "MD.h"
 #include "MDSysex.hh"
+#include "MDMessages.hh"
 
 MDSysexListenerClass MDSysexListener;
 
@@ -92,7 +93,8 @@ void getCurrentKitOnStatusResponseCallback(uint8_t type, uint8_t value) {
 
 void getCurrentKitOnGlobalMessageCallback() {
   if (MDSysexListener.mdGetCurrentKitStatus == MD_GET_GLOBAL) {
-    //    MD.baseChannel = global->baseChannel;
+    MD.global.fromSysex(MidiSysex.data, MidiSysex.recordLen);
+    MD.baseChannel = MD.global.baseChannel;
     MDSysexListener.mdGetCurrentKitStatus = MD_DONE;
     if (MDSysexListener.onCurrentKitCallback != NULL)
       MDSysexListener.onCurrentKitCallback();
@@ -101,8 +103,7 @@ void getCurrentKitOnGlobalMessageCallback() {
 
 void getCurrentKitOnKitMessageCallback() {
   if (MDSysexListener.mdGetCurrentKitStatus == MD_GET_KIT) {
-    //    m_memcpy(MD.name, kit->name, sizeof(MD.name));
-    //    m_memcpy(MD.trackModels, kit->trackModels, sizeof(MD.trackModels));
+    MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen);
     MDSysexListener.mdGetCurrentKitStatus = MD_GET_GLOBAL;
     MD.requestGlobal(MD.currentGlobal);
   }
@@ -110,9 +111,9 @@ void getCurrentKitOnKitMessageCallback() {
 
 void MDSysexListenerClass::getCurrentKit(md_callback_t callback) {
   setup();
-  //  setOnStatusResponseCallback(getCurrentKitOnStatusResponseCallback);
-  //  setOnKitMessageCallback(getCurrentKitOnKitMessageCallback);
-  //  setOnGlobalMessageCallback(getCurrentKitOnGlobalMessageCallback);
+  setOnStatusResponseCallback(getCurrentKitOnStatusResponseCallback);
+  setOnKitMessageCallback(getCurrentKitOnKitMessageCallback);
+  setOnGlobalMessageCallback(getCurrentKitOnGlobalMessageCallback);
   setOnCurrentKitCallback(callback);
   mdGetCurrentKitStatus = MD_GET_CURRENT_KIT;
   MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_KIT_REQUEST);
