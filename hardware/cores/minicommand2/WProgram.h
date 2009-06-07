@@ -3,6 +3,7 @@
 
 #define MIDIDUINO 1
 #define SYSEX_BUF_SIZE 8192
+//#define SYSEX_BUF_SIZE 128
 
 #ifdef __cplusplus
 extern "C" {

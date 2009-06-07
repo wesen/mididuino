@@ -26,8 +26,6 @@ void init(void) {
   //  wdt_enable(WDTO_15MS);
 
   /* move interrupts to bootloader section */
-  SET_BIT(DDRB, PB0);
-  CLEAR_BIT(PORTB, PB0);
   DDRC = 0xFF;
   PORTC = 0x00;
   MCUCR = _BV(IVCE);

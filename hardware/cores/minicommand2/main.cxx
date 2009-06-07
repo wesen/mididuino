@@ -76,6 +76,7 @@ void __mainInnerLoop(bool callLoop) {
 }
 
 int main(void) {
+    delay(100);
   init();
   clearLed();
   clearLed2();
