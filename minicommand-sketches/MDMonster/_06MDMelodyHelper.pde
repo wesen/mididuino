@@ -4,13 +4,13 @@ namespace MDMelodyHelper {
 void onCurrentKitCallback() {
     loadedKit = true;
     GUI.setLine(GUI.LINE1);
-    GUI.put_string_fill(MD.name);
+    GUI.put_string_fill(MD.kit.name);
 }
 
 void handleGuiSysex() {
   if (BUTTON_PRESSED(Buttons.BUTTON1)) {
     loadedKit = false;
-    MDSysex.getCurrentKit(onCurrentKitCallback);
+    MDSysexListener.getCurrentKit(onCurrentKitCallback);
   }
 }
 
@@ -49,7 +49,7 @@ void onControlChangeCallback(uint8_t *msg) {
     GUI.put_value_at(13, track);
     
     GUI.setLine(GUI.LINE2);
-    GUI.put_p_string_at(0, getMachineName(MD.trackModels[track]));
+    GUI.put_p_string_at(0, MD.getMachineName(MD.kit.machines[track].model));
 
     if (pitch == 128) {
       GUI.put_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));

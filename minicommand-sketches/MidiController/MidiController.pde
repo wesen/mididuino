@@ -30,7 +30,6 @@ RangeEncoder char2Encoder(0, 35);
 RangeEncoder char3Encoder(0, 35);
 RangeEncoder char4Encoder(0, 35);
 
-
 void initSettings() {
   for (int page = 0; page < 4; page++) {
     for (int encoder = 0; encoder < 4; encoder++) {
@@ -109,9 +108,6 @@ void showCCPage(int page) {
 }
 
 void setup() {
-  uint8_t *ptr = (uint8_t *)0x2000;
-  for (int i = 0; i < 8000; i++) 
-    ptr[i] = 0;
   SDCard.init();
   initSettings();
   loadSettings();
@@ -121,6 +117,7 @@ void setup() {
 
 void loop() {
   GUI.updatePage();
+
   for (int page = 0; page < 4; page++) {
     for (int encoder = 0; encoder < 4; encoder++) {
       if (ccEncoders[page][encoder].hasChanged()) {

@@ -57,7 +57,7 @@ bool isConfigPageActive();
 void handleGuiSysex() {
   if (BUTTON_PRESSED(Buttons.BUTTON1) && !isConfigPageActive()) {
     loadedKit = false;
-    MDSysex.getCurrentKit(onCurrentKitCallback);
+    MDSysexListener.getCurrentKit(onCurrentKitCallback);
   }
 }
 
@@ -210,7 +210,7 @@ class ChannelConfigPage : public Page {
           GUI.put_p_string_fill(PSTR("SELECT WITH PADS"));
         } else {
           GUI.setLine(GUI.LINE1);
-          uint8_t model = MD.trackModels[configChannel];
+          uint8_t model = MD.kit.machines[configChannel].model;
           GUI.put_p_string(PSTR("CHANNEL "));
           GUI.put_value(2, configChannel + 1);
           GUI.lines[GUI.curLine].data[11] = ':';
@@ -219,7 +219,7 @@ class ChannelConfigPage : public Page {
                GUI.put_p_string(3, PSTR(" NML"));
                GUI.setLine(GUI.LINE2);
                GUI.clearLine();
-               GUI.put_p_string_at(0, getMachineName(model));
+               GUI.put_p_string_at(0, MD.getMachineName(model));
                if (MD.isMelodicTrack(configChannel)) {
                } else {
                  GUI.put_p_string_at(7, PSTR("XXX"));
@@ -294,7 +294,7 @@ class MDNotesPage : public Page {
       GUI.setLine(GUI.LINE1);
       GUI.put_p_string_fill(PSTR("LOADED KIT"));
       GUI.setLine(GUI.LINE2);
-      GUI.put_string_fill(MD.name);
+      GUI.put_string_fill(MD.kit.name);
       oldKit = MD.currentKit;
     }
   }

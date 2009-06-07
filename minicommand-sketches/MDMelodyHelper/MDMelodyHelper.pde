@@ -12,13 +12,13 @@ void setup() {
 void onCurrentKitCallback() {
     loadedKit = true;
     GUI.setLine(GUI.LINE1);
-    GUI.put_string_fill(MD.name);
+    GUI.put_string_fill(MD.kit.name);
 }
 
 void handleGuiSysex() {
   if (BUTTON_PRESSED(Buttons.BUTTON1)) {
     loadedKit = false;
-    MDSysex.getCurrentKit(onCurrentKitCallback);
+    MDSysexListener.getCurrentKit(onCurrentKitCallback);
   }
 }
 

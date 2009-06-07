@@ -170,9 +170,9 @@ end:
 }
 
 void writeConfigSettings() {
-  GUI.flash_p_strings_fill(PSTR(""), PSTR("WRITE SETTINGS"));
-  showCCPage(currentCCPage);
   writeSettings();
+  showCCPage(currentCCPage);
+  GUI.flash_p_strings_fill(PSTR(""), PSTR("WRITE SETTINGS"));
 }
 
 void quitConfig() {

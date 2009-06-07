@@ -33,7 +33,7 @@ void handleGui() {
     MidiClock.pause();
 
   for (uint8_t i = 0; i < 4; i++) {
-    if (BUTTON_DOWN(Buttons.SHIFT) && BUTTON_PRESSED(i)) {
+    if (BUTTON_DOWN(Buttons.BUTTON1) && BUTTON_PRESSED(Buttons.ENCODER1 + i)) {
       switchPage(i);
     }
   }

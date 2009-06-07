@@ -3,10 +3,10 @@
 
 void setup() {
   LCD.line1("MD NOTE TEST");
-  MD.trackModels[0] = EFM_SD_MODEL;
-  MD.trackModels[1] = ROM_MODEL;
-  MD.trackModels[2] = EFM_SD_MODEL;
-  MD.trackModels[3] = ROM_MODEL;
+  MD.kit.machines[0].model = EFM_SD_MODEL;
+  MD.kit.machines[1].model = ROM_MODEL;
+  MD.kit.machines[2].model = EFM_SD_MODEL;
+  MD.kit.machines[3].model = ROM_MODEL;
 }
 
 void loop() {

@@ -7,7 +7,7 @@ void onControlChangeCallback(uint8_t *msg) {
   uint8_t track, param;
   MD.parseCC(channel, msg[1], &track, &param);
   if (track != 255) {
-    MD.trackParams[track][param] = msg[2];
+    MD.kit.machines[track].params[param] = msg[2];
   }
 }
 
@@ -25,7 +25,7 @@ void loop() {
 void handleGui() {
   if (BUTTON_PRESSED(Buttons.BUTTON1)) {
     loadedKit = false;
-    MDSysex.getCurrentKit(onCurrentKitCallback);
+    MDSysexListener.getCurrentKit(onCurrentKitCallback);
   }
   handleGuiPages();  
 }

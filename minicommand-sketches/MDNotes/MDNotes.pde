@@ -55,7 +55,7 @@ void onCurrentKitCallback() {
 void handleGuiSysex() {
   if (BUTTON_PRESSED(Buttons.BUTTON1) && !isConfigPageActive()) {
     loadedKit = false;
-    MDSysex.getCurrentKit(onCurrentKitCallback);
+    MDSysexListener.getCurrentKit(onCurrentKitCallback);
   }
 }
 

@@ -31,7 +31,7 @@ void onControlChangeCallback(uint8_t *msg) {
     GUI.put_value_at(13, track);
     
     GUI.setLine(GUI.LINE2);
-    GUI.put_p_string_at(0, getMachineName(MD.trackModels[track]));
+    GUI.put_p_string_at(0, MD.getMachineName(MD.kit.machines[track].model));
 
     if (pitch == 128) {
       GUI.put_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));

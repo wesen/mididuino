@@ -651,7 +651,7 @@ class ConfigPage_1 : public EncoderPage {
       GUI.flash_put_value(0, track);
       if (MD.isMelodicTrack(track)) {
         arpeggiator.arpTrack = track;
-        GUI.flash_p_string_at_fill(8, getMachineName(MD.trackModels[track]));
+        GUI.flash_p_string_at_fill(8, MD.getMachineName(MD.kit.machines[track].model));
       } else {
         GUI.flash_p_string_at_fill(8, PSTR("XXX"));
       }
@@ -735,7 +735,7 @@ void setupPages() {
 }
 
 void onCurrentKitCallback() {
-  GUI.flash_strings_fill("LOADED KIT", MD.name);
+  GUI.flash_strings_fill("LOADED KIT", MD.kit.name);
   GUI.setLine(GUI.LINE1);
   loadedKit = true;
 }
@@ -744,7 +744,7 @@ void handleGuiPages() {
   if (GUI.page == &configPage_1) {
     if (BUTTON_PRESSED(Buttons.BUTTON1)) {
       loadedKit = false;
-      MDSysex.getCurrentKit(onCurrentKitCallback);
+      MDSysexListener.getCurrentKit(onCurrentKitCallback);
     } else if (BUTTON_PRESSED(Buttons.BUTTON2)) {
       GUI.setPage(&configPage_2);
     }

@@ -77,7 +77,7 @@ void loop() {
     GUI.setLine(GUI.LINE2);
     uint8_t track = trackEncoder.getValue();
     if (MD.isMelodicTrack(track)) {
-      GUI.put_p_string_at_fill(5, getMachineName(MD.trackModels[track]));
+      GUI.put_p_string_at_fill(5, MD.getMachineName(MD.kit.machines[track].model));
     } else {
       GUI.put_p_string_at_fill(5, PSTR("XXX"));
     }
@@ -88,7 +88,7 @@ void loop() {
 
 void onCurrentKitCallback() {
   GUI.setLine(GUI.LINE1);
-  GUI.flash_string_fill(MD.name);
+  GUI.flash_string_fill(MD.kit.name);
 }
 
 void handleGui() {
@@ -103,6 +103,6 @@ void handleGui() {
   }
   
   if (BUTTON_PRESSED(Buttons.BUTTON1)) {
-    MDSysex.getCurrentKit(onCurrentKitCallback);
+    MDSysexListener.getCurrentKit(onCurrentKitCallback);
   }
 }

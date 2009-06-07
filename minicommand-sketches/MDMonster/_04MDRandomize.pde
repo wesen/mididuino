@@ -7,7 +7,7 @@ void onControlChangeCallback(uint8_t *msg) {
   uint8_t track, param;
   MD.parseCC(channel, msg[1], &track, &param);
   if (track != 255) {
-    MD.trackParams[track][param] = msg[2];
+    MD.kit.machines[track].params[param] = msg[2];
   }
 }
 
@@ -120,7 +120,7 @@ public:
       undoStack.reset();
       if (loadedKit) {
         GUI.setLine(GUI.LINE2);
-        GUI.flash_p_string_at(9, getMachineName(MD.trackModels[trackEncoder.getValue()]));
+        GUI.flash_p_string_at(9, MD.getMachineName(MD.kit.machines[trackEncoder.getValue()].model));
       }
   }    
   
@@ -151,7 +151,7 @@ public:
     if (!loadedKit) {
       GUI.put_p_string(PSTR("NO KIT     "));
     } else {
-      GUI.put_string(MD.name);
+      GUI.put_string(MD.kit.name);
     }
   }
   
@@ -176,18 +176,18 @@ public:
     int amount = (int)amtEncoder.getValue();
 
     GUI.setLine(GUI.LINE2);
-    undoStack.push(&MD.trackParams[track]);
+    undoStack.push(&MD.kit.machines[track].params);
   
     for (uint8_t i = 0; i < 24; i++) {
       if (IS_BIT_SET(trackMask, i)) {
-        int param = MD.trackParams[track][i];
+        int param = MD.kit.machines[track].params[i];
         int rand = random(-amount, amount);
         param += rand;
         if (param > 127) 
           param = 127;
         if (param < 0)
           param = 0;
-        MD.trackParams[track][i] = param;
+        MD.kit.machines[track].params[i] = param;
         MD.setTrackParam(track, i, param);
       }
     }
@@ -196,10 +196,10 @@ public:
   void undo() {
     GUI.setLine(GUI.LINE1);
     uint8_t track = trackEncoder.getValue();
-    if (undoStack.pop(&MD.trackParams[track])) {
+    if (undoStack.pop(&MD.kit.machines[track].params)) {
       GUI.flash_p_string_fill(PSTR("UNDO"));
       for (uint8_t i = 0; i < 24; i++) {
-        MD.setTrackParam(track, i, MD.trackParams[track][i]);
+        MD.setTrackParam(track, i, MD.kit.machines[track].params[i]);
       }
     } else {
       GUI.flash_p_string_fill(PSTR("UNDO XXX"));
@@ -244,7 +244,7 @@ void loop() {
 void handleGui() {
   if (BUTTON_PRESSED(Buttons.BUTTON1)) {
     loadedKit = false;
-    MDSysex.getCurrentKit(onCurrentKitCallback);
+    MDSysexListener.getCurrentKit(onCurrentKitCallback);
   }
   handleGuiPages();  
 }
