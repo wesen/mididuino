@@ -1,0 +1,31 @@
+operations:=
+	<source> [--metadata <metadata>+] <target>
+	;
+SOURCE::=
+	 SELECT|NEW
+	 ;
+<metadata>:=
+	(--title <string>)
+  | (--author <string>)
+  | (--name <string>)
+  | (--comment <string>)
+  	;
+
+SELECT:=
+	--select <path>
+	;
+NEW:=
+	--new INCLUDE*
+	;
+INCLUDE:=
+    (--include <file> <path-name>)
+   |(--include <dir>  <path-name> (--filter <filterlist>)?)
+	;
+
+<filterlist>:=
+		[+|-]?<name>[,<filter>]* 
+	;
+// example:
+// --filter +*.c,*.h -.cvsignore
+
+TARGET: [--pack <file>|--unpack <dir>] 
