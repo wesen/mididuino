@@ -47,6 +47,7 @@ import javax.swing.event.DocumentListener;
 
 import name.cs.csutils.I18N;
 
+import com.ruinwesen.patchdownloader.indexer.Order;
 import com.ruinwesen.patchdownloader.indexer.Query;
 import com.ruinwesen.patchdownloader.swing.SearchController;
 import com.ruinwesen.patchdownloader.swing.SwingPatchdownloader;
@@ -58,7 +59,7 @@ public class SearchPanel  {
     private JPanel container;
     private JComboBox cbOrder;
     private SwingPatchdownloader patchdownloader;
-    private Query previousQuery = new Query("");
+    private Query previousQuery = new Query();
     
     public SearchPanel(SwingPatchdownloader patchdownloader) {
         this.patchdownloader = patchdownloader;
@@ -71,7 +72,9 @@ public class SearchPanel  {
 
         final String RELEVANCE = I18N.translate("translation.sortby.relevance", "Relevance");
         final String DATE_ADDED = I18N.translate("translation.sortby.dateadded", "Date Added");
-        cbOrder = new JComboBox(new Object[]{RELEVANCE, DATE_ADDED});
+        final String TITLE = I18N.translate("translation.sortby.title", "Title");
+        final String AUTHOR = I18N.translate("translation.sortby.author", "Author");
+        cbOrder = new JComboBox(new Object[]{RELEVANCE, DATE_ADDED, TITLE, AUTHOR});
 
         Font smallLabelFont = labelSearch.getFont(); // CSUtils.changeFontSize(labelSearch.getFont(), 0.8f); 
         Font smallComboboxFont = cbOrder.getFont(); // CSUtils.changeFontSize(cbOrder.getFont(), 0.8f); 
@@ -118,7 +121,7 @@ public class SearchPanel  {
     }
     
     public Query getQuery() {
-        return new Query(getQueryString());
+        return Query.parse(getQueryString());
     }
     
     private String norm(String str) {
@@ -153,10 +156,11 @@ public class SearchPanel  {
         public void actionPerformed(ActionEvent e) {
             if (cbOrder == e.getSource()) {
                 SearchController controller = patchdownloader.getSearchController();
-                if (cbOrder.getSelectedIndex() == 0) {
-                    controller.setOrderByRelevance();
-                } else {
-                    controller.setOrderByDate();
+                switch (cbOrder.getSelectedIndex()) {
+                case 0: controller.setOrder(Order.BY_RELEVANCE); break;
+                case 1: controller.setOrder(Order.BY_DATE); break;
+                case 2: controller.setOrder(Order.BY_TITLE); break;
+                case 3: controller.setOrder(Order.BY_AUTHOR); break;
                 }
                 controller.update();
             } else if (e.getSource() == timer 
