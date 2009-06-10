@@ -40,8 +40,7 @@ import name.cs.csutils.UpdateTimer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.ruinwesen.patchdownloader.indexer.Doc;
-import com.ruinwesen.patchdownloader.indexer.IndexReader;
+import com.ruinwesen.patch.PatchMetadata;
 import com.ruinwesen.patchdownloader.swing.SwingPatchdownloader;
 import com.ruinwesen.patchdownloader.swing.SearchController;
 import com.ruinwesen.patchdownloader.swing.dialogs.ProgressDialog;
@@ -77,12 +76,9 @@ public class DeletePatchIndexTask implements Runnable {
         // clear all items so the list cell renderer does not try to 
         // load items we have deleted
         patchdownloader.getPatchListView().getListModel().setItems(
-                Collections.<Doc>emptyList());
+                Collections.<PatchMetadata>emptyList());
         
-        IndexReader ir = patchdownloader.getPatchIndex();
         LinkedList<File> deleteList = new LinkedList<File>();
-        deleteList.add(new File(ir.getIndexDir(), "key.index"));
-        deleteList.add(new File(ir.getIndexDir(), "document.index"));
         if (patchdownloader.getRemoteRepositoryBackup().getBaseDir() != null) {
             deleteList.add(patchdownloader.getRemoteRepositoryBackup().getBaseDir());
         }
@@ -134,7 +130,7 @@ public class DeletePatchIndexTask implements Runnable {
             log.debug(count+" files deleted");
         }
         try {
-            ir.update();
+            patchdownloader.getPatchIndex().update();
         } catch (FileNotFoundException ex) {
             // no surprise: we deleted the files
         } catch (IOException ex) {

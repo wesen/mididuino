@@ -40,14 +40,13 @@ import javax.swing.SwingUtilities;
 
 import name.cs.csutils.CSUtils;
 
+import com.ruinwesen.patch.DeviceIDConstants;
+import com.ruinwesen.patch.PatchFileBuilder;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.Tag;
+import com.ruinwesen.patch.Tagset;
 import com.ruinwesen.patchdownloader.PatchDownloader;
-import com.ruinwesen.patchdownloader.indexer.IndexReader;
-import com.ruinwesen.patchdownloader.indexer.MetadataIndexWriter;
-import com.ruinwesen.patchdownloader.patch.DeviceIDConstants;
-import com.ruinwesen.patchdownloader.patch.PatchFileBuilder;
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
-import com.ruinwesen.patchdownloader.patch.Tag;
-import com.ruinwesen.patchdownloader.patch.Tagset;
+import com.ruinwesen.patchdownloader.indexer.Index;
 import com.ruinwesen.patchdownloader.swing.SwingPatchdownloader;
 import com.ruinwesen.patchdownloader.swing.dialogs.ProgressDialog;
 
@@ -202,7 +201,7 @@ public class RandomPatchGeneratorTask implements DeviceIDConstants {
         public void run() {
             try {
                 PatchDownloader pd = PatchDownloader.getSharedInstance();
-                IndexReader ir = pd.getPatchIndex();
+                Index ir = pd.getPatchIndex();
                 PatchFileBuilder builder = new PatchFileBuilder();
                 StringBuilder sb = new StringBuilder();
 
@@ -224,8 +223,6 @@ public class RandomPatchGeneratorTask implements DeviceIDConstants {
 
                 dialog.setStatusText("Generating...");
                 try {
-                    MetadataIndexWriter writer = ir.createAppendableIndexWriter();
-                    
                     final long updateResolution = 150;
                     long nextUpdate = System.currentTimeMillis()+updateResolution;
                     
@@ -251,15 +248,9 @@ public class RandomPatchGeneratorTask implements DeviceIDConstants {
                             ex.printStackTrace();
                             break;
                         }
-                        
-                        
-                        int docid = writer.newDocument(builder.getOutput().getName());
-                        writer.putMetadata(docid,builder.getMetadata());
                         generated++;
                     }
                     dialog.setProgressBarProgress(1f);
-                    writer.flush();
-                    writer.close();
                     ir.update(); // update the current reader
                 } catch (IOException ex) {
                     ex.printStackTrace();

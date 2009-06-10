@@ -41,9 +41,9 @@ import name.cs.csutils.CSUtils;
 import name.cs.csutils.directoryreader.DirectoryReader;
 
 import com.ruinwesen.midisend.MidiSendException;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.StoredPatch;
 import com.ruinwesen.patchdownloader.PatchDownloader;
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
-import com.ruinwesen.patchdownloader.repository.StoredPatch;
 import com.ruinwesen.patchdownloader.swing.SwingPatchdownloader;
 import com.ruinwesen.patchdownloader.swing.dialogs.ProgressDialog;
 
