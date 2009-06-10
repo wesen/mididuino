@@ -54,13 +54,11 @@ import org.apache.commons.logging.LogFactory;
 
 import com.ruinwesen.midisend.MidiSend;
 import com.ruinwesen.midisend.RWMidiSend;
-import com.ruinwesen.patchdownloader.indexer.IndexReader;
-import com.ruinwesen.patchdownloader.indexer.MetadataIndexWriter;
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
+import com.ruinwesen.patch.StoredPatch;
+import com.ruinwesen.patchdownloader.indexer.Index;
 import com.ruinwesen.patchdownloader.repository.HTTPRepository;
 import com.ruinwesen.patchdownloader.repository.LocalRepository;
 import com.ruinwesen.patchdownloader.repository.RemoteBackupRepository;
-import com.ruinwesen.patchdownloader.repository.StoredPatch;
 import com.ruinwesen.patchdownloader.repository.StoredPatchCollector;
 import com.ruinwesen.patchdownloader.repository.UpdateRepositoryCallback;
 import com.ruinwesen.patchdownloader.repository.WorkspaceRepository;
@@ -86,7 +84,8 @@ public class PatchDownloader {
     protected LocalRepository remoteRepositoryBackup;
     protected LocalRepository workspaceRepository;
     protected HTTPRepository remoteRepository;
-    private IndexReader patchIndex = new IndexReader();
+    //private IndexReader patchIndex = new IndexReader();
+    private Index patchIndex = new Index();
     private MidiSend midiSend;
     private volatile long stopping = 0;
     private boolean debugModeOn = false;
@@ -152,7 +151,7 @@ public class PatchDownloader {
         return configDir;
     }
 
-    public IndexReader getPatchIndex() {
+    public Index getPatchIndex() {
         return patchIndex;
     }
 
@@ -281,8 +280,6 @@ public class PatchDownloader {
         List<StoredPatch> srclist = new ArrayList<StoredPatch>();
         remoteRepository.collectPatches(new StoredPatchCollector.Collection(srclist),since);
         
-        MetadataIndexWriter writer = patchIndex.createAppendableIndexWriter();
-
         int count = 0;
         // write new documents to index
         for (StoredPatch patch: srclist) {
@@ -302,39 +299,23 @@ public class PatchDownloader {
                     patch.getName());
             // export the patch from the repository
             remoteRepository.exportFile(patch, dstfile);
-            
-            StoredPatch dstStoredPatch = new StoredPatch.JarFilePatch(dstfile);
-            
-            // get the metadata
-            PatchMetadata metadata;
-            try {
-                metadata = dstStoredPatch.getMetadata();
-            } catch (IOException ex) {
-                if (getLog().isErrorEnabled()) {
-                    getLog().error("could not read metadata: "+dstfile.getAbsolutePath(), ex);
-                }
-                // clean up
-                if (dstfile.exists() && !dstfile.delete()) {
-                    if (getLog().isWarnEnabled()) {
-                        getLog().warn("Could not delete (possibly corrupted) file: "+
-                                dstfile.getAbsolutePath(), ex); 
-                    }
-                }
-                continue; // go on
+        }
+
+        // update index
+        try {
+            if (callback != null) {
+                callback.updateProgress("Updating index...", UpdateRepositoryCallback.COMPLETE);
             }
-            // create a document using the metadata
-            String path = dstfile.getName();
-            int docid = writer.newDocument(path);
-            writer.putMetadata(docid, metadata);
+            patchIndex.update();
+        } catch (IOException ex) {
+            if (getLog().isErrorEnabled()) {
+                getLog().error("update index failed", ex);
+            }
         }
 
         if (callback != null) {
             callback.updateProgress(null, UpdateRepositoryCallback.COMPLETE);
         }
-        
-        // commit the changes
-        writer.flush();
-        writer.close();
         
         // memorize when we performed this operation
         db.put(KEY_LASTUPDATE_DATE, CSUtils.dateToString(CSUtils.now()));
@@ -454,6 +435,7 @@ public class PatchDownloader {
         // create the repository - only jar files are permittet
         remoteRepositoryBackup = new RemoteBackupRepository();
         remoteRepositoryBackup.setBaseDir(rrb);
+        patchIndex.setRepositoryDir(rrb);
         
         // configure the workspace repository
         workspaceRepository = new WorkspaceRepository();
@@ -462,6 +444,7 @@ public class PatchDownloader {
         if (workspaceFileName != null) {
             // note: the location does not necessarily exist
             workspaceRepository.setBaseDir(new File(workspaceFileName));
+            
         }
         if (getLog().isDebugEnabled()) {
             getLog().debug("workspace dir: "+workspaceFileName);
@@ -481,14 +464,13 @@ public class PatchDownloader {
             handleFatalExceptionOnStart("could not create index directory", 
                     new FileNotFoundException("could not create index directory: "+indexDir.getAbsolutePath()));
         }
-        patchIndex.setIndexDir(indexDir);
         try {
             patchIndex.update();
         } catch (FileNotFoundException ex) {
             // no op - no index, then it will be created later
         } catch (IOException ex) {
             if (getLog().isWarnEnabled()) {
-                getLog().warn("could not read the patch index, please rebuild the index", ex);
+                getLog().warn("could not update the patch index", ex);
             }
         }
         
