@@ -28,65 +28,10 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
-/**
- * A concrete indexed document.
- * @author chresan
- */
-public class StaticDoc extends Doc {
+import com.ruinwesen.patch.PatchMetadata;
 
-    /** the document id */
-    int id;
-    /** the date */
-    long date;
-    /** the path where the document is stored */
-    String path;
-    /** the document title */
-    String title;
+public interface Collector {
 
-    /**
-     * Creates a new document.
-     * @param id the document id
-     * @param date the date 
-     * @param path the path where the document is stored
-     * @param title the document title
-     */
-    public StaticDoc(int id, long date, String path, String title) {
-        this.id = id;
-        this.date = date;
-        this.path = path;
-        this.title = title;
-    }
+    void collect(PatchMetadata data, float score);
     
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long date() {
-        return date;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int id() {
-        return id;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String path() {
-        return path;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String title() {
-        return title;
-    }
-
 }

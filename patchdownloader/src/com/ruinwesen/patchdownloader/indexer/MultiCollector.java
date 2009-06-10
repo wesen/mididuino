@@ -28,70 +28,22 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
-/**
- * An indexed document with a score value.
- * @author christian
- */
-public class ScoreDoc extends Doc {
+import com.ruinwesen.patch.PatchMetadata;
 
-    /** the wrapped document */
-    private Doc doc;
-    
-    /** the assigned score value */
-    private float score;
+public class MultiCollector implements Collector {
 
-    /**
-     * Wrapps a new document and assignes the specified score to it.
-     * @param doc the document 
-     * @param score the score value
-     */
-    public ScoreDoc(Doc doc, float score) {
-        this.doc = doc;
-        this.score = score;
+    private Collector a;
+    private Collector b;
+
+    public MultiCollector(Collector a, Collector b) {
+        this.a = a;
+        this.b = b;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public long date() {
-        return doc.date();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int id() {
-        return doc.id();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String title() {
-        return doc.title();
-    }
-
-    /**
-     * Returns the score assigned to the wrapped document where 0&lt;=score&lt;=1 .
-     * The score value can be used to measure the relevance of a document
-     * regarding a specific search query. 
-     * @return the score assigned to the wrapped document
-     * @see ScoreDoc
-     */
-    @Override
-    public float score() {
-        return score;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String path() {
-        return doc.path();
+    public void collect(PatchMetadata data, float score) {
+        a.collect(data, score);
+        b.collect(data, score);
     }
     
 }

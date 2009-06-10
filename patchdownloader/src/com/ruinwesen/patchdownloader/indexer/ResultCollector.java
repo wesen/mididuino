@@ -28,69 +28,33 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
-import com.ruinwesen.patchdownloader.patch.Tag;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
-public class Category {
+import com.ruinwesen.patch.PatchMetadata;
 
-    private Tag tag;
-    private int size;
-    private transient String name;
+public class ResultCollector implements Collector {
 
-    public Category(Tag tag, int size) {
-        this.tag = tag;
-        this.size = size;
-    }
-    
-    public Tag tag() {
-        return tag;
-    }
-    
-    public int size() {
-        return size;
-    }
-
-    public String name() {
-        if (name == null) {
-            name = formatCategoryTagname(tag.value());
-        }
-        return name;
-    }
+    private List<PatchMetadata> result = new LinkedList<PatchMetadata>();
     
     @Override
-    public int hashCode() {
-        return tag.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o!= null && 
-            (o == this || o instanceof Category && ((Category)o).tag.equals(tag));
+    public void collect(PatchMetadata data, float score) {
+        if (score>0) {
+            result.add(new ScoredPatchMetadata(data,score));
+        }
     }
     
-    private static String formatCategoryTagname(String name) {
-        String PREFIX = "category:";
-        if (name.length()>=PREFIX.length()) {
-            name = name.substring(PREFIX.length());
-        }
-        StringBuilder sb = new StringBuilder();
-        int whitespaceAt = -1;
-        for (int i=0;i<name.length();i++) {
-            char ch = name.charAt(i);
-            if (whitespaceAt==i-1) {
-                if (Character.isWhitespace(ch))  {
-                    whitespaceAt = i; // don't add second whitespace character
-                } else {
-                    sb.append(Character.toUpperCase(ch));
-                }
-            } else {
-                if (Character.isWhitespace(ch))  {
-                    sb.append(' ');
-                } else {
-                    sb.append(ch);
-                }
-            }
-        }
-        return sb.toString();
+    public List<PatchMetadata> result() {
+        return new ArrayList<PatchMetadata>(result);
     }
 
+    public List<PatchMetadata> result(Comparator<PatchMetadata> comparator) {
+        List<PatchMetadata> data = new ArrayList<PatchMetadata>(result);
+        Collections.sort(data, comparator);
+        return data;
+    }
+    
 }

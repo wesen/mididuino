@@ -28,112 +28,90 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.ruinwesen.patch.Tagset;
 
 public class Query {
 
-    private String queryString;
-    private transient List<String> tokenizedList;
-  //  private Query matchAllQuery; 
+    private String authorName;
+    private Tagset expectedTags = new Tagset();
+    private String textsearch;
+    private float minScoreThreshold = 0.5f;
+    
+   // private Date minDate;
+    //private Date maxDate;
+    
+    public Query() {
+        super();
+    }
 /*
-    public Query(Query matchAll, String queryString) {
-        this(queryString);
-     //   this.matchAllQuery = flattteNmatchAll;
-    } */
-    
-    public Query(String queryString) {
-        this.queryString = queryString == null ? "" : queryString; 
+    public void setMinimumDate(Date date) {
+        this.minDate = date;
     }
 
-    private static final String norm(String key) {
-        return key.trim().toLowerCase();
+    public void setMaximumDate(Date date) {
+        this.maxDate = date;
     }
     
-    private List<String> __tokenize() {
-        List<String> keys = new ArrayList<String>();
-        for (String key: queryString.split("[\\s]+")) {
-            key = norm(key);
-            if (key.length()>0 && !keys.contains(key)) keys.add(key);
-        }
-        return keys;
+    public void setDate(Date date) {
+        this.minDate = date;
+        this.maxDate = date;
+    }
+  */  
+    public static Query parse(String queryString) {
+        Query q = new Query(); 
+        q.setTextSearch(queryString);
+        return q;
     }
     
-    public List<String> tokenize() {
-        if (tokenizedList == null) {
-            tokenizedList = __tokenize();
-        }
-        return Collections.unmodifiableList(tokenizedList);
+    public void setTextSearch(String textsearch) {
+        this.textsearch = textsearch;
     }
     
-    @Override
-    public int hashCode() {
-        return __tokenize().hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o instanceof Query) {
-            List<String> la = this.__tokenize(); 
-            List<String> lb = ((Query)o).__tokenize();
-            return la.containsAll(lb) && lb.containsAll(la);
-        }
-        return false;
+    public void setAuthor(String name) {
+        this.authorName = name;
     }
 
-    public boolean isEmpty() {
-        return __tokenize().isEmpty();
+    public Tagset expectedTags() {
+        return expectedTags;
+    }
+
+    public void setMinScoreThreshold(float minscore) {
+        if (minscore<0 || minscore>1) {
+            throw new IllegalArgumentException("minscore:"+minscore);
+        }
+        this.minScoreThreshold = minscore;
     }
     
-    public String highlight(String text, String hlPrefix, String hlSuffix) {
-        if (text.trim().length() == 0) {
-            return text;
+    public Scorer createScorer() {
+        Scorer scorer = Scorer.ONE;
+        if (authorName != null) {
+            scorer = Scorer.logicAnd(scorer, Scorer.authorIs(authorName));
         }
-        List<String> tokenLists = __tokenize();       
-        if (tokenLists.isEmpty()) {
-            return text;
+        if (!expectedTags.isEmpty()) {
+            scorer = Scorer.logicAnd(scorer, Scorer.containsAllTags(expectedTags));
         }
-        
-        String lowercaseText = text.toLowerCase(); 
-        StringBuilder highlighted = null;
-        int index = 0;
-        while (index<text.length()) {
-            String selectedToken = null;
-            int nextIndex = Integer.MAX_VALUE;
-            for (String token: tokenLists) {
-                int idx = lowercaseText.indexOf(token, index);
-                if (idx>=0 && idx<nextIndex && idx<text.length()) {
-                    nextIndex = idx;
-                    selectedToken = token;
-                }
-            }
-            if (selectedToken == null) {
-                break;
-            }
-            if (highlighted == null) {
-                highlighted = new StringBuilder(text.length());
-            }
-            highlighted.append(text.substring(index, nextIndex));
-            index = nextIndex;
-            highlighted.append(hlPrefix);
-            highlighted.append(text.substring(index, index+selectedToken.length()));
-            highlighted.append(hlSuffix);
-            index+=selectedToken.length();
+        if (textsearch != null) {
+            scorer = Scorer.logicAnd(scorer, Scorer.fullTextSearch(textsearch));
+            // the more matched tags the higher the score 
+            scorer = Scorer.weight(scorer, Scorer.maxTagMatch(textsearch));
         }
-        if (highlighted != null) {
-            if (index<text.length()) {
-                highlighted.append(text.substring(index));
-            }
-            return highlighted.toString();
+        if (minScoreThreshold != 0f) {
+            scorer = Scorer.minThreshold(minScoreThreshold, scorer);
         }
-        return text;
+        /*
+        if (minDate != null) {
+            //scorer = Scorer.logicAnd(scorer, Scorer.lastmodifiedDate(date, type))
+        }*/
+        return scorer;
     }
-    
-    @Override
-    public String toString() {
-        return "Query[query="+queryString+"]";
+
+    public Highlighter createHighlighter() {
+        StringBuilder text = new StringBuilder();
+        if (authorName != null)
+            text.append(authorName).append(' ');
+        if (textsearch != null) 
+            text.append(textsearch).append(' ');
+        return new Highlighter(text.toString());
     }
     
 }

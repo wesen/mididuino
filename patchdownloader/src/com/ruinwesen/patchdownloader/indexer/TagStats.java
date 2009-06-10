@@ -28,42 +28,52 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Map;
+import java.util.HashMap;
 
-import name.cs.csutils.CSUtils;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.Tag;
+import com.ruinwesen.patch.Tagset;
 
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
-import com.ruinwesen.patchdownloader.patch.Tag;
+public class TagStats implements Collector {
 
-public class MetadataIndexWriter extends IndexWriter {
-
-    public MetadataIndexWriter(OutputStream outDocumentIndex,
-            OutputStream outKeyIndex) {
-        super(outDocumentIndex, outKeyIndex);
+    private Map<String, Integer> tagCounter = new HashMap<String, Integer>();
+    
+    public void reset() {
+        tagCounter.clear();
     }
     
-    public void putMetadata(int docid, PatchMetadata metadata) throws IOException {
-        Date date = metadata.getLastModifiedDate();
-        if (date != null)
-            putKey(docid, "date:"+CSUtils.dateToString(date));
+    public Tagset tags() {
+        Collection<String> tags = tagCounter.keySet();
+        return new Tagset(tags.toArray(new String[tags.size()]));
+    }
+    
+    public TagStats intersection(Tagset tagset) {
+        TagStats stats = new TagStats();
+        stats.tagCounter = new HashMap<String, Integer>(this.tagCounter);
+        for (Tag tag: tagset) {
+            stats.tagCounter.remove(tag.normalizedValue());
+        }
+        return stats;
+    }
+    
+    public int getCount(String tag) {
+        return getCount(new Tag(tag));
+    }
+    
+    public int getCount(Tag tag) {
+        Integer count = tagCounter.get(tag.normalizedValue());
+        return count == null ? 0 : count.intValue();
+    }
 
-        String title = metadata.getTitle();
-        if (title != null) {
-            title = normalizeTitle(title);
-            if (!title.isEmpty()) {
-                putKey(docid, "title:"+title);
+    @Override
+    public void collect(PatchMetadata data, float score) {
+        if (score>0) {
+            for (Tag tag: data.getTags()) {
+                tagCounter.put(tag.normalizedValue(), getCount(tag)+1);
             }
         }
-        
-        for (Tag tag: metadata.getTags()) {
-            putKey(docid, tag.normalizedValue());
-        }
     }
-
-    private String normalizeTitle(final String str) {
-        return str.trim().replaceAll("[\\s\\n\\r\\t]+", " "); 
-    }
-
+    
 }

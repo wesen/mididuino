@@ -28,65 +28,26 @@
  */
 package com.ruinwesen.patchdownloader.indexer;
 
-import java.util.Date;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.WrappedPatchMetadata;
 
-import name.cs.csutils.CSUtils;
+public class ScoredPatchMetadata extends WrappedPatchMetadata {
 
-/**
- * An indexed document.
- * 
- * @author chresan
- */
-public abstract class Doc {
+    private PatchMetadata delegate;
+    private float score;
 
-    /**
-     * Returns the document id.
-     * @return the document id
-     */
-    public abstract int id();
-    
-    /**
-     * Returns the date of this document.
-     * If the document date is unavailable this method returns 0.
-     * 
-     * To get a Date object do:
-     * Date dateObj = doc.date() == 0 ? null : new Date(doc.date());
-     * 
-     * @return the date of this document
-     * @see Date#Date(long)
-     */
-    public abstract long date();
-    
-    /**
-     * Returns the title of this document.
-     * @return the title of this document
-     */
-    public abstract String title();
-    
-    /**
-     * Returns the location this document is stored.
-     * @return the location this document is stored
-     */
-    public abstract String path();
-    
-    /**
-     * Returns the score of this document where 0&lt;=score&lt;=1 .
-     * The score value can be used to measure the relevance of a document
-     * regarding a specific search query. By default the score is 1.
-     * @return the score of this document
-     * @see ScoreDoc
-     */
-    public float score() {
-        return 1.0f;
+    public ScoredPatchMetadata(PatchMetadata delegate, float score) {
+        this.delegate = delegate;
+        this.score = score;
     }
     
-    /**
-     * Returns a string representation of the date.
-     * @return a string representation of the date
-     * @see #date()
-     */
-    public String dateToString() {
-        return CSUtils.dateToString(new Date(date()));
+    public float score() {
+        return score;
+    }
+    
+    @Override
+    protected PatchMetadata getDelegate() {
+        return delegate;
     }
 
 }
