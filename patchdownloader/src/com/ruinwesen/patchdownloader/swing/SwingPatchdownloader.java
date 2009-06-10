@@ -62,10 +62,9 @@ import org.apache.commons.logging.LogFactory;
 import com.ruinwesen.midisend.MidiDevice;
 import com.ruinwesen.midisend.MidiSend;
 import com.ruinwesen.midisend.MidiSendException;
-import com.ruinwesen.patchbuilder.CreatePatchFileDialog;
+import com.ruinwesen.patch.CreatePatchFileDialog;
 import com.ruinwesen.patchdownloader.PatchDownloader;
 import com.ruinwesen.patchdownloader.swing.dialogs.AboutDialog;
-import com.ruinwesen.patchdownloader.swing.misc.MetadataCache;
 import com.ruinwesen.patchdownloader.swing.panels.SearchPanel;
 import com.ruinwesen.patchdownloader.tasks.DeletePatchIndexTask;
 import com.ruinwesen.patchdownloader.tasks.RandomPatchGeneratorTask;
@@ -97,12 +96,7 @@ public class SwingPatchdownloader extends PatchDownloader {
     private PatchDetailsView patchDetailsView;
     private File lastFileChooserLocation = null;
     private SearchController searchController = new SearchController(this);
-    private MetadataCache metadataCache = new MetadataCache();
     
-    public MetadataCache getMetadataCache() {
-        return metadataCache;
-    }
-
     public SearchController getSearchController() {
         return searchController;
     }
