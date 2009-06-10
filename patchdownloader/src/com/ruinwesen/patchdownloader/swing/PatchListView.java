@@ -51,10 +51,9 @@ import javax.swing.event.ListSelectionListener;
 
 import name.cs.csutils.I18N;
 
-import com.ruinwesen.patchdownloader.indexer.Doc;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.StoredPatch;
 import com.ruinwesen.patchdownloader.indexer.Query;
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
-import com.ruinwesen.patchdownloader.repository.StoredPatch;
 import com.ruinwesen.patchdownloader.swing.extra.LargeListModel;
 import com.ruinwesen.patchdownloader.swing.extra.PatchCellRenderer;
 import com.ruinwesen.patchdownloader.swing.panels.SectionBorder;
@@ -69,7 +68,7 @@ public class PatchListView implements ListSelectionListener {
     private long acceptSelectionEventDelay = 250; // 1/2 second until a selection is 'accepted'
     private SectionBorder sectionBorder ;
     private int minCellWidth = 200;
-    private LargeListModel<Doc,List<Doc>> listmodel;
+    private LargeListModel<PatchMetadata,List<PatchMetadata>> listmodel;
     private int patchResultCounter = 0;
     private PatchCellRenderer cellRenderer;
     
@@ -94,10 +93,10 @@ public class PatchListView implements ListSelectionListener {
     }
     
     public void setQuery(Query query) {
-        cellRenderer.setQuery(query);
+        cellRenderer.setHighlighter(query.createHighlighter());
     }
     
-    public LargeListModel<Doc, List<Doc>> getListModel() {
+    public LargeListModel<PatchMetadata, List<PatchMetadata>> getListModel() {
         return listmodel;
     }
     
@@ -117,11 +116,8 @@ public class PatchListView implements ListSelectionListener {
         if (index<0 || index>=listmodel.getSize()) {
             details.setPatch(null, null);
         } else {
-            Doc patch = listmodel.getElementAt(index);
-            File file = new File(patchdownloader.getRemoteRepositoryBackup().getBaseDir(), patch.path());
-            
-            PatchMetadata metadata = patchdownloader.getMetadataCache().getMetadata(patch, true);
-            details.setPatch(new StoredPatch.JarFilePatch(file), metadata);
+            PatchMetadata metadata = listmodel.getElementAt(index);
+            details.setPatch(new StoredPatch.JarFilePatch(new File(metadata.getPath())), metadata);
             
         }
     }
@@ -138,9 +134,9 @@ public class PatchListView implements ListSelectionListener {
     }
     
     private void init() {
-        listmodel = new LargeListModel<Doc, List<Doc>>(new ArrayList<Doc>());
+        listmodel = new LargeListModel<PatchMetadata, List<PatchMetadata>>(new ArrayList<PatchMetadata>());
         listView = new JList(listmodel);
-        cellRenderer = new PatchCellRenderer(patchdownloader.getMetadataCache());
+        cellRenderer = new PatchCellRenderer();
         listView.setCellRenderer(cellRenderer);
         listView.addListSelectionListener(this);
         //Font font = CSUtils.changeFontSize(UIManager.getFont("TextPane.font"), 0.8f);

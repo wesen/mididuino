@@ -28,27 +28,28 @@
  */
 package com.ruinwesen.patchdownloader.swing;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
 
-import com.ruinwesen.patchdownloader.indexer.Category;
-import com.ruinwesen.patchdownloader.indexer.Doc;
-import com.ruinwesen.patchdownloader.indexer.DocComparator;
-import com.ruinwesen.patchdownloader.indexer.IndexReader;
-import com.ruinwesen.patchdownloader.indexer.KeyMatcher;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.Tagset;
+import com.ruinwesen.patchdownloader.indexer.Index;
+import com.ruinwesen.patchdownloader.indexer.MultiCollector;
+import com.ruinwesen.patchdownloader.indexer.Order;
 import com.ruinwesen.patchdownloader.indexer.Query;
-import com.ruinwesen.patchdownloader.patch.Tag;
-import com.ruinwesen.patchdownloader.patch.Tagset;
+import com.ruinwesen.patchdownloader.indexer.ResultCollector;
+import com.ruinwesen.patchdownloader.indexer.TagStats;
 import com.ruinwesen.patchdownloader.swing.extra.LargeListModel;
 
 public class SearchController {
 
     private SwingPatchdownloader patchdownloader;
     private boolean changed;
-    private Query query = new Query("");
+    private Query query = new Query();
     private Tagset displayedCategories = new Tagset();
-    private boolean orderByRelevance = true;
+    private Comparator<PatchMetadata> order = Order.BY_RELEVANCE;
     private ConcurrentSearch concurrentSearch = null;
 
     public SearchController(SwingPatchdownloader patchdownloader) {
@@ -57,7 +58,6 @@ public class SearchController {
     
     public void indexChanged() {
         changed = true;
-        patchdownloader.getMetadataCache().clear();
     }
     
     public void setQuery(Query query) {
@@ -84,22 +84,26 @@ public class SearchController {
     }
 
     public void setOrderByRelevance() {
-        setOrder(true);
+        setOrder(Order.BY_RELEVANCE);
     }
 
     public void setOrderByDate() {
-        setOrder(false);
+        setOrder(Order.BY_DATE);
     }
 
-    private void setOrder(boolean byRelevance) {
-        if (this.orderByRelevance != byRelevance) {
-            this.orderByRelevance = byRelevance;
+    public void setOrder(Comparator<PatchMetadata> order) {
+        if (order == null) {
+            throw new IllegalArgumentException("order == null");
+        }
+        
+        if (this.order != order) {
+            this.order = order;
             setChangeFlag();
         }
     }
 
-    public boolean isOrderByRelevanceSet() {
-        return this.orderByRelevance;
+    public Comparator<PatchMetadata> getOrder() {
+        return order;
     }
     
     public void setChangeFlag() {
@@ -122,28 +126,29 @@ public class SearchController {
             concurrentSearch = null;
         }
 
-        KeyMatcher keymatcher = displayedCategories.isEmpty() ? null 
-                : new TagKeyMatcher(displayedCategories);
+       // KeyMatcher keymatcher = displayedCategories.isEmpty() ? null 
+       //         : new TagKeyMatcher(displayedCategories);
         
+        if (!displayedCategories.isEmpty()) {
+            query.expectedTags().addAll(displayedCategories);
+        } else {
+            query.expectedTags().clear();
+        }
         
-        concurrentSearch = new ConcurrentSearch(query, keymatcher,
-                orderByRelevance ? DocComparator.BY_RELEVANCE : DocComparator.BY_DATE);
+        concurrentSearch = new ConcurrentSearch(query, order);
         new Thread(concurrentSearch).start();
         
     }
-
+    
     private class ConcurrentSearch implements Runnable {
         
         private Query query;
         private volatile long stopped = 0;
         private volatile long exited = 0;
-        private KeyMatcher keymatcher;
-        private DocComparator comparator;
+        private Comparator<PatchMetadata>  comparator;
         
-        public ConcurrentSearch(Query query, KeyMatcher keymatcher,
-                DocComparator comparator) {
+        public ConcurrentSearch(Query query, Comparator<PatchMetadata> comparator) {
             this.query = query;
-            this.keymatcher = keymatcher;
             this.comparator = comparator;
         }
         
@@ -160,10 +165,16 @@ public class SearchController {
         }
         
         public void run() {
-            IndexReader patchIndex = patchdownloader.getPatchIndex();
+            Index patchIndex = patchdownloader.getPatchIndex();
    
-            final List<Doc> docList = 
-                patchIndex.search(query, keymatcher, 0.5f, 1.0f, comparator);
+            final TagStats statsCollector = new TagStats();
+            ResultCollector resultCollector = new ResultCollector();
+            MultiCollector collector = new MultiCollector(statsCollector, resultCollector);
+            patchIndex.collect(collector, query.createScorer());
+            
+            final List<PatchMetadata> docList = resultCollector.result(order);
+/*            final List<Doc> docList = 
+                patchIndex.search(query, keymatcher, 0.5f, 1.0f, comparator);*/
 
             //!isSearchAborted() && !PatchDownloader.getSharedInstance().isStopping()
             
@@ -171,21 +182,23 @@ public class SearchController {
                 exited = 1;
                 return;
             }
+            /*
             final Category[] categories = 
                 query == null || query.isEmpty() 
                 ? patchIndex.getCategories()
                         : patchIndex.getCategories(docList);
-            
+            */
             Runnable run = new Runnable() {
                 public void run() {
                     try {
                         if (!isSearchAborted()) {
-                            LargeListModel<Doc, List<Doc>> listmodel =
+                            LargeListModel<PatchMetadata, List<PatchMetadata>> listmodel =
                                 patchdownloader.getPatchListView().getListModel();
                             listmodel.setItems(docList);
                             listmodel.fireCachedEvents();
                             patchdownloader.getPatchListView().setPatchResultCounter(docList.size());   
-                            patchdownloader.getFilterListView().setDisplayedCategories(categories);
+                            //patchdownloader.getFilterListView().setDisplayedCategories(categories);
+                            patchdownloader.getFilterListView().update(statsCollector);
                         }
                     } finally {
                         exited = 1;
@@ -196,19 +209,6 @@ public class SearchController {
             SwingUtilities.invokeLater(run);
         }
         
-    }
-
-    private static class TagKeyMatcher extends KeyMatcher {
-        private Tagset set;
-
-        public TagKeyMatcher(Tagset set) {
-            this.set = set;
-        }
-
-        @Override
-        public boolean matches(String key) {
-            return set.contains(new Tag(key));
-        }
     }
     
 }

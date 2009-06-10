@@ -64,10 +64,10 @@ import name.cs.csutils.RedirectAction;
 import name.cs.csutils.RedirectAction.RedirectActionMeta;
 import name.cs.csutils.directoryreader.DirectoryReader;
 
-import com.ruinwesen.patchdownloader.patch.DefaultPatchMetadata;
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
-import com.ruinwesen.patchdownloader.patch.Tagset;
-import com.ruinwesen.patchdownloader.repository.StoredPatch;
+import com.ruinwesen.patch.DefaultPatchMetadata;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.StoredPatch;
+import com.ruinwesen.patch.Tagset;
 import com.ruinwesen.patchdownloader.swing.misc.BoxLayoutBuilder;
 import com.ruinwesen.patchdownloader.swing.misc.TextPopup;
 import com.ruinwesen.patchdownloader.swing.panels.MidiSetupPanel;

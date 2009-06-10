@@ -37,6 +37,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
@@ -53,12 +54,45 @@ import javax.swing.event.ListSelectionListener;
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.I18N;
 
-import com.ruinwesen.patchdownloader.indexer.Category;
-import com.ruinwesen.patchdownloader.patch.Tagset;
+import com.ruinwesen.patch.Tag;
+import com.ruinwesen.patch.Tagset;
+import com.ruinwesen.patchdownloader.indexer.TagStats;
 import com.ruinwesen.patchdownloader.swing.panels.SectionBorder;
 
 public class FilterListView implements ListSelectionListener {
 
+    public static final class Category {
+        private String name;
+        private int size;
+
+        public Category(Tag tag, int size) {
+            this.name = tag.normalizedValue().substring("category:".length());
+            this.size = size;
+        }
+        
+        public Category(String name, int size) {
+            this.name = name;
+            this.size = size;
+        }
+        public String name() {
+            return name;
+        }
+        public Tag tag() {
+            return new Tag("category:"+name);
+        }
+        public int size() {
+            return size;
+        }
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof Category) {
+                return ((Category)o).name.equalsIgnoreCase(name);
+            }
+            return false;
+        }
+    }
+    
+    
     public JList listView = new JList();
     private JComponent container;
     private SwingPatchdownloader patchdownloader;
@@ -77,8 +111,6 @@ public class FilterListView implements ListSelectionListener {
         pane.add(scrollPane, BorderLayout.CENTER);
         container = pane;
         
-  //      selectedCategories = new BitSet(allCategories.length);
-        
         listView.addListSelectionListener(this);
         new EventHandler().install();
     }
@@ -90,7 +122,7 @@ public class FilterListView implements ListSelectionListener {
     private int insert(List<Category> list, Category item) {
         for (int i=0;i<list.size();i++) {
             Category cmp = list.get(i);
-            if (cmp.name().compareTo(item.name())>=0) {
+            if (cmp.name().compareToIgnoreCase(item.name())>=0) {
                 list.add(i, item);
                 return i;
             }
@@ -116,6 +148,18 @@ public class FilterListView implements ListSelectionListener {
         }
     }
 
+    public void update(TagStats stats) {
+        List<Category> list = new LinkedList<Category>();
+        for (Tag tag: stats.tags()) {
+            if (tag.normalizedValue().startsWith("category:")
+                    && stats.getCount(tag)>0) {
+                Category cat = new Category(tag, stats.getCount(tag));
+                list.add(cat);
+            }
+        }
+        setDisplayedCategories(list.toArray(new Category[list.size()]));
+    }
+    
     public synchronized void setDisplayedCategories(Category[] categories) {
         if (categories == null) {
             throw new IllegalArgumentException("categories==null");
@@ -127,7 +171,7 @@ public class FilterListView implements ListSelectionListener {
         
         if (listView.getModel().getSize() == displayedCategories.size()) {
             List<Category> current = ((SimpleListModel)listView.getModel()).list;
-            current.containsAll(displayedCategories);
+            if (current.containsAll(displayedCategories)) {
             // we only have to update the count values
             for (int i = 0;i<current.size();i++) {
                 current.remove(i);
@@ -135,6 +179,7 @@ public class FilterListView implements ListSelectionListener {
             }
             ((SimpleListModel)listView.getModel()).fireContentsChanged();
             return;
+            }
         }
         
         isUpdatingCategories = true;
@@ -250,5 +295,5 @@ public class FilterListView implements ListSelectionListener {
         }
         
     }
-    
+
 }
