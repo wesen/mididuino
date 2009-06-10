@@ -35,11 +35,53 @@ public final class FileFilterFactory {
 
     private static FileFilter DIRECTORIES_ONLY = new DirectoryFilter();
     private static FileFilter FILES_ONLY = new FilesFilter();
-    private static FileFilter FILES_AND_DIRECTORIES = new AnyFilter();
+    private static FileFilter ANY = new ConstFilter(true);
+    private static FileFilter NONE = new ConstFilter(false);
 
     // no instances
     private FileFilterFactory() {
         super();
+    }
+
+    /**
+     * FILTER:= (*<suffix>)|<name>
+     * 
+     * @param filterString
+     * @return
+     */
+    public static FileFilter parseFilter(String filterString) {
+        if ("*".equals(filterString)) {
+            return ANY;
+        }
+        if (filterString.startsWith("*")) {
+            return new FileSuffixFilter(filterString.substring(1), true);
+        } else {
+            return new FileNameIs(filterString, true);
+        }
+    }
+
+    /**
+     * FILTER_LIST := (FILTER(,FILTER)*)?
+     * FILTER:= [-]?(*<suffix>)|<name>
+     * 
+     * @param filterString
+     * @return
+     */
+    public static FileFilter parseFilterList(String filterString) {
+        FileFilter excludeFilter = NONE;
+        FileFilter includeFilter = NONE;
+        for (String fstr: filterString.split(",")) {
+            if (fstr.isEmpty()) {
+                throw new IllegalArgumentException("invalid filter list: "+filterString);
+            }
+            if (fstr.charAt(0)=='-') {
+                excludeFilter = or(excludeFilter, not(parseFilter(fstr.substring(1))));
+            } else {
+                includeFilter = or(includeFilter, parseFilter(fstr));
+            }
+        }
+        FileFilter filter = and(includeFilter, not(excludeFilter));
+        return filter;
     }
     
     public static javax.swing.filechooser.FileFilter ForFileChooser(FileFilter filter,
@@ -47,6 +89,14 @@ public final class FileFilterFactory {
         return new ForChooser(filter, description);
     }
     
+    public static FileFilter nameIs(String name) {
+        return nameIs(name,true);
+    }
+    
+    private static FileFilter nameIs(String name, boolean ignoreCase) {
+        return new FileNameIs(name, ignoreCase);
+    }
+
     public static FileFilter SuffixFilter(String suffix) {
         return new FileSuffixFilter(suffix, true);
     }
@@ -54,9 +104,22 @@ public final class FileFilterFactory {
     public static FileFilter SuffixFilter(String suffix, boolean ignorecase) {
         return new FileSuffixFilter(suffix, ignorecase);
     }
+    
+    public static FileFilter not(FileFilter f) {
+        if (f == ANY) return NONE;
+        if (f == NONE) return ANY;
+        if (f  instanceof InverseFilter) {
+            return ((InverseFilter)f).filter;
+        }
+        return new InverseFilter(f);
+    }
 
-    public static FileFilter FilesAndDirectories() {
-        return FILES_AND_DIRECTORIES;
+    public static FileFilter any() {
+        return ANY;
+    }
+
+    public static FileFilter none() {
+        return NONE;
     }
 
     public static FileFilter DirectoriesOnly() {
@@ -68,10 +131,18 @@ public final class FileFilterFactory {
     }
 
     public static FileFilter and(FileFilter a, FileFilter b) {
+        if (a == b) return a;
+        if (a == NONE || b == NONE) return NONE;
+        if (a == ANY) return b;
+        if (b == ANY) return a;
         return new ANDFilter(a,b);
     }
 
     public static FileFilter or(FileFilter a, FileFilter b) {
+        if (a == b) return a;
+        if (a == NONE) return b;
+        if (b == NONE) return a;
+        if (a == ANY || b == ANY) return ANY;
         return new ORFilter(a,b);
     }
     
@@ -119,14 +190,54 @@ public final class FileFilterFactory {
         }
     }
 
-    private static final class AnyFilter implements FileFilter {
+    private static final class InverseFilter implements FileFilter {
+        private FileFilter filter;
+        public InverseFilter(FileFilter filter) {
+            this.filter = filter;
+        }
         @Override
         public boolean accept(File pathname) {
-            return true;
+            return !filter.accept(pathname);
         }
         @Override
         public String toString() {
-            return "*.*";
+            return "(not "+filter.toString()+")";
+        }
+    }
+
+
+    private static final class ConstFilter implements FileFilter {
+        private boolean accept;
+        public ConstFilter(boolean accept) {
+            this.accept = accept;
+        }
+        @Override
+        public boolean accept(File pathname) {
+            return accept;
+        }
+        @Override
+        public String toString() {
+            return accept ? "*" : "<none>";
+        }
+    }
+
+    private static final class FileNameIs implements FileFilter {
+        private String name;
+        private boolean ignoreCase;
+        public FileNameIs(String name, boolean ignoreCase) {
+            this.name = name;
+            this.ignoreCase = ignoreCase;
+        }
+        @Override
+        public boolean accept(File pathname) {
+            if (ignoreCase)
+                return pathname.getName().equalsIgnoreCase(name);
+            else
+                return pathname.getName().equals(name);
+        }
+        @Override
+        public String toString() {
+            return name;
         }
     }
 
