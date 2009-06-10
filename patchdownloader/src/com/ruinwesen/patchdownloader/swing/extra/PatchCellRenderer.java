@@ -50,11 +50,9 @@ import javax.swing.SwingUtilities;
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.I18N;
 
-import com.ruinwesen.patchdownloader.indexer.Doc;
-import com.ruinwesen.patchdownloader.indexer.Query;
-import com.ruinwesen.patchdownloader.patch.PatchMetadata;
-import com.ruinwesen.patchdownloader.patch.Tagset;
-import com.ruinwesen.patchdownloader.swing.misc.MetadataCache;
+import com.ruinwesen.patch.PatchMetadata;
+import com.ruinwesen.patch.Tagset;
+import com.ruinwesen.patchdownloader.indexer.Highlighter;
 
 /**
  * This class renders {@link Doc} instances. 
@@ -94,8 +92,7 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
     private String comment = "";
     private String tags = "";
     private String categories = "";
-    private Query query = new Query("");
-    private MetadataCache metadataCache;
+    private Highlighter highlighter = new Highlighter("");
     private boolean paintSelected = false;
     private Color selectionForeground = Color.BLACK;
 
@@ -108,13 +105,9 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
      * @param metadataCache used to lookup the metadata of the rendered patch
      * @throws IllegalArgumentException the specified metadataCache object is null 
      */
-    public PatchCellRenderer(MetadataCache metadataCache) {
-        if (metadataCache == null) {
-            throw new IllegalArgumentException("metadataCache == null");
-        }
+    public PatchCellRenderer() {
         // clear the label text property so this will not make any problems
         super.setText("");
-        this.metadataCache = metadataCache;
         STRING_TAGS = I18N.translate("translation.tags", "Tags");
         STRING_CATEGORY = I18N.translate("translation.category", "Category");
     }
@@ -137,8 +130,7 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
         // setup this cell renderer using the default implementation
         super.getListCellRendererComponent(list, "", index, isSelected, cellHasFocus);
         // lookup metadata
-        Doc patch = (Doc) value;
-        PatchMetadata metadata = metadataCache.getMetadata(patch, true);
+        PatchMetadata metadata = (PatchMetadata)value;
         // read the metadata and update all fields before they are rendered
         update(metadata);
         return this;
@@ -150,11 +142,11 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
      * @param query the query
      * @throws IllegalArgumentException the specified query object is <code>null</code> 
      */
-    public void setQuery(Query query) {
-        if (query == null) {
-            throw new IllegalArgumentException("query == null");
+    public void setHighlighter(Highlighter hl) {
+        if (hl == null) {
+            hl = new Highlighter("");
         }
-        this.query = query;
+        this.highlighter = hl;
     }
 
     /**
@@ -207,7 +199,7 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
             }
             
             if (metadata.getComment() != null) {
-                this.comment = metadata.getComment().trim(); 
+                this.comment = highlighter.highlight(metadata.getComment().trim(), "$","$");
             }
             Tagset tagset = metadata.getTags();
             if (!tagset.isEmpty()) {
@@ -215,9 +207,9 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
                 Tagset tagsOnly = tagset.filterPrefix(PREFIX, false, true);
                 Tagset categoryTags = tagset.filterPrefix(PREFIX, true, true);
                 if (!tagsOnly.isEmpty())
-                    tags = query.highlight(tagsOnly.toSortedString(), "$","$");
+                    tags = highlighter.highlight(tagsOnly.toSortedString(), "$","$");
                 if (!categoryTags.isEmpty())
-                    categories = query.highlight(categoryTags.toSortedString(), "$","$");
+                    categories = highlighter.highlight(categoryTags.toSortedString(), "$","$");
             }
         }
     }
@@ -342,7 +334,8 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
         int wdate = paintIconR.width;
         
         // line 1:  BoldTitle
-        g.setFont(boldFont);
+        g.setFont(standardFont);
+        g.setColor(bluer);
         String ltitle = layout(boldFontMetrics, title, Math.max(1,iw-wdate), lineHeight);
         x = paintTextR.x+insets.left;
         y = paintTextR.y+boldFontMetrics.getAscent()+boldFontMetrics.getLeading()+insets.top;
@@ -357,7 +350,12 @@ public class PatchCellRenderer extends DefaultListCellRenderer {
         // line2: comment
         String lcomment = layout(standardFontMetrics, comment, iw, lineHeight);
         g.setFont(standardFont);
-        g.drawString(lcomment, x, y);
+        //g.drawString(lcomment, x, y);
+        paintHighlighted(g, fg, paler, fg, lineHeight, iw,
+                standardFont, standardFontMetrics,
+                boldFont, boldFontMetrics,
+                "", lcomment,
+                x, y);
         y+= paintTextR.height;
         
         // line4: tags
