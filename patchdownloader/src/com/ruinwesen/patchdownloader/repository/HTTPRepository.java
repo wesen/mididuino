@@ -43,6 +43,8 @@ import name.cs.csutils.CSUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.ruinwesen.patch.StoredPatch;
+
 public class HTTPRepository extends Repository {
 
     private static Log log = LogFactory.getLog(Repository.class);

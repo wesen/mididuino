@@ -30,6 +30,8 @@ package com.ruinwesen.patchdownloader.repository;
 
 import java.util.ArrayList;
 
+import com.ruinwesen.patch.StoredPatch;
+
 public abstract class StoredPatchCollector {
 
     public boolean takesMore() {

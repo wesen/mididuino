@@ -31,6 +31,8 @@ package com.ruinwesen.patchdownloader.repository;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import com.ruinwesen.patch.StoredPatch;
+
 public abstract class Repository {
 
     public abstract <C extends StoredPatchCollector> C collectPatches(C collector) throws IOException ;

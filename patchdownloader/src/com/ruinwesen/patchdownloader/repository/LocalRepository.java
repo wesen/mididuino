@@ -40,6 +40,8 @@ import name.cs.csutils.iterator.FileEnumeration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.ruinwesen.patch.StoredPatch;
+
 public abstract class LocalRepository extends Repository {
 
     private Log log = LogFactory.getLog(LocalRepository.class);
