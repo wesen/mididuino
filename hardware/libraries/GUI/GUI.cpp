@@ -199,6 +199,11 @@ void GuiClass::flash(uint16_t duration) {
   lines[curLine].flashTimer = read_slowclock();
 }
 
+void GuiClass::clearFlashLine() {
+  for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
+    lines[curLine].flash[i] = ' ';
+}
+
 void GuiClass::clearFlash(uint16_t duration) {
   for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
     lines[curLine].flash[i] = ' ';

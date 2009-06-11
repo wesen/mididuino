@@ -110,6 +110,7 @@ class GuiClass {
   
   void setLine(const uint8_t line) { curLine = line; }
   void clearLine();
+  void clearFlashLine();
   void clearFlash(uint16_t duration = DEFAULT_FLASH_DURATION);
   void setPage(Page *_page);
   static const uint8_t LINE1 = 0;
