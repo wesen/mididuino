@@ -33,11 +33,11 @@ void LCDClass::enable() {
 }
 
 void LCDClass::putnibble(uint8_t nibble) {
-  uint8_t tmp = SREG;
-  cli();
+  //  uint8_t tmp = SREG;
+  //  cli();
   LCD_DATA_PORT = (LCD_DATA_PORT & 0xF0) | (nibble & 0xF);
   enable();
-  SREG = tmp;
+  //  SREG = tmp;
 }
 
 void LCDClass::putbyte(uint8_t byte) {
@@ -46,22 +46,22 @@ void LCDClass::putbyte(uint8_t byte) {
 }
 
 void LCDClass::putcommand(uint8_t command) {
-  uint8_t tmp = SREG;
-  cli();
+  //  uint8_t tmp = SREG;
+  //  cli();
   LCD_CLEAR_RS();
 
   putbyte(command);
-  SREG = tmp;
+  //  SREG = tmp;
   delayMicroseconds(LCD_DELAY_US);
 }
 
 void LCDClass::putdata(uint8_t data) {
-  uint8_t tmp = SREG;
-  cli();
+  //  uint8_t tmp = SREG;
+  //  cli();
   
   LCD_SET_RS();
   putbyte(data);
-  SREG = tmp;
+  //  SREG = tmp;
   delayMicroseconds(LCD_DELAY_US);
 }
 
