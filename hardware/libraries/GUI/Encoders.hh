@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 #include "WProgram.h"
+#include "GUI.h"
 
 class Encoder {
  protected:
@@ -37,9 +38,19 @@ class Encoder {
   int getOldValue() {
     return old;
   }
-  void setValue(int value) {
-    old = cur = value;
+  void setValue(int value, bool handle = false) {
+    if (handle) {
+      cur = value;
+      checkHandle();
+    } else {
+      old = cur = value;
+    }
     redisplay = true;
+  }
+
+  virtual void displayAt(int i) {
+    GUI.put_value(i, getValue());
+    redisplay = false;
   }
 };
 
@@ -59,7 +70,23 @@ class RangeEncoder : public Encoder {
     setValue(init);
   }
   virtual void handle(int val) { }
-  void update(encoder_t *enc);
+  virtual void update(encoder_t *enc);
+};
+
+class EnumEncoder : public RangeEncoder {
+public:
+  char **enumStrings;
+  int cnt;
+
+  EnumEncoder(char *strings[], int _cnt, char *_name = NULL, int init = 0) : RangeEncoder(_cnt - 1, 0, _name, init) {
+    enumStrings = strings;
+    cnt = _cnt;
+  }
+
+  virtual void displayAt(int i) {
+    GUI.put_string(i, enumStrings[getValue()]);
+    redisplay = false;
+  }
 };
 
 class CCEncoder : public RangeEncoder {

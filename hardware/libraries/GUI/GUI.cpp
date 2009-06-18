@@ -21,6 +21,14 @@ void GuiClass::updatePage() {
     page->update();
   }
 }
+
+bool GuiClass::handleGui() {
+  if (page != NULL)
+    return page->handleGui();
+  else
+    return false;
+}
+
 void GuiClass::update() {
   bool redisplay = false;
   

@@ -7,9 +7,6 @@
 
 #ifdef MIDIDUINO_USE_GUI
 
-#include "Encoders.hh"
-#include "Pages.hh"
-
 #define INIT_PAGE(page, encoders, size)					\
   { for (uint8_t i = 0; i < (size); i++) { (page).encoders[i] = (encoders) + i; } }
 
@@ -25,6 +22,8 @@ typedef struct line_s {
 
 #define DEFAULT_FLASH_DURATION 600
 
+class Page;
+
 class GuiClass {
  protected:
  public:
@@ -39,12 +38,7 @@ class GuiClass {
   void (*handleButtons)();
 
   void updatePage();
-  bool handleGui() {
-    if (page != NULL)
-      return page->handleGui();
-    else
-      return false;
-  }
+  bool handleGui();
 
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
@@ -119,6 +113,9 @@ class GuiClass {
 };
 
 extern GuiClass GUI;
+
+#include "Encoders.hh"
+#include "Pages.hh"
 
 #endif
 

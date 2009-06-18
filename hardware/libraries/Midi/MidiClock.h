@@ -75,6 +75,10 @@ class MidiClockClass {
   void pause();
   void setTempo(uint16_t tempo);
   uint16_t getTempo();
+
+  bool isStarted() {
+    return state == STARTED;
+  }
 };
 
 extern MidiClockClass MidiClock;

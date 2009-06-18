@@ -36,8 +36,7 @@ void EncoderPage::display(bool redisplay) {
   for (uint8_t i = 0; i < 4; i++) {
     if (encoders[i] != NULL)
       if (encoders[i]->hasChanged() || redisplay || encoders[i]->redisplay) {
-	GUI.put_value(i, encoders[i]->getValue());
-	encoders[i]->redisplay = false;
+	encoders[i]->displayAt(i);
       }
   }
 }
