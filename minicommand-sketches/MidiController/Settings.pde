@@ -1,4 +1,4 @@
-bool writeSettings() {
+2bool writeSettings() {
   SDCardFile file;
   if (!file.create("/MidiController/settings")) {
     return false;
