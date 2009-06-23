@@ -2,6 +2,8 @@
 #define ENCODERS_H__
 
 #include <inttypes.h>
+#include <MidiClock.h>
+#include <Midi.h>
 #include "WProgram.h"
 #include "GUI.h"
 
@@ -29,12 +31,15 @@ class Encoder {
     
     old = cur;
   }
+
   bool hasChanged() {
     return old != cur;
   }
+  
   int getValue() {
     return cur;
   }
+  
   int getOldValue() {
     return old;
   }
@@ -86,6 +91,64 @@ public:
   virtual void displayAt(int i) {
     GUI.put_string(i, enumStrings[getValue()]);
     redisplay = false;
+  }
+};
+
+template <int N>
+class RecordingEncoder : public RangeEncoder {
+public:
+  int value[N];
+  bool recording;
+  bool recordChanged;
+  bool playing;
+  int currentPos;
+
+  RecordingEncoder(int _max = 127, int _min = 0, char *_name = NULL, int init = 0) :
+    RangeEncoder(_max, _min, _name, init) {
+    recording = false;
+    playing = true;
+    clearRecording();
+    currentPos = 0;
+  }
+
+  void startRecording() {
+    recordChanged = false;
+    recording = true;
+  }
+
+  void stopRecording() {
+    recordChanged = false;
+    recording = false;
+  }
+
+  void clearRecording() {
+    for (int i = 0; i < N; i++) {
+      value[i] = -1;
+    }
+  }
+
+  virtual void update(encoder_t *enc) {
+    RangeEncoder::update(enc);
+    if (recording) {
+      if (!recordChanged) {
+	if (hasChanged()) {
+	  recordChanged = true;
+	}
+      }
+      if (recordChanged) {
+	int pos = currentPos;
+	value[pos] = cur;
+      }
+    }
+  }
+
+  void playback(int pos) {
+    if (!playing)
+      return;
+    
+    currentPos %= N;
+    if (value[pos] != -1)
+      setValue(value[pos]);
   }
 };
 
