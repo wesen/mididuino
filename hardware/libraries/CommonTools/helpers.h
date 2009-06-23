@@ -86,6 +86,9 @@ int limit_value(int value, int encoder, int min, int max);
 
 #ifdef __cplusplus
 }
+
+#include "Task.hh"
+
 #endif
   
 #endif /* HELPERS_H__ */
