@@ -73,7 +73,7 @@ void m_memclr(void *dst, uint16_t cnt);
 void m_str16cpy_fill(void *dst, char *src);
 void m_str16cpy_p_fill(void *dst, PGM_P src);
 void m_str16cpy_p(void *dst, PGM_P src);
-
+void m_strnappend(void *dst, char *src, int len);
 
 extern uint16_t read_clock(void);
 extern uint16_t read_slowclock(void);

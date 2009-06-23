@@ -77,6 +77,17 @@ void m_str16cpy_p(void *dst, PGM_P src) {
   m_strncpy_p(dst, src, 16);
 }
 
+void m_strnappend(void *dst, char *src, int len) {
+  char *ptr = dst;
+  int i;
+  for (i = 0; i < len; i++) {
+    if (ptr[0] == '\0')
+      break;
+    ptr++;
+  }
+  m_strncpy(ptr, src, len - i);
+}
+
 volatile uint16_t slowclock = 0;
 volatile uint16_t clock = 0;
 
