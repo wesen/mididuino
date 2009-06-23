@@ -1,5 +1,6 @@
 #include "WProgram.h"
 
+#include "Events.hh"
 #include "GUI.h"
 #include "ModalGui.hh"
 
@@ -115,6 +116,27 @@ public:
     while (hasPressedKey == false) {
       __mainInnerLoop(false);
       GUI.updatePage();
+
+      while (!EventRB.isEmpty()) {
+	gui_event_t event;
+	EventRB.getp(&event);
+	
+	if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+	  moveCursor(cursorPos - 4);
+	}
+	if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+	  moveCursor(cursorPos + 4);
+	}
+	if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+	  hasPressedKey = true;
+	  pressedKey = 0;
+	}
+	if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
+	  hasPressedKey = true;
+	  pressedKey = 1;
+	}
+      }
+
       for (int i = 0; i < 4; i++) {
 	if (charEncoders[i].hasChanged()) {
 	  name[cursorPos + i] = charEncoders[i].getChar();
@@ -161,20 +183,6 @@ public:
   }
 
   virtual bool handleGui() {
-    if (BUTTON_PRESSED(Buttons.BUTTON1)) {
-      moveCursor(cursorPos - 4);
-    }
-    if (BUTTON_PRESSED(Buttons.BUTTON4)) {
-      moveCursor(cursorPos + 4);
-    }
-    if (BUTTON_PRESSED(Buttons.BUTTON2)) {
-      hasPressedKey = true;
-      pressedKey = 0;
-    }
-    if (BUTTON_PRESSED(Buttons.BUTTON3)) {
-      hasPressedKey = true;
-      pressedKey = 1;
-    }
     return true;
   }
 };

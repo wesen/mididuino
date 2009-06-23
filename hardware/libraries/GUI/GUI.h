@@ -116,6 +116,7 @@ extern GuiClass GUI;
 
 #include "Encoders.hh"
 #include "Pages.hh"
+#include "Events.hh"
 
 #endif
 
