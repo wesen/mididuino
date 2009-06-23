@@ -38,14 +38,9 @@ void MDSysexListenerClass::handleByte(uint8_t byte) {
 void MDSysexListenerClass::end() {
   switch (msgType) {
   case MD_STATUS_RESPONSE_ID:
-    switch (MidiSysex.data[1]) {
-    case MD_CURRENT_KIT_REQUEST:
-      MD.currentKit = MidiSysex.data[2];
-      break;
-      
-    case MD_CURRENT_GLOBAL_SLOT_REQUEST:
-      MD.currentGlobal = MidiSysex.data[2];
-      break;
+    for (int i = 0 ; i < statusCallbacks.size; i++) {
+      if (statusCallbacks.arr[i] != NULL)
+	statusCallbacks.arr[i](MidiSysex.data[1], MidiSysex.data[2]);
     }
     
     if (onStatusResponseCallback != NULL)
@@ -92,30 +87,20 @@ void getCurrentKitOnStatusResponseCallback(uint8_t type, uint8_t value) {
 }
 
 void getCurrentKitOnGlobalMessageCallback() {
-  if (MDSysexListener.mdGetCurrentKitStatus == MD_GET_GLOBAL) {
-    MD.global.fromSysex(MidiSysex.data, MidiSysex.recordLen);
-    MD.baseChannel = MD.global.baseChannel;
-    MDSysexListener.mdGetCurrentKitStatus = MD_DONE;
-    if (MDSysexListener.onCurrentKitCallback != NULL)
-      MDSysexListener.onCurrentKitCallback();
-  }
+  MD.global.fromSysex(MidiSysex.data, MidiSysex.recordLen);
 }
 
 void getCurrentKitOnKitMessageCallback() {
-  if (MDSysexListener.mdGetCurrentKitStatus == MD_GET_KIT) {
-    MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen);
-    MDSysexListener.mdGetCurrentKitStatus = MD_GET_GLOBAL;
-    MD.requestGlobal(MD.currentGlobal);
-  }
+  MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen);
 }
 
 void MDSysexListenerClass::getCurrentKit(md_callback_t callback) {
   setup();
-  setOnStatusResponseCallback(getCurrentKitOnStatusResponseCallback);
-  setOnKitMessageCallback(getCurrentKitOnKitMessageCallback);
-  setOnGlobalMessageCallback(getCurrentKitOnGlobalMessageCallback);
-  setOnCurrentKitCallback(callback);
-  mdGetCurrentKitStatus = MD_GET_CURRENT_KIT;
-  MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_KIT_REQUEST);
+  //  setOnStatusResponseCallback(getCurrentKitOnStatusResponseCallback);
+  //  setOnKitMessageCallback(getCurrentKitOnKitMessageCallback);
+  //  setOnGlobalMessageCallback(getCurrentKitOnGlobalMessageCallback);
+  //  setOnCurrentKitCallback(callback);
+  //  mdGetCurrentKitStatus = MD_GET_CURRENT_KIT;
+  //  MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_KIT_REQUEST);
 }
 

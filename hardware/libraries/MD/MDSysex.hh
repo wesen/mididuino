@@ -4,6 +4,7 @@
 #include "WProgram.h"
 #include "Midi.h"
 #include "MidiSysex.hh"
+#include "Vector.hh"
 
 typedef void (*md_callback_t)();
 typedef void (*md_status_callback_t)(uint8_t type, uint8_t param);
@@ -52,7 +53,19 @@ public:
   void setOnCurrentKitCallback(md_callback_t callback) {
     onCurrentKitCallback = callback;
   }
-  
+
+  /* */
+  Vector<md_status_callback_t, 4> statusCallbacks;
+
+  void addOnStatusResponseCallback(md_status_callback_t callback) {
+    statusCallbacks.add(callback);
+  }
+
+  void removeOnStatusResponseCallback(md_status_callback_t callback) {
+    statusCallbacks.remove(callback);
+  }
+
+  /* */
   void setOnStatusResponseCallback(md_status_callback_t callback) {
     onStatusResponseCallback = callback;
   }

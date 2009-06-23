@@ -38,8 +38,8 @@ void MDEncoder::handle(uint8_t val) {
 #endif
 
 void MDClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
-  if ((channel >= baseChannel) && (channel < baseChannel + 4)) {
-    channel -= baseChannel;
+  if ((channel >= global.baseChannel) && (channel < global.baseChannel + 4)) {
+    channel -= global.baseChannel;
     *track = channel * 4;
     if (cc >= 96) {
       *track += 3;
@@ -67,10 +67,15 @@ void MDClass::sendRequest(uint8_t type, uint8_t param) {
 }
 
 void MDClass::triggerTrack(uint8_t track, uint8_t velocity) {
-  MidiUart.sendNoteOn(baseChannel, track_pitches[track], velocity);
+  if (global.drumMapping[track] != -1 && global.baseChannel != 127) {
+    MidiUart.sendNoteOn(global.baseChannel, global.drumMapping[track], velocity);
+  }
 }
 
 void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
+  if (global.baseChannel == 127)
+    return;
+  
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
   uint8_t cc = param;
@@ -79,7 +84,7 @@ void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
   } else {
     cc += 24 + b * 24;
   }
-  MidiUart.sendCC(channel + baseChannel, cc, value);
+  MidiUart.sendCC(channel + global.baseChannel, cc, value);
 }
 
 //  0x5E, 0x5D, 0x5F, 0x60
@@ -343,10 +348,13 @@ void MDClass::setMachine(uint8_t track, MDMachine *machine) {
 }
 
 void MDClass::muteTrack(uint8_t track, bool mute) {
+  if (global.baseChannel == 127)
+    return;
+      
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
   uint8_t cc = 16 + b;
-  MidiUart.sendCC(channel + baseChannel, cc, mute ? 1 : 0);
+  MidiUart.sendCC(channel + global.baseChannel, cc, mute ? 1 : 0);
 }
 
 void MDClass::setStatus(uint8_t id, uint8_t value) {

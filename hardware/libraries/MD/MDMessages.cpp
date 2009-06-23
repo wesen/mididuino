@@ -45,6 +45,14 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
   }
   
   sysex_to_data_elektron(data + 0x1A - 6, keyMap, 147);
+  for (int i = 0; i < 16; i++) {
+    drumMapping[i] = -1;
+  }
+  for (int i = 0; i < 128; i++) {
+    if (keyMap[i] < 16) {
+      drumMapping[keyMap[i]] = i;
+    }
+  }
   baseChannel = data[0xAD - 6];
   tempo = (data[0xAF - 6] << 7) | data[0xB0 - 6];
   extendedMode = (data[0xB1 - 6] == 1);
@@ -84,6 +92,11 @@ uint16_t MDGlobal::toSysex(uint8_t *data, uint16_t len) {
   data[9] = origPosition;
   for (int i = 0; i < 16; i++){
     data[0xA + i] = drumRouting[i];
+  }
+  for (int i = 0; i < 16; i++) {
+    if (drumMapping[i] != -1) {
+      keyMap[drumMapping[i]] = i;
+    }
   }
   data_to_sysex_elektron(keyMap, data + 0x1A, 128);
   data[0xAd] = baseChannel;

@@ -36,16 +36,23 @@ public:
 };
 #endif
 
+extern uint8_t track_pitches[16];
+
 class MDClass {
  public:
   MDClass() {
     currentGlobal = -1;
     currentKit = -1;
-    baseChannel = 0;
+    currentPattern = -1;
+    global.baseChannel = 0;
+    for (int i = 0; i < 16; i++) {
+      global.drumMapping[i] = -1;
+    }
   }
   int currentGlobal;
   int currentKit;
-  uint8_t baseChannel;
+  int currentPattern;
+  
   MDKit kit;
   MDGlobal global;
 
@@ -107,5 +114,7 @@ class MDClass {
 };
 
 extern MDClass MD;
+
+#include "MDTask.hh"
 
 #endif /* MD_H__ */

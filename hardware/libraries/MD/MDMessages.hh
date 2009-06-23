@@ -14,6 +14,7 @@ class MDGlobal {
 public:
   uint8_t origPosition;
   uint8_t drumRouting[16];
+  uint8_t drumMapping[16];
   uint8_t baseChannel;
   uint16_t tempo;
   bool extendedMode;
