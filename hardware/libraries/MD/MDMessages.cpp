@@ -157,7 +157,7 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
     return false;
 		
   origPosition = data[9 - 6];
-  m_strncpy(name, (char *)data + 0xA - 6, 16);
+  m_memcpy(name, (char *)data + 0xA - 6, 16);
 
   int idx = 0x1A - 6;
   for (int i = 0; i < 16; i++) {
@@ -309,7 +309,7 @@ bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   origPosition = data[9 - 6];
-  m_strncpy(name, (char *)data + 0xA - 6, 16);
+  m_memcpy(name, (char *)data + 0xA - 6, 16);
 
   uint8_t data2[10];
   uint8_t *ptr = data + 0x1A - 6;

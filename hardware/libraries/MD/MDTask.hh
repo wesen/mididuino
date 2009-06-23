@@ -8,12 +8,15 @@ class MDTaskClass :
 public:
   bool autoLoadKit;
   bool autoLoadGlobal;
+  bool reloadKit;
+  bool reloadGlobal;
   bool redisplay;
 
   MDTaskClass(uint16_t interval) : Task(interval) {
     redisplay = false;
-    autoLoadKit = false;
+    autoLoadKit = reloadKit = false;
     autoLoadGlobal = true;
+    reloadGlobal = false;
   }
 
   void setup();

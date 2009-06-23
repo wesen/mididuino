@@ -21,6 +21,10 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
 	MD.requestKit(MD.currentKit);
       }
     }
+    if (reloadKit) {
+      MD.requestKit(MD.currentKit);
+      reloadKit = false;
+    }
     break;
     
   case MD_CURRENT_GLOBAL_SLOT_REQUEST:
@@ -29,6 +33,10 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       if (autoLoadGlobal) {
 	MD.requestGlobal(MD.currentGlobal);
       }
+    }
+    if (reloadGlobal) {
+      MD.requestGlobal(MD.currentGlobal);
+      reloadGlobal = false;
     }
     break;
 
@@ -42,11 +50,15 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
 MDTaskClass MDTask(1000);
 
 void mdTaskOnGlobalCallback() {
+  MD.loadedGlobal = false;
   MD.global.fromSysex(MidiSysex.data, MidiSysex.recordLen);
+  MD.loadedGlobal = true;
 }
 
 void mdTaskOnKitCallback() {
+  MD.loadedKit = false;
   MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen);
+  MD.loadedKit = true;
 }
 
 void mdTaskOnStatusResponseCallback(uint8_t type, uint8_t value) {

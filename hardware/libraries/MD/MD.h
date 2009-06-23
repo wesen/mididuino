@@ -48,12 +48,15 @@ class MDClass {
     for (int i = 0; i < 16; i++) {
       global.drumMapping[i] = -1;
     }
+    loadedKit = loadedGlobal = false;
   }
   int currentGlobal;
   int currentKit;
   int currentPattern;
-  
+
+  bool loadedKit;
   MDKit kit;
+  bool loadedGlobal;
   MDGlobal global;
 
   void parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param);

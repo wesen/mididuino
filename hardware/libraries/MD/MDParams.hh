@@ -755,4 +755,6 @@
 #define LFO_DEPTH  6
 #define LFO_SHMIX  7
 
+PGM_P model_param_name(uint8_t model, uint8_t param);
+
 #endif /* MD_PARAMS_H__ */

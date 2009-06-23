@@ -153,7 +153,7 @@ PGM_P MDClass::getMachineName(uint8_t machine) {
 }
 
 typedef struct model_param_name_s {
-  char name[5];
+  char name[4];
   uint8_t id;
 } model_param_name_t;
 
@@ -162,451 +162,468 @@ typedef struct model_to_param_names_s {
   model_param_name_t *names;
 } model_to_param_names_t;
 
-model_param_name_t gnd_sn_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "RAMP", 2},
-					    { "RDEC", 3} };
-model_param_name_t gnd_ns_model_names[] = { { "DEC", 0} };
-model_param_name_t gnd_im_model_names[] = { { "UP", 0},
-					    { "UVAL", 1},
-					    { "DOWN", 2},
-					    { "DVAL", 3} };
+model_param_name_t gnd_sn_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "RMP", 2},
+						    { "RDC", 3}, {"", 127} };
+model_param_name_t gnd_ns_model_names[] PROGMEM = { { "DEC", 0}, {"", 127} };
+model_param_name_t gnd_im_model_names[] PROGMEM = { { "UP", 0},
+						    { "UVL", 1},
+						    { "DWN", 2},
+						    { "DVL", 3}, {"", 127} };
 
-model_param_name_t trx_bd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "RAMP", 2},
-					    { "RDEC", 3},
-					    { "STRT", 4},
-					    { "NOIS", 5},
-					    { "HARM", 6},
-					    { "CLIP", 7} };
-model_param_name_t trx_b2_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "RAMP", 2},
-					    { "HOLD", 3},
-					    { "TICK", 4},
-					    { "NOIS", 5},
-					    { "DIRT", 6},
-					    { "DIST", 7} };
-model_param_name_t trx_sd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "BUMP", 2},
-					    { "BENV", 3},
-					    { "SNAP", 4},
-					    { "TONE", 5},
-					    { "TUNE", 6},
-					    { "CLIP", 7} };
-model_param_name_t trx_xt_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "RAMP", 2},
-					    { "RDEC", 3},
-					    { "DAMP", 4},
-					    { "DIST", 5},
-					    { "DTYP", 6} };
-model_param_name_t trx_cp_model_names[] = { { "CLPY", 0},
-					    { "TONE", 1},
-					    { "HARD", 2},
-					    { "RICH", 3},
-					    { "RATE", 4},
-					    { "ROOM", 5},
-					    { "RSIZ", 6},
-					    { "RTUN", 7} };
-model_param_name_t trx_rs_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "DIST", 2} };
-model_param_name_t trx_cb_model_names[] = { { "PTCH", 0},
-					    { "DEC", 2},
-					    { "ENH", 3},
-					    { "DAMP", 4},
-					    { "TONE", 5},
-					    { "BUMP", 6} };
-model_param_name_t trx_ch_model_names[] = { { "GAP", 0},
-					    { "DEC", 1},
-					    { "HPF", 2},
-					    { "LPF", 3},
-					    { "MTAL", 4} };
-model_param_name_t trx_oh_model_names[] = { { "GAP", 0},
-					    { "DEC", 1},
-					    { "HPF", 2},
-					    { "LPF", 3},
-					    { "MTAL", 4} };
-model_param_name_t trx_cy_model_names[] = { { "RICH", 0},
-					    { "DEC", 1},
-					    { "TOP", 2},
-					    { "TTUN", 3},
-					    { "SIZE", 4},
-					    { "PEAK", 5} };
-model_param_name_t trx_ma_model_names[] = { { "ATT", 0},
-					    { "SUS", 1},
-					    { "REV", 2},
-					    { "DAMP", 3},
-					    { "RATL", 4},
-					    { "RTYP", 5},
-					    { "TONE", 6},
-					    { "HARD", 7} };
-model_param_name_t trx_cl_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "DUAL", 2},
-					    { "ENH", 3},
-					    { "TUNE", 4},
-					    { "CLIC", 5} };
-model_param_name_t trx_xc_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "RAMP", 2},
-					    { "RDEC", 3},
-					    { "DAMP", 4},
-					    { "DIST", 5},
-					    { "DTYP", 6} };
+model_param_name_t trx_bd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "RMP", 2},
+						    { "RDC", 3},
+						    { "STR", 4},
+						    { "NS", 5},
+						    { "HRM", 6},
+						    { "CLP", 7}, {"", 127} };
+model_param_name_t trx_b2_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "RMP", 2},
+						    { "HLD", 3},
+						    { "TCK", 4},
+						    { "NS", 5},
+						    { "DRT", 6},
+						    { "DST", 7}, {"", 127} };
+model_param_name_t trx_sd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "BMP", 2},
+						    { "BNV", 3},
+						    { "SNP", 4},
+						    { "TON", 5},
+						    { "TUN", 6},
+						    { "CLP", 7}, {"", 127} };
+model_param_name_t trx_xt_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "RMP", 2},
+						    { "RDC", 3},
+						    { "DMP", 4},
+						    { "DST", 5},
+						    { "DTP", 6}, {"", 127} };
+model_param_name_t trx_cp_model_names[] PROGMEM = { { "CLP", 0},
+						    { "TON", 1},
+						    { "HRD", 2},
+						    { "RCH", 3},
+						    { "RAT", 4},
+						    { "ROM", 5},
+						    { "RSZ", 6},
+						    { "RTN", 7}, {"", 127} };
+model_param_name_t trx_rs_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "DST", 2}, {"", 127} };
+model_param_name_t trx_cb_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 2},
+						    { "ENH", 3},
+						    { "DMP", 4},
+						    { "TON", 5},
+						    { "BMP", 6}, {"", 127} };
+model_param_name_t trx_ch_model_names[] PROGMEM = { { "GAP", 0},
+						    { "DEC", 1},
+						    { "HPF", 2},
+						    { "LPF", 3},
+						    { "MTL", 4}, {"", 127} };
+model_param_name_t trx_oh_model_names[] PROGMEM = { { "GAP", 0},
+						    { "DEC", 1},
+						    { "HPF", 2},
+						    { "LPF", 3},
+						    { "MTL", 4}, {"", 127} };
+model_param_name_t trx_cy_model_names[] PROGMEM = { { "RCH", 0},
+						    { "DEC", 1},
+						    { "TOP", 2},
+						    { "TTU", 3},
+						    { "SZ", 4},
+						    { "PK", 5}, {"", 127} };
+model_param_name_t trx_ma_model_names[] PROGMEM = { { "ATT", 0},
+						    { "SUS", 1},
+						    { "REV", 2},
+						    { "DMP", 3},
+						    { "RTL", 4},
+						    { "RTP", 5},
+						    { "TON", 6},
+						    { "HRD", 7}, {"", 127} };
+model_param_name_t trx_cl_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "DUA", 2},
+						    { "ENH", 3},
+						    { "TUN", 4},
+						    { "CLC", 5}, {"", 127} };
+model_param_name_t trx_xc_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "RMP", 2},
+						    { "RDC", 3},
+						    { "DMP", 4},
+						    { "DST", 5},
+						    { "DTP", 6}, {"", 127} };
 
-model_param_name_t efm_bd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "RAMP", 2},
-					    { "RDEC", 3},
-					    { "MOD", 4},
-					    { "MFRQ", 5},
-					    { "MDEC", 6},
-					    { "MFB", 7} };
-model_param_name_t efm_sd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "NOIS", 2},
-					    { "NDEC", 3},
-					    { "MOD", 4},
-					    { "MFRQ", 5},
-					    { "MDEC", 6},
-					    { "HPF", 7} };
-model_param_name_t efm_xt_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "RAMP", 2},
-					    { "RDEC", 3},
-					    { "MOD", 4},
-					    { "MFRQ", 5},
-					    { "MDEC", 6},
-					    { "CLIC", 7} };
-model_param_name_t efm_cp_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "CLPS", 2},
-					    { "CDEC", 3},
-					    { "MOD", 4},
-					    { "MFRQ", 5},
-					    { "MDEC", 6},
-					    { "HPF", 7} };
-model_param_name_t efm_rs_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "MOD", 2},
-					    { "HPF", 3},
-					    { "SNAR", 4},
-					    { "SPTC", 5},
-					    { "SDEC", 6},
-					    { "SMOD", 7} };
-model_param_name_t efm_cb_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "SNAP", 2},
-					    { "FB", 3},
-					    { "MOD", 4},
-					    { "MFRQ", 5},
-					    { "MDEC", 6} };
-model_param_name_t efm_hh_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "TREM", 2},
-					    { "TFRQ", 3},
-					    { "MOD", 4},
-					    { "MFRQ", 5},
-					    { "MDEC", 6},
-					    { "FB", 7} };
-model_param_name_t efm_cy_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "FB", 2},
-					    { "HPF", 3},
-					    { "MOD", 4},
-					    { "MFRQ", 5},
-					    { "MDEC", 6} };
+model_param_name_t efm_bd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "RMP", 2},
+						    { "RDC", 3},
+						    { "MOD", 4},
+						    { "MFQ", 5},
+						    { "MDC", 6},
+						    { "MFB", 7}, {"", 127} };
+model_param_name_t efm_sd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "NS", 2},
+						    { "NDC", 3},
+						    { "MOD", 4},
+						    { "MFQ", 5},
+						    { "MDC", 6},
+						    { "HPF", 7}, {"", 127} };
+model_param_name_t efm_xt_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "RMP", 2},
+						    { "RDC", 3},
+						    { "MOD", 4},
+						    { "MFQ", 5},
+						    { "MDC", 6},
+						    { "CLC", 7}, {"", 127} };
+model_param_name_t efm_cp_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "CLP", 2},
+						    { "CDC", 3},
+						    { "MOD", 4},
+						    { "MFQ", 5},
+						    { "MDC", 6},
+						    { "HPF", 7}, {"", 127} };
+model_param_name_t efm_rs_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "MOD", 2},
+						    { "HPF", 3},
+						    { "SNR", 4},
+						    { "SPT", 5},
+						    { "SDC", 6},
+						    { "SMD", 7}, {"", 127} };
+model_param_name_t efm_cb_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "SNP", 2},
+						    { "FB", 3},
+						    { "MOD", 4},
+						    { "MFQ", 5},
+						    { "MDC", 6}, {"", 127} };
+model_param_name_t efm_hh_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "TRM", 2},
+						    { "TFQ", 3},
+						    { "MOD", 4},
+						    { "MFQ", 5},
+						    { "MDC", 6},
+						    { "FB", 7}, {"", 127} };
+model_param_name_t efm_cy_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "FB", 2},
+						    { "HPF", 3},
+						    { "MOD", 4},
+						    { "MFQ", 5},
+						    { "MDC", 6}, {"", 127} };
 
-model_param_name_t e12_bd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "SNAP", 2},
-					    { "SPLN", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_sd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "RING", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_ht_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "HPQ", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_lt_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "RING", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_cp_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "HPQ", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_rs_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "RRTL", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_cb_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "HPQ", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_ch_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "HPQ", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_oh_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "STOP", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_rc_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "BELL", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_cc_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "HPQ", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_br_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "REAL", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_ta_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "HPQ", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_tr_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "HPQ", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_sh_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "SLEW", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
-model_param_name_t e12_bc_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HP", 2},
-					    { "BC", 3},
-					    { "STRT", 4},
-					    { "RTRG", 5},
-					    { "RTIM", 6},
-					    { "BEND", 7} };
+model_param_name_t e12_bd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "SNP", 2},
+						    { "SPL", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_sd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "RNG", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_ht_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "HPQ", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_lt_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "RNG", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_cp_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "HPQ", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_rs_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "RTL", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_cb_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "HPQ", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_ch_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "HPQ", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_oh_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "STP", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_rc_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "BEL", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_cc_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "HPQ", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_br_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "REL", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_ta_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "HPQ", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_tr_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "HPQ", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_sh_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "SLW", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
+model_param_name_t e12_bc_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HP", 2},
+						    { "BC", 3},
+						    { "STR", 4},
+						    { "RTG", 5},
+						    { "RTM", 6},
+						    { "BND", 7}, {"", 127} };
 
-model_param_name_t p_i_bd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HARD", 2},
-					    { "HAMR", 3},
-					    { "TENS", 4},
-					    { "DAMP", 5} };
-model_param_name_t p_i_sd_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HARD", 2},
-					    { "TENS", 3},
-					    { "RVOL", 4},
-					    { "RDEC", 5},
-					    { "RING", 6} };
-model_param_name_t p_i_mt_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HARD", 2},
-					    { "HAMR", 3},
-					    { "TUNE", 4},
-					    { "DAMP", 5},
-					    { "SIZE", 6},
-					    { "POS", 7} };
-model_param_name_t p_i_ml_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HARD", 2},
-					    { "TENS", 3} };
-model_param_name_t p_i_ma_model_names[] = { { "GRNS", 0},
-					    { "DEC", 1},
-					    { "GLEN", 2},
-					    { "SIZE", 4},
-					    { "HARD", 5} };
-model_param_name_t p_i_rs_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HARD", 2},
-					    { "RING", 3},
-					    { "RVOL", 4},
-					    { "RDEC", 5} };
-model_param_name_t p_i_rc_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HARD", 2},
-					    { "RING", 3},
-					    { "AG", 4},
-					    { "AU", 5},
-					    { "BR", 6},
-					    { "GRAB", 7} };
-model_param_name_t p_i_cc_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "HARD", 2},
-					    { "RING", 3},
-					    { "AG", 4},
-					    { "AU", 5},
-					    { "BR", 6},
-					    { "GRAB", 7} };
-model_param_name_t p_i_hh_model_names[] = { { "PTCH", 0},
-					    { "DEC", 1},
-					    { "CLSN", 2},
-					    { "RING", 3},
-					    { "AG", 4},
-					    { "AU", 5},
-					    { "BR", 6},
-					    { "CLOS", 7} };
+model_param_name_t p_i_bd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HRD", 2},
+						    { "HMR", 3},
+						    { "TNS", 4},
+						    { "DMP", 5}, {"", 127} };
+model_param_name_t p_i_sd_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HRD", 2},
+						    { "TNS", 3},
+						    { "RVL", 4},
+						    { "RDC", 5},
+						    { "RNG", 6}, {"", 127} };
+model_param_name_t p_i_mt_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HRD", 2},
+						    { "HMR", 3},
+						    { "TUN", 4},
+						    { "DMP", 5},
+						    { "SZ", 6},
+						    { "POS", 7}, {"", 127} };
+model_param_name_t p_i_ml_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HRD", 2},
+						    { "TNS", 3}, {"", 127} };
+model_param_name_t p_i_ma_model_names[] PROGMEM = { { "GRN", 0},
+						    { "DEC", 1},
+						    { "GLN", 2},
+						    { "SZ", 4},
+						    { "HRD", 5}, {"", 127} };
+model_param_name_t p_i_rs_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HRD", 2},
+						    { "RNG", 3},
+						    { "RVL", 4},
+						    { "RDC", 5}, {"", 127} };
+model_param_name_t p_i_rc_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HRD", 2},
+						    { "RNG", 3},
+						    { "AG", 4},
+						    { "AU", 5},
+						    { "BR", 6},
+						    { "GRB", 7}, {"", 127} };
+model_param_name_t p_i_cc_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "HRD", 2},
+						    { "RNG", 3},
+						    { "AG", 4},
+						    { "AU", 5},
+						    { "BR", 6},
+						    { "GRB", 7}, {"", 127} };
+model_param_name_t p_i_hh_model_names[] PROGMEM = { { "PTC", 0},
+						    { "DEC", 1},
+						    { "CLS", 2},
+						    { "RNG", 3},
+						    { "AG", 4},
+						    { "AU", 5},
+						    { "BR", 6},
+						    { "CLS", 7}, {"", 127} };
 
-model_param_name_t inp_ga_model_names[] = { { "VOL", 0},
-					    { "GATE", 1},
-					    { "ATCK", 2},
-					    { "HLD", 3},
-					    { "DEC", 4} };
-model_param_name_t inp_fa_model_names[] = { { "ALEV", 0},
-					    { "GATE", 1},
-					    { "FATK", 2},
-					    { "FHLD", 3},
-					    { "FDEC", 4},
-					    { "FDPH", 5},
-					    { "FFRQ", 6},
-					    { "FQ", 7} };
-model_param_name_t inp_ea_model_names[] = { { "AVOL", 0},
-					    { "AHLD", 1},
-					    { "ADEC", 2},
-					    { "FQ", 3},
-					    { "FDPH", 4},
-					    { "FHLD", 5},
-					    { "FDEC", 6},
-					    { "FFRQ", 7} };
+model_param_name_t inp_ga_model_names[] PROGMEM = { { "VOL", 0},
+						    { "GAT", 1},
+						    { "ATK", 2},
+						    { "HLD", 3},
+						    { "DEC", 4}, {"", 127} };
+model_param_name_t inp_fa_model_names[] PROGMEM = { { "ALV", 0},
+						    { "GAT", 1},
+						    { "FAT", 2},
+						    { "FHL", 3},
+						    { "FDC", 4},
+						    { "FDP", 5},
+						    { "FFQ", 6},
+						    { "FQ", 7}, {"", 127} };
+model_param_name_t inp_ea_model_names[] PROGMEM = { { "AVL", 0},
+						    { "AHL", 1},
+						    { "ADC", 2},
+						    { "FQ", 3},
+						    { "FDP", 4},
+						    { "FHL", 5},
+						    { "FDC", 6},
+						    { "FFQ", 7}, {"", 127} };
 
-model_param_name_t mid_model_names[] = { { "NOTE", 0},
-					 { "N2", 1},
-					 { "N3", 2},
-					 { "LEN", 3},
-					 { "VEL", 4},
-					 { "PB", 5},
-					 { "MW", 6},
-					 { "AT", 7},
-					 { "CC1D", 8},
-					 { "CC1V", 9},
-					 { "CC2D", 10},
-					 { "CC2V", 11},
-					 { "CC3D", 12},
-					 { "CC3V", 13},
-					 { "CC4D", 14},
-					 { "CC4V", 15},
-					 { "CC5D", 16},
-					 { "CC5V", 17},
-					 { "CC6D", 18},
-					 { "CC6V", 19},
-					 { "PCHG", 20},
-					 { "LFOS", 21},
-					 { "LFOD", 22},
-					 { "LFOM", 23} };
+model_param_name_t mid_model_names[] PROGMEM = { { "NOT", 0},
+						 { "N2", 1},
+						 { "N3", 2},
+						 { "LEN", 3},
+						 { "VEL", 4},
+						 { "PB", 5},
+						 { "MW", 6},
+						 { "AT", 7},
+						 { "C1D", 8},
+						 { "C1V", 9},
+						 { "C2D", 10},
+						 { "C2V", 11},
+						 { "C3D", 12},
+						 { "C3V", 13},
+						 { "C4D", 14},
+						 { "C4V", 15},
+						 { "C5D", 16},
+						 { "C5V", 17},
+						 { "C6D", 18},
+						 { "C6V", 19},
+						 { "PCG", 20},
+						 { "LFS", 21},
+						 { "LFD", 22},
+						 { "LFM", 23}, {"", 127} };
 
-model_param_name_t ctr_al_model_names[] = { { "SYN1", 0},
-					    { "SYN2", 1},
-					    { "SYN3", 2},
-					    { "SYN4", 3},
-					    { "SYN5", 4},
-					    { "SYN6", 5},
-					    { "SYN7", 6},
-					    { "SYN8", 7} };
-model_param_name_t ctr_8p_model_names[] = { { "P1", 0},
-					    { "P2", 1},
-					    { "P3", 2},
-					    { "P4", 3}, 
-					    { "P5", 4},
-					    { "P6", 5},
-					    { "P7", 6},
-					    { "P8", 7},
-					    { "P1T", 8},
-					    { "P1P", 9},
-					    { "P2T", 10},
-					    { "P2P", 11},
-					    { "P3T", 12},
-					    { "P3P", 13},
-					    { "P4T", 14},
-					    { "P4P", 15},
-					    { "P5T", 16},
-					    { "P5P", 17},
-					    { "P6T", 18},
-					    { "P6P", 19},
-					    { "P7T", 20},
-					    { "P7P", 21},
-					    { "P8T", 22},
-					    { "P8P", 23} };
-model_param_name_t rom_model_names[] = { { "PTCH", 0},
-					 { "DEC", 1},
-					 { "HOLD", 2},
-					 { "BRR", 3},
-					 { "STRT", 4},
-					 { "END", 5},
-					 { "RTRG", 6},
-					 { "RTIM", 7} };
-model_param_name_t ram_r_model_names[] = { { "MLEV", 0},
-					   { "MBAL", 1},
-					   { "ILEV", 2},
-					   { "IBAL", 3},
-					   { "CUE1", 4},
-					   { "CUE2", 5},
-					   { "LEN", 6},
-					   { "RATE", 7} };
+model_param_name_t ctr_al_model_names[] PROGMEM = { { "SN1", 0},
+						    { "SN2", 1},
+						    { "SN3", 2},
+						    { "SN4", 3},
+						    { "SN5", 4},
+						    { "SN6", 5},
+						    { "SN7", 6},
+						    { "SN8", 7}, {"", 127} };
+model_param_name_t ctr_8p_model_names[] PROGMEM = { { "P1", 0},
+						    { "P2", 1},
+						    { "P3", 2},
+						    { "P4", 3}, 
+						    { "P5", 4},
+						    { "P6", 5},
+						    { "P7", 6},
+						    { "P8", 7},
+						    { "P1T", 8},
+						    { "P1P", 9},
+						    { "P2T", 10},
+						    { "P2P", 11},
+						    { "P3T", 12},
+						    { "P3P", 13},
+						    { "P4T", 14},
+						    { "P4P", 15},
+						    { "P5T", 16},
+						    { "P5P", 17},
+						    { "P6T", 18},
+						    { "P6P", 19},
+						    { "P7T", 20},
+						    { "P7P", 21},
+						    { "P8T", 22},
+						    { "P8P", 23}, {"", 127} };
+model_param_name_t rom_model_names[] PROGMEM = { { "PTC", 0},
+						 { "DEC", 1},
+						 { "HLD", 2},
+						 { "BRR", 3},
+						 { "STR", 4},
+						 { "END", 5},
+						 { "RTG", 6},
+						 { "RTM", 7}, {"", 127} };
+model_param_name_t ram_r_model_names[] PROGMEM = { { "MLV", 0},
+						   { "MBL", 1},
+						   { "ILV", 2},
+						   { "IBL", 3},
+						   { "CU1", 4},
+						   { "CU2", 5},
+						   { "LEN", 6},
+						   { "RAT", 7}, {"", 127} };
 
+model_param_name_t generic_param_names[] PROGMEM = { { "AMD", 8 },
+						      { "AMF", 9 },
+						      { "EQF", 10 },
+						      { "EQG", 11 },
+						      { "FLF", 12 },
+						      { "FLW", 13 },
+						      { "FLQ", 14 },
+						      { "SRR", 15 },
+						      { "DST", 16 },
+						      { "VOL", 17 },
+						      { "PAN", 18 },
+						      { "DEL", 19 },
+						      { "REV", 20 },
+						      { "LFS", 21 },
+						      { "LFD", 22 },
+						      { "LFM", 23 }, { "", 127 } };
+  
 model_to_param_names_t model_param_names[] = {
   { GND_SN_MODEL, gnd_sn_model_names },
   { GND_NS_MODEL, gnd_ns_model_names },
@@ -679,4 +696,57 @@ model_to_param_names_t model_param_names[] = {
   { RAM_R3_MODEL,  ram_r_model_names },
   { RAM_R4_MODEL,  ram_r_model_names }
 };
+
+PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
+  uint8_t i = 0;
+  uint8_t id;
+  if (names == NULL)
+    return NULL;
   
+  while ((id = pgm_read_byte(&names[i].id)) != 127 && i < 24) {
+    if (id == param) {
+      return names[i].name ;
+    }
+    i++;
+  }
+  return NULL;
+}
+
+model_param_name_t *get_model_param_names(uint8_t model) {
+  for (int i = 0; i < countof(model_param_names); i++) {
+    if (model == model_param_names[i].model) {
+      return model_param_names[i].names;
+    }
+  }
+  return NULL;
+}
+
+PGM_P model_param_name(uint8_t model, uint8_t param) {
+  if (model >= MID_MODEL && model <= MID_16_MODEL) {
+    return get_param_name(mid_model_names, param);
+  }
+  if (model >= CTR_8P_MODEL && model < ROM_01_MODEL) {
+    return get_param_name(get_model_param_names(model), param);
+  }
+  if (param >= 8) {
+    return get_param_name(generic_param_names, param);
+  } else {
+    if ((model >= ROM_01_MODEL && model <= ROM_32_MODEL) ||
+	(model >= ROM_33_MODEL && model <= ROM_48_MODEL)) {
+      return get_param_name(rom_model_names, param);
+    }
+    if (model == RAM_R1_MODEL ||
+	model == RAM_R2_MODEL ||
+	model == RAM_R3_MODEL ||
+	model == RAM_R4_MODEL) {
+      return get_param_name(ram_r_model_names, param);
+    }
+    if (model == RAM_P1_MODEL ||
+	model == RAM_P2_MODEL ||
+	model == RAM_P3_MODEL ||
+	model == RAM_P4_MODEL) {
+      return get_param_name(rom_model_names, param);
+    }
+    return get_param_name(get_model_param_names(model), param);
+  }
+}
