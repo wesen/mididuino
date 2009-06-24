@@ -2,11 +2,58 @@
 
 #include "Midi.h"
 
-Encoder::Encoder(char *_name) {
+/* handlers */
+
+void CCEncoderHandle(Encoder *enc) {
+  CCEncoder *ccEnc = (CCEncoder *)enc;
+  MidiUart.sendCC(ccEnc->channel, ccEnc->cc, ccEnc->getValue());
+}
+
+void TempoEncoderHandle(Encoder *enc) {
+  MidiClock.setTempo(enc->getValue());
+}
+
+/* Encoder */
+Encoder::Encoder(char *_name, encoder_handle_t _handler) {
   old = 0;
   cur = 0;
   redisplay = false;
   setName(_name);
+  handler = _handler;
+}
+
+void Encoder::checkHandle() {
+  if (cur != old) {
+    if (handler != NULL)
+      handler(this);
+  }
+  
+  old = cur;
+}
+
+void Encoder::setName(char *_name) {
+  if (_name != NULL)
+    m_strncpy_fill(name, _name, 4);
+  name[3] = '\0';
+}
+
+void Encoder::setValue(int value, bool handle) {
+  if (handle) {
+    cur = value;
+    checkHandle();
+  } else {
+    old = cur = value;
+  }
+  redisplay = true;
+}
+
+void Encoder::displayAt(int i) {
+  GUI.put_value(i, getValue());
+  redisplay = false;
+}
+
+bool Encoder::hasChanged() {
+  return old != cur;
 }
 
 void Encoder::clear() {
@@ -14,28 +61,27 @@ void Encoder::clear() {
   cur = 0;
 }
 
-void Encoder::handle(int val) {
-}
-
-void Encoder::update(encoder_t *enc) {
+int Encoder::update(encoder_t *enc) {
   cur = cur + enc->normal + 5 * enc->button;
+  return cur;
 }
 
-void RangeEncoder::update(encoder_t *enc) {
+/* EnumEncoder */
+void EnumEncoder::displayAt(int i) {
+  GUI.put_string(i, enumStrings[getValue()]);
+  redisplay = false;
+}
+
+/* RangeEncoder */
+
+int RangeEncoder::update(encoder_t *enc) {
   int inc = enc->normal + 5 * enc->button;
   
   cur = limit_value(cur, inc, min, max);
+  return cur;
 }
 
-void CCEncoder::handle(int val) {
-  MidiUart.sendCC(channel, cc, val);
-}
-
-void TempoEncoder::handle(int val) {
-  MidiClock.setTempo(val);
-}
-
-
+/* CharEncoder */
 CharEncoder::CharEncoder()  : RangeEncoder(0, 37) {
 }
 
@@ -59,3 +105,4 @@ void CharEncoder::setChar(char c) {
     setValue(0);
   }
 }
+

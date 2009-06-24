@@ -7,56 +7,37 @@
 #include "WProgram.h"
 #include "GUI.h"
 
+class Encoder;
+
+typedef void (*encoder_handle_t)(Encoder *enc);
+
+void CCEncoderHandle(Encoder *enc);
+void TempoEncoderHandle(Encoder *enc);
+
 class Encoder {
  protected:
   int old, cur;
   char name[4];
 
  public:
-  Encoder(char *_name = NULL);
+  encoder_handle_t handler;
+  
+  Encoder(char *_name = NULL, encoder_handle_t _handler = NULL);
   void clear();
-  char *getName() { return name; }
-  void setName(char *_name) {
-    if (_name != NULL)
-      m_strncpy_fill(name, _name, 4);
-    name[3] = '\0';
-  }
+
+  virtual char *getName() { return name; }
+  virtual void setName(char *_name);
+  
   bool redisplay;
-  virtual void update(encoder_t *enc);
-  virtual void handle(int val);
-  void checkHandle() {
-    if (cur != old) {
-      handle(cur);
-    }
-    
-    old = cur;
-  }
-
-  bool hasChanged() {
-    return old != cur;
-  }
+  virtual int update(encoder_t *enc);
+  virtual void checkHandle();
+  virtual bool hasChanged();
   
-  int getValue() {
-    return cur;
-  }
-  
-  int getOldValue() {
-    return old;
-  }
-  void setValue(int value, bool handle = false) {
-    if (handle) {
-      cur = value;
-      checkHandle();
-    } else {
-      old = cur = value;
-    }
-    redisplay = true;
-  }
+  virtual int getValue() { return cur; }
+  virtual int getOldValue() { return old; }
+  virtual void setValue(int value, bool handle = false);
 
-  virtual void displayAt(int i) {
-    GUI.put_value(i, getValue());
-    redisplay = false;
-  }
+  virtual void displayAt(int i);
 };
 
 class RangeEncoder : public Encoder {
@@ -64,7 +45,8 @@ class RangeEncoder : public Encoder {
   int min;
   int max;
 
- RangeEncoder(int _max = 127, int _min = 0, char *_name = NULL, int init = 0) : Encoder(_name) {
+  RangeEncoder(int _max = 127, int _min = 0, char *_name = NULL, int init = 0,
+	       encoder_handle_t _handler = NULL) : Encoder(_name, _handler) {
     if (_min > _max) {
       min = _max;
       max = _min;
@@ -74,8 +56,7 @@ class RangeEncoder : public Encoder {
     }
     setValue(init);
   }
-  virtual void handle(int val) { }
-  virtual void update(encoder_t *enc);
+  virtual int update(encoder_t *enc);
 };
 
 class EnumEncoder : public RangeEncoder {
@@ -83,73 +64,14 @@ public:
   char **enumStrings;
   int cnt;
 
-  EnumEncoder(char *strings[], int _cnt, char *_name = NULL, int init = 0) : RangeEncoder(_cnt - 1, 0, _name, init) {
+  EnumEncoder(char *strings[], int _cnt, char *_name = NULL, int init = 0,
+	      encoder_handle_t _handler = NULL) :
+    RangeEncoder(_cnt - 1, 0, _name, init, _handler) {
     enumStrings = strings;
     cnt = _cnt;
   }
 
-  virtual void displayAt(int i) {
-    GUI.put_string(i, enumStrings[getValue()]);
-    redisplay = false;
-  }
-};
-
-template <int N>
-class RecordingEncoder : public RangeEncoder {
-public:
-  int value[N];
-  bool recording;
-  bool recordChanged;
-  bool playing;
-  int currentPos;
-
-  RecordingEncoder(int _max = 127, int _min = 0, char *_name = NULL, int init = 0) :
-    RangeEncoder(_max, _min, _name, init) {
-    recording = false;
-    playing = true;
-    clearRecording();
-    currentPos = 0;
-  }
-
-  void startRecording() {
-    recordChanged = false;
-    recording = true;
-  }
-
-  void stopRecording() {
-    recordChanged = false;
-    recording = false;
-  }
-
-  void clearRecording() {
-    for (int i = 0; i < N; i++) {
-      value[i] = -1;
-    }
-  }
-
-  virtual void update(encoder_t *enc) {
-    RangeEncoder::update(enc);
-    if (recording) {
-      if (!recordChanged) {
-	if (hasChanged()) {
-	  recordChanged = true;
-	}
-      }
-      if (recordChanged) {
-	int pos = currentPos;
-	value[pos] = cur;
-      }
-    }
-  }
-
-  void playback(int pos) {
-    if (!playing)
-      return;
-    
-    currentPos %= N;
-    if (value[pos] != -1)
-      setValue(value[pos]);
-  }
+  virtual void displayAt(int i);
 };
 
 class CCEncoder : public RangeEncoder {
@@ -157,19 +79,19 @@ class CCEncoder : public RangeEncoder {
   int cc;
   int channel;
 
- CCEncoder(int _cc = 0, int _channel = 0, char *_name = NULL, int init = 0) : RangeEncoder(127, 0, name, init) {
+ CCEncoder(int _cc = 0, int _channel = 0, char *_name = NULL, int init = 0) :
+   RangeEncoder(127, 0, _name, init) {
     cc = _cc;
     channel = _channel;
+    handler = CCEncoderHandle;
   }
-  virtual void handle(int val);
 };
 
 class TempoEncoder : public RangeEncoder {
   public:
-  TempoEncoder() : RangeEncoder(255, 20) {
+  TempoEncoder(char *_name = NULL) : RangeEncoder(255, 20, _name) {
+    handler = TempoEncoderHandle;
   }
-
-  void handle(int val);
 };
 
 class CharEncoder : public RangeEncoder {
@@ -178,6 +100,8 @@ public:
   char getChar();
   void setChar(char c);
 };
+
+#include "RecordingEncoder.hh"
 
 
 #endif /* ENCODERS_H__ */
