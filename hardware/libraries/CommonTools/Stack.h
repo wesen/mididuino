@@ -15,7 +15,7 @@ class Stack {
   Stack();
   bool push(T *t);
   bool push(T t);
-  bool pop(T *t);
+  bool pop(T *t = NULL);
   bool peek(T *t);
   bool isEmpty();
   bool isFull();
@@ -79,7 +79,8 @@ bool Stack<T,N>::peek(T *t) {
     SREG = tmp;
     return false;
   }
-  m_memcpy(t, &buf[STACK_LAST()], sizeof(T));
+  if (t != NULL) 
+    m_memcpy(t, &buf[STACK_LAST()], sizeof(T));
   SREG = tmp;
   return true;
 }

@@ -16,7 +16,7 @@ class CRingBuffer {
   bool put(C c) volatile;
   bool putp(C *c) volatile;
   C get() volatile;
-  bool getp(C *dst);
+  bool getp(C *dst) volatile;
   C peek() volatile;
   bool isEmpty() volatile;
   bool isFull() volatile;
@@ -72,7 +72,7 @@ template <class C, int N>
 }
 
 template <class C, int N>
-  bool CRingBuffer<C, N>::getp(C *dst) {
+  bool CRingBuffer<C, N>::getp(C *dst) volatile {
   if (isEmpty())
     return false;
   m_memcpy(dst, (void *)&buf[rd], sizeof(C));
