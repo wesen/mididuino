@@ -71,12 +71,12 @@ void onNoteOnCallbackMD(uint8_t *msg) {
     return;
   switch (mdNotesStatus) {
     case MD_NOTES_STATUS_CONFIG_CHANNEL_WAIT_NOTE:
-      if (MIDI_VOICE_CHANNEL(msg[0]) == MD.baseChannel)
+      if (MIDI_VOICE_CHANNEL(msg[0]) == MD.global.baseChannel)
         handleConfigChannelSelectNote(msg);
       break;
     
     case MD_NOTES_STATUS_CONFIG_CHANNEL:
-      if (MIDI_VOICE_CHANNEL(msg[0]) == MD.baseChannel)
+      if (MIDI_VOICE_CHANNEL(msg[0]) == MD.global.baseChannel)
         handleConfigChannelNote(msg);
       break;
       

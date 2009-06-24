@@ -48,27 +48,23 @@ class InputChannel {
 
 InputChannel inputChannels[16];
 
-void onCurrentKitCallback() {
-  loadedKit = true;
-}
-
 void handleGuiSysex() {
   if (BUTTON_PRESSED(Buttons.BUTTON1) && !isConfigPageActive()) {
-    loadedKit = false;
-    MDSysexListener.getCurrentKit(onCurrentKitCallback);
+    MDTask.reloadKit = MDTask.reloadGlobal = true;
   }
 }
 
 void setup() {
   setupMidi();
   setupPages();
+  MDTask.setup();
+  MDTask.autoLoadKit = true;
 }
 
 void loop() {
+  MDTask.check();
   GUI.updatePage();
-  
-//  if (!MidiUart.avail())
-    GUI.update();
+  GUI.update();
 }
 
 void handleGui() {

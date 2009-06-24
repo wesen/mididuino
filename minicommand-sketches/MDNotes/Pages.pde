@@ -122,17 +122,12 @@ class MDNotesPage : public Page {
   }
   
   virtual void display(bool redisplay = false) {
-    if (redisplay && (loadedKit == false || MD.currentKit == -1) ) {
-      GUI.setLine(GUI.LINE1);
-      GUI.put_p_string_fill(PSTR("RELOAD KIT"));
-    }
-
-    if ((MD.currentKit != oldKit || redisplay) && loadedKit == true) {
+    if ((MD.kit.origPosition != oldKit || redisplay) && MD.loadedKit == true ) {
       GUI.setLine(GUI.LINE1);
       GUI.put_p_string_fill(PSTR("LOADED KIT"));
       GUI.setLine(GUI.LINE2);
       GUI.put_string_fill(MD.kit.name);
-      oldKit = MD.currentKit;
+      oldKit = MD.kit.origPosition;
     }
   }
 };
@@ -163,7 +158,7 @@ void handleGuiPages() {
 
 void handleConfigChannelSelectNote(uint8_t *msg) {
   uint8_t channel = MIDI_VOICE_CHANNEL(msg[0]);
-  if (channel == MD.baseChannel) {
+  if (channel == MD.global.baseChannel) {
     uint8_t track = MD.noteToTrack(msg[1]);
     if (track != 128) {
       configPage.setConfigChannel(track);
@@ -174,7 +169,7 @@ void handleConfigChannelSelectNote(uint8_t *msg) {
 
 void handleConfigChannelNote(uint8_t *msg) {
   uint8_t channel = MIDI_VOICE_CHANNEL(msg[0]);
-  if (channel == MD.baseChannel) {
+  if (channel == MD.global.baseChannel) {
     uint8_t track = MD.noteToTrack(msg[1]);
     if (track != 128) {
       configPage.toggleTrack(track);
