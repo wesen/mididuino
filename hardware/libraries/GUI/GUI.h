@@ -4,11 +4,12 @@
 #include <stdlib.h>
 
 #include "WProgram.h"
+#include "Vector.hh"
+
 
 #ifdef MIDIDUINO_USE_GUI
 
-#define INIT_PAGE(page, encoders, size)					\
-  { for (uint8_t i = 0; i < (size); i++) { (page).encoders[i] = (encoders) + i; } }
+#include "Events.hh"
 
 typedef struct line_s {
   char data[16];
@@ -23,22 +24,34 @@ typedef struct line_s {
 #define DEFAULT_FLASH_DURATION 600
 
 class Page;
+class Sketch;
+
+typedef bool (*event_handler_t)(gui_event_t *event);
 
 class GuiClass {
  protected:
  public:
   line_t lines[2];
   uint8_t curLine;
+  Vector<event_handler_t, 4> eventHandlers;
   
   Page *page;
-  Page *newPage;
+  Sketch *sketch;
 
   GuiClass();
-  void update();
-  void (*handleButtons)();
 
+  void setSketch(Sketch *_sketch);
+
+  void addEventHandler(event_handler_t handler) {
+    eventHandlers.add(handler);
+  }
+  void removeEventHandler(event_handler_t handler) {
+    eventHandlers.remove(handler);
+  }
+  Page *currentPage();
+  void update();
   void updatePage();
-  bool handleGui();
+  void doLoop();
 
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
@@ -61,7 +74,6 @@ class GuiClass {
   void put_p_string_at(uint8_t idx, PGM_P str);
   void put_string_at_fill(uint8_t idx, char *str);
   void put_p_string_at_fill(uint8_t idx, PGM_P str);
-
 
   void flash(uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_put_value(uint8_t idx, uint8_t value,
@@ -116,7 +128,7 @@ extern GuiClass GUI;
 
 #include "Encoders.hh"
 #include "Pages.hh"
-#include "Events.hh"
+#include "Sketch.hh"
 
 #endif
 

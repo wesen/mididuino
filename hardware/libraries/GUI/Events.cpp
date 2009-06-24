@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-CRingBuffer<gui_event_t, 8> EventRB;
+volatile CRingBuffer<gui_event_t, 8> EventRB;
 
 void pollEventGUI() {
   for (int i = 0; i < 8; i++) {

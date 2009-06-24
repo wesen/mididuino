@@ -7,12 +7,17 @@
 
 class Page {
  public:
+  char name[2][17];
+  bool redisplay;
+
   Page() { }
   virtual void handle() { }
   virtual void update() { }
   virtual void clear()  { }
-  virtual void display(bool redisplay = false) { }
-  virtual bool handleGui() { return false; }
+  virtual void display() { }
+  virtual bool handleEvent(gui_event_t *event) {
+    return false;
+  }
 };
 
 class Encoder;
@@ -22,9 +27,10 @@ class EncoderPage : public Page {
   Encoder *encoders[GUI_NUM_ENCODERS];
   
   EncoderPage(Encoder *e1 = NULL, Encoder *e2 = NULL, Encoder *e3 = NULL, Encoder *e4 = NULL) {
-    for (uint8_t i; i < GUI_NUM_ENCODERS; i++) {
-      encoders[i] = NULL;
-    }
+    setEncoders(e1, e2, e3, e4);
+  }
+  
+  void setEncoders(Encoder *e1 = NULL, Encoder *e2 = NULL, Encoder *e3 = NULL, Encoder *e4 = NULL) {
     encoders[0] = e1;
     encoders[1] = e2;
     encoders[2] = e3;
@@ -33,7 +39,7 @@ class EncoderPage : public Page {
   virtual void handle();
   virtual void update();
   virtual void clear();
-  virtual void display(bool redisplay = false);
+  virtual void display();
   void displayNames();
 };
 

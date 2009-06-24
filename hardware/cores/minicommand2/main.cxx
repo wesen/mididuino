@@ -71,12 +71,13 @@ void __mainInnerLoop(bool callLoop) {
     sei();
 #endif
 
-    if (callLoop)
-      loop();
+    if (callLoop) {
+      GUI.doLoop();
+    }
 }
 
 int main(void) {
-    delay(100);
+  delay(100);
   init();
   clearLed();
   clearLed2();
@@ -86,6 +87,7 @@ int main(void) {
   }
 
   MidiSysex.addSysexListener(&MididuinoSysexListener);
+
   setup();
   sei();
 
@@ -93,4 +95,8 @@ int main(void) {
     __mainInnerLoop();
   }
   return 0;
+}
+
+void handleGui() {
+  pollEventGUI();
 }

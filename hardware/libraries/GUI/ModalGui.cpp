@@ -118,8 +118,9 @@ public:
       GUI.updatePage();
 
       while (!EventRB.isEmpty()) {
-	gui_event_t event;
-	EventRB.getp(&event);
+	gui_event_t event_s;
+	gui_event_t *event = &event_s;
+	EventRB.getp(event);
 	
 	if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
 	  moveCursor(cursorPos - 4);

@@ -12,45 +12,65 @@ GuiClass::GuiClass() {
   }
   lines[0].changed = false;
   lines[1].changed = false;
-  handleButtons = NULL;
   page = NULL;
 }
 
+Page *GuiClass::currentPage() {
+  if (sketch != NULL) {
+    return sketch->currentPage();
+  } else {
+    return page;
+  }
+}
+
+void GuiClass::setSketch(Sketch *_sketch) {
+  sketch = _sketch;
+}  
+
 void GuiClass::updatePage() {
+  Page *page = currentPage();
   if (page != NULL) {
     page->update();
   }
 }
 
-bool GuiClass::handleGui() {
-  if (page != NULL)
-    return page->handleGui();
-  else
-    return false;
+void loop();
+
+void GuiClass::doLoop() {
+  updatePage();
+
+  while (!EventRB.isEmpty()) {
+    gui_event_t event;
+    EventRB.getp(&event);
+    if (sketch != NULL) {
+      bool ret = sketch->handleTopEvent(&event);
+      if (ret)
+	continue;
+    }
+
+    for (int i = 0; i < eventHandlers.size; i++) {
+      if (eventHandlers.arr[i] != NULL) {
+	bool ret = eventHandlers.arr[i](&event);
+	if (ret)
+	  break;
+      }
+    }
+  }
+  if (sketch != NULL) {
+    sketch->loop();
+  }
+  
+  loop();
+  update();
 }
 
 void GuiClass::update() {
-  bool redisplay = false;
-  
-  uint8_t tmp = SREG;
-  cli();
-  if (newPage != NULL) {
-    page = newPage;
-    newPage = NULL;
-    redisplay = true;
-    setLine(GUI.LINE1);
-    clearLine();
-    setLine(GUI.LINE2 );
-    clearLine();
-  }
-  SREG = tmp;
+  Page *page = currentPage();
   if (page != NULL) {
-    page->display(redisplay);
+    page->display();
     page->handle();
   }
 
-  //  uint8_t tmp = SREG;
-  //  cli();
   for (uint8_t i = 0; i < 2; i++) {
     if (lines[i].flashActive) {
       uint16_t clock = read_slowclock();
@@ -72,7 +92,6 @@ void GuiClass::update() {
       lines[i].changed = false;
     }
   }
-  //  SREG = tmp;
 }
 
 char hex2c(uint8_t hex) {
@@ -185,14 +204,12 @@ void GuiClass::put_p_string(PGM_P str) {
 }
 
 void GuiClass::setPage(Page *_page) {
-  newPage = _page;
-  // XXX needed?
-  /*
-  uint8_t tmp = SREG;
-  cli();
-  Encoders.clearEncoders();
-  SREG = tmp;
-  */
+  setLine(GUI.LINE1);
+  clearLine();
+  setLine(GUI.LINE2 );
+  clearLine();
+  page = _page;
+  page->redisplay = true;
 }
 
 void GuiClass::clearLine() {

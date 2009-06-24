@@ -28,7 +28,7 @@ void EncoderPage::clear() {
   }
 }
 
-void EncoderPage::display(bool redisplay) {
+void EncoderPage::display() {
   if (redisplay) {
     displayNames();
   }
@@ -39,6 +39,7 @@ void EncoderPage::display(bool redisplay) {
 	encoders[i]->displayAt(i);
       }
   }
+  redisplay = false;
 }
 
 void EncoderPage::displayNames() {
