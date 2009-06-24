@@ -1,11 +1,6 @@
 #include <MD.h>
 #include <CCHandler.h>
 
-CCHandler ccHandler;
-CCHandlerEncoder ccEnc(0, 0, "CC");
-CCHandlerEncoder ccEnc2(0, 0, "CC");
-EncoderPage page(&ccEnc, &ccEnc2);
-
 void onLearnCallback(CCEncoder *enc) {
   uint8_t track, param;
   if (MD.loadedGlobal && MD.loadedKit) {
@@ -22,13 +17,21 @@ void onLearnCallback(CCEncoder *enc) {
   }
 }
 
+CCHandler ccHandler;
+CCHandlerEncoder ccEnc(0, 0, "CC");
+CCHandlerEncoder ccEnc2(0, 0, "CC");
+EncoderPage page(&ccEnc, &ccEnc2);
+
 class CCHandlerTestSketch : 
 public Sketch {
 public:
+
   virtual void setup() {
     MDTask.setup();
     MDTask.interval = 3000;
     MDTask.autoLoadKit = true;
+    GUI.addTask(&MDTask);
+    
     ccHandler.setup();
     ccHandler.setCallback(onLearnCallback);
     ccHandler.addEncoder(&ccEnc);
@@ -51,7 +54,6 @@ public:
   }
 
   virtual void loop() {
-        MDTask.check();
   }
 };
 

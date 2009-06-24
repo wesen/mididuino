@@ -4,9 +4,9 @@
 void setup() {
   LCD.line1("MD NOTE TEST");
   MD.kit.machines[0].model = EFM_SD_MODEL;
-  MD.kit.machines[1].model = ROM_MODEL;
+  MD.kit.machines[1].model = EFM_SD_MODEL;
   MD.kit.machines[2].model = EFM_SD_MODEL;
-  MD.kit.machines[3].model = ROM_MODEL;
+  MD.kit.machines[3].model = EFM_SD_MODEL;
 }
 
 void loop() {

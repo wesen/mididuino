@@ -81,11 +81,11 @@ void on32Callback() {
 }
 
 void initLFOs() {
-//  MidiClock.mode = MidiClock.EXTERNAL;
+  MidiClock.mode = MidiClock.EXTERNAL;
 
-  MidiClock.mode = MidiClock.INTERNAL;
-  MidiClock.setTempo(100);
-  MidiClock.transmit = true;
+//  MidiClock.mode = MidiClock.INTERNAL;
+//  MidiClock.setTempo(100);
+//  MidiClock.transmit = true;
   MidiClock.setOn32Callback(on32Callback);
   MidiClock.start();
   for (int page = 0; page < 4; page++) {

@@ -13,13 +13,11 @@ void onNoteCallback(uint8_t *msg) {
 
 EncoderPage page(&enc1, &enc2, &enc3, &enc3);
 void setup() {
-  SDCard.init();
+  if (SDCard.init() != 0) {
+    GUI.flash_strings_fill("NO SD CARD", "");
+  }
   //  setLed2();
 //  setLed();
-  page.encoders[0] = &enc1;
-  page.encoders[1] = &enc2;
-  page.encoders[2] = &enc3;
-  page.encoders[3] = &enc4;
   GUI.setPage(&page);
   Midi2.setOnNoteOnCallback(onNoteCallback);
 }
