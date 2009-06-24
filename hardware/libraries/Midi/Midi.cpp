@@ -139,8 +139,17 @@ void MidiClass::handleByte(uint8_t byte) {
     if (midi_parse[callback].midi_status == MIDI_NOTE_ON && msg[2] == 0) {
       callback = 0; // XXX ugly hack to recgnize NOTE on with velocity 0 as Note Off
     }
+    /*
     if (callback < 7 && callbacks[callback] != NULL) {
       callbacks[callback](msg);
+    }
+    */
+    if (callback < 7) {
+      for (int i = 0 ; i < midiCallbacks[callback].size; i++) {
+	if (midiCallbacks[callback].arr[i] != NULL)
+	  midiCallbacks[callback].arr[i](msg);
+      }
+      
     }
     in_state = midi_wait_status;
     break;
@@ -152,31 +161,87 @@ void MidiClass::handleByte(uint8_t byte) {
   }
 }
 
+void MidiClass::addCallback(uint8_t num, midi_callback_t cb) {
+  midiCallbacks[num].add(cb);
+}
+void MidiClass::removeCallback(uint8_t num, midi_callback_t cb) {
+  midiCallbacks[num].remove(cb);
+}
+void MidiClass::setCallback(uint8_t num, midi_callback_t cb) {
+  if (callbacks[num] != NULL) {
+    removeCallback(num, callbacks[num]);
+  }
+  callbacks[num] = cb;
+  addCallback(num, cb);
+}
+
+void MidiClass::addOnControlChangeCallback(midi_callback_t cb) {
+  addCallback(MIDI_CC_CB, cb);
+}
+void MidiClass::removeOnControlChangeCallback(midi_callback_t cb) {
+  removeCallback(MIDI_CC_CB, cb);
+}
 void MidiClass::setOnControlChangeCallback(midi_callback_t cb) {
-  callbacks[MIDI_CC_CB] = cb;
+  setCallback(MIDI_CC_CB, cb);
 }
 
+void MidiClass::addOnNoteOnCallback(midi_callback_t cb) {
+  addCallback(MIDI_NOTE_ON_CB, cb);
+}
+void MidiClass::removeOnNoteOnCallback(midi_callback_t cb) {
+  removeCallback(MIDI_NOTE_ON_CB, cb);
+}
 void MidiClass::setOnNoteOnCallback(midi_callback_t cb) {
-  callbacks[MIDI_NOTE_ON_CB] = cb;
+  setCallback(MIDI_NOTE_ON_CB, cb);
 }
 
+void MidiClass::addOnNoteOffCallback(midi_callback_t cb) {
+  addCallback(MIDI_NOTE_OFF_CB, cb);
+}
+void MidiClass::removeOnNoteOffCallback(midi_callback_t cb) {
+  removeCallback(MIDI_NOTE_OFF_CB, cb);
+}
 void MidiClass::setOnNoteOffCallback(midi_callback_t cb) {
-  callbacks[MIDI_NOTE_OFF_CB] = cb;
+  setCallback(MIDI_NOTE_OFF_CB, cb);
 }
 
+void MidiClass::addOnAfterTouchCallback(midi_callback_t cb) {
+  addCallback(MIDI_AT_CB, cb);
+}
+void MidiClass::removeOnAfterTouchCallback(midi_callback_t cb) {
+  removeCallback(MIDI_AT_CB, cb);
+}
 void MidiClass::setOnAfterTouchCallback(midi_callback_t cb) {
-  callbacks[MIDI_AT_CB] = cb;
+  setCallback(MIDI_AT_CB, cb);
 }
 
+void MidiClass::addOnProgramChangeCallback(midi_callback_t cb) {
+  addCallback(MIDI_PRG_CHG_CB, cb);
+}
+void MidiClass::removeOnProgramChangeCallback(midi_callback_t cb) {
+  removeCallback(MIDI_PRG_CHG_CB, cb);
+}
 void MidiClass::setOnProgramChangeCallback(midi_callback_t cb) {
-  callbacks[MIDI_PRG_CHG_CB] = cb;
+  setCallback(MIDI_PRG_CHG_CB, cb);
 }
 
+void MidiClass::addOnChannelPressureCallback(midi_callback_t cb) {
+  addCallback(MIDI_CHAN_PRESS_CB, cb);
+}
+void MidiClass::removeOnChannelPressureCallback(midi_callback_t cb) {
+  removeCallback(MIDI_CHAN_PRESS_CB, cb);
+}
 void MidiClass::setOnChannelPressureCallback(midi_callback_t cb) {
-  callbacks[MIDI_CHAN_PRESS_CB] = cb;
+  setCallback(MIDI_CHAN_PRESS_CB, cb);
 }
 
+void MidiClass::addOnPitchWheelCallback(midi_callback_t cb) {
+  addCallback(MIDI_PITCH_WHEEL_CB, cb);
+}
+void MidiClass::removeOnPitchWheelCallback(midi_callback_t cb) {
+  removeCallback(MIDI_PITCH_WHEEL_CB, cb);
+}
 void MidiClass::setOnPitchWheelCallback(midi_callback_t cb) {
-  callbacks[MIDI_PITCH_WHEEL_CB] = cb;
+  setCallback(MIDI_PITCH_WHEEL_CB, cb);
 }
 
