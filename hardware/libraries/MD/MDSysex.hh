@@ -56,19 +56,22 @@ public:
 
   /* */
   Vector<md_status_callback_t, 4> statusCallbacks;
-
   void addOnStatusResponseCallback(md_status_callback_t callback) {
     statusCallbacks.add(callback);
   }
-
   void removeOnStatusResponseCallback(md_status_callback_t callback) {
     statusCallbacks.remove(callback);
   }
-
-  /* */
+  /* compatibility to old stuff */
   void setOnStatusResponseCallback(md_status_callback_t callback) {
+    if (onStatusResponseCallback != NULL) {
+      removeOnStatusResponseCallback(onStatusResponseCallback);
+    } 
+
     onStatusResponseCallback = callback;
+    addOnStatusResponseCallback(onStatusResponseCallback);
   }
+  
   void setOnGlobalMessageCallback(md_callback_t callback) {
     onGlobalMessageCallback = callback;
   }

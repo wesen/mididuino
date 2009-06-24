@@ -42,9 +42,6 @@ void MDSysexListenerClass::end() {
       if (statusCallbacks.arr[i] != NULL)
 	statusCallbacks.arr[i](MidiSysex.data[1], MidiSysex.data[2]);
     }
-    
-    if (onStatusResponseCallback != NULL)
-      onStatusResponseCallback(MidiSysex.data[1], MidiSysex.data[2]);
     break;
     
     
