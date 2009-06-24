@@ -39,7 +39,6 @@ void EncoderPage::display() {
 	encoders[i]->displayAt(i);
       }
   }
-  redisplay = false;
 }
 
 void EncoderPage::displayNames() {

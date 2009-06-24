@@ -14,16 +14,21 @@ public:
     name = _name;
   }
 
+  void setPage(Page *page) {
+    pageStack.reset();
+    pushPage(page);
+  }
+  
   void pushPage(Page *page) {
+    page->redisplayPage();
     pageStack.push(page);
-    page->redisplay = true;
   }
 
   void popPage() {
     pageStack.pop(NULL);
     Page *page = currentPage();
     if (page != NULL)
-      page->redisplay = true;
+      page->redisplayPage();
   }
 
   Page *currentPage() {

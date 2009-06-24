@@ -15,6 +15,13 @@ class Page {
   virtual void update() { }
   virtual void clear()  { }
   virtual void display() { }
+  void redisplayPage() {
+    GUI.setLine(GUI.LINE1);
+    GUI.clearLine();
+    GUI.setLine(GUI.LINE2);
+    GUI.clearLine();
+    redisplay = true;
+  }
   virtual bool handleEvent(gui_event_t *event) {
     return false;
   }

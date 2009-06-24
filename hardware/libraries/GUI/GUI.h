@@ -5,6 +5,7 @@
 
 #include "WProgram.h"
 #include "Vector.hh"
+#include "Task.hh"
 
 
 #ifdef MIDIDUINO_USE_GUI
@@ -34,8 +35,10 @@ class GuiClass {
   line_t lines[2];
   uint8_t curLine;
   Vector<event_handler_t, 4> eventHandlers;
+  Vector<Task *, 8> tasks;
   
   Page *page;
+  Page *modalPage;
   Sketch *sketch;
 
   GuiClass();
@@ -48,6 +51,14 @@ class GuiClass {
   void removeEventHandler(event_handler_t handler) {
     eventHandlers.remove(handler);
   }
+
+  void addTask(Task *task) {
+    tasks.add(task);
+  }
+  void removeTask(Task *task) {
+    tasks.remove(task);
+  }
+  
   Page *currentPage();
   void update();
   void updatePage();

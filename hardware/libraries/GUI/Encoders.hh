@@ -74,6 +74,17 @@ public:
   virtual void displayAt(int i);
 };
 
+class PEnumEncoder : public EnumEncoder {
+public:
+  PEnumEncoder(char *strings[], int _cnt, char *_name = NULL, int init = 0,
+	      encoder_handle_t _handler = NULL) :
+    EnumEncoder(strings, _cnt, _name, init, _handler) {
+  }
+
+  virtual void displayAt(int i);
+};
+
+
 class CCEncoder : public RangeEncoder {
  public:
   int cc;

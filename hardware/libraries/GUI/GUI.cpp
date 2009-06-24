@@ -37,6 +37,12 @@ void GuiClass::updatePage() {
 void loop();
 
 void GuiClass::doLoop() {
+  for (int i = 0; i < tasks.size; i++) {
+    if (tasks.arr[i] != NULL) {
+      tasks.arr[i]->check();
+    }
+  }
+  
   updatePage();
 
   while (!EventRB.isEmpty()) {
@@ -68,6 +74,7 @@ void GuiClass::update() {
   Page *page = currentPage();
   if (page != NULL) {
     page->display();
+    page->redisplay = false;
     page->handle();
   }
 

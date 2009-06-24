@@ -1,3 +1,4 @@
+#include <avr/pgmspace.h>
 #include "Encoders.hh"
 
 #include "Midi.h"
@@ -68,9 +69,16 @@ int Encoder::update(encoder_t *enc) {
 
 /* EnumEncoder */
 void EnumEncoder::displayAt(int i) {
-  GUI.put_string(i, enumStrings[getValue()]);
+  GUI.put_string_at_fill(i * 4, enumStrings[getValue()]);
   redisplay = false;
 }
+
+void PEnumEncoder::displayAt(int i) {
+  //  GUI.put_p_string_at_fill(i * 4, (PGM_P)(pgm_read_word(enumStrings[getValue()])));
+  GUI.put_p_string_at_fill(i * 4, (PGM_P)(enumStrings[getValue()]));
+  redisplay = false;
+}
+
 
 /* RangeEncoder */
 
