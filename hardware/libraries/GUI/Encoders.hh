@@ -105,14 +105,14 @@ class CCEncoder : public RangeEncoder {
   virtual uint8_t getChannel() {
     return channel;
   }
-  virtual void initCCEncoder(uint8_t _cc, uint8_t _channel) {
+  virtual void initCCEncoder(uint8_t _channel, uint8_t _cc) {
     cc = _cc;
     channel = _channel;
   }
   
   CCEncoder(uint8_t _cc = 0, uint8_t _channel = 0, char *_name = NULL, int init = 0) :
     RangeEncoder(127, 0, _name, init) {
-    initCCEncoder(_cc, _channel);
+    initCCEncoder(_channel, _cc);
     handler = CCEncoderHandle;
   }
 };
