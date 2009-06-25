@@ -2,6 +2,7 @@
 #define MIDIUARTPARENT_H__
 
 #include <midi-common.hh>
+#include "Vector.hh"
 
 class MidiUartParent {
 public:
@@ -47,6 +48,30 @@ public:
       }
     }
   }
+
+  Vector<midi_callback_t, 4>noteOnCallbacks;
+  Vector<midi_callback_t, 4>noteOffCallbacks;
+  Vector<midi_callback_t, 4>CCCallbacks;
+
+  void addOnNoteOnCallback(midi_callback_t cb) {
+    noteOnCallbacks.add(cb);
+  }
+  void removeOnNoteOnCallback(midi_callback_t cb) {
+    noteOnCallbacks.remove(cb);
+  }
+  void addOnNoteOffCallback(midi_callback_t cb) {
+    noteOffCallbacks.add(cb);
+  }
+  void removeOnNoteOffCallback(midi_callback_t cb) {
+    noteOffCallbacks.remove(cb);
+  }
+  void addOnControlChangeCallback(midi_callback_t cb) {
+    CCCallbacks.add(cb);
+  }
+  void removeOnControlChangeCallback(midi_callback_t cb) {
+    CCCallbacks.remove(cb);
+  }
+  
 
   inline void resetRunningStatus() {
     running_status = 0;
@@ -95,21 +120,48 @@ public:
   }
 
   void sendNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
-    sendCommandByte(MIDI_NOTE_ON | channel);
-    putc(note);
-    putc(velocity);
+    uint8_t msg[3] = {
+      MIDI_NOTE_ON | channel,
+      note,
+      velocity
+    };
+    for (int i = 0 ; i < noteOnCallbacks.size; i++) {
+      if (noteOnCallbacks.arr[i] != NULL)
+	noteOnCallbacks.arr[i](msg);
+    }
+    sendCommandByte(msg[0]);
+    putc(msg[1]);
+    putc(msg[2]);
   }
 
   void sendNoteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
-    sendCommandByte(MIDI_NOTE_OFF | channel);
-    putc(note);
-    putc(velocity);
+    uint8_t msg[3] = {
+      MIDI_NOTE_OFF | channel,
+      note,
+      velocity
+    };
+    for (int i = 0 ; i < noteOffCallbacks.size; i++) {
+      if (noteOffCallbacks.arr[i] != NULL)
+	noteOffCallbacks.arr[i](msg);
+    }
+    sendCommandByte(msg[0]);
+    putc(msg[1]);
+    putc(msg[2]);
   }
 
   void sendCC(uint8_t channel, uint8_t cc, uint8_t value) {
-    sendCommandByte(MIDI_CONTROL_CHANGE | channel);
-    putc(cc);
-    putc(value);
+    uint8_t msg[3] = {
+      MIDI_CONTROL_CHANGE | channel,
+      cc,
+      value
+    };
+    for (int i = 0 ; i < CCCallbacks.size; i++) {
+      if (CCCallbacks.arr[i] != NULL)
+	CCCallbacks.arr[i](msg);
+    }
+    sendCommandByte(msg[0]);
+    putc(msg[1]);
+    putc(msg[2]);
   }
 
   void sendProgramChange(uint8_t channel, uint8_t program) {
