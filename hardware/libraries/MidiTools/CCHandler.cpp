@@ -27,13 +27,26 @@ void CCHandler::destroy() {
 }
 
 void CCHandler::onCCCallback(uint8_t *msg) {
-  uint8_t channel = MIDI_VOICE_CHANNEL(msg[0]);
-  uint8_t cc = msg[1];
-  uint8_t value = msg[2];
+  incoming_cc_t cc;
+  cc.channel = MIDI_VOICE_CHANNEL(msg[0]);
+  cc.cc = msg[1];
+  cc.value = msg[2];
+
+  bool found = false;
+  for (int i = 0; i < incomingCCs.size(); i++) {
+    incoming_cc_t *cc2 = incomingCCs.getp(i);
+    if (cc2->channel == cc.channel && cc2->cc == cc.cc) {
+      cc2->value = cc.value;
+      found = true;
+      break;
+    }
+  }
+  if (!found) 
+    incomingCCs.putp(&cc);
     
   if (midiLearnEnc != NULL) {
-    midiLearnEnc->initCCEncoder(cc, channel);
-    midiLearnEnc->setValue(value);
+    midiLearnEnc->initCCEncoder(cc.channel, cc.cc);
+    midiLearnEnc->setValue(cc.value);
     if (callback != NULL)
       callback(midiLearnEnc);
     midiLearnEnc = NULL;
@@ -41,9 +54,9 @@ void CCHandler::onCCCallback(uint8_t *msg) {
 
   for (int i = 0; i < encoders.size; i++) {
     if (encoders.arr[i] != NULL) {
-      if (encoders.arr[i]->getChannel() == channel &&
-	  encoders.arr[i]->getCC() == cc) {
-	encoders.arr[i]->setValue(value);
+      if (encoders.arr[i]->getChannel() == cc.channel &&
+	  encoders.arr[i]->getCC() == cc.cc) {
+	encoders.arr[i]->setValue(cc.value);
       }
     }
   }
