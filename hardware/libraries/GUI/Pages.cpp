@@ -52,3 +52,30 @@ void EncoderPage::displayNames() {
 }
 
 
+void SwitchPage::display() {
+  if (redisplay) {
+    GUI.setLine(GUI.LINE1);
+    GUI.put_string_at_fill(0, name);
+    GUI.setLine(GUI.LINE2);
+    for (int i = 0; i < 4; i++) {
+      if (pages[i] != NULL) {
+	GUI.put_string_fill(i, pages[i]->shortName);
+      }
+    }
+  }
+}
+
+bool SwitchPage::handleEvent(gui_event_t *event) {
+  for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
+    if (pages[i] != NULL && EVENT_PRESSED(event, i)) {
+      if (sketch != NULL) {
+	sketch->setPage(pages[i]);
+	sketch->clearModalPage(this);
+      } else {
+	GUI.setPage(pages[i]);
+      }
+      return true;
+    }
+  }
+  return false;
+}

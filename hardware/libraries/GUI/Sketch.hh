@@ -8,12 +8,31 @@ class Sketch {
 public:
 
   Stack<Page *, 4> pageStack;
+  Page *modalPage;
   char *name;
 
   Sketch(char *_name = NULL) {
     name = _name;
   }
 
+  void setModalPage(Page *_modalPage) {
+    if (modalPage != NULL) {
+      return;
+    }
+    modalPage = _modalPage;
+    modalPage->sketch = this;
+    modalPage->redisplayPage();
+    modalPage->show();
+  }
+
+  void clearModalPage(Page *_modalPage = NULL) {
+    if (modalPage == _modalPage) {
+      modalPage->hide();
+      modalPage = NULL;
+      currentPage()->redisplayPage();
+    }
+  }
+  
   void setPage(Page *page) {
     pageStack.reset();
     pushPage(page);
@@ -42,6 +61,8 @@ public:
 
   Page *currentPage() {
     Page *page = NULL;
+    if (modalPage != NULL)
+      return modalPage;
     pageStack.peek(&page);
     return page;
   }

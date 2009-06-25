@@ -79,7 +79,9 @@ class GuiClass {
   void put_p_string(uint8_t idx, PGM_P str);
   void put_string(const char *str);
   void put_p_string(PGM_P str);
+  void put_string_fill(uint8_t idx, const char *str);
   void put_string_fill(const char *str);
+  void put_p_string_fill(uint8_t idx, PGM_P str);
   void put_p_string_fill(PGM_P str);
   void put_string_at(uint8_t idx, const char *str);
   void put_p_string_at(uint8_t idx, PGM_P str);
