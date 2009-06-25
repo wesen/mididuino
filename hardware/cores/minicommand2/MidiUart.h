@@ -19,10 +19,10 @@ class MidiUartClass : public MidiUartParent {
   virtual bool avail();
   virtual uint8_t getc();
 
-  volatile RingBuffer<32> rxRb;
+  volatile RingBuffer<256> rxRb;
 
 #ifdef TX_IRQ
-  volatile RingBuffer<32> txRb;
+  volatile RingBuffer<128> txRb;
 #endif
 
 };
@@ -36,7 +36,7 @@ class MidiUartClass2 : MidiUartClass {
   MidiUartClass2();
   virtual bool avail();
   virtual uint8_t getc();
-  volatile RingBuffer<32> rxRb;
+  volatile RingBuffer<256> rxRb;
 };
 
 extern MidiUartClass2 MidiUart2;
