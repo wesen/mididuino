@@ -9,12 +9,15 @@ class Page {
  public:
   char name[2][17];
   bool redisplay;
+  Sketch *sketch;
 
-  Page() { }
+  Page() { sketch = NULL; redisplay = false; }
   virtual void handle() { }
   virtual void update() { }
   virtual void clear()  { }
   virtual void display() { }
+  virtual void show() { }
+  virtual void hide() { }
   void redisplayPage() {
     GUI.setLine(GUI.LINE1);
     GUI.clearLine();
