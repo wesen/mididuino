@@ -25,14 +25,49 @@ uint8_t MDClass::noteToTrack(uint8_t pitch) {
 
 #ifdef MIDIDUINO_USE_GUI
 
-MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
-  RangeEncoder(127, 0, _name, init) {
-  track = _track;
-  param = _param;
+void MDEncoderHandle(Encoder *enc) {
+  MDEncoder *mdEnc = (MDEncoder *)enc;
+  MD.setTrackParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
 }
 
-void MDEncoder::handle(uint8_t val) {
-  MD.setTrackParam(track, param, val);
+void MDFXEncoderHandle(Encoder *enc) {
+  MDFXEncoder *mdEnc = (MDFXEncoder *)enc;
+  MD.sendFXParam(mdEnc->param, mdEnc->getValue(), mdEnc->effect);
+}
+
+MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
+  CCEncoder(0, 0, _name, init) {
+  initMDEncoder(_track, _param);
+  handler = MDEncoderHandle;
+}
+
+uint8_t MDEncoder::getCC() {
+  uint8_t b = track & 3;
+  uint8_t cc = param;
+  if (b < 2) {
+    cc += 16 + b * 24;
+  } else {
+    cc += 24 + b * 24;
+  }
+  return cc;
+}
+
+uint8_t MDEncoder::getChannel() {
+  if (MD.loadedGlobal == false || MD.global.baseChannel == 127)
+    return 127;
+  
+  uint8_t channel = track >> 2;
+  return MD.global.baseChannel + channel;
+}
+
+void MDEncoder::initCCEncoder(uint8_t _cc, uint8_t _channel) {
+  MD.parseCC(_channel, _cc, &track, &param);
+}
+
+MDFXEncoder::MDFXEncoder(uint8_t _param, uint8_t _effect, char *_name, uint8_t init) :
+  RangeEncoder(127, 0, _name, init) {
+  initMDFXEncoder(_effect, _param);
+  handler = MDFXEncoderHandle;
 }
 
 #endif
