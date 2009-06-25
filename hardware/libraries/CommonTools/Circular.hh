@@ -5,26 +5,30 @@
 
 template <class C, int N>
 class CircularBuffer {
-  volatile uint8_t start, count;
-  volatile C buf[N];
-
 public:
-  volatile uint8_t overflow;
+  volatile uint8_t start, count;
+  C buf[N];
 
   CircularBuffer() {
     start = count = 0;
-    overflow = 0;
   }
 
-  bool put(C c) {
+  void clear() {
+    start = count = 0;
+  }
+
+  void put(C c) {
     buf[start] = c;
     count = MIN(N, count + 1);
     start = (start + 1) % N;
   }
-  bool putp(C *c) {
-    m_memcpy(&buf[start], c, sizeof(C));
-    count = MIN(N, count + 1);
-    start = (start + 1) % N;
+  void putp(C *c) {
+    m_memcpy((void *)&buf[(start + count) % N], c, sizeof(C));
+    count++;
+    if (count > N) {
+      start = (start + 1) % N;
+      count = N;
+    }
   }
   uint8_t size() {
     return count;
@@ -32,9 +36,30 @@ public:
   C get(uint8_t i) {
     return buf[(start + i) % N];
   }
-  void getp(uint8_t i, C *c) {
-    m_memcpy(c, &buf[(start + i) % N];
+  C* getp(uint8_t i) {
+    if (count > i)
+      return &buf[(start + i) % N];
+    else
+      return NULL;
   }
+  bool getCopy(uint8_t i, C *c) {
+    if (count > i) {
+      m_memcpy(c, (void *)&buf[(start + i) % N], sizeof(C));
+      return true;
+    } else {
+      return false;
+    }
+  }
+  C getLast() {
+    return get(count);
+  }
+  C* getLastp() {
+    return getp(count);
+  }
+  bool getLastCopy(C *c) {
+    return getCopy(count);
+  }
+      
 };
 
 #endif /* CIRCULAR_H__ */
