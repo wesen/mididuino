@@ -160,7 +160,7 @@ void GuiClass::put_valuex_at(uint8_t idx, uint8_t value) {
 }
 
 
-void GuiClass::put_string(uint8_t idx, char *str) {
+void GuiClass::put_string(uint8_t idx, const char *str) {
   put_string_at(idx << 2, str);
 }
 
@@ -168,7 +168,7 @@ void GuiClass::put_p_string(uint8_t idx, PGM_P str) {
   put_p_string_at(idx << 2, str);
 }
 
-void GuiClass::put_string_at(uint8_t idx, char *str) {
+void GuiClass::put_string_at(uint8_t idx, const char *str) {
   char *data = lines[curLine].data;
   m_strncpy(data + idx, str, sizeof(lines[0].data) - idx);
   lines[curLine].changed = true;
@@ -181,7 +181,7 @@ void GuiClass::put_p_string_at(uint8_t idx, PGM_P str) {
 }
 
 
-void GuiClass::put_string_at_fill(uint8_t idx, char *str) {
+void GuiClass::put_string_at_fill(uint8_t idx, const char *str) {
   char *data = lines[curLine].data;
   m_strncpy_fill(data + idx, str, sizeof(lines[0].data) - idx);
   lines[curLine].changed = true;
@@ -194,7 +194,7 @@ void GuiClass::put_p_string_at_fill(uint8_t idx, PGM_P str) {
 }
 
 
-void GuiClass::put_string_fill(char *str) {
+void GuiClass::put_string_fill(const char *str) {
   put_string_at_fill(0, str);
 }
 
@@ -202,7 +202,7 @@ void GuiClass::put_p_string_fill(PGM_P str) {
   put_p_string_at_fill(0, str);
 }
 
-void GuiClass::put_string(char *str) {
+void GuiClass::put_string(const char *str) {
   put_string_at(0, str);
 }
 
@@ -215,8 +215,16 @@ void GuiClass::setPage(Page *_page) {
   clearLine();
   setLine(GUI.LINE2 );
   clearLine();
-  page = _page;
-  page->redisplay = true;
+  if (page != NULL && page != _page) {
+    page->hide();
+  }
+  if (page != _page) {
+    page = _page;
+    if (page != NULL) {
+      page->redisplayPage();
+      page->show();
+    }
+  }
 }
 
 void GuiClass::clearLine() {
@@ -279,13 +287,13 @@ void GuiClass::flash_put_valuex_at(uint8_t idx, uint8_t value, uint16_t duration
   flash(duration);
 }
 
-void GuiClass::flash_string_at(uint8_t idx, char *str, uint16_t duration) {
+void GuiClass::flash_string_at(uint8_t idx, const char *str, uint16_t duration) {
   char *data = lines[curLine].flash;
   m_strncpy(data + idx, str, sizeof(lines[0].flash) - idx);
   flash(duration);
 }
 
-void GuiClass::flash_string_at_fill(uint8_t idx, char *str, uint16_t duration) {
+void GuiClass::flash_string_at_fill(uint8_t idx, const char *str, uint16_t duration) {
   char *data = lines[curLine].flash;
   m_strncpy_fill(data + idx, str, sizeof(lines[0].flash) - idx);
   flash(duration);
@@ -303,7 +311,7 @@ void GuiClass::flash_p_string_at_fill(uint8_t idx, PGM_P str, uint16_t duration)
   flash(duration);
 }
 
-void GuiClass::flash_string(char *str, uint16_t duration) {
+void GuiClass::flash_string(const char *str, uint16_t duration) {
   flash_string_at(0, str, duration);
 }
 
@@ -311,7 +319,7 @@ void GuiClass::flash_p_string(PGM_P str, uint16_t duration) {
   flash_p_string_at(0, str, duration);
 }
 
-void GuiClass::flash_string_fill(char *str, uint16_t duration) {
+void GuiClass::flash_string_fill(const char *str, uint16_t duration) {
   flash_string_at_fill(0, str, duration);
 }
 
@@ -319,7 +327,7 @@ void GuiClass::flash_p_string_fill(PGM_P str, uint16_t duration) {
   flash_p_string_at_fill(0, str, duration);
 }
 
-void GuiClass::flash_string_clear(char *str, uint16_t duration) {
+void GuiClass::flash_string_clear(const char *str, uint16_t duration) {
   setLine(LINE1);
   flash_string_fill(str, duration);
   setLine(LINE2);
@@ -327,14 +335,14 @@ void GuiClass::flash_string_clear(char *str, uint16_t duration) {
 }
 
 
-void GuiClass::flash_p_string_clear(char *str, uint16_t duration) {
+void GuiClass::flash_p_string_clear(const char *str, uint16_t duration) {
   setLine(LINE1);
   flash_p_string_fill(str, duration);
   setLine(LINE2);
   clearFlash(duration);
 }
 
-void GuiClass::flash_strings_fill(char *str1, char *str2, uint16_t duration) {
+void GuiClass::flash_strings_fill(const char *str1, const char *str2, uint16_t duration) {
   setLine(LINE1);
   flash_string_fill(str1, duration);
   setLine(LINE2);

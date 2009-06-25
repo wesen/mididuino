@@ -75,15 +75,15 @@ class GuiClass {
   void put_value_at(uint8_t idx, int value);
   void put_value16_at(uint8_t idx, uint16_t value);
   void put_valuex_at(uint8_t idx, uint8_t value);
-  void put_string(uint8_t idx, char *str);
+  void put_string(uint8_t idx, const char *str);
   void put_p_string(uint8_t idx, PGM_P str);
-  void put_string(char *str);
+  void put_string(const char *str);
   void put_p_string(PGM_P str);
-  void put_string_fill(char *str);
+  void put_string_fill(const char *str);
   void put_p_string_fill(PGM_P str);
-  void put_string_at(uint8_t idx, char *str);
+  void put_string_at(uint8_t idx, const char *str);
   void put_p_string_at(uint8_t idx, PGM_P str);
-  void put_string_at_fill(uint8_t idx, char *str);
+  void put_string_at_fill(uint8_t idx, const char *str);
   void put_p_string_at_fill(uint8_t idx, PGM_P str);
 
   void flash(uint16_t duration = DEFAULT_FLASH_DURATION);
@@ -99,27 +99,27 @@ class GuiClass {
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_put_valuex_at(uint8_t idx, uint8_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
-  void flash_string(char *str,
+  void flash_string(const char *str,
 		    uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_p_string(PGM_P str,
 		      uint16_t duration = DEFAULT_FLASH_DURATION);
-  void flash_string_fill(char *str,
+  void flash_string_fill(const char *str,
 			 uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_p_string_fill(PGM_P str,
 			   uint16_t duration = DEFAULT_FLASH_DURATION);
-  void flash_string_at(uint8_t idx, char *str,
+  void flash_string_at(uint8_t idx, const char *str,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_p_string_at(uint8_t idx, PGM_P str,
 			 uint16_t duration = DEFAULT_FLASH_DURATION);
-  void flash_string_at_fill(uint8_t idx, char *str,
+  void flash_string_at_fill(uint8_t idx, const char *str,
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_p_string_at_fill(uint8_t idx, PGM_P str,
 			      uint16_t duration = DEFAULT_FLASH_DURATION);
-  void flash_string_clear(char *str,
+  void flash_string_clear(const char *str,
 			  uint16_t duration = DEFAULT_FLASH_DURATION);
-  void flash_p_string_clear(char *str,
+  void flash_p_string_clear(const char *str,
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
-  void flash_strings_fill(char *str1, char *str2,
+  void flash_strings_fill(const char *str1, const char *str2,
 			  uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_p_strings_fill(PGM_P str1, PGM_P str2,
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
