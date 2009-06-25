@@ -64,10 +64,34 @@ void MDEncoder::initCCEncoder(uint8_t _cc, uint8_t _channel) {
   MD.parseCC(_channel, _cc, &track, &param);
 }
 
+void MDEncoder::loadFromKit() {
+  setValue(MD.kit.machines[track].params[param]);
+}
+
 MDFXEncoder::MDFXEncoder(uint8_t _param, uint8_t _effect, char *_name, uint8_t init) :
   RangeEncoder(127, 0, _name, init) {
   initMDFXEncoder(_effect, _param);
   handler = MDFXEncoderHandle;
+}
+
+void MDFXEncoder::loadFromKit() {
+  switch (effect) {
+  case MD_FX_ECHO:
+    setValue(MD.kit.delay[param]);
+    break;
+
+  case MD_FX_REV:
+    setValue(MD.kit.reverb[param]);
+    break;
+
+  case MD_FX_EQ:
+    setValue(MD.kit.eq[param]);
+    break;
+
+  case MD_FX_DYN:
+    setValue(MD.kit.dynamics[param]);
+    break;
+  }
 }
 
 #endif

@@ -42,6 +42,7 @@ public:
   }
 
   MDEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
+  void loadFromKit();
 };
 
 class MDFXEncoder : public RangeEncoder {
@@ -56,6 +57,7 @@ class MDFXEncoder : public RangeEncoder {
     setValue(init);
   }
   MDFXEncoder(uint8_t _param = 0, uint8_t _effect = MD_FX_ECHO, char *_name = NULL, uint8_t init = 0);
+  void loadFromKit();
 };
 #endif
 
