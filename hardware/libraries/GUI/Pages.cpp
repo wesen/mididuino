@@ -2,6 +2,13 @@
 #include "GUI.h"
 #include "Pages.hh"
 
+void Page::update() {
+  uint8_t tmp = SREG;
+  cli();
+  Encoders.clearEncoders();
+  SREG = tmp;
+}
+  
 
 void EncoderPage::update() {
   uint8_t tmp = SREG;

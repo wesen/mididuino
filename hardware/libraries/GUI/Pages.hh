@@ -36,7 +36,7 @@ class Page {
   }
   
   virtual void handle() { }
-  virtual void update() { }
+  virtual void update();
   virtual void clear()  { }
   virtual void display() { }
   virtual void show() { }
