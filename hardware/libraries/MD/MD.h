@@ -26,13 +26,36 @@ typedef struct machine_name_s {
 } machine_name_t;
 
 #ifdef MIDIDUINO_USE_GUI
-class MDEncoder : public RangeEncoder {
+class MDEncoder : public CCEncoder {
 public:
   uint8_t track;
   uint8_t param;
 
-  MDEncoder(uint8_t _track, uint8_t _param, char *_name = NULL, uint8_t init = 0);
-  void handle(uint8_t val);
+  virtual uint8_t getCC();
+  virtual uint8_t getChannel();
+  virtual void initCCEncoder(uint8_t _cc, uint8_t _channel);
+  void initMDEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0) {
+    track = _track;
+    param = _param;
+    setName(_name);
+    setValue(init);
+  }
+
+  MDEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
+};
+
+class MDFXEncoder : public RangeEncoder {
+ public:
+  uint8_t effect;
+  uint8_t param;
+
+  void initMDFXEncoder(uint8_t _param = 0, uint8_t _effect = MD_FX_ECHO, char *_name = NULL, uint8_t init = 0) {
+    effect = _effect;
+    param = _param;
+    setName(_name);
+    setValue(init);
+  }
+  MDFXEncoder(uint8_t _param = 0, uint8_t _effect = MD_FX_ECHO, char *_name = NULL, uint8_t init = 0);
 };
 #endif
 
