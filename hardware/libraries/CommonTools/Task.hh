@@ -28,6 +28,9 @@ public:
       starting = false;
     }
   }
+
+  virtual void destroy() {
+  }
 };
 
 #endif /* TASK_H__ */
