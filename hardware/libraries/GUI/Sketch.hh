@@ -20,15 +20,24 @@ public:
   }
   
   void pushPage(Page *page) {
+    page->sketch = this;
     page->redisplayPage();
+    page->show();
     pageStack.push(page);
   }
 
   void popPage() {
-    pageStack.pop(NULL);
-    Page *page = currentPage();
-    if (page != NULL)
+    Page *page;
+    pageStack.pop(&page);
+    if (page != NULL) {
+      page->sketch = NULL;
+      page->hide();
+    }
+
+    page = currentPage();
+    if (page != NULL) {
       page->redisplayPage();
+    }
   }
 
   Page *currentPage() {
@@ -56,7 +65,7 @@ public:
   
   virtual void loop() {
   }
-  virtual void close() {
+  virtual void destroy() {
   }
 };
 
