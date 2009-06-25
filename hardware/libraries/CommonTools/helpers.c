@@ -20,13 +20,13 @@ void m_memcpy_p(void *dst, PGM_P src, uint16_t cnt) {
 }
 
 
-void m_strncpy(void *dst, char *src, uint16_t cnt) {
+void m_strncpy(void *dst, const char *src, uint16_t cnt) {
   while (cnt-- && *src) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
   }
 }
 
-void m_strncpy_fill(void *dst, char *src, uint16_t cnt) {
+void m_strncpy_fill(void *dst, const char *src, uint16_t cnt) {
   while (cnt && *src) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
     cnt--;
@@ -65,7 +65,7 @@ void m_memclr(void *dst, uint16_t cnt) {
     *((uint8_t *)dst++) = 0;
 }
 
-void m_str16cpy_fill(void *dst, char *src) {
+void m_str16cpy_fill(void *dst, const char *src) {
   m_strncpy_fill(dst, src, 16);
 }
 
@@ -77,7 +77,7 @@ void m_str16cpy_p(void *dst, PGM_P src) {
   m_strncpy_p(dst, src, 16);
 }
 
-void m_strnappend(void *dst, char *src, int len) {
+void m_strnappend(void *dst, const char *src, int len) {
   char *ptr = dst;
   int i;
   for (i = 0; i < len; i++) {
