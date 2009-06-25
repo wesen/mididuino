@@ -18,8 +18,8 @@ void onLearnCallback(CCEncoder *enc) {
 }
 
 CCHandler ccHandler;
-CCHandlerEncoder ccEnc(0, 0, "CC");
-CCHandlerEncoder ccEnc2(0, 0, "CC");
+CCEncoder ccEnc(0, 0, "CC");
+CCEncoder ccEnc2(0, 0, "CC");
 EncoderPage page(&ccEnc, &ccEnc2);
 
 class CCHandlerTestSketch : 
