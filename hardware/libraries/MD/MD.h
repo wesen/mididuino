@@ -33,7 +33,7 @@ public:
 
   virtual uint8_t getCC();
   virtual uint8_t getChannel();
-  virtual void initCCEncoder(uint8_t _cc, uint8_t _channel);
+  virtual void initCCEncoder(uint8_t _channel, uint8_t _cc);
   void initMDEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0) {
     track = _track;
     param = _param;

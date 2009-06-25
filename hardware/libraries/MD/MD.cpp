@@ -60,8 +60,18 @@ uint8_t MDEncoder::getChannel() {
   return MD.global.baseChannel + channel;
 }
 
-void MDEncoder::initCCEncoder(uint8_t _cc, uint8_t _channel) {
+void MDEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
   MD.parseCC(_channel, _cc, &track, &param);
+  if (MD.loadedKit) {
+    PGM_P name = NULL;
+    name = model_param_name(MD.kit.machines[track].model, param);
+    if (name != NULL) {
+      char myName[4];
+      m_strncpy_p(myName, name, 4);
+      setName(myName);
+      GUI.currentPage()->redisplay = true;
+    }
+  }
 }
 
 void MDEncoder::loadFromKit() {
@@ -97,7 +107,7 @@ void MDFXEncoder::loadFromKit() {
 #endif
 
 void MDClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
-  if ((channel >= global.baseChannel) && (channel < global.baseChannel + 4)) {
+  if ((channel >= global.baseChannel) && (channel < (global.baseChannel + 4))) {
     channel -= global.baseChannel;
     *track = channel * 4;
     if (cc >= 96) {
