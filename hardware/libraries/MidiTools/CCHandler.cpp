@@ -9,16 +9,21 @@ void CCHandlerOnCCCallback(uint8_t *msg) {
   }
 }
 
-void CCHandlerEncoderHandle(Encoder *enc) {
-  CCEncoder *ccEnc = (CCEncoder *)enc;
-  if (activeCCHandler != NULL)
-    activeCCHandler->onOutgoingCC(ccEnc);
-  MidiUart.sendCC(ccEnc->channel, ccEnc->cc, ccEnc->getValue());
+void onOutgoingCCCallback(uint8_t *msg) {
+  if (activeCCHandler != NULL) {
+    activeCCHandler->onOutgoingCC(MIDI_VOICE_CHANNEL(msg[0]), msg[1], msg[2]);
+  }
 }
 
 void CCHandler::setup() {
   activeCCHandler = this;
   Midi.addOnControlChangeCallback(CCHandlerOnCCCallback);
+  MidiUart.addOnControlChangeCallback(onOutgoingCCCallback);
+}
+
+void CCHandler::destroy() {
+  Midi.removeOnControlChangeCallback(CCHandlerOnCCCallback);
+  MidiUart.removeOnControlChangeCallback(onOutgoingCCCallback);
 }
 
 void CCHandler::onCCCallback(uint8_t *msg) {
@@ -27,8 +32,7 @@ void CCHandler::onCCCallback(uint8_t *msg) {
   uint8_t value = msg[2];
     
   if (midiLearnEnc != NULL) {
-    midiLearnEnc->channel = channel;
-    midiLearnEnc->cc = cc;
+    midiLearnEnc->initCCEncoder(cc, channel);
     midiLearnEnc->setValue(value);
     if (callback != NULL)
       callback(midiLearnEnc);
@@ -37,20 +41,20 @@ void CCHandler::onCCCallback(uint8_t *msg) {
 
   for (int i = 0; i < encoders.size; i++) {
     if (encoders.arr[i] != NULL) {
-      if (encoders.arr[i]->channel == channel &&
-	  encoders.arr[i]->cc == cc) {
+      if (encoders.arr[i]->getChannel() == channel &&
+	  encoders.arr[i]->getCC() == cc) {
 	encoders.arr[i]->setValue(value);
       }
     }
   }
 }
 
-void CCHandler::onOutgoingCC(CCEncoder *enc) {
+void CCHandler::onOutgoingCC(uint8_t channel, uint8_t cc, uint8_t value) {
   for (int i = 0; i < encoders.size; i++) {
     if (encoders.arr[i] != NULL) {
-      if (encoders.arr[i]->channel == enc->channel &&
-	  encoders.arr[i]->cc == enc->cc) {
-	encoders.arr[i]->setValue(enc->getValue());
+      if (encoders.arr[i]->getChannel() == channel &&
+	  encoders.arr[i]->getCC() == cc) {
+	encoders.arr[i]->setValue(value);
       }
     }
   }
