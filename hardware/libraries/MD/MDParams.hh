@@ -45,6 +45,11 @@
 #define MD_STATUS_REQUEST_ID                 0x70
 #define MD_STATUS_RESPONSE_ID                0x72
 
+#define MD_FX_ECHO 0x5d
+#define MD_FX_REV  0x5e
+#define MD_FX_EQ   0x5f
+#define MD_FX_DYN  0x60
+
 #define GND_MODEL    0
 #define GND_SN_MODEL 1
 #define GND_NS_MODEL 2
