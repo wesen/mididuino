@@ -5,11 +5,22 @@ void mdTaskOnStatusResponseCallback(uint8_t type, uint8_t value);
 void mdTaskOnKitCallback();
 void mdTaskOnGlobalCallback();
 
-void MDTaskClass::setup() {
+void MDTaskClass::setup(uint16_t _interval, bool _autoLoadKit, bool _autoLoadGlobal, bool _reloadGlobal) {
+  interval = _interval;
+  autoLoadKit = _autoLoadKit;
+  autoLoadGlobal = _autoLoadGlobal;
+  reloadGlobal = _reloadGlobal;
+  
   MDSysexListener.setup();
   MDSysexListener.addOnStatusResponseCallback(mdTaskOnStatusResponseCallback);
   MDSysexListener.setOnGlobalMessageCallback(mdTaskOnGlobalCallback);
   MDSysexListener.setOnKitMessageCallback(mdTaskOnKitCallback);
+}
+
+void MDTaskClass::destroy() {
+  MDSysexListener.removeOnStatusResponseCallback(mdTaskOnStatusResponseCallback);
+  MDSysexListener.setOnGlobalMessageCallback(NULL);
+  MDSysexListener.setOnKitMessageCallback(NULL);
 }
 
 void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
@@ -19,6 +30,8 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       MD.currentKit = value;
       if (autoLoadKit) {
 	MD.requestKit(MD.currentKit);
+      } else {
+	callKitCallbacks();
       }
     }
     if (reloadKit) {
@@ -32,6 +45,8 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       MD.currentGlobal = value;
       if (autoLoadGlobal) {
 	MD.requestGlobal(MD.currentGlobal);
+      } else {
+	callGlobalCallbacks();
       }
     }
     if (reloadGlobal) {
@@ -41,24 +56,31 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
     break;
 
   case MD_CURRENT_PATTERN_REQUEST:
-    MD.currentPattern = value;
+    if (MD.currentPattern != value) {
+      MD.currentPattern = value;
+      callPatternCallbacks();
+    }
     break;
   }
   redisplay = true;
 }
 
-MDTaskClass MDTask(1000);
+MDTaskClass MDTask(3000);
 
 void mdTaskOnGlobalCallback() {
   MD.loadedGlobal = false;
-  MD.global.fromSysex(MidiSysex.data, MidiSysex.recordLen);
-  MD.loadedGlobal = true;
+  if (MD.global.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+    MD.loadedGlobal = true;
+    MDTask.callGlobalCallbacks();
+  }
 }
 
 void mdTaskOnKitCallback() {
   MD.loadedKit = false;
-  MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen);
-  MD.loadedKit = true;
+  if (MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+    MD.loadedKit = true;
+    MDTask.callKitCallbacks();
+  }
 }
 
 void mdTaskOnStatusResponseCallback(uint8_t type, uint8_t value) {
