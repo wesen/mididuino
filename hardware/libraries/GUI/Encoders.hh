@@ -61,14 +61,23 @@ class RangeEncoder : public Encoder {
 
 class EnumEncoder : public RangeEncoder {
 public:
-  char **enumStrings;
+  const char **enumStrings;
   int cnt;
 
-  EnumEncoder(char *strings[], int _cnt, char *_name = NULL, int init = 0,
+  EnumEncoder(const char *strings[] = NULL, int _cnt = 0, char *_name = NULL, int init = 0,
 	      encoder_handle_t _handler = NULL) :
     RangeEncoder(_cnt - 1, 0, _name, init, _handler) {
     enumStrings = strings;
     cnt = _cnt;
+  }
+
+  void initEnumEncoder(const char *strings[], int _cnt, char *_name = NULL, int init = 0) {
+    enumStrings = strings;
+    cnt = _cnt;
+    min = 0;
+    max = _cnt - 1;
+    setValue(init);
+    setName(_name);
   }
 
   virtual void displayAt(int i);
@@ -76,7 +85,7 @@ public:
 
 class PEnumEncoder : public EnumEncoder {
 public:
-  PEnumEncoder(char *strings[], int _cnt, char *_name = NULL, int init = 0,
+  PEnumEncoder(const char *strings[], int _cnt, char *_name = NULL, int init = 0,
 	      encoder_handle_t _handler = NULL) :
     EnumEncoder(strings, _cnt, _name, init, _handler) {
   }
@@ -87,13 +96,23 @@ public:
 
 class CCEncoder : public RangeEncoder {
  public:
-  int cc;
-  int channel;
+  uint8_t cc;
+  uint8_t channel;
 
- CCEncoder(int _cc = 0, int _channel = 0, char *_name = NULL, int init = 0) :
-   RangeEncoder(127, 0, _name, init) {
+  virtual uint8_t getCC() {
+    return cc;
+  }
+  virtual uint8_t getChannel() {
+    return channel;
+  }
+  virtual void initCCEncoder(uint8_t _cc, uint8_t _channel) {
     cc = _cc;
     channel = _channel;
+  }
+  
+  CCEncoder(uint8_t _cc = 0, uint8_t _channel = 0, char *_name = NULL, int init = 0) :
+    RangeEncoder(127, 0, _name, init) {
+    initCCEncoder(_cc, _channel);
     handler = CCEncoderHandle;
   }
 };
