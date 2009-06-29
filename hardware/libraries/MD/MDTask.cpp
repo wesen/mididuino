@@ -80,6 +80,8 @@ void mdTaskOnKitCallback() {
   if (MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
     MD.loadedKit = true;
     MDTask.callKitCallbacks();
+  } else {
+    //    GUI.flash_strings_fill("FROM SYSEX", "ERROR");
   }
 }
 

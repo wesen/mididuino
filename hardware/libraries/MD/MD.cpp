@@ -38,7 +38,8 @@ void MDFXEncoderHandle(Encoder *enc) {
 MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
   CCEncoder(0, 0, _name, init) {
   initMDEncoder(_track, _param);
-  handler = MDEncoderHandle;
+  handler = CCEncoderHandle;
+  //  handler = MDEncoderHandle;
 }
 
 uint8_t MDEncoder::getCC() {

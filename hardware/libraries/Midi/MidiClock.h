@@ -11,22 +11,28 @@ class MidiClockClass {
   void (*on32Callback)();
   void (*on16Callback)();
 
-  uint32_t div96th_counter;
-  uint32_t div32th_counter;
-  uint32_t div16th_counter;
-  uint8_t mod6_counter;
-  uint8_t inmod6_counter;
-  uint16_t interval;
-  uint16_t counter;
-  uint16_t last_clock;
-  uint16_t last_interval;
-  uint32_t indiv96th_counter;
+  volatile uint32_t div96th_counter;
+  volatile uint32_t div32th_counter;
+  volatile uint32_t div16th_counter;
+  volatile uint8_t mod6_counter;
+  volatile uint8_t inmod6_counter;
+  volatile uint16_t interval;
+  volatile uint16_t counter;
+  volatile uint32_t indiv96th_counter;
+  volatile uint16_t update_clock;
+  volatile uint16_t update_last_clock;
+  volatile uint16_t last_clock;
+  volatile uint16_t rx_clock;
+  volatile bool doUpdateClock;
+
+  volatile bool updateSmaller;
   uint16_t pll_x;
   uint16_t tempo;
   bool transmit;
+  bool isInit;
 
 
-  enum {
+  volatile enum {
     PAUSED = 0,
     STARTING,
     STARTED
@@ -67,6 +73,8 @@ class MidiClockClass {
   }
   void init();
   void handleClock();
+  void updateClockDiff();
+  void updateClockDiffTimer();
   void handleMidiStart();
   void handleMidiStop();
   void handleTimerInt();
