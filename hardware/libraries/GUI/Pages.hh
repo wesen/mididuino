@@ -80,7 +80,7 @@ class SwitchPage : public Page {
 public:
   Page *pages[4];
 
-  SwitchPage(char *_name = "SELECT PAGE",
+  SwitchPage(char *_name = "SELECT PAGE:",
 	     Page *p1 = NULL, Page *p2 = NULL, Page *p3 = NULL, Page *p4 = NULL) :
     Page(_name) {
     initPages(p1, p2, p3, p4);

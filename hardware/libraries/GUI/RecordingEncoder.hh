@@ -11,7 +11,12 @@ public:
   bool playing;
   int currentPos;
 
-  RecordingEncoder(Encoder *_realEnc) {
+  RecordingEncoder(Encoder *_realEnc = NULL) {
+    initRecordingEncoder(_realEnc);
+  }
+
+
+  void initRecordingEncoder(Encoder *_realEnc) {
     realEnc = _realEnc;
     recording = false;
     playing = true;
@@ -44,10 +49,11 @@ public:
   virtual int getOldValue() {
     return realEnc->getOldValue();
   }
-  virtual void setValue(int value, bool handle = false) {
-    realEnc->setValue(value, handle);
+  virtual void setValue(int _value, bool handle = false) {
+    realEnc->setValue(_value, handle);
     redisplay = realEnc->redisplay;
   }
+
   virtual void displayAt(int i) {
     realEnc->displayAt(i);
   }
@@ -102,8 +108,11 @@ void RecordingEncoder<N>::playback(int pos) {
 
   currentPos = (pos % N);
   if (value[currentPos] != -1) {
-    if (!(recording && recordChanged))
-      setValue(value[currentPos], true);
+    if (!(recording && recordChanged)) {
+      realEnc->setValue(value[currentPos], true);
+      redisplay = realEnc->redisplay;
+    }
+    // check if real encoder has change value XXX
   }
 }
 

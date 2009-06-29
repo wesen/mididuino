@@ -7,7 +7,7 @@
 
 void CCEncoderHandle(Encoder *enc) {
   CCEncoder *ccEnc = (CCEncoder *)enc;
-  MidiUart.sendCC(ccEnc->channel, ccEnc->cc, ccEnc->getValue());
+  MidiUart.sendCC(ccEnc->getChannel(), ccEnc->getCC(), ccEnc->getValue());
 }
 
 void TempoEncoderHandle(Encoder *enc) {
