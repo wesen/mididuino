@@ -36,8 +36,21 @@ void CCHandler::onCCCallback(uint8_t *msg) {
   for (int i = 0; i < incomingCCs.size(); i++) {
     incoming_cc_t *cc2 = incomingCCs.getp(i);
     if (cc2->channel == cc.channel && cc2->cc == cc.cc) {
-      cc2->value = cc.value;
+      //      cc2->value = cc.value;
       found = true;
+
+      /* swap to top */
+      //      incoming_cc_t *topcc = incomingCCs.getp(incomingCCs.size() - 1);
+      for (int j = i; j < incomingCCs.size() - 1; j++) {
+	incoming_cc_t *botcc = incomingCCs.getp(j);
+	incoming_cc_t *topcc = incomingCCs.getp(j+1);
+	botcc->value = topcc->value;
+	botcc->channel = topcc->channel;
+	botcc->cc = topcc->cc;
+	topcc->value = cc.value;
+	topcc->cc = cc.cc;
+	topcc->channel = cc.channel;
+      }
       break;
     }
   }
