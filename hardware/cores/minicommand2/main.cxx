@@ -17,8 +17,9 @@ ISR(TIMER1_OVF_vect) {
 
   clock++;
 #ifdef MIDIDUINO_MIDI_CLOCK
-  if (MidiClock.state == MidiClock.STARTED)
+  if (MidiClock.state == MidiClock.STARTED) {
     MidiClock.handleTimerInt();
+  }
 #endif
 
   //  clearLed2();
@@ -27,20 +28,35 @@ ISR(TIMER1_OVF_vect) {
 // XXX CMP to have better time
 
 void gui_poll() {
+  static bool inGui = false;
+  if (inGui)
+    return;
+  else
+    inGui = true;
+  sei(); // reentrant interrupt
+  static uint16_t oldsr = 0;
   uint16_t sr = SR165.read16();
-  Buttons.clear();
-  Buttons.poll(sr >> 8);
-  Encoders.poll(sr);
+  if (sr != oldsr) {
+    Buttons.clear();
+    Buttons.poll(sr >> 8);
+    Encoders.poll(sr);
+    oldsr = sr;
+    pollEventGUI();
+  }
+  inGui = false;
 }
 
 uint16_t lastRunningStatusReset = 0;
 
+#define OUTPUTPORT PORTD
+#define OUTPUTDDR  DDRD
+#define OUTPUTPIN PD0
+
 ISR(TIMER2_OVF_vect) {
-  //  setLed2();
+  //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
 
 #ifdef MIDIDUINO_POLL_GUI_IRQ
   gui_poll();
-  handleGui();
 #endif
   slowclock++;
 
@@ -49,13 +65,22 @@ ISR(TIMER2_OVF_vect) {
     lastRunningStatusReset = slowclock;
   }
   
-  //  clearLed2();
+  //  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
 }
 
 MidiClass Midi;
 MidiClass Midi2;
 
 void __mainInnerLoop(bool callLoop) {
+  USE_LOCK();
+  
+  SET_BIT(OUTPUTPORT, OUTPUTPIN);
+  //  setLed2();
+
+  MidiClock.updateClockDiffTimer();
+  MidiClock.updateClockDiff();
+  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
+  
     if (MidiUart.avail()) {
       Midi.handleByte(MidiUart.getc());
     }
@@ -65,10 +90,9 @@ void __mainInnerLoop(bool callLoop) {
     }
     
 #if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
-    cli();
+    SET_LOCK();
     gui_poll();
-    handleGui();
-    sei();
+    CLEAR_LOCK();
 #endif
 
     if (callLoop) {
@@ -88,6 +112,7 @@ int main(void) {
 
   MidiSysex.addSysexListener(&MididuinoSysexListener);
 
+  OUTPUTDDR |= _BV(OUTPUTPIN);
   setup();
   sei();
 
