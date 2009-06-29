@@ -9,6 +9,7 @@
 class LCDClass : public LCDParentClass {
  public:
   LCDClass();
+  void initLCD();
  private:
   virtual void putnibble(uint8_t nibble);
   virtual void putbyte(uint8_t byte);

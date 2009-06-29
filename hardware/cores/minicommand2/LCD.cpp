@@ -71,6 +71,10 @@ LCDClass::LCDClass() {
   LCD_CTRL_DDR |= _BV(LCD_RS) | _BV(LCD_ENABLE);
 
   // wait for display
+  initLCD();
+}
+
+void LCDClass::initLCD() {
 
   putnibble(0x03);
   putnibble(0x02);
@@ -81,6 +85,6 @@ LCDClass::LCDClass() {
   putcommand(0x1);
   putcommand(0x2);
   delay(5);
-}
+}  
 
 LCDClass LCD;
