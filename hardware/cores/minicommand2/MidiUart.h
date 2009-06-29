@@ -8,6 +8,13 @@ class MidiUartClass;
 #include "RingBuffer.h"
 
 #define TX_IRQ 1
+#define RX_BUF_SIZE 2048
+#if (RX_BUF_SIZE >= 256)
+#define RX_BUF_TYPE uint16_t
+#else
+#define RX_BUF_TYPE uint8_t
+#endif
+#define TX_BUF_SIZE 128
 
 class MidiUartClass : public MidiUartParent {
   virtual void initSerial();
@@ -19,10 +26,10 @@ class MidiUartClass : public MidiUartParent {
   virtual bool avail();
   virtual uint8_t getc();
 
-  volatile RingBuffer<256> rxRb;
+  volatile RingBuffer<RX_BUF_SIZE, RX_BUF_TYPE> rxRb;
 
 #ifdef TX_IRQ
-  volatile RingBuffer<128> txRb;
+  volatile RingBuffer<TX_BUF_SIZE> txRb;
 #endif
 
 };
@@ -36,7 +43,7 @@ class MidiUartClass2 : MidiUartClass {
   MidiUartClass2();
   virtual bool avail();
   virtual uint8_t getc();
-  volatile RingBuffer<256> rxRb;
+  volatile RingBuffer<RX_BUF_SIZE, RX_BUF_TYPE> rxRb;
 };
 
 extern MidiUartClass2 MidiUart2;

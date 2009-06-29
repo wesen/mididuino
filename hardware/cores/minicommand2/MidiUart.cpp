@@ -90,11 +90,22 @@ uint8_t MidiUartClass::getc() {
 SIGNAL(USART0_RX_vect) {
   uint8_t c = UART_READ_CHAR();
 
+  setLed();
   if (c == 0xF8 && MidiClock.mode == MidiClock.EXTERNAL) {
     MidiClock.handleClock();
   } else {
+    sei();
     MidiUart.rxRb.put(c);
+
+#if 0
+    // show overflow debug
+    if (MidiUart.rxRb.overflow) {
+      setLed();
+    }
+#endif
+    
   }
+  clearLed();
 }
 
 #ifdef TX_IRQ
