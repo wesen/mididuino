@@ -48,6 +48,10 @@
 
 extern "C" {
 #endif
+
+#define USE_LOCK()   uint8_t _irqlock_tmp
+#define SET_LOCK()   _irqlock_tmp = SREG; cli()
+#define CLEAR_LOCK() SREG = _irqlock_tmp
   
 #include <inttypes.h>
 #include <avr/pgmspace.h>
