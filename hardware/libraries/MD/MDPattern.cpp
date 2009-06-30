@@ -4,23 +4,81 @@
 #include "helpers.h"
 #include "MDParams.hh"
 
+#ifdef AVR
 #include "GUI.h"
+#else
+#include <stdio.h>
+#endif
+
+// #include "GUI.h"
+
+void MDPattern::init() {
+  for (int i = 0; i < 16; i++) {
+    for (int j = 0; j < 24; j++) {
+      paramLocks[i][j] = -1;
+    }
+  }
+
+  numRows = 0;
+  for (int i = 0; i < 64; i++) {
+    lockTracks[i] = -1;
+    lockParams[i] = -1;
+    for (int j = 0; j < 32; j++) {
+      locks[i][j] = 255;
+    }
+  }
+
+  for (int i = 0; i < 16; i++) {
+    trigPatterns[i] = 0;
+    lockPatterns[i] = 0;
+    accentPatterns[i] = 0;
+    slidePatterns[i] = 0;
+    swingPatterns[i] = 0;
+  }
+
+  accentPattern = 0;
+  slidePattern = 0;
+  swingPattern = 0;
+  accentAmount = 0;
+  patternLength = 16;
+  swingAmount = 50 << 14;
+  accentEditAll = 1;
+  swingEditAll = 1;
+  slideEditAll = 1;
+  origPosition = 0;
+  kit = 0;
+  scale = 0;
+}
 
 bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
-  if (len != 0xACA - 6)  {
-    // wrong length 
+  init();
+  
+  if ((len != (0xACA - 6)) && (len != (0x1521 - 6)))  {
+#ifdef AVR
+    GUI.flash_string_fill("WRONG LENGTH");
+#else
+    printf("WRONG LENGTH: %x\n", len);
+#endif
     return false;
   }
 
+  if (len == (0x1521 - 6)) {
+    isExtraPattern = true;
+  } else {
+    isExtraPattern = false;
+  }
+  
+
   uint16_t cksum = 0;
-  for (int i = 9 - 6; i < 0xAC6 - 6; i++) {
+  for (int i = 9 - 6; i < (len - 4); i++) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-  if (cksum != to16Bit(data[0xAC6 - 6], data[0xAC7 - 6])) {
+  if (cksum != to16Bit(data[len - 4], data[len - 3])) {
     // wrong checksum
     return false;
   }
+    
 
   origPosition = data[9 - 6];
   uint8_t data2[204];
@@ -73,20 +131,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 24; j++) {
-      paramLocks[i][j] = -1;
-    }
-  }
-
-  numRows = 0;
-  for (int i = 0; i < 64; i++) {
-    lockTracks[i] = -1;
-    lockParams[i] = -1;
-  }
-  
-  for (int i = 0; i < 16; i++) {
-    for (int j = 0; j < 24; j++) {
-      paramLocks[i][j] = -1;
-      if (IS_BIT_SET(lockPatterns[i], j)) {
+      if (IS_BIT_SET32(lockPatterns[i], j)) {
 	paramLocks[i][j] = numRows;
 	lockTracks[numRows] = i;
 	lockParams[numRows] = j;
@@ -100,7 +145,10 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   
 }
 
+uint8_t lockData[64][32];
+
 uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
+  // XXX check extrapattern
   if (len < 0xacb)
     return 0;
 
@@ -146,8 +194,24 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
   uint16_t retlen = 0;
   uint16_t cnt = 0;
+
+  for (int track = 0; track < 16; track++) {
+    for (int param = 0; param < 24; param++) {
+      int8_t lock = paramLocks[track][param];
+      if (lock != -1) {
+	uint8_t *data3 = locks[lock];
+	m_memcpy(lockData[lock], locks[lock], 32);
+	cnt++;
+      }
+    }
+  }
+  for (int i = cnt; i < 64; i++) {
+    m_memclr(lockData[i], 32);
+  }
+  data_to_sysex_elektron((uint8_t*)lockData, data + 0xB7, 64 * 32);
   
   ptr = data + 0xB7;
+#if 0  
   {
     uint16_t cnt7 = 0;
       
@@ -155,8 +219,9 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
     for (int track = 0; track < 16; track++) {
       for (int param = 0; param < 24; param++) {
-	if (paramLocks[track][param] != -1) {
-	  uint8_t *data3 = locks[paramLocks[track][param]];
+	uint8_t lock = paramLocks[track][param];
+	if (lock != -1) {
+	  uint8_t *data3 = locks[lock];
 	    
 	  for (int i = 0; i < 32; i++) {
 	    uint8_t c = data3[i] & 0x7F;
@@ -195,6 +260,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
     retlen += cnt7 + (cnt7 != 0 ? 1 : 0);
   }
+#endif
 
   from32Bit(accentEditAll ? 1 : 0, data2);
   from32Bit(slideEditAll ? 1 : 0, data2 + 4);
@@ -239,7 +305,7 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx) {
 
 bool MDPattern::isLockPatternEmpty(uint8_t idx, uint32_t trigs) {
   for (int i = 0; i < 32; i++) {
-    if (locks[idx][i] != 255 || !IS_BIT_SET(trigs, i))
+    if (locks[idx][i] != 255 || !IS_BIT_SET32(trigs, i))
       return false;
   }
 
@@ -263,9 +329,7 @@ void MDPattern::cleanupLocks() {
 }
 
 void MDPattern::clearPattern() {
-  for (int i = 0; i < 16; i++) {
-    clearTrack(i);
-  }
+  init();
 }
 
 void MDPattern::clearTrack(uint8_t track) {
@@ -274,6 +338,7 @@ void MDPattern::clearTrack(uint8_t track) {
   for (int i = 0; i < 32; i++) {
     clearTrig(track, i);
   }
+  clearTrackLocks(track);
 }
 
 void MDPattern::clearLockPattern(uint8_t lock) {
@@ -290,10 +355,15 @@ void MDPattern::clearLockPattern(uint8_t lock) {
   }
 }
 
+bool MDPattern::isParamLocked(uint8_t track, uint8_t param) {
+  return paramLocks[track][param] != -1;
+}
+
 void MDPattern::clearParamLocks(uint8_t track, uint8_t param) {
   int8_t idx = paramLocks[track][param];
   if (idx != -1) {
     clearLockPattern(idx);
+    paramLocks[track][param] = -1;
   }
 }
 
@@ -304,14 +374,14 @@ void MDPattern::clearTrackLocks(uint8_t track) {
 }
 
 void MDPattern::clearTrig(uint8_t track, uint8_t trig) {
-  CLEAR_BIT(trigPatterns[track], trig);
+  CLEAR_BIT32(trigPatterns[track], trig);
   for (int i = 0; i < 24; i++) {
     clearLock(track, trig, i);
   }
 }
 
 void MDPattern::setTrig(uint8_t track, uint8_t trig) {
-  SET_BIT(trigPatterns[track], trig);
+  SET_BIT32(trigPatterns[track], trig);
 }
 
 int8_t MDPattern::getNextEmptyLock() {
@@ -358,7 +428,7 @@ void MDPattern::recalculateLockPatterns() {
     lockPatterns[track] = 0;
     for (int param = 0; param < 24; param++) {
       if (paramLocks[track][param] != -1) {
-	SET_BIT(lockPatterns[track], param);
+	SET_BIT32(lockPatterns[track], param);
       }
     }
   }

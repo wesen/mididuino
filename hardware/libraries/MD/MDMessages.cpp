@@ -2,7 +2,8 @@
 #include "MDMessages.hh"
 #include "helpers.h"
 #include "MDParams.hh"
-#include "GUI.h"
+
+// #include "GUI.h"
 
 uint16_t to16Bit(uint8_t b1, uint8_t b2) {
   return (b1 << 7) | b2; 
@@ -146,9 +147,9 @@ uint16_t MDGlobal::toSysex(uint8_t *data, uint16_t len) {
 
 bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
   if (len != (0x4d1 - 7)) {
-    GUI.flash_strings_fill("WRONG LEN", "");
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_put_value16(0, len);
+    //    GUI.flash_strings_fill("WRONG LEN", "");
+    //    GUI.setLine(GUI.LINE2);
+    //    GUI.flash_put_value16(0, len);
     return false;
   }
   
@@ -159,7 +160,7 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
 		
   cksum &= 0x3FFF;
   if (cksum != to16Bit(data[0x4CC - 6], data[0x4CD - 6])) {
-    GUI.flash_strings_fill("CKSUM", "");
+    //    GUI.flash_strings_fill("CKSUM", "");
     return false;
   }
 		

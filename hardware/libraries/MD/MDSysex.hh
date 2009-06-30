@@ -20,6 +20,7 @@ typedef enum {
     
     MD_DONE
 } getCurrentKitStatus_t;
+
 class MDSysexListenerClass : public MidiSysexListenerClass {
 public:
   md_callback_t onPatternMessageCallback;

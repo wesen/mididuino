@@ -35,13 +35,22 @@ public:
   int8_t lockTracks[64];
   int8_t lockParams[64];
 
+  bool isExtraPattern;
+
+  MDPattern() {
+    isExtraPattern = false;
+  }
+
   /* XXX TODO extra pattern 64 */
+
+  void init();
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
 
   bool isLockPatternEmpty(uint8_t idx);
   bool isLockPatternEmpty(uint8_t idx, uint32_t trigs);
+  bool isParamLocked(uint8_t track, uint8_t param);
   void clearLockPattern(uint8_t lock);
   void cleanupLocks();
 
