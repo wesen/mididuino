@@ -5,7 +5,7 @@
 
 bool DrumTrack::isHit(uint8_t pos) {
   uint8_t idx = (pos + offset) % len;
-  return IS_BIT_SET(pattern, idx);
+  return IS_BIT_SET32(pattern, idx);
 }
 
 EuclidDrumTrack::EuclidDrumTrack(uint8_t pulses, uint8_t _len, uint8_t _offset)
@@ -24,7 +24,7 @@ void EuclidDrumTrack::setEuclid(uint8_t pulses, uint8_t _len, uint8_t _offset) {
   for (uint8_t i = 0; i < len; i++) {
     pattern <<= 1;
     if (cnt >= len) {
-      SET_BIT(pattern, 0);
+      SET_BIT32(pattern, 0);
       cnt -= len;
     }
     cnt += pulses;
