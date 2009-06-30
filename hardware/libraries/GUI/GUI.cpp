@@ -3,6 +3,8 @@
 
 #ifdef MIDIDUINO_USE_GUI
 
+Sketch _defaultSketch((char *)"DFT");
+
 /************************************************/
 GuiClass::GuiClass() {
   curLine = LINE1;
@@ -12,38 +14,34 @@ GuiClass::GuiClass() {
   }
   lines[0].changed = false;
   lines[1].changed = false;
-  page = NULL;
-}
-
-Page *GuiClass::currentPage() {
-  if (sketch != NULL) {
-    return sketch->currentPage();
-  } else {
-    return page;
-  }
+  setSketch(&_defaultSketch);
 }
 
 void GuiClass::setSketch(Sketch *_sketch) {
   sketch = _sketch;
 }  
 
-void GuiClass::updatePage() {
-  Page *page = currentPage();
-  if (page != NULL) {
-    page->update();
+void GuiClass::setPage(Page *page) {
+  if (sketch != NULL)
+    sketch->setPage(page);
+}
+
+void GuiClass::redisplay() {
+  if (sketch != NULL) {
+    Page *page = sketch->currentPage();
+    if (page != NULL)
+      page->redisplay = true;
   }
 }
 
 void loop();
 
-void GuiClass::doLoop() {
+void GuiClass::loop() {
   for (int i = 0; i < tasks.size; i++) {
     if (tasks.arr[i] != NULL) {
       tasks.arr[i]->check();
     }
   }
-  
-  updatePage();
 
   while (!EventRB.isEmpty()) {
     gui_event_t event;
@@ -62,20 +60,37 @@ void GuiClass::doLoop() {
       }
     }
   }
+  
+  if (sketch != NULL) {
+    Page *page = sketch->currentPage();
+    if (page != NULL) {
+      page->update();
+      page->loop();
+    }
+  }
+
   if (sketch != NULL) {
     sketch->loop();
   }
-  
-  loop();
-  update();
+  ::loop();
+
+  display();
+
+  if (sketch != NULL) {
+    Page *page = sketch->currentPage();
+    if (page != NULL) {
+      page->finalize();
+    }
+  }
 }
 
-void GuiClass::update() {
-  Page *page = currentPage();
-  if (page != NULL) {
-    page->display();
-    page->redisplay = false;
-    page->handle();
+void GuiClass::display() {
+  if (sketch != NULL) {
+    Page *page = sketch->currentPage();
+    if (page != NULL) {
+      page->display();
+      page->redisplay = false;
+    }
   }
 
   for (uint8_t i = 0; i < 2; i++) {
@@ -218,23 +233,6 @@ void GuiClass::put_string(const char *str) {
 
 void GuiClass::put_p_string(PGM_P str) {
   put_p_string_at(0, str);
-}
-
-void GuiClass::setPage(Page *_page) {
-  setLine(GUI.LINE1);
-  clearLine();
-  setLine(GUI.LINE2 );
-  clearLine();
-  if (page != NULL && page != _page) {
-    page->hide();
-  }
-  if (page != _page) {
-    page = _page;
-    if (page != NULL) {
-      page->redisplayPage();
-      page->show();
-    }
-  }
 }
 
 void GuiClass::clearLine() {

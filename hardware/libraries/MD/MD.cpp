@@ -70,7 +70,7 @@ void MDEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
       char myName[4];
       m_strncpy_p(myName, name, 4);
       setName(myName);
-      GUI.currentPage()->redisplay = true;
+      GUI.redisplay();
     }
   }
 }

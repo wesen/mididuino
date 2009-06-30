@@ -5,15 +5,18 @@
 #include "Encoders.hh"
 #include "ModalGui.hh"
 
+class Sketch;
+class PageContainer;
+
 class Page {
  public:
   char name[17];
   char shortName[4];
   bool redisplay;
-  Sketch *sketch;
+  PageContainer *parent;
 
   Page(char *_name = NULL, char *_shortName = NULL) {
-    sketch = NULL;
+    parent = NULL;
     redisplay = false;
     setName(_name);
     setShortName(_shortName);
@@ -35,19 +38,15 @@ class Page {
     }
   }
   
-  virtual void handle() { }
   virtual void update();
-  virtual void clear()  { }
+  virtual void loop() { }
   virtual void display() { }
+  virtual void finalize() { }
+  
+  virtual void clear()  { }
   virtual void show() { }
   virtual void hide() { }
-  void redisplayPage() {
-    GUI.setLine(GUI.LINE1);
-    GUI.clearLine();
-    GUI.setLine(GUI.LINE2);
-    GUI.clearLine();
-    redisplay = true;
-  }
+  void redisplayPage();
   virtual bool handleEvent(gui_event_t *event) {
     return false;
   }
@@ -69,10 +68,11 @@ class EncoderPage : public Page {
     encoders[2] = e3;
     encoders[3] = e4;
   }
-  virtual void handle();
   virtual void update();
   virtual void clear();
   virtual void display();
+  virtual void finalize();
+  
   void displayNames();
 };
 
@@ -93,9 +93,57 @@ public:
     pages[3] = p4;
   }
 
+  virtual void loop() { };
   virtual void display();
   virtual bool handleEvent(gui_event_t *event);
 };
 
+class PageContainer {
+ public:
+  Stack<Page *, 8> pageStack;
+
+  virtual bool handleTopEvent(gui_event_t *event) {
+    return false;
+  }
+
+  void setPage(Page *page) {
+    pageStack.reset();
+    pushPage(page);
+  }
+  
+  void pushPage(Page *page) {
+    page->parent = this;
+    page->redisplayPage();
+    page->show();
+    pageStack.push(page);
+  }
+
+  void popPage(Page *page) {
+    if (currentPage() == page) {
+      popPage();
+    }
+  }
+  
+  void popPage() {
+    Page *page;
+    pageStack.pop(&page);
+    if (page != NULL) {
+      page->parent = NULL;
+      page->hide();
+    }
+
+    page = currentPage();
+    if (page != NULL) {
+      page->redisplayPage();
+    }
+  }
+
+  virtual Page *currentPage() {
+    Page *page = NULL;
+    pageStack.peek(&page);
+    return page;
+  }
+  
+};
 
 #endif /* PAGES_H__ */

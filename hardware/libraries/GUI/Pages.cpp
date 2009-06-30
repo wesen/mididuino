@@ -8,6 +8,14 @@ void Page::update() {
   Encoders.clearEncoders();
   SREG = tmp;
 }
+
+void Page::redisplayPage() {
+  GUI.setLine(GUI.LINE1);
+  GUI.clearLine();
+  GUI.setLine(GUI.LINE2);
+  GUI.clearLine();
+  redisplay = true;
+}
   
 
 void EncoderPage::update() {
@@ -19,13 +27,6 @@ void EncoderPage::update() {
   }
   Encoders.clearEncoders();
   SREG = tmp;
-}
-
-void EncoderPage::handle() {
-  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
-    if (encoders[i] != NULL) 
-      encoders[i]->checkHandle();
-  }
 }
 
 void EncoderPage::clear() {
@@ -45,6 +46,13 @@ void EncoderPage::display() {
       if (encoders[i]->hasChanged() || redisplay || encoders[i]->redisplay) {
 	encoders[i]->displayAt(i);
       }
+  }
+}
+
+void EncoderPage::finalize() {
+  for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
+    if (encoders[i] != NULL) 
+      encoders[i]->checkHandle();
   }
 }
 
@@ -75,11 +83,8 @@ void SwitchPage::display() {
 bool SwitchPage::handleEvent(gui_event_t *event) {
   for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
     if (pages[i] != NULL && EVENT_PRESSED(event, i)) {
-      if (sketch != NULL) {
-	sketch->setPage(pages[i]);
-	sketch->clearModalPage(this);
-      } else {
-	GUI.setPage(pages[i]);
+      if (parent != NULL) {
+	parent->setPage(pages[i]);
       }
       return true;
     }

@@ -10,35 +10,33 @@ public:
   char line2[16];
   bool hasPressedKey;
   int pressedKey;
-  int numButtons;
+  uint16_t buttonMask;
   
   ModalGuiPage() {
     hasPressedKey = false;
     pressedKey = 0;
-    numButtons = 2;
     line1[0] = '\0';
     line2[0] = '\0';
   }
 
-  int getModalKey(int _numButtons) {
+  int getModalKey(uint16_t _buttonMask) {
+    buttonMask = _buttonMask;
     hasPressedKey = false;
-    numButtons = _numButtons;
 
-    Page *previousPage = GUI.page;
-    
-    GUI.setPage(this);
-    
-    while (! hasPressedKey) {
-      __mainInnerLoop(false);
-      GUI.updatePage();
-      GUI.update();
+    if (GUI.sketch != NULL) {
+      GUI.sketch->pushPage(this);
+      while (!hasPressedKey) {
+	__mainInnerLoop(true);
+      }
+      GUI.sketch->popPage(this);
+
+      return pressedKey;
+    } else {
+      return 0;
     }
-    GUI.setPage(previousPage);
-
-    return pressedKey;
   }
   
-  virtual void display(bool redisplay = true) {
+  virtual void display() {
     if (redisplay) {
       GUI.setLine(GUI.LINE1);
       GUI.put_string_fill(line1);
@@ -47,14 +45,13 @@ public:
     }
   }
 
-  virtual bool handleGui() {
-    if (BUTTON_PRESSED(Buttons.BUTTON2)) {
-      hasPressedKey = true;
-      pressedKey = 0;
-    }
-    if (BUTTON_PRESSED(Buttons.BUTTON3)) {
-      hasPressedKey = true;
-      pressedKey = 1;
+  virtual bool handleEvent(gui_event_t *event) {
+    // check buttons and encoders, small hack really, because all in one byte
+    for (int i = 0; i < 8; i++) {
+      if (EVENT_PRESSED(event, i) && buttonMask & _BV(i)) {
+	pressedKey = i;
+	hasPressedKey = true;
+      }
     }
     return true;
   }
@@ -95,6 +92,55 @@ public:
     }
   }
 
+  bool handleEvent(gui_event_t *event) {
+    if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+      moveCursor(cursorPos - 4);
+    }
+    if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+      moveCursor(cursorPos + 4);
+    }
+    if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+      hasPressedKey = true;
+      pressedKey = 0;
+    }
+    if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
+      hasPressedKey = true;
+      pressedKey = 1;
+    }
+    return true;
+  }
+
+  void show() {
+    moveCursor(0);
+    LCD.blinkCursor(true);
+    LCD.moveCursor(1, cursorPos);
+  }
+
+  void hide() {
+    LCD.moveCursor(1, cursorPos);
+    LCD.blinkCursor(false);
+    delay(10);
+  }
+
+  virtual void loop() {
+    for (int i = 0; i < 4; i++) {
+      if (charEncoders[i].hasChanged()) {
+	MidiUart.sendCC(2, i);
+	name[cursorPos + i] = charEncoders[i].getChar();
+	lineChanged = true;
+      }
+    }
+  }
+
+  virtual void finalize() {
+    EncoderPage::finalize();
+    if (lineChanged) {
+      LCD.blinkCursor(true);
+      LCD.moveCursor(1, cursorPos);
+      lineChanged = false;
+    }
+  }
+
   char *getName(char *initName) {
     if (initName != NULL) {
       m_strncpy_fill(name, initName, 16);
@@ -105,57 +151,23 @@ public:
     cursorPos = 0;
     hasPressedKey = false;
     pressedKey = 0;
-    lineChanged = false;
+    lineChanged = true;
 
-    Page *previousPage = GUI.page;
-    
-    GUI.setPage(this);
-    moveCursor(0);
-    LCD.blinkCursor(true);
-    LCD.moveCursor(1, cursorPos);
-    while (hasPressedKey == false) {
-      __mainInnerLoop(false);
-      GUI.updatePage();
+    if (GUI.sketch != NULL) {
+      GUI.sketch->pushPage(this);
 
-      while (!EventRB.isEmpty()) {
-	gui_event_t event_s;
-	gui_event_t *event = &event_s;
-	EventRB.getp(event);
-	
-	if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
-	  moveCursor(cursorPos - 4);
-	}
-	if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
-	  moveCursor(cursorPos + 4);
-	}
-	if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
-	  hasPressedKey = true;
-	  pressedKey = 0;
-	}
-	if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
-	  hasPressedKey = true;
-	  pressedKey = 1;
-	}
+      while (hasPressedKey == false) {
+	__mainInnerLoop(true);
       }
+      GUI.sketch->popPage(this);
 
-      for (int i = 0; i < 4; i++) {
-	if (charEncoders[i].hasChanged()) {
-	  name[cursorPos + i] = charEncoders[i].getChar();
-	  lineChanged = true;
-	}
+      if (pressedKey == 1) {
+	return NULL;
+      } else {
+	return name;
       }
-      GUI.update();
-      LCD.moveCursor(1, cursorPos);
-    }
-
-    LCD.blinkCursor(false);
-    delay(10);
-    GUI.setPage(previousPage);
-
-    if (pressedKey == 1) {
-      return NULL;
     } else {
-      return name;
+      return NULL;
     }
   }
 
@@ -171,20 +183,15 @@ public:
     LCD.moveCursor(1, cursorPos);
   }
   
-  virtual void display(bool redisplay = true) {
+  virtual void display() {
     if (redisplay || lineChanged) {
+      MidiUart.sendCC(0, redisplay ? 1 : 0);
+      MidiUart.sendCC(1, lineChanged ? 1 : 0);
       GUI.setLine(GUI.LINE1);
       GUI.put_string_fill(line1);
       GUI.setLine(GUI.LINE2);
       GUI.put_string_fill(name);
-      LCD.blinkCursor(true);
-      LCD.moveCursor(1, cursorPos);
-      lineChanged = false;
     }
-  }
-
-  virtual bool handleGui() {
-    return true;
   }
 };
 

@@ -177,7 +177,7 @@ void MidiClockClass::updateClockDiffTimer() {
 void MidiClockClass::handleTimerInt()  {
   //  sei();
   if (counter == 0) {
-    uint16_t bla_clock = update_clock;
+    //    uint16_t bla_clock = update_clock;
     update_clock = clock;
     update_last_clock = rx_clock;
     counter = interval;

@@ -11,6 +11,7 @@
 #ifdef MIDIDUINO_USE_GUI
 
 #include "Events.hh"
+#include "Pages.hh"
 
 typedef struct line_s {
   char data[16];
@@ -27,6 +28,8 @@ typedef struct line_s {
 class Page;
 class Sketch;
 
+extern Sketch _defaultSketch;
+
 typedef bool (*event_handler_t)(gui_event_t *event);
 
 class GuiClass {
@@ -37,14 +40,15 @@ class GuiClass {
   Vector<event_handler_t, 4> eventHandlers;
   Vector<Task *, 8> tasks;
   
-  Page *page;
-  Page *modalPage;
   Sketch *sketch;
 
   GuiClass();
 
-  void setSketch(Sketch *_sketch);
+  virtual void loop();
 
+  void setSketch(Sketch *_sketch);
+  void setPage(Page *page);
+  
   void addEventHandler(event_handler_t handler) {
     eventHandlers.add(handler);
   }
@@ -58,12 +62,12 @@ class GuiClass {
   void removeTask(Task *task) {
     tasks.remove(task);
   }
-  
-  Page *currentPage();
-  void update();
-  void updatePage();
-  void doLoop();
 
+  void update();
+  void display();
+
+  void redisplay();
+  
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
   
@@ -131,7 +135,7 @@ class GuiClass {
   void clearLine();
   void clearFlashLine();
   void clearFlash(uint16_t duration = DEFAULT_FLASH_DURATION);
-  void setPage(Page *_page);
+
   static const uint8_t LINE1 = 0;
   static const uint8_t LINE2 = 1;
   
