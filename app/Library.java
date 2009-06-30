@@ -93,11 +93,40 @@ public class Library implements MessageConsumer{
    */
   public boolean isBuilt()
   {
+	  File cFiles[] = getCSourceFiles();
+	  File cppFiles[] = getCPPSourceFiles();
+	  for (int i = 0; i < cFiles.length; i++) {
+		  if (!isFresh(cFiles[i], ".c")) {
+			  return false;
+		  }
+	  }
+	  for (int i = 0; i < cppFiles.length; i++) {
+		  if (!isFresh(cppFiles[i], ".cpp")) {
+			  return false;
+		  }
+	  }
+	  
+	  return true;
+	  /*
     if(getObjectFiles().length >= (getCSourceFiles().length + getCPPSourceFiles().length)){
       return true;
     }
-    return false;
+	   return false;
+	   */
   }
+	
+	public boolean isFresh(File sourceFile, String ending) {
+		String name = sourceFile.getPath();
+		String objName = name.replace(ending, ".o");
+		File objFile = new File(objName);
+		if (objFile.exists() && objFile.lastModified() < sourceFile.lastModified()) {
+			return false;
+		}
+		if (!objFile.exists()) {
+			return false;
+		}
+		return true;
+	}
 
   /*
    * Tests if library is buildable
@@ -395,6 +424,8 @@ public class Library implements MessageConsumer{
     
       // compile c sources
       for(int i = 0; i < sourcesC.length; ++i) {
+		  if (isFresh(sourcesC[i], ".c"))
+			  continue;
         pathSansExtension = sourcesC[i].getPath();
         pathSansExtension = pathSansExtension.substring(0, pathSansExtension.length() - 2); // -2 because ".c"
         
@@ -427,6 +458,9 @@ public class Library implements MessageConsumer{
       
       // compile c++ sources
       for(int i = 0; i < sourcesCPP.length; ++i) {
+		  if (isFresh(sourcesCPP[i], ".cpp"))
+			  continue;
+		  
         pathSansExtension = sourcesCPP[i].getPath();
         pathSansExtension = pathSansExtension.substring(0, pathSansExtension.length() - 4); // -4 because ".cpp"
         
