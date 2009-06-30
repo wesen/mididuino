@@ -13,12 +13,27 @@
 #define IS_BIT_SET8(port, bit) (((port) & (uint8_t)(1 << (bit))) ? 1 : 0)
 #define IS_BIT_CLEAR8(port, bit) (((port) & (uint8_t)(1 << (bit))) == 0 ? 1 : 0)
 
+#define SET_BIT32(port, bit)   ((port) |= (uint32_t)(1UL << (bit)))
+#define CLEAR_BIT32(port, bit) ((port) &= (uint32_t)~(1UL << (bit)))
+#define TOGGLE_BIT32(port, bit) ((port) ^= (uint32_t)(1UL << (bit)))
+#define IS_BIT_SET32(port, bit) (((port) & (uint32_t)(1UL << (bit))) ? 1 : 0)
+#define IS_BIT_CLEAR32(port, bit) (((port) & (uint32_t)(1UL << (bit))) == 0 ? 1 : 0)
+
+
+#ifdef AVR
 #define GET_FLASH(a)        (pgm_read_byte((uint16_t)(a)))
 #define GET_FLASH_U16(a)    (256u*(pgm_read_byte((uint16_t)(a)))+(pgm_read_byte(((uint16_t)(a))+1)))
 #define GET_FLASH_U16_LE(a) (pgm_read_byte((uint16_t)(a))+256u*(pgm_read_byte(((uint16_t)(a))+1)))
 #define GET_FLASH_IDX(a,b)  (pgm_read_byte((uint16_t)(a)+(uint16_t)(b)))
 
 #define GET_FLASH_PTR(a)    (void*)(pgm_read_byte((uint16_t)(a))+256u*(pgm_read_byte(((uint16_t)(a))+1)))
+#else
+#define GET_FLASH(a) *((uint8_t *)(a))
+#define GET_FLASH_U16(a) (256u * GET_FLASH(a) + GET_FLASH((a)+1))
+#define GET_FLASH_U16_LE(a) (GET_FLASH(a) + 256 * GET_FLASH((a) + 1))
+#define GET_FLASH_IDX(a,b) (GET_FLASH((a) + (b)))
+#define GET_FLASH_PTR(a) (void*)(GET_FLASH_U16(a))A
+#endif
 
 /** Define commonly used C symbols. **/
 #ifndef NULL
@@ -49,12 +64,23 @@
 extern "C" {
 #endif
 
+#ifdef AVR
 #define USE_LOCK()   uint8_t _irqlock_tmp
 #define SET_LOCK()   _irqlock_tmp = SREG; cli()
 #define CLEAR_LOCK() SREG = _irqlock_tmp
+#else
+#define USE_LOCK()   
+#define SET_LOCK()   
+#define CLEAR_LOCK() 
+#endif
   
 #include <inttypes.h>
+#ifdef AVR
 #include <avr/pgmspace.h>
+#else
+#define PGM_P const char *
+#define pgm_read_byte(a) (uint8_t)((uint8_t *)(*a))
+#endif
 
 #ifdef MIDIDUINO
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))

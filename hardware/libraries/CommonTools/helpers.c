@@ -1,10 +1,11 @@
+#ifdef AVR
 #include "WProgram.h"
-
-#include "helpers.h"
-
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#endif
+
+#include "helpers.h"
 
 void m_memcpy(void *dst, void *src, uint16_t cnt) {
   while (cnt--) {
@@ -92,18 +93,18 @@ volatile uint16_t slowclock = 0;
 volatile uint16_t clock = 0;
 
 uint16_t read_clock(void) {
-  uint8_t tmp = SREG;
-  cli();
+  USE_LOCK();
+  SET_LOCK();
   uint16_t ret = clock;
-  SREG = tmp;
+  CLEAR_LOCK();
   return ret;
 }
 
 uint16_t read_slowclock(void) {
-  uint8_t tmp = SREG;
-  cli();
+  USE_LOCK();
+  SET_LOCK();
   uint16_t ret = slowclock;
-  SREG = tmp;
+  CLEAR_LOCK();
   return ret;
 }
 
