@@ -47,6 +47,12 @@ class RangeEncoder : public Encoder {
 
   RangeEncoder(int _max = 127, int _min = 0, char *_name = NULL, int init = 0,
 	       encoder_handle_t _handler = NULL) : Encoder(_name, _handler) {
+    initRangeEncoder(_max, _min, _name, init, _handler);
+  }
+  void initRangeEncoder(int _max = 128, int _min = 0, char *_name = NULL, int init = 0,
+			encoder_handle_t _handler = NULL) {
+    setName(_name);
+    handler = _handler;
     if (_min > _max) {
       min = _max;
       max = _min;
