@@ -8,22 +8,28 @@
 #include "helpers.h"
 
 void m_memcpy(void *dst, void *src, uint16_t cnt) {
-  while (cnt--) {
+  while (cnt) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
+    cnt--;
   }
 }
 
 void m_memcpy_p(void *dst, PGM_P src, uint16_t cnt) {
-  while (cnt--) {
+  while (cnt) {
     *((uint8_t *)dst++) = pgm_read_byte(src);
     src++;
+    cnt--;
   }
 }
 
 
 void m_strncpy(void *dst, const char *src, uint16_t cnt) {
-  while (cnt-- && *src) {
+  while (cnt && *src) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
+    cnt--;
+  }
+  if (cnt > 0) {
+    *((uint8_t *)dst++) = 0;
   }
 }
 
@@ -32,18 +38,25 @@ void m_strncpy_fill(void *dst, const char *src, uint16_t cnt) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
     cnt--;
   }
-  while (cnt--) {
+  while (cnt > 1) {
+    cnt--;
     *((uint8_t *)dst++) = ' ';
   }
+  if (cnt > 0)
+    *((uint8_t *)dst++) = 0;
 }
 
 void m_strncpy_p(void *dst, PGM_P src, uint16_t cnt) {
-  while (cnt--) {
+  while (cnt) {
     char byte = pgm_read_byte(src);
     if (byte == 0)
       break;
     *((uint8_t *)dst++) = byte;
     src++;
+    cnt--;
+  }
+  if (cnt > 0) {
+    *((uint8_t *)dst++) = 0;
   }
 }
 
@@ -56,14 +69,19 @@ void m_strncpy_p_fill(void *dst, PGM_P src, uint16_t cnt) {
     src++;
     cnt--;
   }
-  while (cnt--) {
+  while (cnt > 1) {
     *((uint8_t *)dst++) = ' ';
+    cnt--;
   }
+  if (cnt > 0)
+    *((uint8_t *)dst++) = 0;
 }
 
 void m_memclr(void *dst, uint16_t cnt) {
-  while (cnt--)
+  while (cnt) {
     *((uint8_t *)dst++) = 0;
+    cnt--;
+  }
 }
 
 void m_str16cpy_fill(void *dst, const char *src) {
