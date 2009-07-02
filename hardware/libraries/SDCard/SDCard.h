@@ -19,6 +19,7 @@ class SDCardClass {
  public:
   struct partition_struct *partition;
   struct fat_fs_struct    *fs;
+  bool isInit;
 
   SDCardClass();
   uint8_t init();
@@ -50,10 +51,10 @@ class SDCardEntry {
   SDCardEntry(const char *path);
 
   bool setPath(const char *path);
-
   void setFromParentEntry(SDCardEntry *parent);
 
   bool deleteEntry(bool recursive = false);
+  bool deleteFirstEntry();
 
   /* directory functions */
   bool isDirectory();
@@ -63,6 +64,7 @@ class SDCardEntry {
   }
   int listDirectory(SDCardEntry entries[], int maxCount);
 
+  bool isEmpty();
   bool createSubDirectory(const char *path, struct fat_dir_entry_struct *new_entry);
   bool createSubDirectory(const char *path, SDCardEntry *entry) {
     return createSubDirectory(path, &entry->dir_entry);

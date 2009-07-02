@@ -20,10 +20,14 @@
 SDCardClass::SDCardClass() {
   partition = NULL;
   fs = NULL;
+  isInit = false;
 }
 
 
 uint8_t SDCardClass::init() {
+  if (isInit)
+    return 0;
+  
   if (fs != NULL) {
     fat_close(fs);
     fs = NULL;
@@ -50,6 +54,8 @@ uint8_t SDCardClass::init() {
   if (!fs) {
     return 3;
   }
+
+  isInit = true;
 
   return 0;
 }
@@ -185,6 +191,8 @@ int SDCardEntry::listDirectory(SDCardEntry entries[], int maxCount) {
     return -1;
   
   while (fat_read_dir(dd, &entries[entryCount].dir_entry) && (entryCount < maxCount)) {
+    if (!strcmp(entries[entryCount].dir_entry.long_name, "."))
+      continue;
     entries[entryCount].setFromParentEntry(this);
     entryCount++;
   }
@@ -246,15 +254,80 @@ bool SDCardEntry::createSubDirectory(const char *path, struct fat_dir_entry_stru
   }
 }
 
+/* recursively delete entries */
+bool SDCardEntry::deleteFirstEntry() {
+  if (!isDirectory())
+    return false;
+
+
+  fat_dir_struct *dd = fat_open_dir(SDCard.fs, &dir_entry);
+  if (dd == NULL)
+    return false;
+  
+  SDCardEntry entry;
+  uint8_t ret;
+ again:
+  ret = fat_read_dir(dd, &entry.dir_entry);
+  if (!strcmp(entry.dir_entry.long_name, ".") ||
+      !strcmp(entry.dir_entry.long_name, "..")) {
+    goto again;
+  }
+  fat_close_dir(dd);
+
+  if (!ret) {
+    return false;
+  }
+  entry.setFromParentEntry(this);
+  return entry.deleteEntry(true);
+}
+
 bool SDCardEntry::deleteEntry(bool recursive) {
   if (!exists)
     return true;
   
   if (!isDirectory()) {
-    return fat_delete_file(SDCard.fs, &dir_entry);
+    uint8_t ret = fat_delete_file(SDCard.fs, &dir_entry);
+    if (ret) {
+      exists = false;
+    }
+    return ret;
   } else {
+    while (!isEmpty()) {
+      if (!deleteFirstEntry()) {
+	return false;
+      }
+    }
+    uint8_t ret = fat_delete_file(SDCard.fs, &dir_entry);
+    if (ret) {
+      exists = false;
+    }
+    return ret;
+  }
+}
+
+bool SDCardEntry::isEmpty() {
+  if (!isDirectory()) {
     return false;
   }
+
+  fat_dir_struct *dd = fat_open_dir(SDCard.fs, &dir_entry);
+  if (dd == NULL)
+    return -1;
+
+  uint8_t cnt = 0;
+  struct fat_dir_entry_struct entry;
+  uint8_t ret;
+  while ((ret = fat_read_dir(dd, &entry))) {
+    if (!strcmp(entry.long_name, ".") ||
+	!strcmp(entry.long_name, "..")) {
+      continue;
+    } else {
+      cnt++;
+      break;
+    }
+  }
+  fat_close_dir(dd);
+  return (cnt == 0);
 }
 
 /******************* SD CARD *****************************/
