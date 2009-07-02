@@ -22,11 +22,11 @@ class Encoder {
  public:
   encoder_handle_t handler;
   
-  Encoder(char *_name = NULL, encoder_handle_t _handler = NULL);
+  Encoder(const char *_name = NULL, encoder_handle_t _handler = NULL);
   void clear();
 
   virtual char *getName() { return name; }
-  virtual void setName(char *_name);
+  virtual void setName(const char *_name);
   
   bool redisplay;
   virtual int update(encoder_t *enc);
@@ -45,11 +45,11 @@ class RangeEncoder : public Encoder {
   int min;
   int max;
 
-  RangeEncoder(int _max = 127, int _min = 0, char *_name = NULL, int init = 0,
+  RangeEncoder(int _max = 127, int _min = 0, const char *_name = NULL, int init = 0,
 	       encoder_handle_t _handler = NULL) : Encoder(_name, _handler) {
     initRangeEncoder(_max, _min, _name, init, _handler);
   }
-  void initRangeEncoder(int _max = 128, int _min = 0, char *_name = NULL, int init = 0,
+  void initRangeEncoder(int _max = 128, int _min = 0, const char *_name = NULL, int init = 0,
 			encoder_handle_t _handler = NULL) {
     setName(_name);
     handler = _handler;
@@ -70,14 +70,14 @@ public:
   const char **enumStrings;
   int cnt;
 
-  EnumEncoder(const char *strings[] = NULL, int _cnt = 0, char *_name = NULL, int init = 0,
+  EnumEncoder(const char *strings[] = NULL, int _cnt = 0, const char *_name = NULL, int init = 0,
 	      encoder_handle_t _handler = NULL) :
     RangeEncoder(_cnt - 1, 0, _name, init, _handler) {
     enumStrings = strings;
     cnt = _cnt;
   }
 
-  void initEnumEncoder(const char *strings[], int _cnt, char *_name = NULL, int init = 0) {
+  void initEnumEncoder(const char *strings[], int _cnt, const char *_name = NULL, int init = 0) {
     enumStrings = strings;
     cnt = _cnt;
     min = 0;
@@ -91,7 +91,7 @@ public:
 
 class PEnumEncoder : public EnumEncoder {
 public:
-  PEnumEncoder(const char *strings[], int _cnt, char *_name = NULL, int init = 0,
+  PEnumEncoder(const char *strings[], int _cnt, const char *_name = NULL, int init = 0,
 	      encoder_handle_t _handler = NULL) :
     EnumEncoder(strings, _cnt, _name, init, _handler) {
   }
@@ -116,7 +116,7 @@ class CCEncoder : public RangeEncoder {
     channel = _channel;
   }
   
-  CCEncoder(uint8_t _cc = 0, uint8_t _channel = 0, char *_name = NULL, int init = 0) :
+  CCEncoder(uint8_t _cc = 0, uint8_t _channel = 0, const char *_name = NULL, int init = 0) :
     RangeEncoder(127, 0, _name, init) {
     initCCEncoder(_channel, _cc);
     handler = CCEncoderHandle;
@@ -125,7 +125,7 @@ class CCEncoder : public RangeEncoder {
 
 class TempoEncoder : public RangeEncoder {
   public:
-  TempoEncoder(char *_name = NULL) : RangeEncoder(255, 20, _name) {
+  TempoEncoder(const char *_name = NULL) : RangeEncoder(255, 20, _name) {
     handler = TempoEncoderHandle;
   }
 };

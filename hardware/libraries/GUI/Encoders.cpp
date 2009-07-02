@@ -15,7 +15,7 @@ void TempoEncoderHandle(Encoder *enc) {
 }
 
 /* Encoder */
-Encoder::Encoder(char *_name, encoder_handle_t _handler) {
+Encoder::Encoder(const char *_name, encoder_handle_t _handler) {
   old = 0;
   cur = 0;
   redisplay = false;
@@ -32,7 +32,7 @@ void Encoder::checkHandle() {
   old = cur;
 }
 
-void Encoder::setName(char *_name) {
+void Encoder::setName(const char *_name) {
   if (_name != NULL)
     m_strncpy_fill(name, _name, 4);
   name[3] = '\0';
