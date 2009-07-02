@@ -81,23 +81,23 @@ void __mainInnerLoop(bool callLoop) {
   MidiClock.updateClockDiff();
   CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
   
-    if (MidiUart.avail()) {
-      Midi.handleByte(MidiUart.getc());
-    }
-
-    if (MidiUart2.avail()) {
-      Midi2.handleByte(MidiUart2.getc());
-    }
-    
+  if (MidiUart.avail()) {
+    Midi.handleByte(MidiUart.getc());
+  }
+  
+  if (MidiUart2.avail()) {
+    Midi2.handleByte(MidiUart2.getc());
+  }
+  
 #if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
-    SET_LOCK();
-    gui_poll();
-    CLEAR_LOCK();
+  SET_LOCK();
+  gui_poll();
+  CLEAR_LOCK();
 #endif
-
-    if (callLoop) {
-      GUI.doLoop();
-    }
+  
+  if (callLoop) {
+    GUI.loop();
+  }
 }
 
 int main(void) {

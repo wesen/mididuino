@@ -114,14 +114,23 @@ class ButtonsClass {
  public:
   button_t buttons[GUI_NUM_BUTTONS];
 
-  static const int BUTTON1 = 4;
-  static const int BUTTON2 = 5;
-  static const int BUTTON3 = 6;
-  static const int BUTTON4 = 7;
-  static const int ENCODER1 = 0;
-  static const int ENCODER2 = 1;
-  static const int ENCODER3 = 2;
-  static const int ENCODER4 = 3;
+  static const uint8_t BUTTON1 = 4;
+  static const uint8_t BUTTON2 = 5;
+  static const uint8_t BUTTON3 = 6;
+  static const uint8_t BUTTON4 = 7;
+  static const uint8_t ENCODER1 = 0;
+  static const uint8_t ENCODER2 = 1;
+  static const uint8_t ENCODER3 = 2;
+  static const uint8_t ENCODER4 = 3;
+
+  static const uint16_t ENCODER1_MASK = _BV(ENCODER1);
+  static const uint16_t ENCODER2_MASK = _BV(ENCODER2);
+  static const uint16_t ENCODER3_MASK = _BV(ENCODER3);
+  static const uint16_t ENCODER4_MASK = _BV(ENCODER4);
+  static const uint16_t BUTTON1_MASK = _BV(BUTTON1);
+  static const uint16_t BUTTON2_MASK = _BV(BUTTON2);
+  static const uint16_t BUTTON3_MASK = _BV(BUTTON3);
+  static const uint16_t BUTTON4_MASK = _BV(BUTTON4);
   
   ButtonsClass();
   void clear();
