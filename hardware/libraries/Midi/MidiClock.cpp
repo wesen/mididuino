@@ -177,17 +177,20 @@ void MidiClockClass::updateClockDiffTimer() {
 void MidiClockClass::handleTimerInt()  {
   //  sei();
   if (counter == 0) {
+    if (transmit) {
+      setLed2();
+      delayMicroseconds(3);
+
+      MidiUart.putc_immediate(MIDI_CLOCK);
+
+      clearLed2();
+    }
+
     //    uint16_t bla_clock = update_clock;
     update_clock = clock;
     update_last_clock = rx_clock;
     counter = interval;
 
-    if (transmit) {
-    setLed2();
-      delayMicroseconds(3);
-      MidiUart.putc_immediate(MIDI_CLOCK);
-    clearLed2();
-    }
 
     uint8_t _mod6_counter = mod6_counter;
     
@@ -241,6 +244,7 @@ void MidiClockClass::handleTimerInt()  {
 	on32Callback();
       div32th_counter++;
     }
+    
   } else {
     counter--;
   }
