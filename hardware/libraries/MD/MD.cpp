@@ -107,6 +107,21 @@ void MDFXEncoder::loadFromKit() {
 
 #endif
 
+uint8_t standardDrumMapping[16] = {
+  36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62
+};
+
+MDClass::MDClass()  {
+  currentGlobal = -1;
+  currentKit = -1;
+  currentPattern = -1;
+  global.baseChannel = 0;
+  for (int i = 0; i < 16; i++) {
+    global.drumMapping[i] = standardDrumMapping[i];
+  }
+  loadedKit = loadedGlobal = false;
+}
+
 void MDClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
   if ((channel >= global.baseChannel) && (channel < (global.baseChannel + 4))) {
     channel -= global.baseChannel;

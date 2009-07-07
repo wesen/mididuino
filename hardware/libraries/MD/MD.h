@@ -65,16 +65,7 @@ extern uint8_t track_pitches[16];
 
 class MDClass {
  public:
-  MDClass() {
-    currentGlobal = -1;
-    currentKit = -1;
-    currentPattern = -1;
-    global.baseChannel = 0;
-    for (int i = 0; i < 16; i++) {
-      global.drumMapping[i] = -1;
-    }
-    loadedKit = loadedGlobal = false;
-  }
+  MDClass();
   int currentGlobal;
   int currentKit;
   int currentPattern;
