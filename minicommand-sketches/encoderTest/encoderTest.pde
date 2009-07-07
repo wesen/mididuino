@@ -11,7 +11,7 @@ void onNoteCallback(uint8_t *msg) {
   GUI.flash_string_fill("NOTE RECV");
 }
 
-EncoderPage page(&enc1, &enc2, &enc3, &enc3);
+EncoderPage page(&enc1, &enc2, &enc3, &enc4);
 void setup() {
   if (SDCard.init() != 0) {
     GUI.flash_strings_fill("NO SD CARD", "");

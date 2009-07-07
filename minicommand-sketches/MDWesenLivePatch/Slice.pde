@@ -193,6 +193,4 @@ if ((val % 8) == 0) {
     restorePlayback = true;
     supaTriggaActive = false;
   }
-
-
 };

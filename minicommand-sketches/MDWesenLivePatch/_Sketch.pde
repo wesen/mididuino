@@ -1,5 +1,3 @@
-#include <CCHandler.h>
-
 class MDWesenLivePatchSketch : 
 public Sketch {
 public:
@@ -13,11 +11,10 @@ public:
   EncoderPage page4;
   
   BreakdownPage breakPage;
+  AutoMDPage autoMDPage;
   SwitchPage switchPage;
 
   uint8_t ramP1Track;
-
-  CCHandler ccHandler;
 
   void setupPages() {
     flfEncoder.initMDFXEncoder(MD_ECHO_FLTF, MD_FX_ECHO, "FLF", 0);
@@ -39,9 +36,12 @@ public:
     pVolEncoder.initMDEncoder(ramP1Track, MODEL_VOL, "VOL", 100);
     page4.setEncoders(&pFlfEncoder, &pFlwEncoder, &pSrrEncoder, &pVolEncoder);
     page4.setShortName("RAM");
+
+    autoMDPage.setup();
+    autoMDPage.setShortName("AUT");
     
-    switchPage.initPages(&page, &page2, &page4);
-    switchPage.sketch = this;
+    switchPage.initPages(&page, &page2, &page4, &autoMDPage);
+    switchPage.parent = this;
   }
 
   virtual void setup() {
@@ -63,7 +63,7 @@ public:
     MidiClock.mode = MidiClock.EXTERNAL;
     MidiClock.transmit = false;
     MidiClock.setOn16Callback(_on16Callback);
-    //  MidiClock.setOn32Callback(on32Callback);
+    MidiClock.setOn32Callback(on32Callback);
     MidiClock.start();
     setPage(&page);
   }
@@ -75,17 +75,16 @@ public:
   }
 
   virtual bool handleEvent(gui_event_t *event) {
-    // XXX find a way to handle temp pages
     if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
-      setModalPage(&switchPage);
+      pushPage(&switchPage);
     } else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
-      clearModalPage(&switchPage);
+      popPage(&switchPage);
     } else {
       if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
-        setModalPage(&breakPage);
+        pushPage(&breakPage);
       } 
       else if (EVENT_RELEASED(event, Buttons.BUTTON4)) {
-        clearModalPage(&breakPage);
+        popPage(&breakPage);
       } 
       else if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
         breakPage.startSupatrigga();
@@ -140,6 +139,7 @@ public:
 MDWesenLivePatchSketch sketch;
 
 void on32Callback() {
+  sketch.autoMDPage.on32Callback();
   //  GUI.flash_put_value(0, MidiClock.div32th_counter);
 }
 
