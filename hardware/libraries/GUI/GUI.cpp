@@ -102,6 +102,11 @@ void GuiClass::display() {
 	lines[i].flashActive = false;
       }
       if (lines[i].flashChanged) {
+	for (int j = 0; j < 16; j++) {
+	  if (lines[i].flash[j] == 0) {
+	    lines[i].flash[j] = ' ';
+	  }
+	}
 	LCD.goLine(i);
 	LCD.puts(lines[i].flash);
 	lines[i].flashChanged = false;
@@ -109,6 +114,11 @@ void GuiClass::display() {
     }
 
     if (lines[i].changed && !lines[i].flashActive) {
+      for (int j = 0; j < 16; j++) {
+	if (lines[i].data[j] == 0) {
+	  lines[i].data[j] = ' ';
+	}
+      }
       LCD.goLine(i);
       LCD.puts(lines[i].data);
       lines[i].changed = false;

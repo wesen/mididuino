@@ -97,7 +97,7 @@ void MidiClockClass::setTempo(uint16_t _tempo) {
 
 void MidiClockClass::handleSongPositionPtr(uint8_t *msg) {
   if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
-    uint16_t ptr = msg[1] & 0x7F | ((msg[2] & 0x7F) << 7);
+    uint16_t ptr = (msg[1] & 0x7F) | ((msg[2] & 0x7F) << 7);
     USE_LOCK();
     SET_LOCK();
     indiv96th_counter = ptr;
