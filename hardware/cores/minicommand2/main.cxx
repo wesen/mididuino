@@ -77,8 +77,11 @@ void __mainInnerLoop(bool callLoop) {
   SET_BIT(OUTPUTPORT, OUTPUTPIN);
   //  setLed2();
 
-  MidiClock.updateClockDiffTimer();
-  MidiClock.updateClockDiff();
+  if ((MidiClock.mode == MidiClock.EXTERNAL ||
+       MidiClock.mode == MidiClock.EXTERNAL_UART2)) {
+    MidiClock.updateClockInterval();
+    MidiClock.updateClockPhase(); // phase correction
+  }
   CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
   
   if (MidiUart.avail()) {

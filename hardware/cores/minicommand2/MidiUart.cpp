@@ -91,8 +91,24 @@ SIGNAL(USART0_RX_vect) {
   uint8_t c = UART_READ_CHAR();
 
   //  setLed();
-  if (c == 0xF8 && MidiClock.mode == MidiClock.EXTERNAL) {
-    MidiClock.handleClock();
+  if (MIDI_IS_REALTIME_STATUS_BYTE(c) && MidiClock.mode == MidiClock.EXTERNAL) {
+    switch (c) {
+    case MIDI_CLOCK:
+      MidiClock.handleClock();
+      break;
+
+    case MIDI_START:
+      MidiClock.handleMidiStart();
+      break;
+
+    case MIDI_STOP:
+      MidiClock.handleMidiStop();
+      break;
+
+    default:
+      MidiUart.rxRb.put(c);
+      break;
+    }
   } else {
     sei();
     MidiUart.rxRb.put(c);
@@ -147,8 +163,24 @@ SIGNAL(USART1_RX_vect) {
   uint8_t c = UART2_READ_CHAR();
 
   // XXX clock on second input
-  if (c == 0xF8 && MidiClock.mode == MidiClock.EXTERNAL_UART2) {
-    MidiClock.handleClock();
+  if (MIDI_IS_REALTIME_STATUS_BYTE(c) && MidiClock.mode == MidiClock.EXTERNAL_UART2) {
+    switch (c) {
+    case MIDI_CLOCK:
+      MidiClock.handleClock();
+      break;
+
+    case MIDI_START:
+      MidiClock.handleMidiStart();
+      break;
+
+    case MIDI_STOP:
+      MidiClock.handleMidiStop();
+      break;
+
+    default:
+      MidiUart.rxRb.put(c);
+      break;
+    }
   } else {
     MidiUart2.rxRb.put(c);
   }
