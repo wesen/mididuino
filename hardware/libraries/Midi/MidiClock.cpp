@@ -3,6 +3,8 @@
 #include "helpers.h"
 #include "MidiUart.h"
 
+// #define DEBUG_MIDI_CLOCK 1
+
 MidiClockClass::MidiClockClass() {
   init();
   mode = OFF;
@@ -16,7 +18,8 @@ MidiClockClass::MidiClockClass() {
 void MidiClockClass::init() {
   state = PAUSED;
   counter = 0;
-  rx_clock = last_clock = 0;
+  rx_clock = rx_last_clock = 0;
+  update_clock = update_last_clock = 0;
   div96th_counter = 0;
   div32th_counter = 0;
   div16th_counter = 0;
@@ -24,7 +27,7 @@ void MidiClockClass::init() {
   indiv96th_counter = 0;
   inmod6_counter = 0;
   doUpdateClock = false;
-  pll_x = 220;
+  pll_x = 200;
   isInit = false;
 }
 
@@ -36,26 +39,21 @@ uint16_t midi_clock_diff(uint16_t old_clock, uint16_t new_clock) {
 }
 
 void MidiClockClass::handleMidiStart() {
-  if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
-    init();
-    state = STARTING;
-    mod6_counter = 0;
-    div96th_counter = 0;
-    div32th_counter = 0;
-    div16th_counter = 0;
-    counter = 0;
-  }
+  init();
+  state = STARTING;
+  mod6_counter = 0;
+  div96th_counter = 0;
+  div32th_counter = 0;
+  div16th_counter = 0;
+  interval_correct = 0;
+  running_error = 0;
+  running_count = 0;
+  counter_phase = 0;
+  counter = 0;
 }
 
 void MidiClockClass::handleMidiStop() {
-  if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
-    state = PAUSED;
-  }
-}
-
-#define PHASE_FACTOR 16
-static uint32_t phase_mult(uint32_t val) {
-  return (val * PHASE_FACTOR) >> 8;
+  state = PAUSED;
 }
 
 void MidiClockClass::start() {
@@ -97,135 +95,194 @@ void MidiClockClass::setTempo(uint16_t _tempo) {
   CLEAR_LOCK();
 }
 
-/* in interrupt */
-void MidiClockClass::handleClock() {
-  uint16_t my_clock = clock;
-  last_clock = rx_clock;
-  rx_clock = my_clock;
-
-  indiv96th_counter++;
-  inmod6_counter++;
-  if (inmod6_counter == 6)
-    inmod6_counter = 0;
-  sei();
-
-  if (state == STARTING && indiv96th_counter >= 2) {
-    state = STARTED;
+void MidiClockClass::handleSongPositionPtr(uint8_t *msg) {
+  if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
+    uint16_t ptr = msg[1] & 0x7F | ((msg[2] & 0x7F) << 7);
+    USE_LOCK();
+    SET_LOCK();
+    indiv96th_counter = ptr;
+    CLEAR_LOCK();
   }
-  
 }
 
-void MidiClockClass::updateClockDiff() {
+void MidiClockClass::setSongPositionPtr(uint16_t pos) {
+  div96th_counter = pos;
+  if (transmit) {
+    uint8_t msg[3] = { MIDI_SONG_POSITION_PTR, 0, 0 };
+    msg[1] = pos & 0x7F;
+    msg[2] = (pos >> 7) & 0x7F;
+    MidiUart.sendRaw(msg, 3);
+  }
+}
+
+void MidiClockClass::updateClockInterval() {
   USE_LOCK();
 
   if (state == STARTED) {
+
     SET_LOCK();
     uint16_t _interval = interval;
     uint16_t _rx_clock = rx_clock;
-    uint16_t _last_clock = last_clock;
-    CLEAR_LOCK();
+    uint16_t _rx_last_clock = rx_last_clock;
+    uint16_t _update_rx_clock = update_rx_clock;
+    uint16_t _update_last_clock = update_last_clock;
+    uint16_t _update_clock = update_clock;
     
-    uint16_t diff = clock_diff(_last_clock, _rx_clock);
+    CLEAR_LOCK();
+
+    uint16_t diff_rx = midi_clock_diff(_rx_last_clock, _rx_clock);
+    uint16_t diff_int = midi_clock_diff(_update_last_clock, _update_clock);
+
+    uint16_t new_interval = 0;
+
+#ifdef DEBUG_MIDI_CLOCK
     GUI.setLine(GUI.LINE2);
-    GUI.put_value16(1, diff);
+    GUI.put_value16(1, diff_rx);
+#endif
     
     if (!isInit) {
-      _interval = diff;
+      new_interval = diff_rx;
       isInit = true;
     } else {
-      _interval =
+      uint32_t bla =
 	(((uint32_t)_interval * (uint32_t)pll_x) +
-	 (uint32_t)(256 - pll_x) * (uint32_t)diff) >> 8;
+	 (uint32_t)(256 - pll_x) * (uint32_t)diff_rx);
+      //      uint8_t rem = bla & 0xFF;
+      bla >>= 8;
+      new_interval = bla;
+      //      if (rem > 190) // omg voodoo to correct discarded precision induced drift
+      //	new_interval++;
     }
     
     SET_LOCK();
-    interval = _interval;
+    interval = new_interval;
     CLEAR_LOCK();
   }
-}  
+}
 
-void MidiClockClass::updateClockDiffTimer() {
+#define PHASE_FACTOR 32
+static uint32_t phase_mult(uint32_t val) {
+  //  return (val * PHASE_FACTOR) >> 8;
+  return val / 4;
+}
+
+void MidiClockClass::updateClockPhase() {
   if (!MidiClock.doUpdateClock)
     return;
 
   USE_LOCK();
   SET_LOCK();
   bool _updateSmaller = updateSmaller;
-  uint16_t _counter = counter;
-  uint16_t _update_clock = update_clock;
-  uint16_t _update_last_clock = update_last_clock;
+  uint16_t _rx_phase = rx_phase;
   CLEAR_LOCK();
-
-  uint16_t diff = midi_clock_diff(_update_last_clock, _update_clock);
-  GUI.setLine(GUI.LINE2);
-  GUI.put_value16(2, diff);
-  
-  if (_updateSmaller) {
-    _counter -= phase_mult(diff);
-  } else {
-    if (_counter > diff) {
-      _counter += phase_mult(_counter - diff);
-    }
-  }
 
   SET_LOCK();
   doUpdateClock = false;
-  counter = _counter;
+  //  counter_phase = _rx_phase;
   CLEAR_LOCK();
+
+#ifdef DEBUG_MIDI_CLOCK
+  GUI.setLine(GUI.LINE1);
+  GUI.put_value(3, updateSmaller ? 1 : 0);
+  GUI.setLine(GUI.LINE2);
+  GUI.put_value16(2, _rx_phase);
+#endif
 }
 
+/* in interrupt on receiving 0xF8 */
+void MidiClockClass::handleClock() {
+  setLed();
+
+  rx_phase = counter;
+  uint16_t my_clock = clock;
+  rx_last_clock = rx_clock;
+  rx_clock = my_clock;
+
+  indiv96th_counter++;
+  inmod6_counter++;
+  if (inmod6_counter == 6)
+    inmod6_counter = 0;
+
+  static uint16_t last_phase_add;
+#ifdef DEBUG_MIDI_CLOCK
+  GUI.setLine(GUI.LINE1);
+  GUI.put_value16(1, last_phase_add);
+#endif
+  
+  if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
+    if (div96th_counter < indiv96th_counter) {
+      updateSmaller = true;
+      uint16_t phase_add = rx_phase / 16;
+      if (phase_add == 0) {
+	phase_add = rx_phase;
+      }
+      if (counter > phase_add) {
+	counter -= phase_add;
+	
+#ifdef DEBUG_MIDI_CLOCK
+	// something happens on brutal tempo jumps
+	if (phase_add > 200) {
+	  GUI.flash_strings_fill("OHLA", "OHLA");
+	}
+#endif
+      }
+      last_phase_add = phase_add;
+    } else {
+      updateSmaller = false;
+      if (interval > rx_phase) {
+	uint16_t phase_add = (interval - rx_phase) / 16;
+	if (phase_add == 0) {
+	  phase_add = (interval - rx_phase);
+	}
+	counter += phase_add;
+	last_phase_add = phase_add;
+      }
+    }
+    doUpdateClock = true;
+  }
+
+  if (state == STARTING && indiv96th_counter >= 2) {
+    state = STARTED;
+  }
+
+  clearLed();
+  
+}
+
+/* in interrupt on timer */
 void MidiClockClass::handleTimerInt()  {
   //  sei();
-  if (counter == 0) {
+  if (counter == counter_phase) {
+    setLed2();
+    
     if (transmit) {
-      setLed2();
-      delayMicroseconds(3);
-
       MidiUart.putc_immediate(MIDI_CLOCK);
-
-      clearLed2();
     }
 
     //    uint16_t bla_clock = update_clock;
-    update_clock = clock;
-    update_last_clock = rx_clock;
-    counter = interval;
+    uint16_t my_clock = clock;
+    update_last_clock = update_clock;
+    update_rx_clock = rx_clock;
+    update_clock = my_clock;
 
+    counter = interval;
 
     uint8_t _mod6_counter = mod6_counter;
     
     div96th_counter++;
     mod6_counter++;
+
     if (mod6_counter == 6)
       mod6_counter = 0;
-
-#if 0
-    GUI.setLine(GUI.LINE1);
-    GUI.put_value(1, (uint8_t)div96th_counter % 256);
-    GUI.put_value(2, (uint8_t)indiv96th_counter % 256);
-    uint16_t diff = midi_clock_diff(update_last_clock, update_clock);
-    uint16_t diff2 = midi_clock_diff(bla_clock, update_clock);
     
-    GUI.setLine(GUI.LINE2);
-    GUI.put_value16(2, diff);
-    GUI.put_value16(3, diff2);
-#endif
-
     if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
-      if (div96th_counter <= indiv96th_counter) {
-	updateSmaller = true;
-      } else {
-	updateSmaller = false;
-      }
-      
       if ((div96th_counter < indiv96th_counter) ||
 	  (div96th_counter > (indiv96th_counter + 1))) {
 	div96th_counter = indiv96th_counter;
 	mod6_counter = inmod6_counter;
       }
-      doUpdateClock = true;
     }
-
+    
     sei();
     
     if (on96Callback)
@@ -244,10 +301,11 @@ void MidiClockClass::handleTimerInt()  {
 	on32Callback();
       div32th_counter++;
     }
-    
+
   } else {
     counter--;
   }
+  clearLed2();
 }
     
 MidiClockClass MidiClock;

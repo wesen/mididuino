@@ -11,17 +11,26 @@ class MidiClockClass {
   void (*on32Callback)();
   void (*on16Callback)();
 
+  volatile uint32_t indiv96th_counter;
+
   volatile uint32_t div96th_counter;
   volatile uint32_t div32th_counter;
   volatile uint32_t div16th_counter;
   volatile uint8_t mod6_counter;
   volatile uint8_t inmod6_counter;
   volatile uint16_t interval;
+  volatile int16_t interval_correct;
+
   volatile uint16_t counter;
-  volatile uint32_t indiv96th_counter;
+  volatile uint16_t counter_phase;
+  volatile uint16_t rx_phase;
+  volatile int16_t running_error;
+  volatile uint8_t running_count;
+
   volatile uint16_t update_clock;
   volatile uint16_t update_last_clock;
-  volatile uint16_t last_clock;
+  volatile uint16_t update_rx_clock;
+  volatile uint16_t rx_last_clock;
   volatile uint16_t rx_clock;
   volatile bool doUpdateClock;
 
@@ -34,8 +43,8 @@ class MidiClockClass {
 
   volatile enum {
     PAUSED = 0,
-    STARTING,
-    STARTED
+    STARTING = 1,
+    STARTED = 2,
   } state;
 
 #ifndef MIDIDUINO
@@ -73,11 +82,13 @@ class MidiClockClass {
   }
   void init();
   void handleClock();
-  void updateClockDiff();
-  void updateClockDiffTimer();
+  void updateClockPhase();
+  void updateClockInterval();
   void handleMidiStart();
   void handleMidiStop();
   void handleTimerInt();
+  void handleSongPositionPtr(uint8_t *msg);
+  void setSongPositionPtr(uint16_t pos);
   void start();
   void stop();
   void pause();

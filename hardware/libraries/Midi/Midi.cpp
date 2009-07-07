@@ -149,7 +149,8 @@ void MidiClass::handleByte(uint8_t byte) {
 	if (midiCallbacks[callback].arr[i] != NULL)
 	  midiCallbacks[callback].arr[i](msg);
       }
-      
+    } else if (msg[0] == MIDI_SONG_POSITION_PTR) {
+      MidiClock.handleSongPositionPtr(msg);
     }
     in_state = midi_wait_status;
     break;
