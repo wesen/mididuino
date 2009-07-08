@@ -261,6 +261,8 @@ void MidiClockClass::handleTimerInt()  {
   if (counter == counter_phase) {
     setLed2();
 
+    uint8_t _mod6_counter = mod6_counter;
+    
     div96th_counter++;
     mod6_counter++;
 
@@ -275,10 +277,12 @@ void MidiClockClass::handleTimerInt()  {
       }
     }
 
+#ifdef DEBUG_MIDI_CLOCK
     GUI.setLine(GUI.LINE1);
     GUI.put_value16(0, div96th_counter);
     GUI.setLine(GUI.LINE2);
     GUI.put_value16(0, outdiv96th_counter);
+#endif
 
     //    uint16_t bla_clock = update_clock;
     uint16_t my_clock = clock;
@@ -288,8 +292,6 @@ void MidiClockClass::handleTimerInt()  {
 
     counter = interval;
 
-    uint8_t _mod6_counter = mod6_counter;
-    
     if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
       if ((div96th_counter < indiv96th_counter) ||
 	  (div96th_counter > (indiv96th_counter + 1))) {
