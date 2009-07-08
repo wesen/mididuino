@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include "MidiUart.h"
 
-// #define DEBUG_MIDI_CLOCK 1
+#define DEBUG_MIDI_CLOCK 1
 
 MidiClockClass::MidiClockClass() {
   init();
@@ -39,12 +39,15 @@ uint16_t midi_clock_diff(uint16_t old_clock, uint16_t new_clock) {
 }
 
 void MidiClockClass::handleMidiStart() {
+  if (transmit)
+    MidiUart.sendRaw(MIDI_START);
   init();
   state = STARTING;
   mod6_counter = 0;
   div96th_counter = 0;
   div32th_counter = 0;
   div16th_counter = 0;
+  outdiv96th_counter = 0;
   interval_correct = 0;
   running_error = 0;
   running_count = 0;
@@ -54,6 +57,9 @@ void MidiClockClass::handleMidiStart() {
 
 void MidiClockClass::handleMidiStop() {
   state = PAUSED;
+  if (transmit)
+    MidiUart.sendRaw(MIDI_STOP);
+  
 }
 
 void MidiClockClass::start() {
@@ -212,9 +218,9 @@ void MidiClockClass::handleClock() {
   if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
     if (div96th_counter < indiv96th_counter) {
       updateSmaller = true;
-      uint16_t phase_add = rx_phase / 16;
+      uint16_t phase_add = rx_phase / 4;
       if (phase_add == 0) {
-	phase_add = rx_phase;
+	//	phase_add = rx_phase;
       }
       if (counter > phase_add) {
 	counter -= phase_add;
@@ -222,7 +228,7 @@ void MidiClockClass::handleClock() {
 #ifdef DEBUG_MIDI_CLOCK
 	// something happens on brutal tempo jumps
 	if (phase_add > 200) {
-	  GUI.flash_strings_fill("OHLA", "OHLA");
+	  //	  GUI.flash_strings_fill("OHLA", "OHLA");
 	}
 #endif
       }
@@ -230,9 +236,9 @@ void MidiClockClass::handleClock() {
     } else {
       updateSmaller = false;
       if (interval > rx_phase) {
-	uint16_t phase_add = (interval - rx_phase) / 16;
+	uint16_t phase_add = (interval - rx_phase) / 4;
 	if (phase_add == 0) {
-	  phase_add = (interval - rx_phase);
+	  //	  phase_add = (interval - rx_phase);
 	}
 	counter += phase_add;
 	last_phase_add = phase_add;
@@ -254,10 +260,25 @@ void MidiClockClass::handleTimerInt()  {
   //  sei();
   if (counter == counter_phase) {
     setLed2();
+
+    div96th_counter++;
+    mod6_counter++;
+
+    if (mod6_counter == 6)
+      mod6_counter = 0;
     
     if (transmit) {
-      MidiUart.putc_immediate(MIDI_CLOCK);
+      uint8_t len = (div96th_counter - outdiv96th_counter);
+      for (int i = 0; i < len; i++) {
+	MidiUart.putc_immediate(MIDI_CLOCK);
+	outdiv96th_counter++;
+      }
     }
+
+    GUI.setLine(GUI.LINE1);
+    GUI.put_value16(0, div96th_counter);
+    GUI.setLine(GUI.LINE2);
+    GUI.put_value16(0, outdiv96th_counter);
 
     //    uint16_t bla_clock = update_clock;
     uint16_t my_clock = clock;
@@ -268,12 +289,6 @@ void MidiClockClass::handleTimerInt()  {
     counter = interval;
 
     uint8_t _mod6_counter = mod6_counter;
-    
-    div96th_counter++;
-    mod6_counter++;
-
-    if (mod6_counter == 6)
-      mod6_counter = 0;
     
     if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
       if ((div96th_counter < indiv96th_counter) ||
