@@ -1,6 +1,9 @@
 #ifndef MNM_MESSAGES_H__
 #define MNM_MESSAGES_H__
 
+uint16_t data_to_sysex_mnm(uint8_t *data, uint8_t *sysex, uint16_t len);
+uint16_t sysex_to_data_mnm(uint8_t *sysex, uint8_t *data, uint16_t len);
+
 class MNMMidiMap {
   uint8_t range;
   uint8_t pattenr;
