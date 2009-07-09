@@ -39,6 +39,5 @@ class MNMClass {
   void requestSong(uint8_t song);
   
 };
-  
 
-    
+#endif /* MNM_H__ */
