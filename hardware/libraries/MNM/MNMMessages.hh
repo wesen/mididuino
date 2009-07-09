@@ -15,7 +15,7 @@ class MNMMidiMap {
 
 class MNMGlobal {
 public:
-  unt8_t origPosition;
+  uint8_t origPosition;
 
   uint8_t autotrackChannel;
   uint8_t baseChannel;
@@ -66,12 +66,12 @@ public:
 
 class MNMTrackModifier {
 public:
-  const uint8_t DEST_POS_PITCH_BEND = 0;
-  const uint8_t DEST_NEG_PITCH_BEND = 1;
-  const uint8_t DEST_POS_MOD_WHEEL = 2;
-  const uint8_t DEST_NEG_MOD_WHEEL = 3;
-  const uint8_t DEST_VELOCITY = 4;
-  const uint8_t DEST_KEY_FOLLOW = 5;
+  static const uint8_t DEST_POS_PITCH_BEND = 0;
+  static const uint8_t DEST_NEG_PITCH_BEND = 1;
+  static const uint8_t DEST_POS_MOD_WHEEL = 2;
+  static const uint8_t DEST_NEG_MOD_WHEEL = 3;
+  static const uint8_t DEST_VELOCITY = 4;
+  static const uint8_t DEST_KEY_FOLLOW = 5;
 
   uint8_t destPage[6];
   uint8_t destParam[6];
@@ -105,10 +105,10 @@ public:
   bool trigLegatoFilter;
   bool trigLegatoLFO;
 
-  const uint8_t MULTIMODE_ALL = 0;
-  const uint8_t MULTIMODE_SPLIT_KEY = 1;
-  const uint8_t MULTIMODE_SEQ_START = 2;
-  const uint8_t MULTIMODE_SEQ_TRANSPOSE = 3;
+  static const uint8_t MULTIMODE_ALL = 0;
+  static const uint8_t MULTIMODE_SPLIT_KEY = 1;
+  static const uint8_t MULTIMODE_SEQ_START = 2;
+  static const uint8_t MULTIMODE_SEQ_TRANSPOSE = 3;
   uint8_t commonMultimode;
   uint8_t commonTiming;
 

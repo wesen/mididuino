@@ -6,25 +6,25 @@
 class MNMTranspose {
   int8_t transpose;
   
-  const uint8_t TRANSPOSE_CHROMATIC = 0;
-  const uint8_t TRANSPOSE_MAJOR = 1;
-  const uint8_t TRANSPOSE_MINOR = 2;
-  const uint8_t TRANSPOSE_FIXED = 3;
+  static const uint8_t TRANSPOSE_CHROMATIC = 0;
+  static const uint8_t TRANSPOSE_MAJOR = 1;
+  static const uint8_t TRANSPOSE_MINOR = 2;
+  static const uint8_t TRANSPOSE_FIXED = 3;
   uint8_t scale;
   uint8_t key;
 };
 
 class MNMArpeggiator {
-  const uint8_t ARP_PLAY_TRUE = 0;
-  const uint8_t ARP_PLAY_UP   = 1;
-  const uint8_t ARP_PLAY_DOWN = 2;
-  const uint8_t ARP_PLAY_CYCLIC = 3;
-  const uint8_t ARP_PLAY_RND = 4;
+  static const uint8_t ARP_PLAY_TRUE = 0;
+  static const uint8_t ARP_PLAY_UP   = 1;
+  static const uint8_t ARP_PLAY_DOWN = 2;
+  static const uint8_t ARP_PLAY_CYCLIC = 3;
+  static const uint8_t ARP_PLAY_RND = 4;
   uint8_t play[6];
-  const uint8_t ARP_MODE_OFF = 0;
-  const uint8_t ARP_MODE_KEY = 1;
-  const uint8_t ARP_MODE_SID  = 2;
-  const uint8_t ARP_MODE_ADD  = 3;
+  static const uint8_t ARP_MODE_OFF = 0;
+  static const uint8_t ARP_MODE_KEY = 1;
+  static const uint8_t ARP_MODE_SID  = 2;
+  static const uint8_t ARP_MODE_ADD  = 3;
   uint8_t mode[6];
   uint8_t octaveRange[6];
   uint8_t multiplier;
@@ -54,7 +54,7 @@ public:
   uint64_t slidePatterns[6];
   uint64_t swingPatterns[6];
   uint64_t midiSlidePatterns[6];
-  uitn64_t midiSwingPatterns[6];
+  uint64_t midiSwingPatterns[6];
 
   uint32_t swingAmount;
   uint64_t lockPatterns[6];

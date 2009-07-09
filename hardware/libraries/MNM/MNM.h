@@ -4,6 +4,9 @@
 #include <inttypes.h>
 
 #include "WProgram.h"
+#include "MNMMessages.hh"
+#include "MNMPattern.hh"
+#include "MNMParams.hh"
 
 extern uint8_t monomachine_sysex_hdr[5];
 
@@ -22,7 +25,7 @@ class MNMEncoder : public CCEncoder {
     setValue(init);
   }
 
-  MDEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
+  MNMEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
   void loadFromKit();
 };
 
@@ -100,9 +103,6 @@ class MNMClass {
 
 extern MNMClass MNM;
 
-#include "MNMMessages.hh"
-#include "MNMPattern.hh"
-#include "MNMParams.hh"
 #include "MNMSysex.hh"
 #include "MNMTask.hh"
 
