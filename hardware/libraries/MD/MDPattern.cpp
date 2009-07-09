@@ -70,7 +70,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   
 
   uint16_t cksum = 0;
-  for (int i = 9 - 6; i < (len - 4); i++) {
+  for (uint16_t i = 9 - 6; i < (len - 4); i++) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
@@ -192,14 +192,12 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   data[0xb5] = kit;
   data[0xb6] = numLockedRows;
 
-  uint16_t retlen = 0;
   uint16_t cnt = 0;
 
   for (int track = 0; track < 16; track++) {
     for (int param = 0; param < 24; param++) {
       int8_t lock = paramLocks[track][param];
       if (lock != -1) {
-	uint8_t *data3 = locks[lock];
 	m_memcpy(lockData[lock], locks[lock], 32);
 	cnt++;
       }

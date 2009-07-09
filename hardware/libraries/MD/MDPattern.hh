@@ -6,8 +6,8 @@
 class MDPattern {
 public:
   uint8_t origPosition;
-  uint32_t trigPatterns[16];
-  uint32_t lockPatterns[16];
+  uint64_t trigPatterns[16];
+  uint64_t lockPatterns[16];
 
   uint32_t accentPattern;
   uint32_t slidePattern;
@@ -21,14 +21,14 @@ public:
 
   uint8_t kit;
   uint8_t numLockedRows; // unused
-  uint8_t locks[64][32];
+  uint8_t locks[64][64];
 
   bool accentEditAll;
   bool slideEditAll;
   bool swingEditAll;
-  uint32_t accentPatterns[16];
-  uint32_t slidePatterns[16];
-  uint32_t swingPatterns[16];
+  uint64_t accentPatterns[16];
+  uint64_t slidePatterns[16];
+  uint64_t swingPatterns[16];
 
   uint8_t numRows;
   int8_t paramLocks[16][24];
