@@ -75,7 +75,8 @@ public:
 	     bool reloadGlobal = true);
 
   virtual void run() {
-    MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_KIT_REQUEST);
+    MD.sendRequest(MD_STATUS_REQUEST_ID,
+		   MD_CURRENT_KIT_REQUEST);
     MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_GLOBAL_SLOT_REQUEST);
     MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_PATTERN_REQUEST);
   }

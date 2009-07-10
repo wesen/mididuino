@@ -20,11 +20,6 @@ typedef struct tuning_s {
   const uint8_t *tuning;
 } tuning_t;
 
-typedef struct machine_name_s {
-  char name[7];
-  uint8_t id;
-} machine_name_t;
-
 #ifdef MIDIDUINO_USE_GUI
 class MDEncoder : public CCEncoder {
 public:

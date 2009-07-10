@@ -23,16 +23,17 @@ typedef enum {
 
 class MDSysexListenerClass : public MidiSysexListenerClass {
 public:
-  md_callback_t onPatternMessageCallback;
   md_status_callback_t onStatusResponseCallback;
-  md_callback_t onGlobalMessageCallback;
-  md_callback_t    onKitMessageCallback;
-  md_callback_t onSongMessageCallback;
-  md_callback_t onCurrentKitCallback;
-  
-  getCurrentKitStatus_t mdGetCurrentKitStatus;
+  Vector<md_status_callback_t, 4> statusCallbacks;
 
-public:
+  md_callback_t onGlobalMessageCallback;
+  md_callback_t onKitMessageCallback;
+  md_callback_t onSongMessageCallback;
+  md_callback_t onPatternMessageCallback;
+  
+  bool isMDMessage;
+  uint8_t msgType;
+
   MDSysexListenerClass() : MidiSysexListenerClass() {
     ids[0] = 0;
     ids[1] = 0x20;
@@ -40,23 +41,8 @@ public:
     onStatusResponseCallback = NULL;
     onGlobalMessageCallback = NULL;
     onKitMessageCallback = NULL;
-    onCurrentKitCallback = NULL;
   }
 
-  uint8_t msgType;
-
-  void getCurrentKit(md_callback_t callback);
-
-  void setOnPatternMessageCallback(md_callback_t callback) {
-    onPatternMessageCallback = callback;
-  }
-  
-  void setOnCurrentKitCallback(md_callback_t callback) {
-    onCurrentKitCallback = callback;
-  }
-
-  /* */
-  Vector<md_status_callback_t, 4> statusCallbacks;
   void addOnStatusResponseCallback(md_status_callback_t callback) {
     statusCallbacks.add(callback);
   }
@@ -83,9 +69,10 @@ public:
   void setOnSongMessageCallback(md_callback_t callback) {
     onSongMessageCallback = callback;
   }
-  
-  void handleGlobalDump(uint8_t c);
-  void handleKitDump(uint8_t c);
+
+  void setOnPatternMessageCallback(md_callback_t callback) {
+    onPatternMessageCallback = callback;
+  }
   
   virtual void start();
   virtual void handleByte(uint8_t byte);
@@ -97,6 +84,5 @@ public:
 #include "MDMessages.hh"
 
 extern MDSysexListenerClass MDSysexListener;
-
 
 #endif /* MDSYSEX_H__ */

@@ -1,7 +1,6 @@
 #include "helpers.h"
 #include "MD.h"
 
-
 machine_name_t machine_names[] PROGMEM = {
   { "GND---", 0},
   { "GND-SN", 1},
@@ -151,16 +150,6 @@ PGM_P MDClass::getMachineName(uint8_t machine) {
   }
   return NULL;
 }
-
-typedef struct model_param_name_s {
-  char name[4];
-  uint8_t id;
-} model_param_name_t;
-
-typedef struct model_to_param_names_s {
-  uint8_t model;
-  model_param_name_t *names;
-} model_to_param_names_t;
 
 model_param_name_t gnd_sn_model_names[] PROGMEM = { { "PTC", 0},
 						    { "DEC", 1},
@@ -697,7 +686,7 @@ model_to_param_names_t model_param_names[] = {
   { RAM_R4_MODEL,  ram_r_model_names }
 };
 
-PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
+static PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
   uint8_t i = 0;
   uint8_t id;
   if (names == NULL)
@@ -712,7 +701,7 @@ PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
   return NULL;
 }
 
-model_param_name_t *get_model_param_names(uint8_t model) {
+static model_param_name_t *get_model_param_names(uint8_t model) {
   for (int i = 0; i < countof(model_param_names); i++) {
     if (model == model_param_names[i].model) {
       return model_param_names[i].names;

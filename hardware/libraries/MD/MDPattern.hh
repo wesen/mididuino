@@ -9,10 +9,10 @@ public:
   uint64_t trigPatterns[16];
   uint64_t lockPatterns[16];
 
-  uint32_t accentPattern;
-  uint32_t slidePattern;
-  uint32_t swingPattern;
-  uint32_t swingAmount;
+  uint64_t accentPattern;
+  uint64_t slidePattern;
+  uint64_t swingPattern;
+  uint64_t swingAmount;
   uint8_t accentAmount;
   uint8_t patternLength;
 
@@ -49,7 +49,7 @@ public:
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
 
   bool isLockPatternEmpty(uint8_t idx);
-  bool isLockPatternEmpty(uint8_t idx, uint32_t trigs);
+  bool isLockPatternEmpty(uint8_t idx, uint64_t trigs);
   bool isParamLocked(uint8_t track, uint8_t param);
   void clearLockPattern(uint8_t lock);
   void cleanupLocks();
