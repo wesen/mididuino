@@ -83,8 +83,8 @@ public:
   uint8_t params[72];
   uint8_t level;
   uint8_t track;
-  uint8_t index;
   uint8_t type;
+  uint8_t model;
   uint8_t trigTrack;
   MNMTrackModifier modifier;
 };
