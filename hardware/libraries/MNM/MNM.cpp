@@ -208,3 +208,42 @@ void MNMClass::setMachine(uint8_t track, MNMMachine *machine) {
   }
   setLevel(track, machine->level);
 }
+
+MNMEncoder::MNMEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
+  CCEncoder(0, 0, _name, init) {
+  initMNMEncoder(_track, _param);
+  handler = CCEncoderHandle;
+}
+
+uint8_t MNMEncoder::getCC() {
+  if (param < 0x30) {
+    return 0x30 + param;
+  } else {
+    return 0x38 + param;
+  }
+}
+
+uint8_t MNMEncoder::getChannel() {
+  return MNM.global.baseChannel + track;
+}
+
+void MNMEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
+  if (MNM.parseCC(_channel, _cc, &track, &param)) {
+    if (MNM.loadedKit) {
+      PGM_P name= NULL;
+      name = MNM.getModelParamName(MNM.kit.machines[track].model, param);
+      if (name != NULL) {
+	char myName[4];
+	m_strncpy_p(myName, name, 4);
+	setName(myName);
+	GUI.redisplay();
+      }
+    }
+  }
+}
+
+void MNMEncoder::loadFromKit() {
+  setValue(MNM.kit.machines[track].params[param]);
+}
+
+MNMClass MNM;

@@ -138,3 +138,27 @@ uint16_t sysex_to_data_mnm(uint8_t *sysex, uint8_t *data, uint16_t len) {
   }
   return cnt3;
 }
+
+bool MNMGlobal::fromSysex(uint8_t *sysex, uint16_t len) {
+  return false;
+}
+
+uint16_t MNMGlobal::toSysex(uint8_t *sysex, uint16_t len) {
+  return 0;
+}
+
+bool MNMKit::fromSysex(uint8_t *sysex, uint16_t len) {
+  return false;
+}
+
+uint16_t MNMKit::toSysex(uint8_t *sysex, uint16_t len) {
+  return 0;
+}
+
+bool MNMSong::fromSysex(uint8_t *sysex, uint16_t len) {
+  return false;
+}
+
+uint16_t MNMSong::toSysex(uint8_t *sysex, uint16_t len) {
+  return 0;
+}

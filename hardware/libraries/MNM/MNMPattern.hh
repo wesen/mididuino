@@ -85,6 +85,30 @@ public:
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+
+  void init();
+
+  bool isLockPatternEmpty(uint8_t idx);
+  bool isLockPatternEmpty(uint8_t idx, uint64_t trigs);
+  bool isParamLocked(uint8_t track, uint8_t param);
+  void clearLockPattern(uint8_t lock);
+  void cleanupLocks();
+
+  void clearPattern();
+  void clearTrack(uint8_t track);
+
+  void clearParamLocks(uint8_t track, uint8_t param);
+  void clearTrackLocks(uint8_t track);
+
+  void clearTrig(uint8_t track, uint8_t trig);
+  void setTrig(uint8_t track, uint8_t trig);
+
+  int8_t getNextEmptyLock();
+  void recalculateLockPatterns();
+
+  bool addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t value);
+  void clearLock(uint8_t track, uint8_t trig, uint8_t param);
+  uint8_t getLock(uint8_t track, uint8_t trig, uint8_t param);
 };
 
 
