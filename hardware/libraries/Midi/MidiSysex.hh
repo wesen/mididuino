@@ -83,6 +83,8 @@ class MidiSysexClass {
 
   void startRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
   void stopRecord();
+  void resetRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
+  bool recordByte(uint8_t c);
   void reset();
   
   void start();

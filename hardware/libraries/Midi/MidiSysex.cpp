@@ -13,7 +13,7 @@ void MidiSysexClass::reset() {
   recvIds[2] = 0;
 }
 
-void MidiSysexClass::startRecord(uint8_t *buf, uint16_t maxLen) {
+void MidiSysexClass::resetRecord(uint8_t *buf, uint16_t maxLen) {
   if (buf == NULL) {
     recordBuf = data;
     maxRecordLen = max_len;
@@ -21,8 +21,13 @@ void MidiSysexClass::startRecord(uint8_t *buf, uint16_t maxLen) {
     recordBuf = buf;
     maxRecordLen = maxLen;
   }
-  recording = true;
+  recording = false;
   recordLen = 0;
+}
+
+void MidiSysexClass::startRecord(uint8_t *buf, uint16_t maxLen) {
+  resetRecord(buf, maxLen);
+  recording = true;
 }
 
 void MidiSysexClass::stopRecord() {
@@ -104,12 +109,18 @@ void MidiSysexClass::handleByte(uint8_t byte) {
 
   len++;
 
-  if (recording && recordBuf != NULL) {
-    if (recordLen < maxRecordLen) {
-      recordBuf[recordLen++] = byte;
-    }
+  if (recording) {
+    recordByte(byte);
   }
+}
 
+bool MidiSysexClass::recordByte(uint8_t c) {
+  if (recordLen < maxRecordLen && recordBuf != NULL) {
+    recordBuf[recordLen++] = c;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 static uint8_t sysexBuf[SYSEX_BUF_SIZE];
