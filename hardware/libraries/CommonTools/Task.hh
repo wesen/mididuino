@@ -31,6 +31,9 @@ public:
 
   virtual void destroy() {
   }
+
+  virtual ~Task() {
+  }
 };
 
 #endif /* TASK_H__ */

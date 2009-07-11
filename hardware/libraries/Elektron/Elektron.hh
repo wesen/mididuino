@@ -1,6 +1,8 @@
 #ifndef ELEKTRON_H__
 #define ELEKTRON_H__
 
+#include "WProgram.h"
+
 #include <inttypes.h>
 
 typedef struct machine_name_s {
@@ -56,7 +58,7 @@ class MNMDataToSysexEncoder : public DataEncoder {
   bool isFirstByte;
   
 public:
-  MNMDataToSysexEncoder(uint8_t *_sysex, uint16_t _sysexLen) {
+  MNMDataToSysexEncoder(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0) {
     init(_sysex, _sysexLen);
   }
 
@@ -76,7 +78,7 @@ public:
   uint8_t bits;
   uint8_t tmpData[7];
   
-  MNMSysexToDataEncoder(uint8_t *_data, uint16_t _maxLen) {
+  MNMSysexToDataEncoder(uint8_t *_data = NULL, uint16_t _maxLen = 0) {
     init(_data, _maxLen);
   }
 

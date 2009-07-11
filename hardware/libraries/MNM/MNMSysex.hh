@@ -5,6 +5,7 @@
 #include "Midi.h"
 #include "MidiSysex.hh"
 #include "Vector.hh"
+#include "Elektron.hh"
 
 typedef void (*mnm_callback_t)();
 typedef void (*mnm_status_callback_t)(uint8_t type, uint8_t param);
@@ -20,7 +21,10 @@ public:
   mnm_callback_t onPatternMessageCallback;
   
   bool isMNMMessage;
+  bool isMNMEncodedMessage;
   uint8_t msgType;
+
+  MNMSysexToDataEncoder encoder;
   
   MNMSysexListenerClass() : MidiSysexListenerClass() {
     ids[0] = 0;

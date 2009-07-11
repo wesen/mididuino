@@ -8,8 +8,7 @@
 #include "MNMPattern.hh"
 #include "MNMParams.hh"
 
-extern uint8_t monomachine_sysex_hdr[5];
-
+#ifndef HOST_MIDIDUINO
 class MNMEncoder : public CCEncoder {
  public:
   uint8_t track;
@@ -28,6 +27,7 @@ class MNMEncoder : public CCEncoder {
   MNMEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
   void loadFromKit();
 };
+#endif
 
 class MNMClass {
  public:
@@ -45,6 +45,7 @@ class MNMClass {
 
   int currentPattern;
 
+#ifndef HOST_MIDIDUINO
   void sendMultiTrigNoteOn(uint8_t note, uint8_t velocity);
   void sendMultiTrigNoteOff(uint8_t note);
   void sendMultiMapNoteOn(uint8_t note, uint8_t velocity);
@@ -161,16 +162,19 @@ class MNMClass {
   void unmuteAutoTrack() {
     setAutoMute(false);
   }
-
+#endif
+  
   PGM_P getMachineName(uint8_t machine);
   PGM_P getModelParamName(uint8_t model, uint8_t param);
   void getPatternName(uint8_t pattern, char str[5]);
-  
 };
 
 extern MNMClass MNM;
 
 #include "MNMSysex.hh"
+
+#ifndef HOST_MIDIDUINO
 #include "MNMTask.hh"
+#endif
 
 #endif /* MNM_H__ */

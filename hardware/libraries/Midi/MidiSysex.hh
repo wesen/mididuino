@@ -2,7 +2,6 @@
 #define MIDISYSEX_H__
 
 #include <inttypes.h>
-
 #include "WProgram.h"
 
 #ifndef SYSEX_BUF_SIZE
@@ -26,6 +25,9 @@ class MidiSysexListenerClass {
   virtual void end() {
   }
   virtual void handleByte(uint8_t byte) {
+  }
+
+  virtual ~MidiSysexListenerClass() {
   }
 };
 
@@ -91,12 +93,16 @@ class MidiSysexClass {
   void abort();
   void end();
   void handleByte(uint8_t byte);
+
 };
 
 class MididuinoSysexListenerClass : public MidiSysexListenerClass {
  public:
   MididuinoSysexListenerClass();
   virtual void handleByte(uint8_t byte);
+
+  virtual ~MididuinoSysexListenerClass() {
+  }
 };
 
 extern MidiSysexClass MidiSysex;

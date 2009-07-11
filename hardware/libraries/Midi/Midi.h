@@ -4,10 +4,14 @@
 #include <stdlib.h>
 
 #include <WProgram.h>
+
+#ifndef HOST_MIDIDUINO
 #include <MidiUart.h>
+#endif
+
 #include <inttypes.h>
 
-#include "MidiSDS.hh"
+// #include "MidiSDS.hh"
 #include "MidiSysex.hh"
 #include "Vector.hh"
 
@@ -30,7 +34,10 @@ class MidiClass {
   uint8_t running_status;
   uint8_t in_msg_len;
   uint8_t msg[3];
+
+#ifndef HOST_MIDIDUINO
   MidiUartClass *uart;
+#endif
 
   uint8_t callback;
   midi_callback_t callbacks[7];
@@ -39,7 +46,13 @@ class MidiClass {
  public:
   uint8_t receiveChannel;
 
+#ifndef HOST_MIDIDUINO
   MidiClass(MidiUartClass *_uart = NULL);
+#else
+  MidiClass() {
+  }
+#endif
+
   void init();
   void handleByte(uint8_t c);
 

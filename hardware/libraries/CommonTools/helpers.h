@@ -79,7 +79,7 @@ extern "C" {
 #include <avr/pgmspace.h>
 #else
 #define PGM_P const char *
-#define pgm_read_byte(a) (uint8_t)((uint8_t *)(*a))
+#define pgm_read_byte(a) (uint8_t)((*a))
 #endif
 
 #ifdef MIDIDUINO

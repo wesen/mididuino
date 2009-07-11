@@ -1,18 +1,11 @@
 #include "MNM.h"
 
-uint8_t monomachine_sysex_hdr[5] = {
-  0x00,
-  0x20,
-  0x3c,
-  0x03, /* monomachine ID */
-  0x00 /* base channel padding */
-};
-
 MNMClass::MNMClass() {
   global.baseChannel = 0;
   currentTrack = 0;
 }
 
+#ifndef HOST_MIDIDUINO
 void MNMClass::sendNoteOn(uint8_t track, uint8_t note, uint8_t velocity) {
   MidiUart.sendNoteOn(track + global.baseChannel, note, velocity);
 }
@@ -245,5 +238,7 @@ void MNMEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
 void MNMEncoder::loadFromKit() {
   setValue(MNM.kit.machines[track].params[param]);
 }
+
+#endif /* HOST_MIDIDUINO */
 
 MNMClass MNM;

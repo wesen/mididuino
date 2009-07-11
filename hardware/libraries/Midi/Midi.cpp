@@ -27,8 +27,12 @@ const midi_parse_t midi_parse[] = {
   { 0, midi_ignore_message}
 };
 
+#ifndef HOST_MIDIDUINO
 MidiClass::MidiClass(MidiUartClass *_uart) {
   uart = _uart;
+#else
+  MidiClass::MidiClass() {
+#endif
   receiveChannel = 0xFF;
   init();
   for (int i = 0; i < 7; i++) {
