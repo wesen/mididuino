@@ -20,46 +20,36 @@ static void usage() {
 uint8_t sysexBuf[8192];
 uint16_t sysexLen;
 
-void parseSysex() {
-  if (sysexLen > 6) {
-    switch (sysexBuf[6]) {
-    case MNM_GLOBAL_MESSAGE_ID:
-      if (!global.fromSysex(sysexBuf + 6, sysexLen - 7)) {
-	fprintf(stderr, "error parsing global\n");
-      } else {
-	printf("parsed global!\n");
-      }
-      break;
-
-    case MNM_KIT_MESSAGE_ID:
-      if (!kit.fromSysex(sysexBuf + 6, sysexLen - 7)) {
-	fprintf(stderr, "error parsing kit\n");
-      } else {
-	printf("parsed kit!\n");
-      }
-      break;
-
-    case MNM_PATTERN_MESSAGE_ID:
-      if (!pattern.fromSysex(sysexBuf + 6, sysexLen - 7)) {
-	fprintf(stderr, "error parsing pattern\n");
-      } else {
-	printf("parsed pattern!\n");
-      }
-      break;
-
-    case MNM_SONG_MESSAGE_ID:
-      if (!song.fromSysex(sysexBuf + 6, sysexLen - 7)) {
-	fprintf(stderr, "error parsing song\n");
-      } else {
-	printf("parsed song!\n");
-      }
-      break;
-
-    default:
-      fprintf(stderr, "Unknown message type: %x\n", sysexBuf[6]);
-      break;
-    }
+void onGlobalMessageCallback() {
+  for (uint16_t i = 0; i < MidiSysex.recordLen; i++) {
+    printf("%x ", MidiSysex.data[i]);
   }
+  printf("\n\n");
+      
+  if (!global.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+    fprintf(stderr, "error parsing global\n");
+  } else {
+    printf("parsed global!\n");
+  }
+}
+
+void onKitMessageCallback() {
+  for (uint16_t i = 0; i < MidiSysex.recordLen; i++) {
+    printf("%x ", MidiSysex.data[i]);
+  }
+  printf("\n\n");
+      
+  if (!kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+    fprintf(stderr, "error parsing kit\n");
+  } else {
+    printf("parsed kit!\n");
+  }
+}
+
+void onSongMessageCallback() {
+}
+
+void onPatternMessageCallback() {
 }
 
 int main(int argc, char *argv[]) {
@@ -69,6 +59,10 @@ int main(int argc, char *argv[]) {
   }
 
   MNMSysexListener.setup();
+  MNMSysexListener.setOnGlobalMessageCallback(onGlobalMessageCallback);
+  MNMSysexListener.setOnKitMessageCallback(onKitMessageCallback);
+  MNMSysexListener.setOnSongMessageCallback(onSongMessageCallback);
+  MNMSysexListener.setOnPatternMessageCallback(onPatternMessageCallback);
 
   FILE *f = fopen(argv[1], "r");
   if (f == NULL) {
@@ -79,17 +73,26 @@ int main(int argc, char *argv[]) {
   bool finished = false;
   uint32_t offset = 0;
 
+  bool inSysex = false;
+  
   do {
     int c = fgetc(f);
     offset++;
     if (c == EOF) {
       finished = true;
     } else {
-      sysexBuf[sysexLen++] = c;
-      if (c == 0xF7) {
-	printf("parse sysex from %d to %d, size: %d\n", offset - sysexLen, offset, sysexLen);
-	parseSysex();
-	sysexLen = 0;
+      if (c == 0xF0) {
+	inSysex = true;
+	MidiSysex.reset();
+      } else {
+	if (inSysex) {
+	  if (c == 0xF7) {
+	    inSysex = false;
+	    MidiSysex.end();
+	  } else {
+	    MidiSysex.handleByte(c);
+	  }
+	}
       }
     }
   } while (!finished);

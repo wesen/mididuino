@@ -5,6 +5,8 @@
 #define HOST_MIDIDUINO
 #endif
 
+#include <stdio.h>
+
 #define BOARD_ID 0x89
 #define SYSEX_BUF_SIZE 8192
 
