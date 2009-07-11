@@ -11,6 +11,7 @@ void MNMSysexListenerClass::start() {
   isMNMMessage = false;
   msgLen = 0;
   msgCksum = 0;
+  sysexCirc.clear();
 }
 
 void MNMSysexListenerClass::handleByte(uint8_t byte) {
@@ -70,6 +71,7 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
 	  if (sysexCirc.size() == 4) {
 	    uint8_t c = sysexCirc.get(0);
 	    msgCksum += c;
+	    //	    printf("%x, cksum: %x\n", c, msgCksum);
 	    msgLen++;
 	    encoder.pack(c);
 	  }
@@ -94,13 +96,13 @@ void MNMSysexListenerClass::end() {
     uint16_t realLen = ElektronHelper::to16Bit(sysexCirc.get(2), sysexCirc.get(3));
     if ((msgLen + 4) != realLen) {
 #ifdef HOST_MIDIDUINO
-      fprintf(stderr, "wrong message len, %d should be %d\n", msgLen, realLen);
+      fprintf(stderr, "wrong message len, %d should be %d\n", (msgLen + 4), realLen);
 #endif
       return;
     }
     if (msgCksum != realCksum) {
 #ifdef HOST_MIDIDUINO
-      fprintf(stderr, "wrong message cksum, %x should be %x\n", msgCksum, realCksum);
+      fprintf(stderr, "wrong message cksum, 0x%x should be 0x%x\n", msgCksum, realCksum);
 #endif
       return;
     }
