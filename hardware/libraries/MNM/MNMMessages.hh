@@ -1,12 +1,12 @@
 #ifndef MNM_MESSAGES_H__
 #define MNM_MESSAGES_H__
 
-uint16_t data_to_sysex_mnm(uint8_t *data, uint8_t *sysex, uint16_t len);
-uint16_t sysex_to_data_mnm(uint8_t *sysex, uint8_t *data, uint16_t len);
+#include <inttypes.h>
 
 class MNMMidiMap {
+public:
   uint8_t range;
-  uint8_t pattenr;
+  uint8_t pattern;
   uint8_t offset;
   uint8_t length;
   int8_t transpose;
@@ -50,7 +50,6 @@ public:
   bool midiSeqLegato[6]; /* always true */
   bool legato[6]; /* not unsed */
   
-  uint8_t mapRange[32];
   MNMMidiMap maps[32];
 
   uint8_t globalRouting;

@@ -1,4 +1,4 @@
-#include "MNM.h"
+#include "MNMMessages.hh"
 #include "MNMPattern.hh"
 
 bool MNMPattern::fromSysex(uint8_t *sysex, uint16_t len) {

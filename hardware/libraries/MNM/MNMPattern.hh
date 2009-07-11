@@ -42,17 +42,20 @@ typedef struct mnm_note_s {
 class MNMPattern {
 public:
   uint8_t origPosition;
+
   uint64_t ampTrigs[6];
   uint64_t filterTrigs[6];
   uint64_t lfoTrigs[6];
   uint64_t offTrigs[6];
-  uint64_t midiNoteOnTrigs[6];
-  uint64_t midiNoteOffTrigs[6];
   uint64_t triglessTrigs[6];
   uint64_t chordTrigs[6];
-  uint64_t midiTriglessTrigs[6];
+
   uint64_t slidePatterns[6];
   uint64_t swingPatterns[6];
+
+  uint64_t midiNoteOnTrigs[6];
+  uint64_t midiNoteOffTrigs[6];
+  uint64_t midiTriglessTrigs[6];
   uint64_t midiSlidePatterns[6];
   uint64_t midiSwingPatterns[6];
 

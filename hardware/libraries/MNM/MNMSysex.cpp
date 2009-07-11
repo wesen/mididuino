@@ -18,28 +18,50 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
     return;
   }
   
-  if (isMNMMessage && MidiSysex.len == sizeof(monomachine_sysex_hdr)) {
-    msgType = byte;
-    switch (byte) {
-    case MNM_GLOBAL_MESSAGE_ID:
-      MidiSysex.startRecord();
-      break;
-      
-    case MNM_KIT_MESSAGE_ID:
-      MidiSysex.startRecord();
-      break;
-      
-    case MNM_STATUS_RESPONSE_ID:
-      MidiSysex.startRecord();
-      break;
-      
-    case MNM_PATTERN_MESSAGE_ID:
-      MidiSysex.startRecord();
-      break;
-      
-    case MNM_SONG_MESSAGE_ID:
-      MidiSysex.startRecord();
-      break;
+  if (isMNMMessage) {
+    if (MidiSysex.len == sizeof(monomachine_sysex_hdr)) {
+      msgType = byte;
+      switch (byte) {
+      case MNM_GLOBAL_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+	
+      case MNM_KIT_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+	
+      case MNM_STATUS_RESPONSE_ID:
+	MidiSysex.startRecord();
+	break;
+	
+      case MNM_PATTERN_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+	
+      case MNM_SONG_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+      }
+    }
+
+    if (MidiSysex.len >= sizeof(monomachine_sysex_hdr)) {
+      switch (msgType) {
+      case MNM_GLOBAL_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+	
+      case MNM_KIT_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+	
+      case MNM_PATTERN_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+	
+      case MNM_SONG_MESSAGE_ID:
+	MidiSysex.resetRecord();
+	break;
+      }
     }
   }
 }
