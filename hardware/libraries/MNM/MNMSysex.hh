@@ -6,6 +6,7 @@
 #include "MidiSysex.hh"
 #include "Vector.hh"
 #include "Elektron.hh"
+#include "Circular.hh"
 
 typedef void (*mnm_callback_t)();
 typedef void (*mnm_status_callback_t)(uint8_t type, uint8_t param);
@@ -24,7 +25,10 @@ public:
   bool isMNMEncodedMessage;
   uint8_t msgType;
 
+  CircularBuffer<uint8_t, 4> sysexCirc;
   MNMSysexToDataEncoder encoder;
+  uint16_t msgLen;
+  uint16_t msgCksum;
   
   MNMSysexListenerClass() : MidiSysexListenerClass() {
     ids[0] = 0;
