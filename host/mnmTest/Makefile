@@ -1,11 +1,16 @@
 CXX = g++
+CC = gcc
 CXXFLAGS = -Wall -I../../hardware/libraries/MNM -DHOST_MIDIDUINO \
 		 -I../../hardware/libraries/CommonTools \
 		 -I../../hardware/libraries/Elektron \
 		 -I../../hardware/libraries/Midi \
-		 -I.
+		 -I. -ffunction-sections
 
 all: mnmTest
+
+helpers.o: ../../hardware/libraries/CommonTools/helpers.c
+	$(CC) $(CXXFLAGS) -c -o $@ $<
+
 
 MidiSysex.o: ../../hardware/libraries/Midi/MidiSysex.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -36,5 +41,5 @@ MNM.o: ../../hardware/libraries/MNM/MNM.cpp
 clean:
 	- rm -f *.o mnmTest
 
-mnmTest: Elektron.o MNMMessages.o MNMPattern.o MidiSysex.o MNMSysex.o MNMParams.o MNM.o mnmTest.o
+mnmTest: Elektron.o MNMMessages.o MNMPattern.o MidiSysex.o MNMSysex.o MNMParams.o MNM.o helpers.o mnmTest.o
 	$(CXX) -o $@ $^
