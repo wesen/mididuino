@@ -1,0 +1,40 @@
+CXX = g++
+CXXFLAGS = -Wall -I../../hardware/libraries/MNM -DHOST_MIDIDUINO \
+		 -I../../hardware/libraries/CommonTools \
+		 -I../../hardware/libraries/Elektron \
+		 -I../../hardware/libraries/Midi \
+		 -I.
+
+all: mnmTest
+
+MidiSysex.o: ../../hardware/libraries/Midi/MidiSysex.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMSysex.o: ../../hardware/libraries/MNM/MNMSysex.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMParams.o: ../../hardware/libraries/MNM/MNMParams.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+
+Elektron.o: ../../hardware/libraries/Elektron/Elektron.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMMessages.o: ../../hardware/libraries/MNM/MNMMessages.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMPattern.o: ../../hardware/libraries/MNM/MNMPattern.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNM.o: ../../hardware/libraries/MNM/MNM.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+clean:
+	- rm -f *.o mnmTest
+
+mnmTest: Elektron.o MNMMessages.o MNMPattern.o MidiSysex.o MNMSysex.o MNMParams.o MNM.o mnmTest.o
+	$(CXX) -o $@ $^
