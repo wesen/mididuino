@@ -32,8 +32,10 @@ public:
   virtual void destroy() {
   }
 
+#ifdef HOST_MIDIDUINO
   virtual ~Task() {
   }
+#endif
 };
 
 #endif /* TASK_H__ */

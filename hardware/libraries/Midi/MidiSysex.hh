@@ -27,8 +27,10 @@ class MidiSysexListenerClass {
   virtual void handleByte(uint8_t byte) {
   }
 
+#ifdef HOST_MIDIDUINO
   virtual ~MidiSysexListenerClass() {
   }
+#endif
 };
 
 #define NUM_SYSEX_SLAVES 4
@@ -101,8 +103,10 @@ class MididuinoSysexListenerClass : public MidiSysexListenerClass {
   MididuinoSysexListenerClass();
   virtual void handleByte(uint8_t byte);
 
+#ifdef HOST_MIDIDUINO
   virtual ~MididuinoSysexListenerClass() {
   }
+#endif
 };
 
 extern MidiSysexClass MidiSysex;

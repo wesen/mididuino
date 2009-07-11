@@ -46,7 +46,9 @@ public:
   
   virtual bool pack(uint8_t inb) = 0;
   virtual uint16_t finish() = 0;
+#ifdef HOST_MIDIDUINO
   virtual ~DataEncoder() { };
+#endif
 };
 
 class MNMDataToSysexEncoder : public DataEncoder {

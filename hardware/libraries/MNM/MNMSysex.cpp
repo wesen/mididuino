@@ -27,7 +27,6 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
   if (isMNMMessage) {
     if (MidiSysex.len == sizeof(monomachine_sysex_hdr)) {
       msgType = byte;
-      printf("msgType: %x\n", byte);
       switch (byte) {
       case MNM_STATUS_RESPONSE_ID:
 	MidiSysex.startRecord();
