@@ -30,6 +30,8 @@ public:
   static uint32_t to32Bit(uint8_t *b);
   static void from16Bit(uint16_t num, uint8_t *b);
   static void from32Bit(uint32_t num, uint8_t *b);
+  static uint64_t to64Bit(uint8_t *b);
+  static void from64Bit(uint64_t num, uint8_t *b);
 };
 
 class DataEncoder {

@@ -77,6 +77,30 @@ void ElektronHelper::from32Bit(uint32_t num, uint8_t *b) {
   b[3] = (num >> 0) & 0xFF;
 }
 
+uint64_t ElektronHelper::to64Bit(uint8_t *b) {
+  uint64_t ret = 0;
+  ret |= ((uint64_t)(b[0]) << 56);
+  ret |= ((uint64_t)(b[1]) << 48);
+  ret |= ((uint64_t)(b[2]) << 40);
+  ret |= ((uint64_t)(b[3]) << 32);
+  ret |= ((uint64_t)(b[4]) << 24);
+  ret |= ((uint64_t)(b[5]) << 16);
+  ret |= ((uint64_t)(b[6]) << 8);
+  ret |= ((uint64_t)(b[7]) << 0);
+  return ret;
+}
+
+void ElektronHelper::from64Bit(uint64_t num, uint8_t *b) {
+  b[0] = (num >> 56) & 0xFF;
+  b[1] = (num >> 48) & 0xFF;
+  b[2] = (num >> 40) & 0xFF;
+  b[3] = (num >> 32) & 0xFF;
+  b[4] = (num >> 24) & 0xFF;
+  b[5] = (num >> 16) & 0xFF;
+  b[6] = (num >> 8) & 0xFF;
+  b[7] = (num >> 0) & 0xFF;
+}
+
 /* Encoders */
 
 void MNMDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
@@ -162,6 +186,7 @@ void MNMSysexToDataEncoder::init(uint8_t *_data, uint16_t _maxLen) {
 }
 
 bool MNMSysexToDataEncoder::pack(uint8_t inb) {
+  //  printf("pack: %x\n", inb);
   if ((cnt % 8) == 0) {
     bits = inb;
   } else {
@@ -178,6 +203,7 @@ bool MNMSysexToDataEncoder::pack(uint8_t inb) {
 
 bool MNMSysexToDataEncoder::unpack8Bit() {
   for (uint8_t i = 0; i < cnt7; i++) {
+    //    printf("tmpdata[%d]: %x\n", i, tmpData[i]);
     if (repeat == 0) {
       if (tmpData[i] & 0x80) {
 	repeat = tmpData[i] & 0x7F;
@@ -205,6 +231,7 @@ bool MNMSysexToDataEncoder::unpack8Bit() {
 }
 
 uint16_t MNMSysexToDataEncoder::finish() {
+  //  printf("cnt7: %d\n", cnt7);
   if (!unpack8Bit()) {
     return 0;
   }
