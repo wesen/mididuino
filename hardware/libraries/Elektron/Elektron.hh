@@ -26,7 +26,9 @@ public:
   static uint16_t MDDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len);
   static uint16_t MNMDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len, uint16_t maxLen);
   static uint16_t MNMSysexToData(uint8_t *sysex, uint8_t *data, uint16_t len, uint16_t maxLen);
+  static uint16_t to16Bit7(uint8_t b1, uint8_t b2);
   static uint16_t to16Bit(uint8_t b1, uint8_t b2);
+  static uint16_t to16Bit(uint8_t *b);
   static uint32_t to32Bit(uint8_t *b);
   static void from16Bit(uint16_t num, uint8_t *b);
   static void from32Bit(uint32_t num, uint8_t *b);

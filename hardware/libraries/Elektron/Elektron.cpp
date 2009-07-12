@@ -51,15 +51,28 @@ uint16_t ElektronHelper::MNMSysexToData(uint8_t *sysex, uint8_t *data,
 					uint16_t len, uint16_t maxLen) {
   MNMSysexToDataEncoder encoder(data, maxLen);
   for (uint16_t i = 0; i < len; i++) {
-    if (!encoder.pack(sysex[i]))
+    if (!encoder.pack(sysex[i])) {
+#ifdef HOST_MIDIDUINO
+      fprintf(stderr, "no space left at byte %d\n", i);
+#endif
       return 0;
+    }
   }
   return encoder.finish();
 }
 
-uint16_t ElektronHelper::to16Bit(uint8_t b1, uint8_t b2) {
+uint16_t ElektronHelper::to16Bit7(uint8_t b1, uint8_t b2) {
   return (b1 << 7) | b2; 
 }
+
+uint16_t ElektronHelper::to16Bit(uint8_t b1, uint8_t b2) {
+  return (b1 << 8) | b2; 
+}
+
+uint16_t ElektronHelper::to16Bit(uint8_t *b) {
+  return (b[0] << 8) | b[1]; 
+}
+
 
 uint32_t ElektronHelper::to32Bit(uint8_t *b) {
   return ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) | (uint32_t)b[3];
