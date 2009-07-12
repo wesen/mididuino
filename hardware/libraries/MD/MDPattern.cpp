@@ -74,7 +74,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit(data[len - 4], data[len - 3])) {
+  if (cksum != ElektronHelper::to16Bit7(data[len - 4], data[len - 3])) {
     // wrong checksum
     return false;
   }

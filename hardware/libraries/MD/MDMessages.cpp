@@ -15,7 +15,7 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit(data[0xc0 - 6], data[0xc1 - 6])) {
+  if (cksum != ElektronHelper::to16Bit7(data[0xc0 - 6], data[0xc1 - 6])) {
     // wrong checksum
     return false;
   }
@@ -138,7 +138,7 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
   }
 		
   cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit(data[0x4CC - 6], data[0x4CD - 6])) {
+  if (cksum != ElektronHelper::to16Bit7(data[0x4CC - 6], data[0x4CD - 6])) {
     //    GUI.flash_strings_fill("CKSUM", "");
     return false;
   }
@@ -290,7 +290,7 @@ bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit(data[end - 6], data[end + 1 - 6])) {
+  if (cksum != ElektronHelper::to16Bit7(data[end - 6], data[end + 1 - 6])) {
     // wrong checksum
     return false;
   }
