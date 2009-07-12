@@ -16,6 +16,9 @@ MNMSong song;
 void hexDump(uint8_t *data, uint16_t len) {
   uint8_t cnt = 0;
   for (int i = 0; i < len; i++) {
+    if (cnt == 0) {
+      printf("%.4x: ", i & 0xFFF0);
+    }
     printf("%.2x ", data[i]);
     cnt++;
     if (cnt == 8) {
@@ -59,10 +62,29 @@ void parseSysex(uint8_t *data, uint16_t len) {
   }
 }
 
+uint8_t origBuf[8192];
+uint16_t origLen;
+
 bool inCallback = false;
+
+void printBuf() {
+  hexDump(MidiSysex.data + 3, MidiSysex.recordLen - 3);
+  if (!inCallback) {
+    m_memcpy(origBuf, MidiSysex.data, MidiSysex.recordLen);
+    origLen = MidiSysex.recordLen;
+  } else {
+    printf("origLen: %d, newLen: %d\n", origLen, MidiSysex.recordLen);
+    for (int i = 0; i < origLen; i++) {
+      if (MidiSysex.data[i + 3] != origBuf[i + 3]) {
+	printf("%.3x diff: %.2x was %.2x\n", i, MidiSysex.data[i + 3], origBuf[i + 3]);
+      }
+    }
+  }
+}
+
 void onGlobalMessageCallback() {
-  hexDump(MidiSysex.data, MidiSysex.recordLen);
-      
+  printBuf();
+  
   if (!global.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
     fprintf(stderr, "error parsing global\n");
   } else {
@@ -73,7 +95,7 @@ void onGlobalMessageCallback() {
   if (!inCallback) {
     inCallback = true;
     uint16_t len = global.toSysex(sysexBuf, sizeof(sysexBuf));
-    hexDump(sysexBuf, len);
+    //    hexDump(sysexBuf, len);
     parseSysex(sysexBuf, len);
   }
 
@@ -81,22 +103,64 @@ void onGlobalMessageCallback() {
 }
 
 void onKitMessageCallback() {
-  for (uint16_t i = 0; i < MidiSysex.recordLen; i++) {
-    printf("%x ", MidiSysex.data[i]);
-  }
-  printf("\n\n");
-      
+  printBuf();
+  
   if (!kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
     fprintf(stderr, "error parsing kit\n");
   } else {
     printf("parsed kit!\n");
   }
+  printf("\n");
+
+  if (!inCallback) {
+    inCallback = true;
+    uint16_t len = kit.toSysex(sysexBuf, sizeof(sysexBuf));
+    //    hexDump(sysexBuf, len);
+    parseSysex(sysexBuf, len);
+  }
+
+  inCallback = false;
 }
 
 void onSongMessageCallback() {
+  printBuf();
+      
+  if (!song.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+    fprintf(stderr, "error parsing song\n");
+  } else {
+    printf("parsed song!\n");
+  }
+  printf("\n");
+
+  if (!inCallback) {
+    inCallback = true;
+    uint16_t len = song.toSysex(sysexBuf, sizeof(sysexBuf));
+    hexDump(sysexBuf, len);
+    parseSysex(sysexBuf, len);
+  }
+
+  inCallback = false;
 }
 
 void onPatternMessageCallback() {
+  printBuf();
+
+  
+  if (!pattern.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+    fprintf(stderr, "error parsing pattern\n");
+  } else {
+    printf("parsed pattern!\n");
+  }
+  printf("\n");
+
+  if (!inCallback) {
+    inCallback = true;
+    uint16_t len = pattern.toSysex(sysexBuf, sizeof(sysexBuf));
+    hexDump(sysexBuf, len);
+    parseSysex(sysexBuf, len);
+  }
+
+  inCallback = false;
 }
 
 int main(int argc, char *argv[]) {

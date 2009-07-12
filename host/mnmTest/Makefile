@@ -6,7 +6,7 @@ CXXFLAGS = -Wall -I../../hardware/libraries/MNM -DHOST_MIDIDUINO \
 		 -I../../hardware/libraries/Midi \
 		 -I. -ffunction-sections
 
-all: mnmTest
+all: mnmTest encoderTest
 
 helpers.o: ../../hardware/libraries/CommonTools/helpers.c
 	$(CC) $(CXXFLAGS) -c -o $@ $<
@@ -40,6 +40,9 @@ MNM.o: ../../hardware/libraries/MNM/MNM.cpp
 
 clean:
 	- rm -f *.o mnmTest
+
+encoderTest: encoderTest.o Elektron.o helpers.o
+	$(CXX) -o $@ $^
 
 mnmTest: Elektron.o MNMMessages.o MNMPattern.o MidiSysex.o MNMSysex.o MNMParams.o MNM.o helpers.o mnmTest.o
 	$(CXX) -o $@ $^
