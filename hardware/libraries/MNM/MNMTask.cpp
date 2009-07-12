@@ -61,6 +61,13 @@ void MNMTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       callPatternCallbacks();
     }
     break;
+
+  case MNM_CURRENT_AUDIO_TRACK_REQUEST:
+    if (MNM.currentTrack != value) {
+      MNM.currentTrack = value;
+      callCurrentTrackCallbacks();
+    }
+    break;
   }
   redisplay = true; 
 }

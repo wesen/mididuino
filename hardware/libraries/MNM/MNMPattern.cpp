@@ -5,6 +5,49 @@
 #include "MNMMessages.hh"
 #include "MNMPattern.hh"
 
+void MNMPattern::init() {
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 72; j++) {
+      paramLocks[i][j] = -1;
+    }
+  }
+  locksUsed = 0;
+  for (int i = 0; i < 64; i++) {
+    lockTracks[i] = -1;
+    lockParams[i] = -1;
+    for (int j = 0; j < 64; j++) {
+      locks[i][j] = 255;
+    }
+  }
+
+  for (int i = 0; i < 6; i++) {
+    ampTrigs[i] = 0;
+    filterTrigs[i] = 0;
+    lfoTrigs[i] = 0;
+    offTrigs[i] = 0;
+    triglessTrigs[i] = 0;
+    chordTrigs[i] = 0;
+    slidePatterns[i] = 0;
+    swingPatterns[i] = 0;
+
+    midiNoteOnTrigs[i] = 0;
+    midiNoteOffTrigs[i] = 0;
+    midiTriglessTrigs[i] = 0;
+    midiSlidePatterns[i] = 0;
+    midiSwingPatterns[i] = 0;
+
+    lockPatterns[i] = 0;
+  }
+
+  accentAmount = 0;
+
+  swingAmount = 50 << 14;
+  length = 16;
+  kit = 0;
+  origPosition = 0;
+  scale = 0;
+}
+
 bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
   if (len < (0x1978 + 3)) {
 #ifdef HOST_MIDIDUINO
@@ -20,15 +63,17 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
     filterTrigs[i] = ElektronHelper::to64Bit(udata + 0x31 + i * 8);
     lfoTrigs[i] = ElektronHelper::to64Bit(udata + 0x61 + i * 8);
     offTrigs[i] = ElektronHelper::to64Bit(udata + 0x91 + i * 8);
-    midiNoteOnTrigs[i] = ElektronHelper::to64Bit(udata + 0xc1 + i * 8);
-    midiNoteOffTrigs[i] = ElektronHelper::to64Bit(udata + 0xf1 + i * 8);
     triglessTrigs[i] = ElektronHelper::to64Bit(udata + 0x121 + i * 8);
     chordTrigs[i] = ElektronHelper::to64Bit(udata + 0x151 + i * 8);
-    midiTriglessTrigs[i] = ElektronHelper::to64Bit(udata + 0x181 + i * 8);
     slidePatterns[i] = ElektronHelper::to64Bit(udata + 0x1b1 + i * 8);
     swingPatterns[i] = ElektronHelper::to64Bit(udata + 0x1e1 + i * 8);
+
+    midiTriglessTrigs[i] = ElektronHelper::to64Bit(udata + 0x181 + i * 8);
+    midiNoteOnTrigs[i] = ElektronHelper::to64Bit(udata + 0xc1 + i * 8);
+    midiNoteOffTrigs[i] = ElektronHelper::to64Bit(udata + 0xf1 + i * 8);
     midiSlidePatterns[i] = ElektronHelper::to64Bit(udata + 0x211 + i * 8);
     midiSwingPatterns[i] = ElektronHelper::to64Bit(udata + 0x241 + i * 8);
+
     lockPatterns[i] = ElektronHelper::to64Bit(udata + 0x275 + i * 8);
 
     m_memcpy(noteNBR[i], udata + 0x2a5 + i * 64, 64);
@@ -76,6 +121,9 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   return true;
+}
+
+bool MNMPattern::isLockPatternEmpty(uint8_t idx) {
 }
 
 uint16_t MNMPattern::toSysex(uint8_t *sysex, uint16_t len) {

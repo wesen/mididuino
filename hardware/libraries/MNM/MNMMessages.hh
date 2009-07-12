@@ -75,6 +75,19 @@ public:
   uint8_t destPage[6][2];
   uint8_t destParam[6][2];
   int8_t range[6][2];
+  bool mirrorLR;
+  bool mirrorUD;
+  bool LPKeyTrack;
+  bool HPKeyTrack;
+};
+
+class MNMTrig {
+public:
+  bool portamento;
+  uint8_t track;
+  bool legatoAmp;
+  bool legatoFilter;
+  bool legatoLFO;
 };
 
 class MNMMachine {
@@ -84,7 +97,7 @@ public:
   uint8_t track;
   uint8_t type;
   uint8_t model;
-  uint8_t trigTrack;
+  MNMTrig trig;
   MNMTrackModifier modifier;
 };
 
@@ -95,16 +108,6 @@ public:
   MNMMachine machines[6];
 
   uint16_t patchBusIn;
-
-  bool modifierMirrorLeftRight;
-  bool modifierMirrorUpDown;
-  bool modifierLPKeyTrack;
-  bool modifierHPKeyTrack;
-
-  bool trigPortamento;
-  bool trigLegatoAmp;
-  bool trigLegatoFilter;
-  bool trigLegatoLFO;
 
   static const uint8_t MULTIMODE_ALL = 0;
   static const uint8_t MULTIMODE_SPLIT_KEY = 1;

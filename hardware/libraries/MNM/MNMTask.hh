@@ -25,6 +25,7 @@ public:
   Vector<mnm_task_callback_t, 4>kitChangeCallbacks;
   Vector<mnm_task_callback_t, 4>globalChangeCallbacks;
   Vector<mnm_task_callback_t, 4>patternChangeCallbacks;
+  Vector<mnm_task_callback_t, 4>currentTrackChangeCallbacks;
 
   void addOnKitChangeCallback(mnm_task_callback_t cb) {
     kitChangeCallbacks.add(cb);
@@ -43,6 +44,12 @@ public:
   }
   void removeOnPatternChangeCallback(mnm_task_callback_t cb) {
     patternChangeCallbacks.remove(cb);
+  }
+  void addOnCurrentTrackChangeCallback(mnm_task_callback_t cb) {
+    currentTrackChangeCallbacks.add(cb);
+  }
+  void removeOnCurrentTrackChangeCallback(mnm_task_callback_t cb) {
+    currentTrackChangeCallbacks.remove(cb);
   }
 
   void callKitCallbacks() {
@@ -68,6 +75,14 @@ public:
       }
     }
   }
+
+  void callCurrentTrackCallbacks() {
+    for (int i = 0; i < currentTrackChangeCallbacks.size; i++) {
+      if (currentTrackChangeCallbacks.arr[i] != NULL) {
+	currentTrackChangeCallbacks.arr[i]();
+      }
+    }
+  }
   
   
   void setup(uint16_t interval = 3000, bool autoLoadKit = false, bool autoLoadGlobal = true,
@@ -78,6 +93,7 @@ public:
 		    MNM_CURRENT_KIT_REQUEST);
     MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_GLOBAL_SLOT_REQUEST);
     MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_PATTERN_REQUEST);
+    MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_AUDIO_TRACK_REQUEST);
   }
 
   void onStatusResponse(uint8_t type, uint8_t value);

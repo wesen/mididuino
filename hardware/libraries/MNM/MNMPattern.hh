@@ -79,8 +79,12 @@ public:
 
   uint16_t midiNotesUsed;
   uint8_t chordNotesUsed;
+
   uint8_t locksUsed;
   uint8_t locks[62][64];
+  int8_t paramLocks[6][72];
+  int8_t lockTracks[64];
+  int8_t lockParams[64];
   
   mnm_note_t midiNotes[400];
   mnm_note_t chordNotes[192];

@@ -64,7 +64,7 @@ bool MNMGlobal::fromSysex(uint8_t *data, uint16_t len) {
 }
 
 uint16_t MNMGlobal::toSysex(uint8_t *data, uint16_t len) {
-  uint8_t udata[0x109];
+  uint8_t udata[0x10a];
   
   data[0] = 0xF0;
   m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
@@ -176,42 +176,46 @@ bool MNMKit::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   patchBusIn = ElektronHelper::to16Bit(udata + 0x1ce);
-  modifierMirrorLeftRight = (udata[0x1d0] == 1);
-  modifierMirrorUpDown = (udata[0x1d1] == 1);
+  for (int i = 0; i < 6; i++) {
+    machines[i].modifier.mirrorLR = IS_BIT_SET(udata[0x1d1], i);
+    machines[i].modifier.mirrorUD = IS_BIT_SET(udata[0x1d2], i);
+    machines[i].modifier.LPKeyTrack = IS_BIT_SET(udata[0x2ab], i);
+    machines[i].modifier.HPKeyTrack = IS_BIT_SET(udata[0x2ac], i);
+  }
+
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 6; j++) {
-      machines[i].modifier.destPage[j][0] = udata[0x1d2 + i * 12 + j * 2];
-      machines[i].modifier.destPage[j][1] = udata[0x1d2 + i * 12 + j * 2 + 1];
-      machines[i].modifier.destParam[j][0] = udata[0x21a + i * 12 + j * 2];
-      machines[i].modifier.destParam[j][1] = udata[0x21a + i * 12 + j * 2 + 1];
-      machines[i].modifier.range[j][0] = udata[0x262 + i * 12 + j * 2];
-      machines[i].modifier.range[j][1] = udata[0x262 + i * 12 + j * 2 + 1];
+      machines[i].modifier.destPage[j][0] = udata[0x1d3 + i * 12 + j * 2];
+      machines[i].modifier.destPage[j][1] = udata[0x1d3 + i * 12 + j * 2 + 1];
+      machines[i].modifier.destParam[j][0] = udata[0x21b + i * 12 + j * 2];
+      machines[i].modifier.destParam[j][1] = udata[0x21b + i * 12 + j * 2 + 1];
+      machines[i].modifier.range[j][0] = udata[0x263 + i * 12 + j * 2];
+      machines[i].modifier.range[j][1] = udata[0x263 + i * 12 + j * 2 + 1];
     }
   }
 
-  modifierLPKeyTrack = (udata[0x2aa] == 1);
-  modifierHPKeyTrack = (udata[0x2ab] == 1);
-  trigPortamento = (udata[0x2ac] == 1);
   for (int i = 0; i < 6; i++) {
-    machines[i].trigTrack = (udata[0x2ad + i]);
+    machines[i].trig.track = udata[0x2ae + i];
+    machines[i].trig.portamento = IS_BIT_SET(udata[0x2ad], i);
+    machines[i].trig.legatoAmp = IS_BIT_SET(udata[0x2b4], i);
+    machines[i].trig.legatoFilter = IS_BIT_SET(udata[0x2b5], i);
+    machines[i].trig.legatoLFO = IS_BIT_SET(udata[0x2b6], i);
   }
-  trigLegatoAmp = (udata[0x2b3] == 1);
-  trigLegatoFilter = (udata[0x2b4] == 1);
-  trigLegatoLFO = (udata[0x2b5] == 1);
-  commonMultimode = udata[0x2b6];
-  if (udata[0x2b7] == 0) {
+
+  commonMultimode = udata[0x2b7];
+  if (udata[0x2b8] == 0) {
     commonTiming = 0;
   } else {
-    commonTiming = 1 << (1 - udata[0x2b7]);
+    commonTiming = 1 << (1 - udata[0x2b8]);
   }
-  splitKey = udata[0x2b8];
-  splitRange = udata[0x2b9];
+  splitKey = udata[0x2b9];
+  splitRange = udata[0x2ba];
 
   return true;
 }
 
 uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
-  uint8_t udata[0x2b9 + 1];
+  uint8_t udata[0x2ba + 1];
 
   data[0] = 0xF0;
   m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
@@ -234,53 +238,59 @@ uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
   }
   
   ElektronHelper::from16Bit(patchBusIn, udata + 0x1ce);
-  udata[0x1d0] = modifierMirrorLeftRight ? 1 : 0;
-  udata[0x1d1] = modifierMirrorUpDown ? 1 : 0;
+  udata[0x1d1] = udata[0x1d2] = udata[0x2ab] = udata[0x2ac] = 0;
+  udata[0x1d0] = 1; // ???
+  for (int i = 0; i < 6; i++) {
+    if (machines[i].modifier.mirrorLR)
+      SET_BIT(udata[0x1d1], i);
+    if (machines[i].modifier.mirrorUD)
+      SET_BIT(udata[0x1d2], i);
+    if (machines[i].modifier.LPKeyTrack)
+      SET_BIT(udata[0x2ab], i);
+    if (machines[i].modifier.HPKeyTrack)
+      SET_BIT(udata[0x2ac], i);
+  }
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 6; j++) {
-      udata[0x1d2 + i * 12 + j * 2] = machines[i].modifier.destPage[j][0];
-      udata[0x1d2 + i * 12 + j * 2 + 1] = machines[i].modifier.destPage[j][1];
-      udata[0x21a + i * 12 + j * 2] = machines[i].modifier.destParam[j][0];
-      udata[0x21a + i * 12 + j * 2 + 1] = machines[i].modifier.destParam[j][1];
-      udata[0x262 + i * 12 + j * 2] = machines[i].modifier.range[j][0];
-      udata[0x262 + i * 12 + j * 2 + 1] = machines[i].modifier.range[j][1];
+      udata[0x1d3 + i * 12 + j * 2] = machines[i].modifier.destPage[j][0];
+      udata[0x1d3 + i * 12 + j * 2 + 1] = machines[i].modifier.destPage[j][1];
+      udata[0x21b + i * 12 + j * 2] = machines[i].modifier.destParam[j][0];
+      udata[0x21b + i * 12 + j * 2 + 1] = machines[i].modifier.destParam[j][1];
+      udata[0x263 + i * 12 + j * 2] = machines[i].modifier.range[j][0];
+      udata[0x263 + i * 12 + j * 2 + 1] = machines[i].modifier.range[j][1];
     }
   }
-  udata[0x2aa] = modifierLPKeyTrack ? 1 : 0;
-  udata[0x2ab] = modifierHPKeyTrack ? 1 : 0;
+  udata[0x2b4] = udata[0x2b5] = udata[0x2b6] = 0xF0;
+  udata[0x2ad] = 0;
   for (int i = 0; i < 6; i++) {
-    udata[0x2ad + i] = machines[i].trigTrack;
+    udata[0x2ae + i] = machines[i].trig.track;
+    if (machines[i].trig.portamento)
+      SET_BIT(udata[0x2ad], i);
+    if (machines[i].trig.legatoAmp)
+      SET_BIT(udata[0x2b4], i);
+    if (machines[i].trig.legatoFilter)
+      SET_BIT(udata[0x2b5], i);
+    if (machines[i].trig.legatoLFO)
+      SET_BIT(udata[0x2b6], i);
   }
-  udata[0x2b3] = trigLegatoAmp ? 1 : 0;
-  udata[0x2b4] = trigLegatoFilter ? 1 : 0;
-  udata[0x2b5] = trigLegatoLFO ? 1 : 0;
-  udata[0x2b6] = commonMultimode;
+
+  udata[0x2b7] = commonMultimode;
   int j;
   for (j = 0; j < 6; j++) {
     if (IS_BIT_SET(commonTiming, j)) {
-      udata[0x2b7] = (j+1);
+      udata[0x2b8] = (j+1);
       break;
     }
   }
   if (j == 6) {
-    udata[0x2b7] = (0);
+    udata[0x2b8] = (0);
   }
 
-  udata[0x2b8] = splitKey;
-  udata[0x2b9] = splitRange;
+  udata[0x2b9] = splitKey;
+  udata[0x2ba] = splitRange;
 
-#ifdef HOST_MIDIDUINO
-  printf("udata\n");
-  hexDump(udata, 0x2ba);
-  printf("1d1: %x\n", udata[0x1d1]);
-#else
-  GUI.flash_put_value(0, udata[0x1d1]);
-  GUI.flash_put_value(1, udata[0x2ab]);
-  GUI.flash_put_value(1, udata[0x2ac]);
-#endif
-  
   MNMDataToSysexEncoder encoder(data + 10, len - 10);
-  for (int i = 1; i < 698; i++) {
+  for (int i = 1; i < 699; i++) {
     encoder.pack(udata[i]);
   }
   uint16_t enclen = encoder.finish();

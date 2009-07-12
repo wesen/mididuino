@@ -1,7 +1,11 @@
 #include "MNM.h"
 
 MNMClass::MNMClass() {
+  currentGlobal = -1;
+  currentKit = -1;
+  currentPattern = -1;
   global.baseChannel = 0;
+  loadedKit = loadedGlobal = false;
   currentTrack = 0;
 }
 
