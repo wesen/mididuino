@@ -68,11 +68,11 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
 	  }
 	  MidiSysex.recordByte(byte);
 	} else {
-	  if (sysexCirc.size() == 4) {
+	  if (sysexCirc.size() == 4 && byte != 0xF7) {
 	    uint8_t c = sysexCirc.get(0);
 	    msgCksum += c;
-	    //	    printf("%x, cksum: %x\n", c, msgCksum);
 	    msgLen++;
+	    //	    printf("_pack: %x, byte %x\n", c, byte);
 	    encoder.pack(c);
 	  }
 	  sysexCirc.put(byte);
@@ -88,6 +88,7 @@ void MNMSysexListenerClass::end() {
 
   if (isMNMEncodedMessage) {
     uint16_t len = encoder.finish();
+    //    printf("%x\n", len);
     if (len > 0) {
       MidiSysex.recordLen += len;
     }

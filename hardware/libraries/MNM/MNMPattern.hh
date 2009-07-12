@@ -4,6 +4,7 @@
 #include <inttypes.h>
 
 class MNMTranspose {
+public:
   int8_t transpose;
   
   static const uint8_t TRANSPOSE_CHROMATIC = 0;
@@ -15,22 +16,23 @@ class MNMTranspose {
 };
 
 class MNMArpeggiator {
+public:
   static const uint8_t ARP_PLAY_TRUE = 0;
   static const uint8_t ARP_PLAY_UP   = 1;
   static const uint8_t ARP_PLAY_DOWN = 2;
   static const uint8_t ARP_PLAY_CYCLIC = 3;
   static const uint8_t ARP_PLAY_RND = 4;
-  uint8_t play[6];
+  uint8_t play;
   static const uint8_t ARP_MODE_OFF = 0;
   static const uint8_t ARP_MODE_KEY = 1;
   static const uint8_t ARP_MODE_SID  = 2;
   static const uint8_t ARP_MODE_ADD  = 3;
-  uint8_t mode[6];
-  uint8_t octaveRange[6];
+  uint8_t mode;
+  uint8_t octaveRange;
   uint8_t multiplier;
   uint8_t destination;
   uint8_t length;
-  uint8_t pattern;
+  uint8_t pattern[16];
 };
 
 typedef struct mnm_note_s {

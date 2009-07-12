@@ -72,9 +72,9 @@ public:
   static const uint8_t DEST_VELOCITY = 4;
   static const uint8_t DEST_KEY_FOLLOW = 5;
 
-  uint8_t destPage[6];
-  uint8_t destParam[6];
-  int8_t range[6];
+  uint8_t destPage[6][2];
+  uint8_t destParam[6][2];
+  int8_t range[6][2];
 };
 
 class MNMMachine {
@@ -93,6 +93,8 @@ public:
   uint8_t origPosition;
   char name[17];
   MNMMachine machines[6];
+
+  uint16_t patchBusIn;
 
   bool modifierMirrorLeftRight;
   bool modifierMirrorUpDown;

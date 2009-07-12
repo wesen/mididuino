@@ -164,45 +164,137 @@ bool MNMKit::fromSysex(uint8_t *data, uint16_t len) {
 
   uint8_t *udata = data + 3;
   origPosition = udata[0];
+  m_memcpy(name, (char *)(udata + 1), 16);
 
-  return false;
+  for (int i = 0; i < 6; i++) {
+    machines[i].level = udata[0xC + i];
+    for (int j = 0; j < 72; j++) {
+      machines[i].params[j] = udata[0x12 + i * 72 + j];
+    }
+    machines[i].model = udata[0x1C2 + i];
+    machines[i].type = udata[0x1C8 + i];
+  }
+
+  patchBusIn = ElektronHelper::to16Bit(udata[0x1ce], udata[0x1cf]);
+  modifierMirrorLeftRight = (udata[0x1d0] == 1);
+  modifierMirrorUpDown = (udata[0x1d1] == 1);
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 6; j++) {
+      machines[i].modifier.destPage[j][0] = udata[0x1d2 + i * 12 + j * 2];
+      machines[i].modifier.destPage[j][1] = udata[0x1d2 + i * 12 + j * 2 + 1];
+      machines[i].modifier.destParam[j][0] = udata[0x21a + i * 12 + j * 2];
+      machines[i].modifier.destParam[j][1] = udata[0x21a + i * 12 + j * 2 + 1];
+      machines[i].modifier.range[j][0] = udata[0x262 + i * 12 + j * 2];
+      machines[i].modifier.range[j][1] = udata[0x262 + i * 12 + j * 2 + 1];
+    }
+  }
+
+  modifierLPKeyTrack = (udata[0x2aa] == 1);
+  modifierHPKeyTrack = (udata[0x2ab] == 1);
+  trigPortamento = (udata[0x2ac] == 1);
+  for (int i = 0; i < 6; i++) {
+    machines[i].trigTrack = (udata[0x2ad + i]);
+  }
+  trigLegatoAmp = (udata[0x2b3] == 1);
+  trigLegatoFilter = (udata[0x2b4] == 1);
+  trigLegatoLFO = (udata[0x2b5] == 1);
+  commonMultimode = udata[0x2b6];
+  if (udata[0x2b7] == 0) {
+    commonTiming = 0;
+  } else {
+    commonTiming = 1 << (1 - udata[0x2b7]);
+  }
+  splitKey = udata[0x2b8];
+  splitRange = udata[0x2b9];
+
+  return true;
 }
 
-uint16_t MNMKit::toSysex(uint8_t *sysex, uint16_t len) {
-  return 0;
+uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
+  uint8_t udata[0x2b9 + 1];
+
+  data[0] = 0xF0;
+  m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
+  data[6] = MNM_KIT_MESSAGE_ID;
+  data[7] = 0x02;
+  data[8] = 0x01;
+
+  uint16_t cksum = 0;
+  udata[0] = data[9] = origPosition;
+  cksum += data[9];
+
+  m_memcpy(udata + 1, name, 16);
+  for (int i = 0; i < 6; i++) {
+    udata[0xC + i] = machines[i].level;
+    for (int j = 0; j < 72; j++) {
+      udata[0x12 + i * 72 + j] = machines[i].params[j];
+    }
+    udata[0x1c2 + i] = machines[i].model;
+    udata[0x1c8 + i] = machines[i].type;
+  }
+  
+  // ElektronHelper::from16Bit(patchBusIn, data + 0x1ce);
+  udata[0x1d0] = modifierMirrorLeftRight ? 1 : 0;
+  udata[0x1d1] = modifierMirrorUpDown ? 1 : 0;
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 6; j++) {
+      udata[0x1d2 + i * 12 + j * 2] = machines[i].modifier.destPage[j][0];
+      udata[0x1d2 + i * 12 + j * 2 + 1] = machines[i].modifier.destPage[j][1];
+      udata[0x21a + i * 12 + j * 2] = machines[i].modifier.destParam[j][0];
+      udata[0x21a + i * 12 + j * 2 + 1] = machines[i].modifier.destParam[j][1];
+      udata[0x262 + i * 12 + j * 2] = machines[i].modifier.range[j][0];
+      udata[0x262 + i * 12 + j * 2 + 1] = machines[i].modifier.range[j][1];
+    }
+  }
+  udata[0x2aa] = modifierLPKeyTrack ? 1 : 0;
+  udata[0x2ab] = modifierHPKeyTrack ? 1 : 0;
+  for (int i = 0; i < 6; i++) {
+    udata[0x2ad + i] = machines[i].trigTrack;
+  }
+  udata[0x2b3] = trigLegatoAmp ? 1 : 0;
+  udata[0x2b4] = trigLegatoFilter ? 1 : 0;
+  udata[0x2b5] = trigLegatoLFO ? 1 : 0;
+  udata[0x2b6] = commonMultimode;
+  int j;
+  for (j = 0; j < 6; j++) {
+    if (IS_BIT_SET(commonTiming, j)) {
+      udata[0x2b7] = (j+1);
+      break;
+    }
+  }
+  if (j == 6) {
+    udata[0x2b7] = (0);
+  }
+
+  udata[0x2b8] = splitKey;
+  udata[0x2b9] = splitRange;
+
+  MNMDataToSysexEncoder encoder(data + 10, len - 10);
+  for (int i = 1; i < 698; i++) {
+    encoder.pack(udata[i]);
+  }
+  uint16_t enclen = encoder.finish();
+  for (int i = 0; i < enclen; i++) {
+    cksum += data[10 + i];
+ }
+  data[10 + enclen] = (cksum >> 7) & 0x7F;
+  data[10 + enclen + 1] = cksum & 0x7F;
+  data[10 + enclen + 2] = ((enclen + 5) >> 7) & 0x7F;
+  data[10 + enclen + 3] = (enclen + 5) & 0x7F;
+  data[10 + enclen + 2 + 2] = 0xF7;
+  
+  return enclen + 10 + sizeof(monomachine_sysex_hdr);
 }
 
 bool MNMSong::fromSysex(uint8_t *data, uint16_t len) {
-  uint8_t udata[0x108];
-
-  uint16_t ulen = ElektronHelper::to16Bit(data[len-2], data[len-1]);
-  if ((ulen + 3) != len) {
+  if (len < 3) {
 #ifdef HOST_MIDIDUINO
-    fprintf(stderr, "wrong len, %d should be %d bytes\n", len, ulen + 3);
+    fprintf(stderr, "wrong length of unpacked data, %d should be 264\n", len);
 #endif
     return false;
   }
 
-  uint16_t cksum = 0;
-  for (int i = 9 - 6; i < (len - 4); i++) {
-    cksum += data[i];
-  }
-  cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit(data[len - 4], data[len - 3])) {
-#ifdef HOST_MIDIDUINO
-    fprintf(stderr, "wrong checksum, %x should be %x\n", cksum,
-	    ElektronHelper::to16Bit(data[len-4], data[len-3]));
-#endif
-    return false;
-  }
-
-  ulen = ElektronHelper::MNMSysexToData(data + 4, udata, len - 8, sizeof(udata));
-  if (ulen != 264) {
-#ifdef HOST_MIDIDUINO
-    fprintf(stderr, "wrong length of unpacked data, %d should be 264\n", ulen);
-#endif
-    return false;
-  }
+  uint8_t *udata = data + 3;
 
   return false;
 }
