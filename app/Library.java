@@ -117,7 +117,7 @@ public class Library implements MessageConsumer{
 	
 	public boolean isFresh(File sourceFile, String ending) {
 		String name = sourceFile.getPath();
-		String objName = name.replace(ending, ".o");
+		String objName = name.replaceAll(ending, ".o");
 		File objFile = new File(objName);
 		if (objFile.exists() && objFile.lastModified() < sourceFile.lastModified()) {
 			return false;
