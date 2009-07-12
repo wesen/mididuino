@@ -23,7 +23,7 @@ void MDPattern::init() {
   for (int i = 0; i < 64; i++) {
     lockTracks[i] = -1;
     lockParams[i] = -1;
-    for (int j = 0; j < 32; j++) {
+    for (int j = 0; j < 64; j++) {
       locks[i][j] = 255;
     }
   }
@@ -40,11 +40,12 @@ void MDPattern::init() {
   slidePattern = 0;
   swingPattern = 0;
   accentAmount = 0;
-  patternLength = 16;
-  swingAmount = 50 << 14;
   accentEditAll = 1;
   swingEditAll = 1;
   slideEditAll = 1;
+
+  patternLength = 16;
+  swingAmount = 50 << 14;
   origPosition = 0;
   kit = 0;
   scale = 0;
@@ -293,7 +294,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 }
 
 bool MDPattern::isLockPatternEmpty(uint8_t idx) {
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 64; i++) {
     if (locks[idx][i] != 255)
       return false;
   }
@@ -302,7 +303,7 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx) {
 
 
 bool MDPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 64; i++) {
     if (locks[idx][i] != 255 || !IS_BIT_SET32(trigs, i))
       return false;
   }
