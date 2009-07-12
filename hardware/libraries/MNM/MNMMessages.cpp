@@ -142,7 +142,7 @@ uint16_t MNMGlobal::toSysex(uint8_t *data, uint16_t len) {
     encoder.pack(udata[i]);
   }
   uint16_t enclen = encoder.finish();
-  for (int i = 0; i < enclen; i++) {
+  for (uint16_t i = 0; i < enclen; i++) {
     cksum += data[10 + i];
  }
   data[10 + enclen] = (cksum >> 7) & 0x7F;
@@ -175,7 +175,7 @@ bool MNMKit::fromSysex(uint8_t *data, uint16_t len) {
     machines[i].type = udata[0x1C8 + i];
   }
 
-  patchBusIn = ElektronHelper::to16Bit(udata[0x1ce], udata[0x1cf]);
+  patchBusIn = ElektronHelper::to16Bit(udata + 0x1ce);
   modifierMirrorLeftRight = (udata[0x1d0] == 1);
   modifierMirrorUpDown = (udata[0x1d1] == 1);
   for (int i = 0; i < 6; i++) {
@@ -233,7 +233,7 @@ uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
     udata[0x1c8 + i] = machines[i].type;
   }
   
-  // ElektronHelper::from16Bit(patchBusIn, data + 0x1ce);
+  ElektronHelper::from16Bit(patchBusIn, udata + 0x1ce);
   udata[0x1d0] = modifierMirrorLeftRight ? 1 : 0;
   udata[0x1d1] = modifierMirrorUpDown ? 1 : 0;
   for (int i = 0; i < 6; i++) {
@@ -269,12 +269,22 @@ uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
   udata[0x2b8] = splitKey;
   udata[0x2b9] = splitRange;
 
+#ifdef HOST_MIDIDUINO
+  printf("udata\n");
+  hexDump(udata, 0x2ba);
+  printf("1d1: %x\n", udata[0x1d1]);
+#else
+  GUI.flash_put_value(0, udata[0x1d1]);
+  GUI.flash_put_value(1, udata[0x2ab]);
+  GUI.flash_put_value(1, udata[0x2ac]);
+#endif
+  
   MNMDataToSysexEncoder encoder(data + 10, len - 10);
   for (int i = 1; i < 698; i++) {
     encoder.pack(udata[i]);
   }
   uint16_t enclen = encoder.finish();
-  for (int i = 0; i < enclen; i++) {
+  for (uint16_t i = 0; i < enclen; i++) {
     cksum += data[10 + i];
  }
   data[10 + enclen] = (cksum >> 7) & 0x7F;
@@ -294,7 +304,7 @@ bool MNMSong::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
 
-  uint8_t *udata = data + 3;
+  //  uint8_t *udata = data + 3;
 
   return false;
 }

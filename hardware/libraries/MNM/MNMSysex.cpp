@@ -93,8 +93,8 @@ void MNMSysexListenerClass::end() {
       MidiSysex.recordLen += len;
     }
     msgCksum &= 0x3FFF;
-    uint16_t realCksum = ElektronHelper::to16Bit(sysexCirc.get(0), sysexCirc.get(1));
-    uint16_t realLen = ElektronHelper::to16Bit(sysexCirc.get(2), sysexCirc.get(3));
+    uint16_t realCksum = ElektronHelper::to16Bit7(sysexCirc.get(0), sysexCirc.get(1));
+    uint16_t realLen = ElektronHelper::to16Bit7(sysexCirc.get(2), sysexCirc.get(3));
     if ((msgLen + 4) != realLen) {
 #ifdef HOST_MIDIDUINO
       fprintf(stderr, "wrong message len, %d should be %d\n", (msgLen + 4), realLen);
