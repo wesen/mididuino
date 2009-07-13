@@ -6,7 +6,6 @@
 #include <WProgram.h>
 
 #include <MidiUartParent.hh>
-
 #include <inttypes.h>
 
 // #include "MidiSDS.hh"
