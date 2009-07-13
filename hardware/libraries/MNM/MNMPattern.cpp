@@ -39,13 +39,13 @@ void MNMPattern::init() {
     lockPatterns[i] = 0;
   }
 
-  accentAmount = 0;
+  //  accentAmount = 0;
 
   swingAmount = 50 << 14;
   length = 16;
   kit = 0;
   origPosition = 0;
-  scale = 0;
+  //  scale = 0;
 }
 
 bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
@@ -124,6 +124,7 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
 }
 
 bool MNMPattern::isLockPatternEmpty(uint8_t idx) {
+  return false;
 }
 
 uint16_t MNMPattern::toSysex(uint8_t *sysex, uint16_t len) {
