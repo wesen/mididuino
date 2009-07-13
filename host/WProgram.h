@@ -25,6 +25,8 @@ extern "C" {
 #define MIDIDUINO_HANDLE_SYSEX
 #include "Midi.h"
 
+#include "MidiUartOSX.h"
+
 void hexDump(uint8_t *data, uint16_t len);
 
 #endif /* WProgram_h */

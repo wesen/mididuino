@@ -107,4 +107,6 @@ class MidiUartOSXClass : public MidiUartParent {
   volatile RingBuffer<TX_BUF_SIZE> txRb;
 };
 
+extern MidiUartOSXClass MidiUart;
+
 #endif /* MIDIUARTOSX_H__ */

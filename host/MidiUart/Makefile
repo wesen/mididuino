@@ -22,7 +22,32 @@ Midi.o: ../../hardware/libraries/Midi/Midi.cpp
 MidiClock.o: ../../hardware/libraries/Midi/MidiClock.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-midiTest: MidiUartOSX.o midiTest.o Midi.o helpers.o MidiSysex.o 
+MNMSysex.o: ../../hardware/libraries/MNM/MNMSysex.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMParams.o: ../../hardware/libraries/MNM/MNMParams.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+
+Elektron.o: ../../hardware/libraries/Elektron/Elektron.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMMessages.o: ../../hardware/libraries/MNM/MNMMessages.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMPattern.o: ../../hardware/libraries/MNM/MNMPattern.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNM.o: ../../hardware/libraries/MNM/MNM.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+MNMTask.o: ../../hardware/libraries/MNM/MNMTask.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+
+midiTest: MidiUartOSX.o midiTest.o Midi.o helpers.o MidiSysex.o  \
+	  MNM.o MNMPattern.o MNMMessages.o Elektron.o MNMParams.o MNMSysex.o \
+	  MNMTask.o
 	$(CXX) $(CLDFLAGS) -o $@ $^
 
 %.o: %.cpp
