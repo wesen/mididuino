@@ -3,6 +3,8 @@
 
 #ifdef MIDIDUINO_USE_GUI
 
+extern CRingBuffer<gui_event_t, 8, uint8_t> EventRB;
+
 Sketch _defaultSketch((char *)"DFT");
 
 /************************************************/
@@ -39,7 +41,7 @@ void loop();
 void GuiClass::loop() {
   for (int i = 0; i < tasks.size; i++) {
     if (tasks.arr[i] != NULL) {
-      tasks.arr[i]->check();
+      tasks.arr[i]->checkTask();
     }
   }
 

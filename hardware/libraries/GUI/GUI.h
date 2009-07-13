@@ -7,7 +7,6 @@
 #include "Vector.hh"
 #include "Task.hh"
 
-
 #ifdef MIDIDUINO_USE_GUI
 
 #include "Events.hh"
