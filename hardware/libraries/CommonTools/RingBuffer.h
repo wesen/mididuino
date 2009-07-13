@@ -1,8 +1,8 @@
 #ifndef RINGBUFFER_H__
 #define RINGBUFFER_H__
 
+#include "WProgram.h"
 #include <inttypes.h>
-#include <avr/interrupt.h>
 
 template <class C, int N, class T = uint8_t>
 class CRingBuffer {
@@ -89,19 +89,19 @@ template <class C, int N, class T>
 
 template <class C, int N, class T>
   bool CRingBuffer<C, N, T>::isEmpty() volatile {
-  uint8_t tmp = SREG;
-  cli();
+  USE_LOCK();
+  SET_LOCK();
   bool ret = (rd == wr);
-  SREG = tmp;
+  CLEAR_LOCK();
   return ret;
 }
 
 template <class C, int N, class T>
   bool CRingBuffer<C, N, T>::isFull() volatile {
-  uint8_t tmp = SREG;
-  cli();
+  USE_LOCK();
+  SET_LOCK();
   bool ret = (RB_INC(wr) == rd);
-  SREG = tmp;
+  CLEAR_LOCK();
   return ret;
 }
 
