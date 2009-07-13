@@ -107,6 +107,44 @@ void m_strnappend(void *dst, const char *src, int len) {
   m_strncpy(ptr, src, len - i);
 }
 
+#ifdef HOST_MIDIDUINO
+#include <sys/time.h>
+#include <stdio.h>
+#include <math.h>
+
+static double startClock;
+static uint8_t clockStarted = 0;
+
+uint16_t read_clock(void) {
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  double clock = (double)(tv.tv_sec + (double)tv.tv_usec / 1000000.0);
+  if (!clockStarted) {
+    startClock = clock;
+    clockStarted = 1;
+  }
+  clock -= startClock;
+  clock *= 61250;
+  clock = fmod(clock, 65536);
+
+  return clock;
+}
+
+uint16_t read_slowclock(void) {
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  double clock = (double)(tv.tv_sec + (double)tv.tv_usec / 1000000.0);
+  if (!clockStarted) {
+    startClock = clock;
+    clockStarted = 1;
+  }
+  clock -= startClock;
+  clock *= 976;
+  clock = fmod(clock, 65536);
+  return clock;
+}
+
+#else
 volatile uint16_t slowclock = 0;
 volatile uint16_t clock = 0;
 
@@ -125,6 +163,7 @@ uint16_t read_slowclock(void) {
   CLEAR_LOCK();
   return ret;
 }
+#endif
 
 uint16_t clock_diff(uint16_t old_clock, uint16_t new_clock) {
   if (new_clock >= old_clock)
@@ -134,7 +173,6 @@ uint16_t clock_diff(uint16_t old_clock, uint16_t new_clock) {
 }
 
 #ifdef MIDIDUINO
-
 long map(long x, long in_min, long in_max, long out_min, long out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;

@@ -113,7 +113,8 @@ void m_strnappend(void *dst, const char *src, int len);
 
 extern uint16_t read_clock(void);
 extern uint16_t read_slowclock(void);
-#ifndef HOST_MIDIDUINO
+#ifdef HOST_MIDIDUINO
+#else
 extern volatile uint16_t clock;
 extern volatile uint16_t slowclock;
 #endif
