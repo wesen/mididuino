@@ -1,5 +1,11 @@
+#include "WProgram.h"
+#include "helpers.h"
+
 #include "Midi.h"
+
+#ifndef HOST_MIDIDUINO
 #include "MidiClock.h"
+#endif
 
 // #include "GUI.h"
 
@@ -27,12 +33,8 @@ const midi_parse_t midi_parse[] = {
   { 0, midi_ignore_message}
 };
 
-#ifndef HOST_MIDIDUINO
-MidiClass::MidiClass(MidiUartClass *_uart) {
+MidiClass::MidiClass(MidiUartParent *_uart) {
   uart = _uart;
-#else
-  MidiClass::MidiClass() {
-#endif
   receiveChannel = 0xFF;
   init();
   for (int i = 0; i < 7; i++) {
@@ -48,8 +50,10 @@ void MidiClass::init() {
 void MidiClass::handleByte(uint8_t byte) {
  again:
   if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
-    uint8_t tmp = SREG;
-    cli();
+    USE_LOCK();
+    SET_LOCK();
+
+#ifndef HOST_MIDIDUINO
     if (MidiClock.mode == MidiClock.EXTERNAL_MIDI) {
       switch (byte) {
       case MIDI_CLOCK:
@@ -65,7 +69,8 @@ void MidiClass::handleByte(uint8_t byte) {
 	break;
       }
     }
-    SREG = tmp;
+    CLEAR_LOCK();
+#endif
     
     return;
   }
@@ -154,7 +159,9 @@ void MidiClass::handleByte(uint8_t byte) {
 	  midiCallbacks[callback].arr[i](msg);
       }
     } else if (msg[0] == MIDI_SONG_POSITION_PTR) {
+#ifndef HOST_MIDIDUINO
       MidiClock.handleSongPositionPtr(msg);
+#endif
     }
     in_state = midi_wait_status;
     break;

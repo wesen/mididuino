@@ -57,7 +57,9 @@ class MidiClockClass {
   } mode;
   // arduino
 
+#ifndef BOARD_ID
 #define BOARD_ID 0x80
+#endif
 #else
 
   enum {

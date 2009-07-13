@@ -5,9 +5,7 @@
 
 #include <WProgram.h>
 
-#ifndef HOST_MIDIDUINO
-#include <MidiUart.h>
-#endif
+#include <MidiUartParent.hh>
 
 #include <inttypes.h>
 
@@ -35,9 +33,7 @@ class MidiClass {
   uint8_t in_msg_len;
   uint8_t msg[3];
 
-#ifndef HOST_MIDIDUINO
-  MidiUartClass *uart;
-#endif
+  MidiUartParent *uart;
 
   uint8_t callback;
   midi_callback_t callbacks[7];
@@ -46,12 +42,7 @@ class MidiClass {
  public:
   uint8_t receiveChannel;
 
-#ifndef HOST_MIDIDUINO
-  MidiClass(MidiUartClass *_uart = NULL);
-#else
-  MidiClass() {
-  }
-#endif
+  MidiClass(MidiUartParent *_uart = NULL);
 
   void init();
   void handleByte(uint8_t c);
