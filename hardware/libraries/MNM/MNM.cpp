@@ -9,7 +9,6 @@ MNMClass::MNMClass() {
   currentTrack = 0;
 }
 
-#ifndef HOST_MIDIDUINO
 void MNMClass::sendNoteOn(uint8_t track, uint8_t note, uint8_t velocity) {
   MidiUart.sendNoteOn(track + global.baseChannel, note, velocity);
 }
@@ -206,6 +205,7 @@ void MNMClass::setMachine(uint8_t track, MNMMachine *machine) {
   setLevel(track, machine->level);
 }
 
+#ifndef HOST_MIDIDUINO
 MNMEncoder::MNMEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
   CCEncoder(0, 0, _name, init) {
   initMNMEncoder(_track, _param);

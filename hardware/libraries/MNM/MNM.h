@@ -45,7 +45,6 @@ class MNMClass {
 
   int currentPattern;
 
-#ifndef HOST_MIDIDUINO
   void sendMultiTrigNoteOn(uint8_t note, uint8_t velocity);
   void sendMultiTrigNoteOff(uint8_t note);
   void sendMultiMapNoteOn(uint8_t note, uint8_t velocity);
@@ -162,7 +161,6 @@ class MNMClass {
   void unmuteAutoTrack() {
     setAutoMute(false);
   }
-#endif
   
   PGM_P getMachineName(uint8_t machine);
   PGM_P getModelParamName(uint8_t model, uint8_t param);
@@ -173,8 +171,6 @@ extern MNMClass MNM;
 
 #include "MNMSysex.hh"
 
-#ifndef HOST_MIDIDUINO
 #include "MNMTask.hh"
-#endif
 
 #endif /* MNM_H__ */
