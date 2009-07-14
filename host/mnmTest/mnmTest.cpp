@@ -6,7 +6,11 @@
 #include "MNMPattern.hh"
 #include "MNMParams.hh"
 
+#include "MidiUartOSX.h"
+
 #include <stdio.h>
+
+MidiUartOSXClass MidiUart;
 
 MNMPattern pattern;
 MNMKit kit;
@@ -103,6 +107,8 @@ void onGlobalMessageCallback() {
 }
 
 void onKitMessageCallback() {
+  return;
+  
   printBuf();
   
   if (!kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
@@ -143,20 +149,21 @@ void onSongMessageCallback() {
 }
 
 void onPatternMessageCallback() {
+  //  hexDump(MidiSysex.data, MidiSysex.recordLen);
   printBuf();
-
   
   if (!pattern.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
     fprintf(stderr, "error parsing pattern\n");
   } else {
     printf("parsed pattern!\n");
+    pattern.print();
   }
   printf("\n");
 
   if (!inCallback) {
     inCallback = true;
     uint16_t len = pattern.toSysex(sysexBuf, sizeof(sysexBuf));
-    hexDump(sysexBuf, len);
+    //    hexDump(sysexBuf, len);
     parseSysex(sysexBuf, len);
   }
 
