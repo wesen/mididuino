@@ -132,7 +132,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 24; j++) {
-      if (IS_BIT_SET32(lockPatterns[i], j)) {
+      if (IS_BIT_SET64(lockPatterns[i], j)) {
 	paramLocks[i][j] = numRows;
 	lockTracks[numRows] = i;
 	lockParams[numRows] = j;
@@ -143,7 +143,6 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   
 
   return true;
-  
 }
 
 uint8_t lockData[64][32];
@@ -210,56 +209,6 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   ElektronHelper::MDDataToSysex((uint8_t*)lockData, data + 0xB7, 64 * 32);
   
   ptr = data + 0xB7;
-#if 0  
-  {
-    uint16_t cnt7 = 0;
-      
-    ptr[0] = 0;
-
-    for (int track = 0; track < 16; track++) {
-      for (int param = 0; param < 24; param++) {
-	uint8_t lock = paramLocks[track][param];
-	if (lock != -1) {
-	  uint8_t *data3 = locks[lock];
-	    
-	  for (int i = 0; i < 32; i++) {
-	    uint8_t c = data3[i] & 0x7F;
-	    uint8_t msb = data3[i] >> 7;
-	    ptr[0] |= msb << (6 - cnt7);
-	    ptr[1 + cnt7] = c;
-	      
-	    if (cnt7++ == 6) {
-	      ptr += 8;
-	      retlen += 8;
-	      ptr[0] = 0;
-	      cnt7 = 0;
-	    }
-	      
-	    cnt++;
-	  }
-	}
-      }
-    }
-
-    for (uint16_t i = cnt; i < 64 * 32; i++) {
-      uint8_t c = 0 & 0x7F;
-      uint8_t msb = 0 >> 7;
-      ptr[0] |= msb << (6 - cnt7);
-      ptr[1 + cnt7] = c;
-	
-      if (cnt7++ == 6) {
-	ptr += 8;
-	retlen += 8;
-	ptr[0] = 0;
-	cnt7 = 0;
-      }
-	
-      cnt++;
-    }
-
-    retlen += cnt7 + (cnt7 != 0 ? 1 : 0);
-  }
-#endif
 
   ElektronHelper::from32Bit(accentEditAll ? 1 : 0, data2);
   ElektronHelper::from32Bit(slideEditAll ? 1 : 0, data2 + 4);
@@ -304,7 +253,7 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx) {
 
 bool MDPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
   for (int i = 0; i < 64; i++) {
-    if (locks[idx][i] != 255 || !IS_BIT_SET32(trigs, i))
+    if (locks[idx][i] != 255 || !IS_BIT_SET64(trigs, i))
       return false;
   }
 
@@ -334,7 +283,7 @@ void MDPattern::clearPattern() {
 void MDPattern::clearTrack(uint8_t track) {
   if (track >= 16)
     return;
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 64; i++) {
     clearTrig(track, i);
   }
   clearTrackLocks(track);
@@ -344,14 +293,14 @@ void MDPattern::clearLockPattern(uint8_t lock) {
   if (lock >= 64)
     return;
   
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 64; i++) {
     locks[lock][i] = 255;
-    if (lockTracks[lock] != -1 && lockParams[lock] != -1) {
-      paramLocks[lockTracks[lock]][lockParams[lock]] = -1;
-    }
-    lockTracks[lock] = -1;
-    lockParams[lock] = -1;
   }
+  if (lockTracks[lock] != -1 && lockParams[lock] != -1) {
+    paramLocks[lockTracks[lock]][lockParams[lock]] = -1;
+  }
+  lockTracks[lock] = -1;
+  lockParams[lock] = -1;
 }
 
 bool MDPattern::isParamLocked(uint8_t track, uint8_t param) {
@@ -373,7 +322,7 @@ void MDPattern::clearTrackLocks(uint8_t track) {
 }
 
 void MDPattern::clearTrig(uint8_t track, uint8_t trig) {
-  CLEAR_BIT32(trigPatterns[track], trig);
+  CLEAR_BIT64(trigPatterns[track], trig);
   for (int i = 0; i < 24; i++) {
     clearLock(track, trig, i);
   }
@@ -401,7 +350,7 @@ bool MDPattern::addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t valu
     paramLocks[track][param] = idx;
     lockTracks[idx] = track;
     lockParams[idx] = param;
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 64; i++) {
       locks[idx][i] = 255;
     }
   }

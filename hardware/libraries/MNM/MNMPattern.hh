@@ -81,6 +81,7 @@ public:
   uint8_t chordNotesUsed;
 
   uint8_t locksUsed;
+  uint8_t numRows;
   uint8_t locks[62][64];
   int8_t paramLocks[6][72];
   int8_t lockTracks[64];
@@ -109,15 +110,64 @@ public:
   void clearParamLocks(uint8_t track, uint8_t param);
   void clearTrackLocks(uint8_t track);
 
-  void clearTrig(uint8_t track, uint8_t trig);
-  void setTrig(uint8_t track, uint8_t trig);
+  void clearTrig(uint8_t track, uint8_t trig,
+		 bool ampTrig = false, bool filterTrig = false, bool lfoTrig = false,
+		 bool triglessTrig = false, bool chordTrig = false);
+  void setTrig(uint8_t track, uint8_t trig,
+	       bool ampTrig = false, bool filterTrig = false, bool lfoTrig = false,
+	       bool triglessTrig = false, bool chordTrig = false);
+
+  void clearAllTrig(uint8_t track, uint8_t trig) {
+    clearTrig(track, trig, true, true, true, true, true);
+  }
+  void setAllTrig(uint8_t track, uint8_t trig) {
+    setTrig(track, trig, true, true, true);
+  }
+  void clearAmpTrig(uint8_t track, uint8_t trig) {
+    clearTrig(track, trig, true);
+  }
+  void setAmpTrig(uint8_t track, uint8_t trig) {
+    setTrig(track, trig, true);
+  }
+  void clearFilterTrig(uint8_t track, uint8_t trig) {
+    clearTrig(track, trig, false, true);
+  }
+  void setFilterTrig(uint8_t track, uint8_t trig) {
+    setTrig(track, trig, false, true);
+  }
+  void clearLFOTrig(uint8_t track, uint8_t trig) {
+    clearTrig(track, trig, false, false, true);
+  }
+  void setLFOTrig(uint8_t track, uint8_t trig) {
+    setTrig(track, trig, false, false, true);
+  }
+  void clearTriglessTrig(uint8_t track, uint8_t trig) {
+    clearTrig(track, trig, false, false, false, true);
+  }
+  void setTriglessTrig(uint8_t track, uint8_t trig) {
+    setTrig(track, trig, false, false, false, true);
+  }
+  void clearChordTrig(uint8_t track, uint8_t trig) {
+    clearTrig(track, trig, false, false, false, false, true);
+  }
+  void setChordTrig(uint8_t track, uint8_t trig) {
+    setTrig(track, trig, false, false, false, false, true);
+  }
 
   int8_t getNextEmptyLock();
   void recalculateLockPatterns();
 
+  void setNote(uint8_t track, uint8_t step, uint8_t note);
+  void setChordNote(uint8_t track, uint8_t step, uint8_t note);
+  void clearChordNote(uint8_t track, uint8_t step, uint8_t note);
+
   bool addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t value);
   void clearLock(uint8_t track, uint8_t trig, uint8_t param);
   uint8_t getLock(uint8_t track, uint8_t trig, uint8_t param);
+
+#ifdef HOST_MIDIDUINO
+  void print();
+#endif
 };
 
 
