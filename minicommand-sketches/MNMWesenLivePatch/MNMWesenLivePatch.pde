@@ -1,13 +1,12 @@
 #include <MNM.h>
-#include <MD.h>
 #include <CCHandler.h>
 
 CCHandler ccHandler;
 
-class AutoMDPage : 
+class AutoMNMPage : 
 public EncoderPage {
 public:
-  MDEncoder mdEncoders[4];
+  MNMEncoder mnmEncoders[4];
   RecordingEncoder<64> recEncoders[4];
 
   void on32Callback() {
@@ -24,7 +23,7 @@ public:
   
   void stopRecording() {
     for (int i = 0; i < 4; i++) {
-      recEncoders[i].stopRecording();
+      recEncoders[i].startRecording();
     }
   }
   
@@ -34,10 +33,10 @@ public:
 
   virtual void setup() {
     for (int i = 0; i < 4; i++) {
-      mdEncoders[i].setName("___");
-      recEncoders[i].initRecordingEncoder(&mdEncoders[i]);
+      mnmEncoders[i].setName("___");
+      recEncoders[i].initRecordingEncoder(&mnmEncoders[i]);
       encoders[i] = &recEncoders[i];
-      ccHandler.addEncoder(&mdEncoders[i]);
+      ccHandler.addEncoder(&mnmEncoders[i]);
     }
   }
 
@@ -49,8 +48,8 @@ public:
       ccHandler.incomingCCs.getCopy(i, &ccs[i]);
       incoming_cc_t *cc = &ccs[i];
       for (int j = 0; j < 4; j++) {
-        if ((mdEncoders[j].getCC() == cc->cc) &&
-            (mdEncoders[j].getChannel() == cc->channel)) {
+        if ((mnmEncoders[j].getCC() == cc->cc) &&
+            (mnmEncoders[j].getChannel() == cc->channel)) {
            ccAssigned[i] = j;
            encoderAssigned[j] = i;
            break;
@@ -71,16 +70,16 @@ GUI.flash_put_value(i, mdEncoders[i].getCC(), 1800);
     for (int i = 0; i < 4; i++) {
       incoming_cc_t *cc = &ccs[i];
       if (ccAssigned[i] != -1) {
-        mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-        mdEncoders[ccAssigned[i]].setValue(cc->value);
+        mnmEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
+        mnmEncoders[ccAssigned[i]].setValue(cc->value);
         clearRecording(ccAssigned[i]);
       } else {
         for (int j = 0; j < 4; j++) {
           if (encoderAssigned[j] == -1) {
             ccAssigned[i] = j;
             encoderAssigned[j] = i;
-            mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-            mdEncoders[ccAssigned[i]].setValue(cc->value);
+            mnmEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
+            mnmEncoders[ccAssigned[i]].setValue(cc->value);
             clearRecording(ccAssigned[i]);
             break;
           }

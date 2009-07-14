@@ -51,7 +51,7 @@ public:
     MDTask.autoLoadKit = true;
     MDTask.reloadGlobal = true;
     MDTask.addOnKitChangeCallback(_onKitChanged);
-//    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
+    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
     GUI.addTask(&MDTask);
 
     for (int i = 0; i < 4; i++) {
@@ -60,8 +60,11 @@ public:
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
 
-    MidiClock.mode = MidiClock.EXTERNAL;
-    MidiClock.transmit = false;
+    MidiClock.mode = MidiClock.EXTERNAL_UART2;
+    MidiClock.transmit = true;
+//    MidiClock.mode = MidiClock.EXTERNAL;
+//    MidiClock.transmit = false;
+    
     MidiClock.setOn16Callback(_on16Callback);
     MidiClock.setOn32Callback(on32Callback);
     MidiClock.start();
@@ -105,6 +108,7 @@ public:
       if (MD.kit.machines[i].model == RAM_P1_MODEL) {
         GUI.setLine(GUI.LINE1);
         GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+//        GUI.flash_put_value(3, (uint8_t)i);
         GUI.setLine(GUI.LINE2);
         GUI.flash_string_fill(MD.kit.name);
         ramP1Track = i;
@@ -124,6 +128,7 @@ public:
 
 
   void onGlobalChanged() {
+    return;
     GUI.setLine(GUI.LINE1);
     GUI.flash_string_fill("GLOBAL CHANGED");
     GUI.setLine(GUI.LINE2);
