@@ -26,7 +26,6 @@ void MidiClockClass::init() {
   mod6_counter = 0;
   indiv96th_counter = 0;
   inmod6_counter = 0;
-  doUpdateClock = false;
   pll_x = 200;
   isInit = false;
 }
@@ -130,14 +129,11 @@ void MidiClockClass::updateClockInterval() {
     uint16_t _interval = interval;
     uint16_t _rx_clock = rx_clock;
     uint16_t _rx_last_clock = rx_last_clock;
-    uint16_t _update_rx_clock = update_rx_clock;
-    uint16_t _update_last_clock = update_last_clock;
-    uint16_t _update_clock = update_clock;
     
     CLEAR_LOCK();
 
     uint16_t diff_rx = midi_clock_diff(_rx_last_clock, _rx_clock);
-    uint16_t diff_int = midi_clock_diff(_update_last_clock, _update_clock);
+
 
     uint16_t new_interval = 0;
 
@@ -154,6 +150,9 @@ void MidiClockClass::updateClockInterval() {
 	(((uint32_t)_interval * (uint32_t)pll_x) +
 	 (uint32_t)(256 - pll_x) * (uint32_t)diff_rx);
       //      uint8_t rem = bla & 0xFF;
+      if (bla > 0xfff) {
+	// XXX stop
+      }
       bla >>= 8;
       new_interval = bla;
       //      if (rem > 190) // omg voodoo to correct discarded precision induced drift
@@ -172,32 +171,9 @@ static uint32_t phase_mult(uint32_t val) {
   return val / 4;
 }
 
-void MidiClockClass::updateClockPhase() {
-  if (!MidiClock.doUpdateClock)
-    return;
-
-  USE_LOCK();
-  SET_LOCK();
-  bool _updateSmaller = updateSmaller;
-  uint16_t _rx_phase = rx_phase;
-  CLEAR_LOCK();
-
-  SET_LOCK();
-  doUpdateClock = false;
-  //  counter_phase = _rx_phase;
-  CLEAR_LOCK();
-
-#ifdef DEBUG_MIDI_CLOCK
-  GUI.setLine(GUI.LINE1);
-  GUI.put_value(3, updateSmaller ? 1 : 0);
-  GUI.setLine(GUI.LINE2);
-  GUI.put_value16(2, _rx_phase);
-#endif
-}
-
 /* in interrupt on receiving 0xF8 */
 void MidiClockClass::handleClock() {
-  setLed();
+  //  setLed();
 
   rx_phase = counter;
   uint16_t my_clock = clock;
@@ -244,14 +220,13 @@ void MidiClockClass::handleClock() {
 	last_phase_add = phase_add;
       }
     }
-    doUpdateClock = true;
   }
 
   if (state == STARTING && indiv96th_counter >= 2) {
     state = STARTED;
   }
 
-  clearLed();
+  //  clearLed();
   
 }
 
@@ -260,7 +235,6 @@ void MidiClockClass::handleTimerInt()  {
   //  sei();
   if (counter == counter_phase) {
     setLed2();
-
     uint8_t _mod6_counter = mod6_counter;
     
     div96th_counter++;
@@ -299,9 +273,19 @@ void MidiClockClass::handleTimerInt()  {
 	mod6_counter = inmod6_counter;
       }
     }
+
+    clearLed2();
+
+    static bool inCallback = false;
+    if (inCallback) {
+      setLed();
+      return;
+    } else {
+      inCallback = true;
+    }
     
     sei();
-    
+
     if (on96Callback)
       on96Callback();
 
@@ -319,9 +303,16 @@ void MidiClockClass::handleTimerInt()  {
       div32th_counter++;
     }
 
+    if ((MidiClock.mode == MidiClock.EXTERNAL ||
+	 MidiClock.mode == MidiClock.EXTERNAL_UART2)) {
+      MidiClock.updateClockInterval();
+    }
+
+    inCallback = false;
   } else {
     counter--;
   }
+
   clearLed2();
 }
     

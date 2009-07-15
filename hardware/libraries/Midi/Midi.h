@@ -11,6 +11,7 @@
 // #include "MidiSDS.hh"
 #include "MidiSysex.hh"
 #include "Vector.hh"
+#include "Callback.hh"
 
 extern "C" {
 #include "midi-common.hh"
@@ -39,6 +40,8 @@ class MidiClass {
   Vector<midi_callback_t, 4>midiCallbacks[7];
 
  public:
+  bool midiActive;
+
   uint8_t receiveChannel;
 
   MidiClass(MidiUartParent *_uart = NULL);

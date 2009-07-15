@@ -34,6 +34,7 @@ const midi_parse_t midi_parse[] = {
 };
 
 MidiClass::MidiClass(MidiUartParent *_uart) {
+  midiActive = true;
   uart = _uart;
   receiveChannel = 0xFF;
   init();
@@ -50,10 +51,10 @@ void MidiClass::init() {
 void MidiClass::handleByte(uint8_t byte) {
  again:
   if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
+#ifndef HOST_MIDIDUINO
     USE_LOCK();
     SET_LOCK();
-
-#ifndef HOST_MIDIDUINO
+    
     if (MidiClock.mode == MidiClock.EXTERNAL_MIDI) {
       switch (byte) {
       case MIDI_CLOCK:
@@ -61,11 +62,11 @@ void MidiClass::handleByte(uint8_t byte) {
 	break;
 	
       case MIDI_START:
-	MidiClock.handleMidiStart();
+	//	MidiClock.handleMidiStart();
 	break;
 	
       case MIDI_STOP:
-	MidiClock.handleMidiStop();
+	//	MidiClock.handleMidiStop();
 	break;
       }
     }
@@ -74,6 +75,9 @@ void MidiClass::handleByte(uint8_t byte) {
     
     return;
   }
+
+  if (!midiActive)
+    return;
 
   switch (in_state) {
   case midi_ignore_message:
