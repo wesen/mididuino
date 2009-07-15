@@ -110,7 +110,6 @@ SIGNAL(USART0_RX_vect) {
       break;
     }
   } else {
-    sei();
     MidiUart.rxRb.put(c);
 
 #if 1
@@ -121,7 +120,7 @@ SIGNAL(USART0_RX_vect) {
 #endif
     
   }
-  clearLed();
+  //  clearLed();
 }
 
 #ifdef TX_IRQ
@@ -178,11 +177,19 @@ SIGNAL(USART1_RX_vect) {
       break;
 
     default:
-      MidiUart.rxRb.put(c);
+      MidiUart2.rxRb.put(c);
       break;
     }
   } else {
-    MidiUart2.rxRb.put(c);
+    if (Midi2.midiActive)
+      MidiUart2.rxRb.put(c);
   }
+
+#if 1
+    // show overflow debug
+    if (MidiUart.rxRb.overflow) {
+      setLed();
+    }
+#endif
 }
 

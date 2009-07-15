@@ -34,6 +34,7 @@ void gui_poll() {
   else
     inGui = true;
   sei(); // reentrant interrupt
+
   static uint16_t oldsr = 0;
   uint16_t sr = SR165.read16();
   if (sr != oldsr) {
@@ -53,18 +54,17 @@ uint16_t lastRunningStatusReset = 0;
 #define OUTPUTPIN PD0
 
 ISR(TIMER2_OVF_vect) {
-  //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
-
-#ifdef MIDIDUINO_POLL_GUI_IRQ
-  gui_poll();
-#endif
   slowclock++;
-
   if (abs(slowclock - lastRunningStatusReset) > 3000) {
     MidiUart.resetRunningStatus();
     lastRunningStatusReset = slowclock;
   }
   
+  //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
+
+#ifdef MIDIDUINO_POLL_GUI_IRQ
+  gui_poll();
+#endif
   //  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
 }
 
@@ -72,31 +72,17 @@ MidiClass Midi;
 MidiClass Midi2;
 
 void __mainInnerLoop(bool callLoop) {
-  USE_LOCK();
-  
-  SET_BIT(OUTPUTPORT, OUTPUTPIN);
+  //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
   //  setLed2();
 
-  if ((MidiClock.mode == MidiClock.EXTERNAL ||
-       MidiClock.mode == MidiClock.EXTERNAL_UART2)) {
-    MidiClock.updateClockInterval();
-    MidiClock.updateClockPhase(); // phase correction
-  }
-  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
-  
-  if (MidiUart.avail()) {
+  //  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
+  while (MidiUart.avail()) {
     Midi.handleByte(MidiUart.getc());
   }
   
-  if (MidiUart2.avail()) {
+  while (MidiUart2.avail()) {
     Midi2.handleByte(MidiUart2.getc());
   }
-  
-#if defined(MIDIDUINO_POLL_GUI) && !defined(MIDIDUINO_POLL_GUI_IRQ)
-  SET_LOCK();
-  gui_poll();
-  CLEAR_LOCK();
-#endif
   
   if (callLoop) {
     GUI.loop();
