@@ -67,7 +67,7 @@ void MNMClass::setTrackPitch(uint8_t track, uint8_t pitch) {
   MidiUart.sendNRPN(global.baseChannel, (112 + track) << 7, pitch);
 }
 
-void MNMClass::setLevel(uint8_t track, uint8_t level) {
+void MNMClass::setTrackLevel(uint8_t track, uint8_t level) {
   MidiUart.sendCC(global.baseChannel + track, 7, level);
 }
 
@@ -84,21 +84,37 @@ void MNMClass::setAutoLevel(uint8_t level) {
 }
 
 void MNMClass::setParam(uint8_t track, uint8_t param, uint8_t value) {
-  if (param < 0x30) {
-    MidiUart.sendCC(global.baseChannel + track, param + 0x30, value);
+  uint8_t cc = 0;
+  if (param == 100) {
+    cc = 0x3; // MUT
+  } else if (param == 101) {
+    cc = 0x7; // LEV;
+  } else if (param < 0x10) {
+    cc = param + 0x30;
+  } else if (param < 0x28) {
+    cc = param + 0x38;
   } else {
-    MidiUart.sendCC(global.baseChannel + track, param + 0x38, value);
+    cc = param + 0x40;
   }
+  MidiUart.sendCC(global.baseChannel + track, cc, value);
 }
 
 bool MNMClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *param) {
   if ((channel >= global.baseChannel) && (channel < (global.baseChannel + 6))) {
     *track = channel - global.baseChannel;
-    if ((cc >= 0x30) && (cc <= 0x5f)) {
+    if ((cc >= 0x30) && (cc <= 0x3f)) {
       *param = cc - 0x30;
       return true;
-    } else if ((cc >= 0x38) && (cc <= 0x77)) {
+    } else if ((cc >= 0x48) && (cc <= 0x5f)) {
       *param = cc - 0x38;
+    } else if ((cc >= 0x68) && (cc <= 0x77)) {
+      *param = cc - 0x40;
+      return true;
+    } else if (cc == 0x3) {
+      *param = 100; // MUTE
+      return true;
+    } else if (cc == 0x07) {
+      *param = 101; // LEV
       return true;
     }
   }
@@ -165,6 +181,23 @@ void MNMClass::sendRequest(uint8_t type, uint8_t param) {
   MidiUart.putc(0xF7);
 }
 
+void MNMClass::revertToCurrentKit(bool reloadKit) {
+  if (!reloadKit) {
+    if (loadedKit) {
+      MNM.loadKit(MNM.currentKit);
+    }
+  }
+}
+
+
+void MNMClass::revertToTrack(uint8_t track, bool reloadKit) {
+  if (!reloadKit) {
+    if (loadedKit) {
+      setMachine(track, &kit.machines[track]);
+    }
+  }
+}
+
 void MNMClass::requestKit(uint8_t _kit) {
   sendRequest(MNM_KIT_REQUEST_ID, _kit);
 }
@@ -202,7 +235,7 @@ void MNMClass::setMachine(uint8_t track, MNMMachine *machine) {
   for (int i = 0; i < 72; i++) {
     setParam(track, i, machine->params[i]);
   }
-  setLevel(track, machine->level);
+  setTrackLevel(track, machine->level);
 }
 
 #ifndef HOST_MIDIDUINO
@@ -213,11 +246,19 @@ MNMEncoder::MNMEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init
 }
 
 uint8_t MNMEncoder::getCC() {
-  if (param < 0x30) {
-    return 0x30 + param;
+  uint8_t cc = 0;
+  if (param == 100) {
+    cc = 0x3; // MUT
+  } else if (param == 101) {
+    cc = 0x7; // LEV;
+  } else if (param < 0x10) {
+    cc = param + 0x30;
+  } else if (param < 0x28) {
+    cc = param + 0x38;
   } else {
-    return 0x38 + param;
+    cc = param + 0x40;
   }
+  return cc;
 }
 
 uint8_t MNMEncoder::getChannel() {
@@ -226,22 +267,43 @@ uint8_t MNMEncoder::getChannel() {
 
 void MNMEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
   if (MNM.parseCC(_channel, _cc, &track, &param)) {
-    if (MNM.loadedKit) {
-      PGM_P name= NULL;
-      name = MNM.getModelParamName(MNM.kit.machines[track].model, param);
-      if (name != NULL) {
-	char myName[4];
-	m_strncpy_p(myName, name, 4);
-	setName(myName);
-	GUI.redisplay();
-      }
-    }
+    initMNMEncoder(track, param);
   }
 }
 
 void MNMEncoder::loadFromKit() {
-  setValue(MNM.kit.machines[track].params[param]);
+  if (param == 101) {
+    setValue(MNM.kit.machines[track].level);
+  } else if (param < 72) {
+    setValue(MNM.kit.machines[track].params[param]);
+  }
 }
+
+void MNMEncoder::initMNMEncoder(uint8_t _track, uint8_t _param,
+				char *_name, uint8_t init) {
+    track = _track;
+    param = _param;
+    if (_name == NULL) {
+      if (MNM.loadedKit) {
+	PGM_P name= NULL;
+	name = MNM.getModelParamName(MNM.kit.machines[track].model, param);
+	if (name != NULL) {
+	  char myName[4];
+	  m_strncpy_p(myName, name, 4);
+	  setName(myName);
+	  GUI.redisplay();
+	} else {
+	  setName("XXX");
+	  GUI.redisplay();
+	}
+      }
+    } else {
+      setName(_name);
+      GUI.redisplay();
+    }
+      
+    setValue(init);
+  }
 
 #endif /* HOST_MIDIDUINO */
 

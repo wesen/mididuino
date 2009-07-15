@@ -57,32 +57,32 @@ extern uint8_t monomachine_sysex_hdr[5];
 
 #define MNM_SET_TEMPO_ID 0x61
 
-#define MNM_GND_GND_MODEL    0x00
-#define MNM_GND_SIN_MODEL    0x01
-#define MNM_GND_NOIS_MODEL   0x02
+#define MNM_GND_GND_MODEL    0
+#define MNM_GND_SIN_MODEL    1
+#define MNM_GND_NOIS_MODEL   2
 
-#define MNM_SID_6581_MODEL   0x03
+#define MNM_SID_6581_MODEL   3
 
-#define MNM_SWAVE_SAW_MODEL  0x04
-#define MNM_SWAVE_PULS_MODEL 0x05
-#define MNM_SWAVE_ENS_MODEL  0x06
+#define MNM_SWAVE_SAW_MODEL  4
+#define MNM_SWAVE_PULS_MODEL 5
+#define MNM_SWAVE_ENS_MODEL  6
 
-#define MNM_DPRO_WAVE_MODEL  0x06
-#define MNM_DPRO_BBOX_MODEL  0x07
-#define MNM_DPRO_DDRW_MODEL  0x32
-#define MNM_DPRO_DENS_MODEL  0x33
+#define MNM_DPRO_WAVE_MODEL  6
+#define MNM_DPRO_BBOX_MODEL  7
+#define MNM_DPRO_DDRW_MODEL  32
+#define MNM_DPRO_DENS_MODEL  33
 
-#define MNM_FM_STAT_MODEL    0x08
-#define MNM_FM_PAR_MODEL     0x09
-#define MNM_FM_DYN_MODEL     0x10
+#define MNM_FM_STAT_MODEL    8
+#define MNM_FM_PAR_MODEL     9
+#define MNM_FM_DYN_MODEL     10
 
-#define MNM_VO_VO6_MODEL     0x11
+#define MNM_VO_VO6_MODEL     11
 
-#define MNM_FX_THRU_MODEL    0x12
-#define MNM_FX_REVERB_MODEL  0x13
-#define MNM_FX_CHORUS_MODEL  0x15
-#define MNM_FX_DYNAMIX_MODEL 0x16
-#define MNM_FX_RINGMOD_MODEL 0x17
+#define MNM_FX_THRU_MODEL    12
+#define MNM_FX_REVERB_MODEL  13
+#define MNM_FX_CHORUS_MODEL  15
+#define MNM_FX_DYNAMIX_MODEL 16
+#define MNM_FX_RINGMOD_MODEL 17
 
 #define MNM_SWAVE_SAW_UNIL   0x00
 #define MNM_SWAVE_SAW_UNIW   0x01

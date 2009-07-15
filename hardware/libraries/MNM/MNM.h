@@ -17,12 +17,7 @@ class MNMEncoder : public CCEncoder {
   virtual uint8_t getCC();
   virtual uint8_t getChannel();
   virtual void initCCEncoder(uint8_t _channel, uint8_t _cc);
-  void initMNMEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0) {
-    track = _track;
-    param = _param;
-    setName(_name);
-    setValue(init);
-  }
+  void initMNMEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
 
   MNMEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
   void loadFromKit();
@@ -78,9 +73,9 @@ class MNMClass {
   void setTrackPitch(uint8_t track, uint8_t pitch);
 
   void setTrackLevel(uint8_t level) {
-    setTrackLevel(currentTrack);
+    setTrackLevel(currentTrack, level);
   }
-  void setLevel(uint8_t track, uint8_t level);
+  void setTrackLevel(uint8_t track, uint8_t level);
 
   void triggerTrack(bool amp = false, bool lfo = false, bool filter = false) {
     triggerTrack(currentTrack, amp, lfo, filter);
@@ -165,6 +160,14 @@ class MNMClass {
   PGM_P getMachineName(uint8_t machine);
   PGM_P getModelParamName(uint8_t model, uint8_t param);
   void getPatternName(uint8_t pattern, char str[5]);
+
+  void revertToCurrentKit(bool reloadKit = false);
+  void revertToCurrentTrack(bool reloadKit = false) {
+    if (currentTrack != -1) {
+      revertToTrack(currentTrack, false);
+    }
+  }
+  void revertToTrack(uint8_t track, bool reloadKit = false);
 };
 
 extern MNMClass MNM;

@@ -246,6 +246,9 @@ model_param_name_t mnm_generic_param_names[] PROGMEM = { {"ATK", 0x08 },
 							 {"INT", 0x36 },
 							 {"DPT", 0x37 },
 
+							 {"MUT", 100 },
+							 {"LEV", 101 },
+
 							 {"", 127}};
 model_to_param_names_t mnm_model_param_names[] = {
   { MNM_GND_SIN_MODEL, mnm_gnd_sin_model_names },
@@ -281,7 +284,7 @@ static PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
   if (names == NULL)
     return NULL;
   
-  while ((id = pgm_read_byte(&names[i].id)) != 127 && i < 24) {
+  while ((id = pgm_read_byte(&names[i].id)) != 127) {
     if (id == param) {
       return names[i].name ;
     }
