@@ -45,7 +45,11 @@ MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) 
 uint8_t MDEncoder::getCC() {
   uint8_t b = track & 3;
   uint8_t cc = param;
-  if (b < 2) {
+  if (param == 32) {
+    cc = b + 12;
+  } else if (param == 33) {
+    cc = b + 8;
+  } else if (b < 2) {
     cc += 16 + b * 24;
   } else {
     cc += 24 + b * 24;
@@ -63,13 +67,16 @@ uint8_t MDEncoder::getChannel() {
 
 void MDEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
   MD.parseCC(_channel, _cc, &track, &param);
-  if (MD.loadedKit) {
+  if (MD.loadedKit && (track != 255)) {
     PGM_P name = NULL;
     name = model_param_name(MD.kit.machines[track].model, param);
     if (name != NULL) {
       char myName[4];
       m_strncpy_p(myName, name, 4);
       setName(myName);
+      GUI.redisplay();
+    } else {
+      setName("XXX");
       GUI.redisplay();
     }
   }
@@ -135,8 +142,14 @@ void MDClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *para
     } else if (cc >= 40) {
       *track += 1;
       *param = cc - 40;
-    } else {
+    } else if (cc >= 16) {
       *param = cc - 16;
+    } else if (cc >= 12) {
+      *track = (cc - 12);
+      *param = 32; // MUTE
+    } else if (cc >= 8) {
+      *track = (cc - 8);
+      *param = 33; // LEV
     }
   } else {
     *track = 255;
@@ -160,14 +173,21 @@ void MDClass::triggerTrack(uint8_t track, uint8_t velocity) {
 void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
   if (global.baseChannel == 127)
     return;
-  
+
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
-  uint8_t cc = param;
-  if (b < 2) {
-    cc += 16 + b * 24;
+  uint8_t cc = 0;
+  if (param == 32) { // MUTE
+    cc = 12 + b;
+  } else if (param == 33) { // LEV
+    cc = 8 + b;
   } else {
-    cc += 24 + b * 24;
+    cc = param;
+    if (b < 2) {
+      cc += 16 + b * 24;
+    } else {
+      cc += 24 + b * 24;
+    }
   }
   MidiUart.sendCC(channel + global.baseChannel, cc, value);
 }

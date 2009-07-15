@@ -702,7 +702,7 @@ static PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
 }
 
 static model_param_name_t *get_model_param_names(uint8_t model) {
-  for (int i = 0; i < countof(model_param_names); i++) {
+  for (uint16_t i = 0; i < countof(model_param_names); i++) {
     if (model == model_param_names[i].model) {
       return model_param_names[i].names;
     }
@@ -711,6 +711,12 @@ static model_param_name_t *get_model_param_names(uint8_t model) {
 }
 
 PGM_P model_param_name(uint8_t model, uint8_t param) {
+  if (param == 32) {
+    return PSTR("MUT");
+  } else if (param == 33) {
+    return PSTR("LEV");
+  }
+  
   if (model >= MID_MODEL && model <= MID_16_MODEL) {
     return get_param_name(mid_model_names, param);
   }

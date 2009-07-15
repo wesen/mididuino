@@ -2,6 +2,7 @@
 #define MD_TASK_H__
 
 #include "Vector.hh"
+#include "Callback.hh"
 
 extern MDClass MD;
 
@@ -23,6 +24,11 @@ public:
     reloadGlobal = false;
   }
 
+  const static uint8_t MD_CB_CLASS_ID = 10;
+  const static uint8_t MD_CB_KITCHANGE_ID = 0;;
+  
+  CallbackHandler<MD_CB_CLASS_ID, MD_CB_KITCHANGE_ID, 4> kitChangeHandler;
+  
   Vector<md_task_callback_t, 4>kitChangeCallbacks;
   Vector<md_task_callback_t, 4>globalChangeCallbacks;
   Vector<md_task_callback_t, 4>patternChangeCallbacks;
@@ -47,6 +53,8 @@ public:
   }
 
   void callKitCallbacks() {
+    kitChangeHandler.callback(NULL);
+    
     for (int i = 0; i < kitChangeCallbacks.size; i++) {
       if (kitChangeCallbacks.arr[i] != NULL) {
 	kitChangeCallbacks.arr[i]();
