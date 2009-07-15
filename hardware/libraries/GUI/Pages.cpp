@@ -3,10 +3,7 @@
 #include "Pages.hh"
 
 void Page::update() {
-  uint8_t tmp = SREG;
-  cli();
   Encoders.clearEncoders();
-  SREG = tmp;
 }
 
 void Page::redisplayPage() {
@@ -19,14 +16,19 @@ void Page::redisplayPage() {
   
 
 void EncoderPage::update() {
-  uint8_t tmp = SREG;
-  cli();
+  encoder_t _encoders[GUI_NUM_ENCODERS];
+
+  USE_LOCK();
+  SET_LOCK();
+  m_memcpy(_encoders, Encoders.encoders, sizeof(_encoders));
+  CLEAR_LOCK();
+  
   for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     if (encoders[i] != NULL) 
-      encoders[i]->update(Encoders.encoders + i);
+      encoders[i]->update(_encoders + i);
   }
+  
   Encoders.clearEncoders();
-  SREG = tmp;
 }
 
 void EncoderPage::clear() {
