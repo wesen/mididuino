@@ -38,4 +38,6 @@ inline void toggleLed2(void) {
 
 void start_bootloader(void);
 
+void handleIncomingMidi();
+
 #endif /* MIDIDUIDNO_PRIVATE_H__ */

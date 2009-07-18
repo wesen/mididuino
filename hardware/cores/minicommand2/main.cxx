@@ -71,11 +71,7 @@ ISR(TIMER2_OVF_vect) {
 MidiClass Midi;
 MidiClass Midi2;
 
-void __mainInnerLoop(bool callLoop) {
-  //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
-  //  setLed2();
-
-  //  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
+void handleIncomingMidi() {
   while (MidiUart.avail()) {
     Midi.handleByte(MidiUart.getc());
   }
@@ -83,6 +79,14 @@ void __mainInnerLoop(bool callLoop) {
   while (MidiUart2.avail()) {
     Midi2.handleByte(MidiUart2.getc());
   }
+}
+
+void __mainInnerLoop(bool callLoop) {
+  //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
+  //  setLed2();
+
+  //  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
+  handleIncomingMidi();
   
   if (callLoop) {
     GUI.loop();
