@@ -23,9 +23,9 @@ void setup() {
 }
 
 void loop() {
-  GUI.updatePage();
+//  GUI.updatePage();
 
-  GUI.update();
+//  GUI.update();
 }
 
 void handleGui() {

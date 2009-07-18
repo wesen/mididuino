@@ -15,19 +15,19 @@ public:
       recEncoders[i].playback(MidiClock.div32th_counter);
     }
   }
-  
+
   void startRecording() {
     for (int i = 0; i < 4; i++) {
       recEncoders[i].startRecording();
     }
   }
-  
+
   void stopRecording() {
     for (int i = 0; i < 4; i++) {
       recEncoders[i].stopRecording();
     }
   }
-  
+
   void clearRecording(int i) {
     recEncoders[i].clearRecording();
   }
@@ -42,46 +42,55 @@ public:
   }
 
   void autoLearnLast4() {
-    int8_t ccAssigned[4] = { -1, -1, -1, -1 };
-    int8_t encoderAssigned[4] = { -1, -1, -1, -1 };
+    int8_t ccAssigned[4] = { 
+      -1, -1, -1, -1         };
+    int8_t encoderAssigned[4] = { 
+      -1, -1, -1, -1         };
     incoming_cc_t ccs[4];
-    for (int i = 0; i < 4; i++) {
+    int count = ccHandler.incomingCCs.size();
+    for (int i = 0; i < count; i++) {
       ccHandler.incomingCCs.getCopy(i, &ccs[i]);
       incoming_cc_t *cc = &ccs[i];
       for (int j = 0; j < 4; j++) {
         if ((mdEncoders[j].getCC() == cc->cc) &&
-            (mdEncoders[j].getChannel() == cc->channel)) {
-           ccAssigned[i] = j;
-           encoderAssigned[j] = i;
-           break;
+          (mdEncoders[j].getChannel() == cc->channel)) {
+          ccAssigned[i] = j;
+          encoderAssigned[j] = i;
+          break;
         }
       }
     }
-    
-    #if 0
-    for (int i = 0; i < 4; i++) {
+
+#if 0
+    for (int i = 0; i < count; i++) {
       GUI.setLine(GUI.LINE1);
-//      GUI.flash_put_value(i, ccAssigned[i], 1800);
-GUI.flash_put_value(i, mdEncoders[i].getCC(), 1800);
+      //      GUI.flash_put_value(i, ccAssigned[i], 1800);
+      GUI.flash_put_value(i, mdEncoders[i].getCC(), 1800);
       GUI.setLine(GUI.LINE2);
       GUI.flash_put_value(i, ccs[i].cc, 1800);
     }
-    #endif
-    
-    for (int i = 0; i < 4; i++) {
+#endif
+
+    for (int i = 0; i < count; i++) {
       incoming_cc_t *cc = &ccs[i];
       if (ccAssigned[i] != -1) {
-        mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-        mdEncoders[ccAssigned[i]].setValue(cc->value);
-        clearRecording(ccAssigned[i]);
+        if ((mdEncoders[ccAssigned[i]].getChannel() != cc->channel) &&
+          (mdEncoders[ccAssigned[i]].getCC() != cc->cc)) {
+          mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
+          mdEncoders[ccAssigned[i]].setValue(cc->value);
+          clearRecording(ccAssigned[i]);
+        }
       } else {
         for (int j = 0; j < 4; j++) {
           if (encoderAssigned[j] == -1) {
             ccAssigned[i] = j;
             encoderAssigned[j] = i;
-            mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-            mdEncoders[ccAssigned[i]].setValue(cc->value);
-            clearRecording(ccAssigned[i]);
+//            if ((mdEncoders[ccAssigned[i]].getChannel() != cc->channel) &&
+//                (mdEncoders[ccAssigned[i]].getCC() != cc->cc)) {
+              mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
+              mdEncoders[ccAssigned[i]].setValue(cc->value);
+              clearRecording(ccAssigned[i]);
+//            }
             break;
           }
         }

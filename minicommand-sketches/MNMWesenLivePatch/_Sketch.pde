@@ -1,41 +1,53 @@
 class MNMWesenLivePatchSketch : 
 public Sketch {
 public:
-  AutoMNMPage autoMNMPage;
+  AutoMNMPage autoMNMPages[4];
   SwitchPage switchPage;
+  MagicSwitchPage magicSwitchPages[2];
 
   uint8_t ramP1Track;
 
   void setupPages() {
-    autoMNMPage.setup();
-    autoMNMPage.setShortName("AUT");
-    
-    switchPage.initPages(NULL, NULL, NULL, &autoMNMPage);
+    for (int i = 0; i < 2; i++) {
+      autoMNMPages[i].setup();
+      autoMNMPages[i].setShortName("P ");
+      autoMNMPages[i].shortName[1] = '0' + i;
+      magicSwitchPages[i].setup();
+      magicSwitchPages[i].setShortName("M ");
+      magicSwitchPages[i].shortName[1] = '0' + i;
+    }
+
+    switchPage.initPages(&autoMNMPages[0], &autoMNMPages[1], 
+                         &magicSwitchPages[0], &magicSwitchPages[1]);
     switchPage.parent = this;
   }
 
   virtual void setup() {
     setupPages();
 
+    Midi2.midiActive = false;
+    
+    #if 1
     MNMTask.setup();
     MNMTask.autoLoadKit = true;
     MNMTask.reloadGlobal = true;
     MNMTask.addOnKitChangeCallback(_onKitChanged);
     MNMTask.addOnGlobalChangeCallback(_onGlobalChanged);
     GUI.addTask(&MNMTask);
+    #endif  
 
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
 
-//    MidiClock.mode = MidiClock.EXTERNAL_UART2;
-//    MidiClock.transmit = true;
-    MidiClock.mode = MidiClock.EXTERNAL;
-    MidiClock.transmit = false;
-    MidiClock.setOn32Callback(on32Callback);
+    MidiClock.mode = MidiClock.EXTERNAL_UART2;
+   MidiClock.transmit = true;
+//        MidiClock.mode = MidiClock.EXTERNAL;
+//        MidiClock.transmit = false;
+   MidiClock.setOn32Callback(on32Callback);
     MidiClock.start();
 
-    
-    setPage(&autoMNMPage);
+
+    setPage(&autoMNMPages[0]);
   }
 
   virtual void destroy() {
@@ -47,11 +59,25 @@ public:
   virtual bool handleEvent(gui_event_t *event) {
     if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
       pushPage(&switchPage);
-    } else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
+    } 
+    else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
       popPage(&switchPage);
-    } else {
-      return false;
-    }
+    } 
+    if (BUTTON_DOWN(Buttons.BUTTON1)) {
+      if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
+        MNM.revertToCurrentKit(true);
+        GUI.flash_strings_fill("REVERT TO", MNM.kit.name);
+      } 
+      else if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+        MNM.revertToCurrentTrack(true);
+        GUI.flash_strings_fill("REVERT TO ", "");
+        GUI.setLine(GUI.LINE1);
+        GUI.flash_put_value_at(10, MNM.currentTrack + 1);
+        GUI.setLine(GUI.LINE2);
+        GUI.flash_p_string_fill(MNM.getMachineName(MNM.kit.machines[MNM.currentTrack].model));
+      }
+      return true;
+    } 
 
     return true;
   }
@@ -60,7 +86,11 @@ public:
     GUI.setLine(GUI.LINE1);
     GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
     GUI.setLine(GUI.LINE2);
-        GUI.flash_string_fill(MNM.kit.name);
+    GUI.flash_string_fill(MNM.kit.name);
+    GUI.flash_put_value(0, MNM.kit.origPosition);
+    GUI.flash_put_value(1, MNM.kit.machines[0].model);
+    GUI.flash_put_value(2, MNM.kit.machines[1].model);
+    GUI.flash_put_value(3, MNM.kit.machines[2].model);
   }  
 
 
@@ -78,7 +108,12 @@ public:
 MNMWesenLivePatchSketch sketch;
 
 void on32Callback() {
-  sketch.autoMNMPage.on32Callback();
+  for (int i = 0; i < 2; i++) {
+    sketch.autoMNMPages[i].on32Callback();
+    for (int j = 0; j < 4; j++) {
+      sketch.magicSwitchPages[i].magicPages[j].on32Callback();
+    }
+  }
   //  GUI.flash_put_value(0, MidiClock.div32th_counter);
 }
 
