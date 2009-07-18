@@ -161,13 +161,24 @@ class MNMClass {
   PGM_P getModelParamName(uint8_t model, uint8_t param);
   void getPatternName(uint8_t pattern, char str[5]);
 
-  void revertToCurrentKit(bool reloadKit = false);
-  void revertToCurrentTrack(bool reloadKit = false) {
-    if (currentTrack != -1) {
-      revertToTrack(currentTrack, false);
+  void revertToCurrentKit(bool reloadKit = true);
+  void revertToCurrentTrack(bool reloadTrack = true) {
+    if (!reloadTrack) {
+      if (currentTrack != -1) {
+	revertToTrack(currentTrack, false);
+      }
+    } else {
+      uint8_t track = getCurrentTrack(500);
+      if (track != 255) {
+	revertToTrack(track, false);
+      }
     }
   }
   void revertToTrack(uint8_t track, bool reloadKit = false);
+
+  uint8_t getBlockingStatus(uint8_t type, uint16_t timeout = 1000);
+  uint8_t getCurrentTrack(uint16_t timeout = 1000);
+  uint8_t getCurrentKit(uint16_t timeout = 1000);
 };
 
 extern MNMClass MNM;

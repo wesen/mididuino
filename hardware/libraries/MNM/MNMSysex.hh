@@ -11,10 +11,36 @@
 typedef void (*mnm_callback_t)();
 typedef void (*mnm_status_callback_t)(uint8_t type, uint8_t param);
 
+class MNMSysexStatusCallback {
+public:
+  virtual void onMNMStatusCallback(uint8_t type, uint8_t param) = 0;
+};
+
+class MNMSysexKitCallback {
+public:
+  virtual void onMNMKitCallback() = 0;
+};
+
+class MNMSysexGlobalCallback {
+public:
+  virtual void onMNMGlobalCallback() = 0;
+};
+
+class MNMSysexPatternCallback {
+public:
+  virtual void onMNMPatternCallback() = 0;
+};
+
+class MNMSysexSongCallback {
+public:
+  virtual void onMNMSongCallback() = 0;
+};
+
 class MNMSysexListenerClass : public MidiSysexListenerClass {
 public:
   mnm_status_callback_t onStatusResponseCallback;
   Vector<mnm_status_callback_t, 4> statusCallbacks;
+  Vector<MNMSysexStatusCallback *, 4> statusCallbackObjs;
   
   mnm_callback_t onGlobalMessageCallback;
   mnm_callback_t onKitMessageCallback;
@@ -44,6 +70,12 @@ public:
   }
   void removeOnStatusResponseCallback(mnm_status_callback_t callback) {
     statusCallbacks.remove(callback);
+  }
+  void addOnStatusResponseCallback(MNMSysexStatusCallback *callback) {
+    statusCallbackObjs.add(callback);
+  }
+  void removeOnStatusResponseCallback(MNMSysexStatusCallback *callback) {
+    statusCallbackObjs.remove(callback);
   }
   /* compatibility to old stuff */
   void setOnStatusResponseCallback(mnm_status_callback_t callback) {

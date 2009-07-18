@@ -186,6 +186,11 @@ void MNMClass::revertToCurrentKit(bool reloadKit) {
     if (loadedKit) {
       MNM.loadKit(MNM.currentKit);
     }
+  } else {
+    uint8_t kit = getCurrentKit(500);
+    if (kit != 255) {
+      MNM.loadKit(MNM.currentKit);
+    }
   }
 }
 
@@ -232,10 +237,67 @@ void MNMClass::assignMachine(uint8_t track, uint8_t model, bool initAll, bool in
 
 void MNMClass::setMachine(uint8_t track, MNMMachine *machine) {
   assignMachine(track, machine->model);
-  for (int i = 0; i < 72; i++) {
+  for (int i = 0; i < 56; i++) {
     setParam(track, i, machine->params[i]);
   }
   setTrackLevel(track, machine->level);
+}
+
+class BlockCurrentStatusCallback : public MNMSysexStatusCallback {
+public:
+  uint8_t type;
+  uint8_t value;
+  bool received;
+
+  BlockCurrentStatusCallback(uint8_t _type) {
+    type = _type;
+    received = false;
+    value = 255;
+  }
+
+  void onMNMStatusCallback(uint8_t _type, uint8_t param) {
+    if (type == _type) {
+      value = param;
+      received = true;
+    }
+  }
+};
+
+uint8_t MNMClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
+  uint16_t start_clock = read_slowclock();
+  uint16_t current_clock = start_clock;;
+  BlockCurrentStatusCallback cb(type);
+
+  MNMSysexListener.addOnStatusResponseCallback(&cb);
+  MNM.sendRequest(MNM_STATUS_REQUEST_ID, type);
+  do {
+    current_clock = read_slowclock();
+    handleIncomingMidi();
+  } while ((clock_diff(start_clock, current_clock) < timeout) && !cb.received);
+  MNMSysexListener.removeOnStatusResponseCallback(&cb);
+
+  return cb.value;
+}
+  
+
+uint8_t MNMClass::getCurrentTrack(uint16_t timeout) {
+  uint8_t value = getBlockingStatus(MNM_CURRENT_AUDIO_TRACK_REQUEST, timeout);
+  if (value == 255) {
+    return 255;
+  } else {
+    MNM.currentTrack = value;
+    return value;
+  }
+}
+
+uint8_t MNMClass::getCurrentKit(uint16_t timeout) {
+  uint8_t value = getBlockingStatus(MNM_CURRENT_KIT_REQUEST, timeout);
+  if (value == 255) {
+    return 255;
+  } else {
+    MNM.currentKit = value;
+    return value;
+  }
 }
 
 #ifndef HOST_MIDIDUINO

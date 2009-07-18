@@ -112,8 +112,14 @@ void MNMSysexListenerClass::end() {
   switch (msgType) {
   case MNM_STATUS_RESPONSE_ID:
     for (int i = 0 ; i < statusCallbacks.size; i++) {
-      if (statusCallbacks.arr[i] != NULL)
+      if (statusCallbacks.arr[i] != NULL) {
 	statusCallbacks.arr[i](MidiSysex.data[1], MidiSysex.data[2]);
+      }
+    }
+    for (int i = 0 ; i < statusCallbackObjs.size; i++) {
+      if (statusCallbackObjs.arr[i] != NULL) {
+	statusCallbackObjs.arr[i]->statusCallback(MidiSysex.data[1], MidiSysex.data[2]);
+      }
     }
     break;
     
