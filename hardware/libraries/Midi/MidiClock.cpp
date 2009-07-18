@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include "MidiUart.h"
 
-// #define DEBUG_MIDI_CLOCK 1
+#define DEBUG_MIDI_CLOCK 1
 
 MidiClockClass::MidiClockClass() {
   init();
@@ -158,6 +158,13 @@ void MidiClockClass::updateClockInterval() {
       //      if (rem > 190) // omg voodoo to correct discarded precision induced drift
       //	new_interval++;
     }
+
+    if (new_interval > 0x4FFF) {
+      new_interval = 0x4FFF;
+    } else if (new_interval < 0x80) {
+      new_interval = 0x80;
+    }
+      
     
     SET_LOCK();
     interval = new_interval;
