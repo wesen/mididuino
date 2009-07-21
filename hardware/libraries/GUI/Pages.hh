@@ -143,7 +143,6 @@ class PageContainer {
     pageStack.peek(&page);
     return page;
   }
-  
 };
 
 #endif /* PAGES_H__ */

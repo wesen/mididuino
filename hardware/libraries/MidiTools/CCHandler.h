@@ -17,7 +17,7 @@ typedef struct incoming_cc_s {
 class CCHandler {
  public:
   CircularBuffer<incoming_cc_t, 4> incomingCCs;
-  Vector<CCEncoder *, 32> encoders;
+  Vector<CCEncoder *, 64> encoders;
   CCEncoder *midiLearnEnc;
   midi_learn_cc_callback_t callback;
 
