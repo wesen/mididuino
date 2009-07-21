@@ -380,4 +380,40 @@ public class PdePreprocessor {
     return t;
   }
 
+	private static String readFileAsString(String filePath)
+    throws java.io.IOException{
+        StringBuffer fileData = new StringBuffer(1000);
+        BufferedReader reader = new BufferedReader(
+												   new FileReader(filePath));
+        char[] buf = new char[1024];
+        int numRead=0;
+        while((numRead=reader.read(buf)) != -1){
+            String readData = String.valueOf(buf, 0, numRead);
+            fileData.append(readData);
+            buf = new char[1024];
+        }
+        reader.close();
+        return fileData.toString();
+    }
+	
+  public static void main(String args[]) {
+	  if (args.length > 1) {
+		  String outputFile = args[0];
+		  File output = new File(outputFile);
+		  String dir = output.getParent();
+		  String name = output.getName();
+		  String program = "";
+		  try {
+			  for (int i = 1; i < args.length; i++) {
+				  program += readFileAsString(args[i]);
+			  }
+		  
+		  Target target = new Target("/Users/manuel/mididuino/hardware/cores/", "minicommand2");
+		  PdePreprocessor preproc = new PdePreprocessor();
+			  preproc.write(program, dir, name, new String[] { }, target);
+		  } catch (Exception e) {
+		  }
+	  }
+  }
+
 }

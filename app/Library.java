@@ -426,9 +426,13 @@ public class Library implements MessageConsumer{
       for(int i = 0; i < sourcesC.length; ++i) {
 		  if (isFresh(sourcesC[i], ".c"))
 			  continue;
+		  
         pathSansExtension = sourcesC[i].getPath();
         pathSansExtension = pathSansExtension.substring(0, pathSansExtension.length() - 2); // -2 because ".c"
         
+		  File objFile = new File(pathSansExtension + ".o");
+		  objFile.delete();
+		  
         compileCommandC[compileCommandC.length - 2] = sourcesC[i].getPath();
         compileCommandC[compileCommandC.length - 1] = "-o" + pathSansExtension + ".o";
         

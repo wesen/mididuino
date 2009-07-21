@@ -188,8 +188,10 @@ public class Preferences {
     // next load user preferences file
 
     preferencesFile = Base.getSettingsFile(PREFS_FILE);
+	  System.out.println("preffile " + preferencesFile);
 
     if (!preferencesFile.exists()) {
+		System.out.println("not exist");
       // create a new preferences file if none exists
       // saves the defaults out to the file
       save();
