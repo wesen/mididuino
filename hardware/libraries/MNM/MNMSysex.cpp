@@ -118,7 +118,7 @@ void MNMSysexListenerClass::end() {
     }
     for (int i = 0 ; i < statusCallbackObjs.size; i++) {
       if (statusCallbackObjs.arr[i] != NULL) {
-	statusCallbackObjs.arr[i]->statusCallback(MidiSysex.data[1], MidiSysex.data[2]);
+	statusCallbackObjs.arr[i]->onMNMStatusCallback(MidiSysex.data[1], MidiSysex.data[2]);
       }
     }
     break;
