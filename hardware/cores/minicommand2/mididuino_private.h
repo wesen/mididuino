@@ -40,4 +40,8 @@ void start_bootloader(void);
 
 void handleIncomingMidi();
 
+void enableProfiling();
+void disableProfiling();
+extern volatile uint16_t profileIpBuf[256];
+
 #endif /* MIDIDUIDNO_PRIVATE_H__ */

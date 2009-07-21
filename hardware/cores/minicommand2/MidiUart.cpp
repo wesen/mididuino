@@ -112,7 +112,7 @@ SIGNAL(USART0_RX_vect) {
   } else {
     MidiUart.rxRb.put(c);
 
-#if 1
+#if 0
     // show overflow debug
     if (MidiUart.rxRb.overflow) {
       setLed();
@@ -185,7 +185,7 @@ SIGNAL(USART1_RX_vect) {
       MidiUart2.rxRb.put(c);
   }
 
-#if 1
+#if 0
     // show overflow debug
     if (MidiUart.rxRb.overflow) {
       setLed();

@@ -10,14 +10,17 @@ extern "C" {
 }
 
 void timer_init(void) {
+  TCCR0 = _BV(CS01);
+  //  TIMSK |= _BV(TOIE0);
+  
   TCCR1A = _BV(WGM10); //  | _BV(COM1A1) | _BV(COM1B1); 
   TCCR1B |= _BV(CS10) | _BV(WGM12); // every cycle
-
-  TCCR2 = _BV(WGM20) | _BV(WGM21) | _BV(CS20) | _BV(CS21); // ) | _BV(CS21); // | _BV(COM21);
-  TIMSK |= _BV(TOIE2);
 #ifdef MIDIDUINO_MIDI_CLOCK
   TIMSK |= _BV(TOIE1);
 #endif
+
+  TCCR2 = _BV(WGM20) | _BV(WGM21) | _BV(CS20) | _BV(CS21); // ) | _BV(CS21); // | _BV(COM21);
+  TIMSK |= _BV(TOIE2);
 }
 
 void init(void) {
