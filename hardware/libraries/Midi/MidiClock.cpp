@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include "MidiUart.h"
 
-#define DEBUG_MIDI_CLOCK 1
+//#define DEBUG_MIDI_CLOCK 0
 
 MidiClockClass::MidiClockClass() {
   init();
@@ -17,7 +17,7 @@ MidiClockClass::MidiClockClass() {
 
 void MidiClockClass::init() {
   state = PAUSED;
-  counter = 0;
+  counter = 10000;
   rx_clock = rx_last_clock = 0;
   update_clock = update_last_clock = 0;
   div96th_counter = 0;
@@ -51,7 +51,7 @@ void MidiClockClass::handleMidiStart() {
   running_error = 0;
   running_count = 0;
   counter_phase = 0;
-  counter = 0;
+  counter = 10000;
 }
 
 void MidiClockClass::handleMidiStop() {
@@ -129,10 +129,12 @@ void MidiClockClass::updateClockInterval() {
     uint16_t _interval = interval;
     uint16_t _rx_clock = rx_clock;
     uint16_t _rx_last_clock = rx_last_clock;
-    
     CLEAR_LOCK();
 
     uint16_t diff_rx = midi_clock_diff(_rx_last_clock, _rx_clock);
+
+    if (diff_rx < 0x80)
+      diff_rx = 0x80;
 
 
     uint16_t new_interval = 0;
@@ -150,8 +152,9 @@ void MidiClockClass::updateClockInterval() {
 	(((uint32_t)_interval * (uint32_t)pll_x) +
 	 (uint32_t)(256 - pll_x) * (uint32_t)diff_rx);
       //      uint8_t rem = bla & 0xFF;
-      if (bla > 0xfff) {
+      if (bla > 0xffff) {
 	// XXX stop
+	// clock weg
       }
       bla >>= 8;
       new_interval = bla;
