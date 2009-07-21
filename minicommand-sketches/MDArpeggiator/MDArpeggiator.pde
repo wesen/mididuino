@@ -1,11 +1,11 @@
 #include <MD.h>
+#include "Arpeggiator.hh"
+
+MDArpeggiator arpeggiator;
 
 bool loadedKit = false;
-
 bool triggerRecording = false;
 bool recording = false;
-int recordStart = 0;
-int recordLength = 32;
 bool endRecording = false;
 
 void handleGuiSysex() {
