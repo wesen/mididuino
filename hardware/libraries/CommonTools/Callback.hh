@@ -7,6 +7,12 @@
 class Callback {
 public:
   virtual void onCallback(uint16_t type, void *obj) = 0;
+
+#ifdef HOST_MIDIDUINO
+  virtual ~Callback() { }
+#endif
+
+
 };
 
 typedef void (*callback_func_t)(void *obj);
