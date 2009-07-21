@@ -39,10 +39,10 @@ public:
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
 
-    MidiClock.mode = MidiClock.EXTERNAL_UART2;
-   MidiClock.transmit = true;
-//        MidiClock.mode = MidiClock.EXTERNAL;
-//        MidiClock.transmit = false;
+//    MidiClock.mode = MidiClock.EXTERNAL_UART2;
+//   MidiClock.transmit = true;
+        MidiClock.mode = MidiClock.EXTERNAL;
+        MidiClock.transmit = false;
    MidiClock.setOn32Callback(on32Callback);
     MidiClock.start();
 
@@ -87,10 +87,6 @@ public:
     GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
     GUI.setLine(GUI.LINE2);
     GUI.flash_string_fill(MNM.kit.name);
-    GUI.flash_put_value(0, MNM.kit.origPosition);
-    GUI.flash_put_value(1, MNM.kit.machines[0].model);
-    GUI.flash_put_value(2, MNM.kit.machines[1].model);
-    GUI.flash_put_value(3, MNM.kit.machines[2].model);
   }  
 
 

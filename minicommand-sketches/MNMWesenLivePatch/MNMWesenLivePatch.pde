@@ -54,17 +54,22 @@ public:
   }
 
   void setup(uint8_t param1, uint8_t param2, uint8_t param3, uint8_t param4) {
-    setup();
     params[0] = param1;
     params[1] = param2;
     params[2] = param3;
     params[3] = param4;
+    setup();
   }
 
   void setTrack(uint8_t _track) {
+    if (track == _track)
+      return;
     track = _track;
     for (int i = 0; i < 4; i++) {
       mnmEncoders[i].initMNMEncoder(track, params[i], NULL);
+      if (MNM.loadedKit) {
+        mnmEncoders[i].setValue(MNM.kit.machines[track].params[params[i]]);
+      }
     }
   }
 
@@ -177,6 +182,18 @@ public:
       return currentPage->handleEvent(event);
     } else {
       return false;
+    }
+  }
+  
+  virtual void update() {
+    if (currentPage != NULL) {
+      currentPage->update();
+    }
+  }
+  
+  virtual void finalize() {
+    if (currentPage != NULL) {
+      currentPage->finalize();
     }
   }
 
