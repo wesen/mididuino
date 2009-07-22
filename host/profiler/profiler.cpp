@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include "WProgram.h"
 #include "MidiSysex.hh"
@@ -10,6 +11,8 @@
 
 MidiUartOSXClass MidiUart;
 MidiClass Midi;
+
+char *file = NULL;
 
 void hexDump(uint8_t *data, uint16_t len) {
   uint8_t cnt = 0;
@@ -53,7 +56,20 @@ public:
   }
 
   virtual void end() {
-    hexDump(MidiSysex.data, MidiSysex.recordLen);
+    uint8_t *ptr = MidiSysex.data;
+    
+    for (int i = 1; i < MidiSysex.recordLen; i+=3) {
+      uint16_t addr = ptr[i] << 14 | (ptr[i+1] << 7) | ptr[i+2];
+      if (addr != 0) {
+	//	char foobar[256] = "";
+	//	sprintf(foobar, "avr-addr2line -e %s -f %x", file, addr);
+	//	//	printf("%s\n", foobar);
+	//	system(foobar);
+	printf("%x\n", addr);
+      }
+    }
+    fflush(stdout);
+    //    hexDump(MidiSysex.data, MidiSysex.recordLen);
   }
 
   virtual void handleByte(uint8_t byte) {
@@ -61,6 +77,9 @@ public:
 };
 
 int main(int argc, char *argv[]) {
+signal(SIGINT, SIG_IGN);
+
+  file = argv[1];
 
   ProfilerSysexListener profilerSysex;
   
