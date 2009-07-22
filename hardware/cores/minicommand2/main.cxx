@@ -12,39 +12,6 @@ static inline uint32_t phase_mult(uint32_t val) {
   return (val * PHASE_FACTOR) >> 8;
 }
 
-void enableProfiling() {
-  SET_BIT(TIMSK, TOIE0);
-}
-
-void disableProfiling() {
-  CLEAR_BIT(TIMSK, TOIE0);
-}
-
-volatile uint16_t profileIpBuf[256];
-static volatile uint8_t profileIdx = 0;
-
-static uint8_t profileCnt0 = 255;
-ISR(TIMER0_OVF_vect) {
-  uint16_t fp = (uint16_t)__builtin_frame_address(0);
-  uint8_t i, a, b;
-  fp += 14;
-  a = *((uint8_t *)fp);
-  b = *((uint8_t *)(fp + 1));
-  a <<= 1 ;
-  b <<= 1 ;
-  profileIpBuf[(profileIdx++)] = (a << 8) | b;
-  //  ipBuf[(idx++)] = (uint16_t)__builtin_return_address(0);
-
-  // avoid aliasing
-  profileCnt0--;
-  if (profileCnt0 < 128) {
-    profileCnt0 = 255;
-  }
-  TCNT0 = profileCnt0;
-  
-  //  ipBuf[5] = (a << 8) | b;
-}
-  
 ISR(TIMER1_OVF_vect) {
 
   clock++;

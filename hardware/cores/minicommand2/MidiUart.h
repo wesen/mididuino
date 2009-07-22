@@ -14,7 +14,13 @@ class MidiUartClass;
 #else
 #define RX_BUF_TYPE uint8_t
 #endif
-#define TX_BUF_SIZE 128
+
+#define TX_BUF_SIZE 1024
+#if (TX_BUF_SIZE >= 256)
+#define TX_BUF_TYPE uint16_t
+#else
+#define TX_BUF_TYPE uint8_t
+#endif
 
 class MidiUartClass : public MidiUartParent {
   virtual void initSerial();
@@ -29,7 +35,7 @@ class MidiUartClass : public MidiUartParent {
   volatile RingBuffer<RX_BUF_SIZE, RX_BUF_TYPE> rxRb;
 
 #ifdef TX_IRQ
-  volatile RingBuffer<TX_BUF_SIZE> txRb;
+  volatile RingBuffer<TX_BUF_SIZE, TX_BUF_TYPE> txRb;
 #endif
 
 };
