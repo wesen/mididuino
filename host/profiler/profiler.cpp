@@ -69,6 +69,7 @@ public:
       }
     }
     fflush(stdout);
+    //    exit(1);
     //    hexDump(MidiSysex.data, MidiSysex.recordLen);
   }
 
@@ -77,8 +78,7 @@ public:
 };
 
 int main(int argc, char *argv[]) {
-signal(SIGINT, SIG_IGN);
-
+  // signal(SIGINT, SIG_IGN);
   file = argv[1];
 
   ProfilerSysexListener profilerSysex;
@@ -87,9 +87,13 @@ signal(SIGINT, SIG_IGN);
   MidiSysex.addSysexListener(&profilerSysex);
 
   for (;;) {
+    //    printf("foo\n");
+    //    fflush(stdout);
     MidiUart.runLoop();
     while (MidiUart.avail()) {
       uint8_t c = MidiUart.getc();
+      //      printf("%x\n", c);
+      //      fflush(stdout);
       Midi.handleByte(c);
     }
     usleep(1000);

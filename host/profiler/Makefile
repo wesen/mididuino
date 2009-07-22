@@ -11,8 +11,8 @@ DIRS  = CommonTools Midi Elektron
 LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../MidiUart
 INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I..
 EXCLUDE = %MidiClock.cpp
-OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.o,$(file))))
-OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.o,$(file))))
+OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
+OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
 
 CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
 CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
@@ -23,17 +23,21 @@ CFLAGS += $(INCS)
 
 all: profiler
 
-%.o: %.cpp
+%.host.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o: %.c
+%.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-profiler: profiler.o $(OBJS)
+profiler: profiler.host.o $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^
 
+merger: merger.host.o $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $^
+
+
 clean:
-	- rm -f *.o profiler
+	- rm -f *.o profiler merger
 
 libclean:
 	rm -rf $(OBJS)
