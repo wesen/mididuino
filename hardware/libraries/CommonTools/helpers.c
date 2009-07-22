@@ -178,13 +178,6 @@ long map(long x, long in_min, long in_max, long out_min, long out_max)
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void delayMicroseconds(unsigned int us) {
-  _delay_us(us);
-}
-
-void delay(unsigned int ms) {
-  _delay_ms(ms);
-}
 #endif
 
 uint8_t u_limit_value(uint8_t value, int8_t encoder, uint8_t min, uint8_t max) {

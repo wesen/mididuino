@@ -1,6 +1,10 @@
 #ifndef HELPERS_H__
 #define HELPERS_H__
 
+#ifndef HOST_MIDIDUINO
+#include <util/delay.h>
+#endif
+
   /** Bit-level access and test macros. **/
 #define SET_BIT(port, bit)   ((port) |= (1 << (bit)))
 #define CLEAR_BIT(port, bit) ((port) &= ~(1 << (bit)))
@@ -93,9 +97,9 @@ extern "C" {
 #define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
 
   long map(long x, long in_min, long in_max, long out_min, long out_max);
-  
-  void delay(unsigned int ms);
-  void delayMicroseconds(unsigned int us);
+
+#define delay(ms) _delay_ms(ms)
+#define delayMicroseconds(us) _delay_us(us)
 #endif
 
 
