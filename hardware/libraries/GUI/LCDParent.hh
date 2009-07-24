@@ -1,8 +1,18 @@
 #ifndef LCDPARENT_H__
 #define LCDPARENT_H__
 
+#ifndef HOST_MIDIDUINO
+extern "C" {
+#include <avr/io.h>
+#include <avr/interrupt.h>
+}
 #include <avr/pgmspace.h>
 #include <inttypes.h>
+#else
+#include "WProgram.h"
+#endif
+
+
 
 class LCDParentClass {
 protected:
@@ -12,6 +22,10 @@ protected:
   virtual void putdata(uint8_t data) { }
 
   public:
+#ifdef HOST_MIDIDUINO
+  virtual ~LCDParentClass() { }
+#endif
+  
   void line1();
   void line1(char *s);
   void line1_fill(char *s);

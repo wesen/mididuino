@@ -1,10 +1,6 @@
 #include "LCDParent.hh"
 
 #include <string.h>
-extern "C" {
-#include <avr/io.h>
-#include <avr/interrupt.h>
-}
 
 #define LINE_LENGTH 16
 

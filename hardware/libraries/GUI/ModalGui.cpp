@@ -4,6 +4,7 @@
 #include "GUI.h"
 #include "ModalGui.hh"
 
+#ifndef HOST_MIDIDUINO
 class ModalGuiPage : public Page {
 public:
   char line1[16];
@@ -201,3 +202,4 @@ char *getNameModalGui(char *line1, char *initName) {
   m_strncpy(nameModalGuiPage.line1, line1, 16);
   return nameModalGuiPage.getName(initName);
 }
+#endif

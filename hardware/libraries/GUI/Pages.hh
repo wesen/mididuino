@@ -1,7 +1,7 @@
 #ifndef PAGES_H__
 #define PAGES_H__
 
-
+#include "Stack.h"
 #include "Encoders.hh"
 #include "ModalGui.hh"
 
@@ -50,6 +50,10 @@ class Page {
   virtual bool handleEvent(gui_event_t *event) {
     return false;
   }
+
+#ifdef HOST_MIDIDUINO
+  virtual ~Page() { }
+#endif
 };
 
 class Encoder;
@@ -143,6 +147,10 @@ class PageContainer {
     pageStack.peek(&page);
     return page;
   }
+
+#ifdef HOST_MIDIDUINO
+  virtual ~PageContainer() { }
+#endif
 };
 
 #endif /* PAGES_H__ */

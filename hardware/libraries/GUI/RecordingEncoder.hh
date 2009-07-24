@@ -81,8 +81,9 @@ void RecordingEncoder<N>::clearRecording() {
 
 template <int N>
 int RecordingEncoder<N>::update(encoder_t *enc) {
-  uint8_t tmp = SREG;
-  //    cli();
+  USE_LOCK();
+  //  SET_LOCK();
+
   cur = realEnc->update(enc);
   redisplay = realEnc->redisplay;
 
@@ -97,7 +98,7 @@ int RecordingEncoder<N>::update(encoder_t *enc) {
       value[pos] = cur;
     }
   }
-  SREG = tmp;
+  // CLEAR_LOCK();
   return cur;
 }  
 

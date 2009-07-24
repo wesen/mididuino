@@ -1,7 +1,7 @@
 #include "WProgram.h"
 #include "GUI.h"
 
-#ifdef MIDIDUINO_USE_GUI
+#if defined(MIDIDUINO_USE_GUI) || defined(HOST_MIDIDUINO)
 
 extern CRingBuffer<gui_event_t, 8, uint8_t> EventRB;
 
@@ -74,7 +74,9 @@ void GuiClass::loop() {
   if (sketch != NULL) {
     sketch->loop();
   }
+#ifndef HOST_MIDIDUINO
   ::loop();
+#endif
 
   display();
 
@@ -109,8 +111,12 @@ void GuiClass::display() {
 	    lines[i].flash[j] = ' ';
 	  }
 	}
+#ifdef HOST_MIDIDUINO
+	printf("%s\n", lines[i].flash);
+#else
 	LCD.goLine(i);
 	LCD.puts(lines[i].flash);
+#endif
 	lines[i].flashChanged = false;
       }
     }
@@ -121,8 +127,12 @@ void GuiClass::display() {
 	  lines[i].data[j] = ' ';
 	}
       }
+#ifdef HOST_MIDIDUINO
+	printf("%s\n", lines[i].data);
+#else
       LCD.goLine(i);
       LCD.puts(lines[i].data);
+#endif
       lines[i].changed = false;
     }
   }

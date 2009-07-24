@@ -7,7 +7,7 @@
 #include "Vector.hh"
 #include "Task.hh"
 
-#ifdef MIDIDUINO_USE_GUI
+#if defined(MIDIDUINO_USE_GUI) || defined(HOST_MIDIDUINO)
 
 #include "Events.hh"
 #include "Pages.hh"
@@ -43,6 +43,11 @@ class GuiClass {
 
   GuiClass();
 
+#ifdef HOST_MIDIDUINO
+  virtual ~GuiClass() { }
+#endif
+  
+
   virtual void loop();
 
   void setSketch(Sketch *_sketch);
@@ -66,8 +71,10 @@ class GuiClass {
   void display();
 
   void redisplay();
-  
+
+#ifdef GUI_NUM_ENCODERS
   static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
+#endif
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
   
   void put_value(uint8_t idx, uint8_t value);

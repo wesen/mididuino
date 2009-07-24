@@ -1,4 +1,3 @@
-#include <avr/pgmspace.h>
 #include "Encoders.hh"
 
 #include "Midi.h"
@@ -10,9 +9,13 @@ void CCEncoderHandle(Encoder *enc) {
   MidiUart.sendCC(ccEnc->getChannel(), ccEnc->getCC(), ccEnc->getValue());
 }
 
+#ifndef HOST_MIDIDUINO
+#include <MidiClock.h>
+
 void TempoEncoderHandle(Encoder *enc) {
   MidiClock.setTempo(enc->getValue());
 }
+#endif
 
 /* Encoder */
 Encoder::Encoder(const char *_name, encoder_handle_t _handler) {

@@ -2,7 +2,6 @@
 #define ENCODERS_H__
 
 #include <inttypes.h>
-#include <MidiClock.h>
 #include <Midi.h>
 #include "WProgram.h"
 #include "GUI.h"
@@ -38,6 +37,10 @@ class Encoder {
   virtual void setValue(int value, bool handle = false);
 
   virtual void displayAt(int i);
+
+#ifdef HOST_MIDIDUINO
+  virtual ~Encoder() { }
+#endif
 };
 
 class RangeEncoder : public Encoder {
