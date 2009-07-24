@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 MidiUartOSXClass MidiUart;
+MidiClass Midi;
 
 MNMPattern pattern;
 MNMKit kit;
@@ -107,8 +108,6 @@ void onGlobalMessageCallback() {
 }
 
 void onKitMessageCallback() {
-  return;
-  
   printBuf();
   
   if (!kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
@@ -170,6 +169,8 @@ void onPatternMessageCallback() {
   inCallback = false;
 }
 
+void handleIncomingMidi() {
+}
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     usage();

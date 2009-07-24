@@ -7,7 +7,7 @@ LBASE_DIR=$(BASE_DIR)/hardware/libraries
 JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
 CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
-DIRS  = GUI CommonTools Midi MidiTools MNM Elektron
+DIRS  = GUI CommonTools Midi MidiTools
 LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../MidiUart ../GUI
 INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I..
 EXCLUDE = %MidiClock.cpp %ModalGui.cpp %MDArpeggiator.cpp
@@ -21,7 +21,7 @@ CLDFLAGS =  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLA
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
 
-all: mnmTest
+all: ccHandler
 
 %.host.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -29,7 +29,10 @@ all: mnmTest
 %.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-mnmTest: mnmTest.host.o $(OBJS)
+ccHandler: ccHandler.host.o $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $^
+
+merger: merger.host.o $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^
 
 
