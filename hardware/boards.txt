@@ -252,11 +252,31 @@ minicommand2.build.f_cpu=16000000L
 minicommand2.build.core=minicommand2
 minicommand2.build.libraries=Midi GUI CommonTools Elektron
 minicommand2.build.flags=-Wl,--section-start=.bss=0x802000,--defsym=__heap_end=0x80ffff
-#minicommand2.build.flags=-Wl,--defsym=__heap_start=0x802000,--defsym=__heap_end=0x80
-#minicommand2.build.flags=
 
 ############################################################
 
+monojoystick.name=Monojoystick 1.1 (atmega64 16 Mhz + SRAM)
+
+monojoystick.upload.protocol=midisend
+monojoystick.upload.maximum_size=57344
+monojoystick.upload.speed=19200
+monojoystick.upload.midiid=0x43
+
+monojoystick.bootloader.low_fuses=0x2f
+monojoystick.bootloader.high_fuses=0x8a
+monojoystick.bootloader.extended_fuses=0xff
+monojoystick.bootloader.path=monojoystick
+monojoystick.bootloader.file=minicommand.hex
+monojoystick.bootloader.unlock_bits=0x3F
+monojoystick.bootloader.lock_bits=0x0F
+
+monojoystick.build.mcu=atmega64
+monojoystick.build.f_cpu=16000000L
+monojoystick.build.core=monojoystick
+monojoystick.build.libraries=Midi GUI CommonTools Elektron
+monojoystick.build.flags=-Wl,--section-start=.bss=0x802000,--defsym=__heap_end=0x80ffff
+
+############################################################
 #mididuino-small.name=Mididuino-Small 1.0 (atmega168 arduino clone)
 
 #mididuino-small.upload.protocol=midisend
