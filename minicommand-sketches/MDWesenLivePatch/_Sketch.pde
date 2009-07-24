@@ -60,10 +60,10 @@ public:
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
 
-    MidiClock.mode = MidiClock.EXTERNAL_UART2;
-    MidiClock.transmit = true;
-//    MidiClock.mode = MidiClock.EXTERNAL;
-//    MidiClock.transmit = false;
+//    MidiClock.mode = MidiClock.EXTERNAL_UART2;
+//    MidiClock.transmit = true;
+    MidiClock.mode = MidiClock.EXTERNAL;
+    MidiClock.transmit = false;
     
     MidiClock.setOn16Callback(_on16Callback);
     MidiClock.setOn32Callback(on32Callback);
@@ -161,6 +161,7 @@ void _onGlobalChanged() {
 }
 
 void setup() {
+  enableProfiling();
   sketch.setup();
   GUI.setSketch(&sketch);
 }

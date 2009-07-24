@@ -1,3 +1,5 @@
+#include "Profiler.h"
+
 class MNMWesenLivePatchSketch : 
 public Sketch {
 public:
@@ -46,7 +48,6 @@ public:
    MidiClock.setOn32Callback(on32Callback);
     MidiClock.start();
 
-
     setPage(&autoMNMPages[0]);
   }
 
@@ -67,6 +68,7 @@ public:
       if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
         MNM.revertToCurrentKit(true);
         GUI.flash_strings_fill("REVERT TO", MNM.kit.name);
+        clearAllRecording();
       } 
       else if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
         MNM.revertToCurrentTrack(true);
@@ -113,8 +115,18 @@ void on32Callback() {
   //  GUI.flash_put_value(0, MidiClock.div32th_counter);
 }
 
+void clearAllRecording() {
+  for (int i = 0; i < 2; i++) {
+    sketch.autoMNMPages[i].clearRecording();
+    for (int j = 0; j < 4; j++) {
+      sketch.magicSwitchPages[i].magicPages[j].clearRecording();
+    }
+  }
+}
+
 void _onKitChanged() {
   sketch.onKitChanged();
+  clearAllRecording();
 }
 
 void _onGlobalChanged() {
@@ -122,6 +134,7 @@ void _onGlobalChanged() {
 }
 
 void setup() {
+//  enableProfiling();
   sketch.setup();
   GUI.setSketch(&sketch);
 }

@@ -1,3 +1,4 @@
+#include <Profiler.h>
 #include <SDCard.h>
 #include <string.h>
 
@@ -13,6 +14,7 @@ void onNoteCallback(uint8_t *msg) {
 
 EncoderPage page(&enc1, &enc2, &enc3, &enc4);
 void setup() {
+  enableProfiling();
   if (SDCard.init() != 0) {
     GUI.flash_strings_fill("NO SD CARD", "");
   }
@@ -20,6 +22,7 @@ void setup() {
 //  setLed();
   GUI.setPage(&page);
   Midi2.setOnNoteOnCallback(onNoteCallback);
+  GUI.addEventHandler(handleEvent);
 }
 
 void loop() {
@@ -28,85 +31,60 @@ void loop() {
 //  GUI.update();
 }
 
-void handleGui() {
-  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
+bool handleEvent(gui_event_t *event) {
+  if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
     GUI.flash_string_fill("B1");
     setLed();
-  } else if (BUTTON_RELEASED(Buttons.BUTTON1)) {
+  } else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
     clearLed();
   }
   
-  if (BUTTON_PRESSED(Buttons.BUTTON2)) {
+  if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
     GUI.flash_string_fill("B2");
     setLed2();
-  } else if (BUTTON_RELEASED(Buttons.BUTTON2)) {
+  } else if (EVENT_RELEASED(event, Buttons.BUTTON2)) {
     clearLed2();
   }
   
-  if (BUTTON_PRESSED(Buttons.BUTTON3)) {
+  if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
     GUI.flash_string_fill("B3");
     OCR3A = 100;
-  } else if (BUTTON_RELEASED(Buttons.BUTTON3)) {
+  } else if (EVENT_RELEASED(event, Buttons.BUTTON3)) {
     OCR3A = 200;
   }
   
-  if (BUTTON_PRESSED(Buttons.BUTTON4)) {
+  if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
     GUI.flash_string_fill("B4");
-    SDCardFile file;
-    if (!file.create("/RW.txt")) {
+    uint8_t buf[10] = "HELO";
+    if (!SDCard.writeFile("/RW.txt", buf, 5, true)) {
       GUI.flash_string_fill("CREATE");
-      if (!file.open("/RW.txt")) {
-        GUI.flash_string_fill("OPEN EXIST");
-        return;
+      return false;
+    } else {
+      if (SDCard.readFile("/RW.txt", buf, sizeof(buf)) != 5) {
+        GUI.flash_string_fill("READ");
+        return false;
       }
     }
-    if (file.write((uint8_t*)"HELO", 4) != 4) {
-      GUI.flash_string_fill("WRITE");
-      return;
-    }
-    file.close();
-    
-    char buf[5];
-    if (!file.open("/RW.txt")) {
-      GUI.flash_string_fill("OPEN");
-      return;
-    }
-    if (file.read((uint8_t *)buf, 4) != 4) {
-      GUI.flash_string_fill("READ");
-      return;
-    }
-
+    buf[1] = 'a';
     buf[4] = 0;
-    file.close();
-    if (!strncmp(buf, "HELO", 5)) {
+    if (!strncmp((char *)buf, "HELO", 5)) {
       GUI.flash_strings_fill("SD SUCCESS", "");
     } else {
       GUI.flash_strings_fill("SD FAIL", "");
     }
-    //    if (sd_raw_init() == 0) {
-//      GUI.put_string_at_fill(0, "SD RAW FAILED");
-//      return;
-//    } 
-//    struct sd_raw_info info = { 0 } ;
-
-//    if (sd_raw_get_info(&info) == 0) {
-//      GUI.put_string_at_fill(0, "SD INFO FAILED");
-//      return;
-//    }
-    
   }
   
- if (BUTTON_PRESSED(Buttons.ENCODER1)) {
+ if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
    GUI.setLine(GUI.LINE2);
    GUI.flash_string_fill("E1");
  }
-  if (BUTTON_PRESSED(Buttons.ENCODER2)) {
+  if (EVENT_PRESSED(event, Buttons.ENCODER2)) {
     GUI.flash_string_fill("E2");
     MidiUart.sendNoteOn(100, 100);
   }
     
-  if (BUTTON_PRESSED(Buttons.ENCODER3))
+  if (EVENT_PRESSED(event, Buttons.ENCODER3))
     GUI.flash_string_fill("E3");
-  if (BUTTON_PRESSED(Buttons.ENCODER4))
+  if (EVENT_PRESSED(event, Buttons.ENCODER4))
     GUI.flash_string_fill("E4");
 }

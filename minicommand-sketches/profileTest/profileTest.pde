@@ -1,8 +1,24 @@
-extern volatile uint16_t profileIpBuf[256];
-void enableProfiling();
-void disableProfiling();
+Task fooTask(300, sendProfileStuff);
 
-extern volatile uint16_t ipBuf[256];
+void sendProfileStuff() {
+  disableProfiling();
+
+  uint16_t ipBuf[256];
+  m_memcpy(ipBuf, (void *)profileIpBuf, sizeof(ipBuf));
+  m_memclr((void *)profileIpBuf, sizeof(profileIpBuf));
+  profileIdx = 0;
+  
+  MidiUart.putc(0xF0);
+  MidiUart.putc(0x01);
+  for (int i = 0; i < 256; i++) {
+    MidiUart.putc((ipBuf[i] >> 14) & 0x7F);
+    MidiUart.putc((ipBuf[i] >> 7) & 0x7F);
+    MidiUart.putc((ipBuf[i] >> 0) & 0x7F);
+  }
+  MidiUart.putc(0xF7);
+  enableProfiling();
+}
+
 void showIrqCaller() {
   cli();
   GUI.setLine(GUI.LINE1);
@@ -16,23 +32,7 @@ void showIrqCaller() {
   sei();
 }
 
-void sendProfileStuff() {
-  disableProfiling();
 
-  uint16_t ipBuf[256];
-  m_memcpy(ipBuf, (void *)profileIpBuf, sizeof(ipBuf));
-  m_memclr((void *)profileIpBuf, sizeof(profileIpBuf));
-  
-  MidiUart.putc(0xF0);
-  MidiUart.putc(0x01);
-  for (int i = 0; i < 256; i++) {
-    MidiUart.putc((ipBuf[i] >> 14) & 0x7F);
-    MidiUart.putc((ipBuf[i] >> 7) & 0x7F);
-    MidiUart.putc((ipBuf[i] >> 0) & 0x7F);
-  }
-  MidiUart.putc(0xF7);
-  enableProfiling();
-}
 
 void foo2() {
   GUI.put_value16(0, (uint16_t)__builtin_return_address(0));
@@ -63,12 +63,10 @@ bool handleEvent(gui_event_t *event) {
   return true;
 }
 
-Task fooTask(100, sendProfileStuff);
-
 void setup() {
   enableProfiling();
-  GUI.addEventHandler(handleEvent);
   GUI.addTask(&fooTask);
+  GUI.addEventHandler(handleEvent);
 }
 
 void loop() {

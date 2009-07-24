@@ -1,7 +1,8 @@
 #include <MD.h>
+#include "MidiTools.h"
 #include "Arpeggiator.hh"
 
-MDArpeggiator arpeggiator;
+MDArpeggiatorClass arpeggiator;
 
 bool loadedKit = false;
 bool triggerRecording = false;

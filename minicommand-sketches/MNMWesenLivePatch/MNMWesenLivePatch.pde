@@ -1,5 +1,6 @@
 #include <MNM.h>
 #include <CCHandler.h>
+#include <Profiler.h>
 
 CCHandler ccHandler;
 
@@ -25,7 +26,13 @@ public:
 
   void stopRecording() {
     for (int i = 0; i < 4; i++) {
-      recEncoders[i].startRecording();
+      recEncoders[i].stopRecording();
+    }
+  }
+
+  void clearRecording() {
+    for (int i = 0; i < 4; i++) {
+      recEncoders[i].clearRecording();
     }
   }
 
@@ -71,6 +78,7 @@ public:
         mnmEncoders[i].setValue(MNM.kit.machines[track].params[params[i]]);
       }
     }
+    clearRecording();
   }
 
   void setToCurrentTrack() {
@@ -85,6 +93,19 @@ public:
   }
 
   virtual bool handleEvent(gui_event_t *event) {
+    if (BUTTON_DOWN(Buttons.BUTTON4)) {
+      for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
+        if (EVENT_PRESSED(event, i)) {
+          GUI.setLine(GUI.LINE1);
+          GUI.flash_string_fill("CLEAR");
+          GUI.setLine(GUI.LINE2);
+          GUI.flash_put_value(0, i);
+          clearRecording(i);
+          return true;
+        }
+      }
+    }
+
     if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
       setToCurrentTrack();
       return true;
@@ -101,17 +122,6 @@ public:
       return true;
     }
 
-    if (BUTTON_DOWN(Buttons.BUTTON4)) {
-      for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
-        if (EVENT_PRESSED(event, i)) {
-          GUI.setLine(GUI.LINE1);
-          GUI.flash_string_fill("CLEAR");
-          GUI.setLine(GUI.LINE2);
-          GUI.flash_put_value(0, i);
-          clearRecording(i);
-        }
-      }
-    }
     return false;
   }
 };
@@ -140,7 +150,7 @@ public:
     setPage(&magicPages[0]);
     selectPage = false;
   }
-  
+
   void setup() {
   }
 
@@ -153,6 +163,15 @@ public:
   }
 
   virtual bool handleEvent(gui_event_t *event) {
+    if (BUTTON_DOWN(Buttons.BUTTON4)) {
+      if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+        GUI.flash_strings_fill("CLEAR ALL", "");
+        for (int i = 0; i < 4; i++) {
+          magicPages[i].clearRecording();
+        }
+        return true;
+      }
+    }
     if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
       selectPage = true;
       redisplayPage();
@@ -180,17 +199,18 @@ public:
 
     if (currentPage != NULL) {
       return currentPage->handleEvent(event);
-    } else {
+    } 
+    else {
       return false;
     }
   }
-  
+
   virtual void update() {
     if (currentPage != NULL) {
       currentPage->update();
     }
   }
-  
+
   virtual void finalize() {
     if (currentPage != NULL) {
       currentPage->finalize();
@@ -218,23 +238,24 @@ public:
   virtual void display() {
     if (currentPage != NULL && !selectPage) {
       currentPage->display();
-    } else {
+    } 
+    else {
       SwitchPage::display();
     }
   }
-  
+
   virtual void show() {
     if (currentPage != NULL) {
       currentPage->show();
     }
   }
-  
+
   virtual void hide() {
     if (currentPage != NULL) {
       currentPage->show();
     }
   }
-  
+
 };
 
 class AutoMNMPage : 
@@ -257,7 +278,13 @@ public:
 
   void stopRecording() {
     for (int i = 0; i < 4; i++) {
-      recEncoders[i].startRecording();
+      recEncoders[i].stopRecording();
+    }
+  }
+
+  void clearRecording() {
+    for (int i = 0; i < 4; i++) {
+      recEncoders[i].clearRecording();
     }
   }
 
@@ -276,18 +303,20 @@ public:
 
   void autoLearnLast4() {
     int8_t ccAssigned[4] = { 
-      -1, -1, -1, -1             };
+      -1, -1, -1, -1                 };
     int8_t encoderAssigned[4] = { 
-      -1, -1, -1, -1             };
+      -1, -1, -1, -1                 };
     incoming_cc_t ccs[4];
-    for (int i = 0; i < 4; i++) {
-      ccHandler.incomingCCs.getCopy(i, &ccs[i]);
-      incoming_cc_t *cc = &ccs[i];
+    int count = ccHandler.incomingCCs.size();
+
+    for (int i = count - 1, bla = 0; i >= 0; i--, bla++) {
+      ccHandler.incomingCCs.getCopy(i, &ccs[bla]);
+      incoming_cc_t *cc = &ccs[bla];
       for (int j = 0; j < 4; j++) {
         if ((mnmEncoders[j].getCC() == cc->cc) &&
           (mnmEncoders[j].getChannel() == cc->channel)) {
-          ccAssigned[i] = j;
-          encoderAssigned[j] = i;
+          ccAssigned[bla] = j;
+          encoderAssigned[j] = bla;
           break;
         }
       }
@@ -298,19 +327,16 @@ public:
       GUI.setLine(GUI.LINE1);
       //      GUI.flash_put_value(i, ccAssigned[i], 1800);
       GUI.flash_put_value(i, mnmEncoders[i].getCC(), 1800);
+      GUI.flash_put_value(0, count);
+      GUI.flash_put_value(1, ccHandler.incomingCCs.start, 1800);
       GUI.setLine(GUI.LINE2);
       GUI.flash_put_value(i, ccs[i].cc, 1800);
     }
 #endif
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < count; i++) {
       incoming_cc_t *cc = &ccs[i];
-      if (ccAssigned[i] != -1) {
-        mnmEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-        mnmEncoders[ccAssigned[i]].setValue(cc->value);
-        clearRecording(ccAssigned[i]);
-      } 
-      else {
+      if (ccAssigned[i] == -1) {
         for (int j = 0; j < 4; j++) {
           if (encoderAssigned[j] == -1) {
             ccAssigned[i] = j;
@@ -326,6 +352,23 @@ public:
   }
 
   virtual bool handleEvent(gui_event_t *event) {
+    if (BUTTON_DOWN(Buttons.BUTTON4)) {
+      for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
+        if (EVENT_PRESSED(event, i)) {
+          GUI.setLine(GUI.LINE1);
+          GUI.flash_string_fill("CLEAR");
+          GUI.setLine(GUI.LINE2);
+          GUI.flash_put_value(0, i);
+          clearRecording(i);
+          return true;
+        }
+      }
+      if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+        GUI.flash_strings_fill("CLEAR ALL", "");
+        clearRecording();
+        return true;
+      }
+    }
     if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
       autoLearnLast4();
       return true;
@@ -340,17 +383,6 @@ public:
     }
     if (EVENT_PRESSED(event, Buttons.BUTTON4) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
       return true;
-    }
-    if (BUTTON_DOWN(Buttons.BUTTON4)) {
-      for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
-        if (EVENT_PRESSED(event, i)) {
-          GUI.setLine(GUI.LINE1);
-          GUI.flash_string_fill("CLEAR");
-          GUI.setLine(GUI.LINE2);
-          GUI.flash_put_value(0, i);
-          clearRecording(i);
-        }
-      }
     }
     return false;
   }
