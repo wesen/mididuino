@@ -1,8 +1,6 @@
 #ifndef MD_H__
 #define MD_H__
 
-#include <inttypes.h>
-#include <avr/pgmspace.h>
 #include "WProgram.h"
 
 #include "Elektron.hh"
