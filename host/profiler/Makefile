@@ -7,8 +7,8 @@ LBASE_DIR=$(BASE_DIR)/hardware/libraries
 JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
 CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
-DIRS  = CommonTools Midi Elektron
-LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../MidiUart
+DIRS  = CommonTools GUI Midi Elektron 
+LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../MidiUart ../GUI
 INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I..
 EXCLUDE = %MidiClock.cpp
 OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
