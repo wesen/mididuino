@@ -72,7 +72,6 @@ void MidiClass::handleByte(uint8_t byte) {
     }
     CLEAR_LOCK();
 #endif
-    
     return;
   }
 

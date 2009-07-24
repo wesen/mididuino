@@ -289,8 +289,10 @@ void MidiClockClass::handleTimerInt()  {
     static bool inCallback = false;
     if (inCallback) {
       setLed();
+      //      inCallback = false;
       return;
     } else {
+      clearLed();
       inCallback = true;
     }
     
