@@ -65,7 +65,7 @@ extern uint8_t monomachine_sysex_hdr[5];
 
 #define MNM_SWAVE_SAW_MODEL  4
 #define MNM_SWAVE_PULS_MODEL 5
-#define MNM_SWAVE_ENS_MODEL  6
+#define MNM_SWAVE_ENS_MODEL  14
 
 #define MNM_DPRO_WAVE_MODEL  6
 #define MNM_DPRO_BBOX_MODEL  7

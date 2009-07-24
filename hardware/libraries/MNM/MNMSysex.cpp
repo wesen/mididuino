@@ -69,7 +69,7 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
 	  MidiSysex.recordByte(byte);
 	} else {
 	  if (sysexCirc.size() == 4 && byte != 0xF7) {
-	    uint8_t c = sysexCirc.get(0);
+	    uint8_t c = sysexCirc.get(3);
 	    msgCksum += c;
 	    msgLen++;
 	    //	    printf("_pack: %x, byte %x\n", c, byte);
@@ -93,8 +93,8 @@ void MNMSysexListenerClass::end() {
       MidiSysex.recordLen += len;
     }
     msgCksum &= 0x3FFF;
-    uint16_t realCksum = ElektronHelper::to16Bit7(sysexCirc.get(0), sysexCirc.get(1));
-    uint16_t realLen = ElektronHelper::to16Bit7(sysexCirc.get(2), sysexCirc.get(3));
+    uint16_t realCksum = ElektronHelper::to16Bit7(sysexCirc.get(3), sysexCirc.get(2));
+    uint16_t realLen = ElektronHelper::to16Bit7(sysexCirc.get(1), sysexCirc.get(0));
     if ((msgLen + 4) != realLen) {
 #ifdef HOST_MIDIDUINO
       fprintf(stderr, "wrong message len, %d should be %d\n", (msgLen + 4), realLen);
@@ -108,7 +108,7 @@ void MNMSysexListenerClass::end() {
       return;
     }
   }
-  
+
   switch (msgType) {
   case MNM_STATUS_RESPONSE_ID:
     for (int i = 0 ; i < statusCallbacks.size; i++) {

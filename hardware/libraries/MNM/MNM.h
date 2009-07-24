@@ -164,7 +164,7 @@ class MNMClass {
   void revertToCurrentKit(bool reloadKit = true);
   void revertToCurrentTrack(bool reloadTrack = true) {
     if (!reloadTrack) {
-      if (currentTrack != -1) {
+      if (currentTrack != 255) {
 	revertToTrack(currentTrack, false);
       }
     } else {

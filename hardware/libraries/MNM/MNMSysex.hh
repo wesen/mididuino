@@ -14,26 +14,41 @@ typedef void (*mnm_status_callback_t)(uint8_t type, uint8_t param);
 class MNMSysexStatusCallback {
 public:
   virtual void onMNMStatusCallback(uint8_t type, uint8_t param) = 0;
+#ifdef HOST_MIDIDUINO
+  virtual ~MNMSysexStatusCallback() { }
+#endif
 };
 
 class MNMSysexKitCallback {
 public:
   virtual void onMNMKitCallback() = 0;
+#ifdef HOST_MIDIDUINO
+  virtual ~MNMSysexKitCallback() { }
+#endif
 };
 
 class MNMSysexGlobalCallback {
 public:
   virtual void onMNMGlobalCallback() = 0;
+#ifdef HOST_MIDIDUINO
+  virtual ~MNMSysexGlobalCallback() { }
+#endif
 };
 
 class MNMSysexPatternCallback {
 public:
   virtual void onMNMPatternCallback() = 0;
+#ifdef HOST_MIDIDUINO
+  virtual ~MNMSysexPatternCallback() { }
+#endif
 };
 
 class MNMSysexSongCallback {
 public:
   virtual void onMNMSongCallback() = 0;
+#ifdef HOST_MIDIDUINO
+  virtual ~MNMSysexSongCallback() { }
+#endif
 };
 
 class MNMSysexListenerClass : public MidiSysexListenerClass {

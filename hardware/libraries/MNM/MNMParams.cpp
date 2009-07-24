@@ -283,7 +283,7 @@ static PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
   uint8_t id;
   if (names == NULL)
     return NULL;
-  
+
   while ((id = pgm_read_byte(&names[i].id)) != 127) {
     if (id == param) {
       return names[i].name ;

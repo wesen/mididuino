@@ -107,6 +107,7 @@ bool MNMClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *par
       return true;
     } else if ((cc >= 0x48) && (cc <= 0x5f)) {
       *param = cc - 0x38;
+      return true;
     } else if ((cc >= 0x68) && (cc <= 0x77)) {
       *param = cc - 0x40;
       return true;
