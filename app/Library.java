@@ -251,7 +251,7 @@ public class Library implements MessageConsumer{
   {
     FileFilter onlyObjectFiles = new FileFilter() {
       public boolean accept(File file) {
-        return (file.getName()).endsWith(".o");
+        return (file.getName()).endsWith(".o") && !(file.getName()).endsWith(".host.o");
       }
     };
     return folder.listFiles(onlyObjectFiles);

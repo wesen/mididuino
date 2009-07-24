@@ -382,7 +382,7 @@ public class Editor extends JFrame
 		 * Adds syntax coloring from those libraries (if exists)
 		 * Rebuilds sketchbook menu with library examples (if they exist)
 		 */
-		public void prepareLibraries() {
+		public void prepareLibraries() throws RunnerException {
 			// build any unbuilt libraries
 			try {
 				LibraryManager libraryManager = new LibraryManager();
@@ -392,6 +392,7 @@ public class Editor extends JFrame
 			} catch (RunnerException re) {
 				message("Error compiling library ...");
 				error(re);
+				throw re;
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

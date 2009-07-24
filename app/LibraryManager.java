@@ -223,7 +223,7 @@ public class LibraryManager {
     int countBuilt = 0;
     while(libIterator.hasNext()){
       library = (Library)libIterator.next();
-      //System.out.println("Building library \"" + library.getName() + "\"");
+//      System.out.println("Building library \"" + library.getName() + "\"");
       try {
         if(library.build()){
           ++countBuilt;

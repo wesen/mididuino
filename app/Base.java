@@ -158,7 +158,13 @@ public class Base {
     editor.show();
 
     // attempt to build libraries
+	  try {
     editor.prepareLibraries();
+	  } catch (RunnerException e) {
+//		  showError("bla", "bla", e);
+		  // e.printStacktrace(e);
+//		  error(e);
+	  }
 
     // check for updates
     if (Preferences.getBoolean("update.check")) {
