@@ -87,7 +87,7 @@ public:
   /* recording */
   void recordNote(int pos, uint8_t track, uint8_t note, uint8_t velocity);
   void recordNoteSecond(int pos, uint8_t track);
-  void playNext(bool recording = false);
+  void playNext(uint32_t _my16thpos, bool recording = false);
 };
 
 #endif /* ARPEGGIATOR_H__ */

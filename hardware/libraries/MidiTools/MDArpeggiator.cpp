@@ -18,13 +18,15 @@ void MDArpeggiatorClass::recordNoteSecond(int pos, uint8_t track) {
     if (realPitch == 128)
       return;  
     MD.setTrackParam(track, 0, realPitch - 5);
+#ifndef HOST_MIDIDUINO
     delay(3);
+#endif
     MD.setTrackParam(track, 0, realPitch);
   }
 }
-  
-void MDArpeggiatorClass::playNext(bool recording) {
-  int pos = MidiClock.div16th_counter - recordStart;
+
+void MDArpeggiatorClass::playNext(uint32_t _my16thpos, bool recording) {
+  int pos = _my16thpos - recordStart;
   if (pos == 0 && recording)
     retrigger();
       
@@ -35,7 +37,7 @@ void MDArpeggiatorClass::playNext(bool recording) {
   if (arpLen == 0 || (arpTimes != 0 && arpCount >= arpTimes))
     return;
       
-  if (arpRetrig == RETRIG_BEAT && (MidiClock.div16th_counter % retrigSpeed) == 0)
+  if (arpRetrig == RETRIG_BEAT && (_my16thpos % retrigSpeed) == 0)
     retrigger();
   if (++speedCounter >= arpSpeed) {
     speedCounter = 0;

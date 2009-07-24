@@ -345,7 +345,7 @@ void ArpeggiatorClass::calculateArp() {
     m_memcpy(arpNotes, orderedNotes, numNotes);
     m_memcpy(arpVelocities, orderedVelocities, numNotes);
     for (int i = 0; i < numNotes; i++) {
-      uint8_t rand = random(numNotes);
+      uint8_t rand = random() % numNotes;
       uint8_t tmp;
       tmp = arpNotes[i];
       arpNotes[i] = arpNotes[rand];
