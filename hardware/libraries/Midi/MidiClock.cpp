@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include "MidiUart.h"
 
-//#define DEBUG_MIDI_CLOCK 0
+// #define DEBUG_MIDI_CLOCK 0
 
 MidiClockClass::MidiClockClass() {
   init();
@@ -19,14 +19,13 @@ void MidiClockClass::init() {
   state = PAUSED;
   counter = 10000;
   rx_clock = rx_last_clock = 0;
-  update_clock = update_last_clock = 0;
-  div96th_counter = 0;
-  div32th_counter = 0;
-  div16th_counter = 0;
-  mod6_counter = 0;
-  indiv96th_counter = 0;
-  inmod6_counter = 0;
+  outdiv96th_counter = 0;
+  div96th_counter = indiv96th_counter = 0;
+  div32th_counter = indiv32th_counter = 0;
+  div16th_counter = indiv16th_counter = 0;
+  mod6_counter = inmod6_counter = 0;
   pll_x = 200;
+  counter = 10000;
   isInit = false;
 }
 
@@ -42,15 +41,7 @@ void MidiClockClass::handleMidiStart() {
     MidiUart.sendRaw(MIDI_START);
   init();
   state = STARTING;
-  mod6_counter = 0;
-  div96th_counter = 0;
-  div32th_counter = 0;
-  div16th_counter = 0;
   outdiv96th_counter = 0;
-  interval_correct = 0;
-  running_error = 0;
-  running_count = 0;
-  counter_phase = 0;
   counter = 10000;
 }
 
@@ -63,11 +54,8 @@ void MidiClockClass::handleMidiStop() {
 
 void MidiClockClass::start() {
   if (mode == INTERNAL_MIDI) {
+    init();
     state = STARTED;
-    mod6_counter = 0;
-    div96th_counter = 0;
-    div32th_counter = 0;
-    div16th_counter = 0;
     if (transmit)
       MidiUart.sendRaw(MIDI_START);
   }
@@ -106,12 +94,18 @@ void MidiClockClass::handleSongPositionPtr(uint8_t *msg) {
     USE_LOCK();
     SET_LOCK();
     indiv96th_counter = ptr;
+    indiv32th_counter = ptr / 3;
+    indiv16th_counter = ptr / 6;
+    inmod6_counter = indiv96th_counter % 6;
     CLEAR_LOCK();
   }
 }
 
 void MidiClockClass::setSongPositionPtr(uint16_t pos) {
   div96th_counter = pos;
+  div32th_counter = pos / 3;
+  div16th_counter = pos / 6;
+  mod6_counter = pos % 6;
   if (transmit) {
     uint8_t msg[3] = { MIDI_SONG_POSITION_PTR, 0, 0 };
     msg[1] = pos & 0x7F;
@@ -140,9 +134,9 @@ void MidiClockClass::updateClockInterval() {
     uint16_t new_interval = 0;
 
 #ifdef DEBUG_MIDI_CLOCK
-    GUI.setLine(GUI.LINE2);
-    GUI.put_value16(1, diff_rx);
-    GUI.put_value16(2, _interval);
+    //    GUI.setLine(GUI.LINE2);
+    //    GUI.put_value16(1, diff_rx);
+    //    GUI.put_value16(2, _interval);
 #endif
     
     if (!isInit) {
@@ -191,6 +185,15 @@ void MidiClockClass::handleClock() {
   rx_last_clock = rx_clock;
   rx_clock = my_clock;
 
+  if (inmod6_counter == 5) {
+    indiv16th_counter++;
+    indiv32th_counter++;
+  }
+  
+  if (inmod6_counter == 2) {
+    indiv32th_counter++;
+  }
+  
   indiv96th_counter++;
   inmod6_counter++;
   if (inmod6_counter == 6)
@@ -198,8 +201,8 @@ void MidiClockClass::handleClock() {
 
   static uint16_t last_phase_add;
 #ifdef DEBUG_MIDI_CLOCK
-  GUI.setLine(GUI.LINE1);
-  GUI.put_value16(1, last_phase_add);
+  //  GUI.setLine(GUI.LINE1);
+  //  GUI.put_value16(1, last_phase_add);
 #endif
   
   if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
@@ -244,16 +247,25 @@ void MidiClockClass::handleClock() {
 /* in interrupt on timer */
 void MidiClockClass::handleTimerInt()  {
   //  sei();
-  if (counter == counter_phase) {
+  if (counter == 0) {
     setLed2();
     uint8_t _mod6_counter = mod6_counter;
     
+    if (mod6_counter == 5) {
+      div16th_counter++;
+      div32th_counter++;
+    }
+    
+    if (mod6_counter == 2) {
+      div32th_counter++;
+    }
+      
     div96th_counter++;
     mod6_counter++;
 
     if (mod6_counter == 6)
       mod6_counter = 0;
-    
+
     if (transmit) {
       int len = (div96th_counter - outdiv96th_counter);
       for (int i = 0; i < len; i++) {
@@ -262,18 +274,6 @@ void MidiClockClass::handleTimerInt()  {
       }
     }
 
-#ifdef DEBUG_MIDI_CLOCK
-    GUI.setLine(GUI.LINE1);
-    GUI.put_value16(0, div96th_counter);
-    GUI.setLine(GUI.LINE2);
-    GUI.put_value16(0, outdiv96th_counter);
-#endif
-
-    //    uint16_t bla_clock = update_clock;
-    uint16_t my_clock = clock;
-    update_last_clock = update_clock;
-    update_rx_clock = rx_clock;
-    update_clock = my_clock;
 
     counter = interval;
 
@@ -281,6 +281,8 @@ void MidiClockClass::handleTimerInt()  {
       if ((div96th_counter < indiv96th_counter) ||
 	  (div96th_counter > (indiv96th_counter + 1))) {
 	div96th_counter = indiv96th_counter;
+	div32th_counter = indiv32th_counter;
+	div16th_counter = indiv16th_counter;
 	mod6_counter = inmod6_counter;
       }
     }
@@ -302,20 +304,28 @@ void MidiClockClass::handleTimerInt()  {
     if (on96Callback)
       on96Callback();
 
+#ifdef DEBUG_MIDI_CLOCK
+    GUI.setLine(GUI.LINE1);
+    GUI.put_value16(0, _mod6_counter);
+    GUI.put_value16(3, div96th_counter);
+    GUI.put_value16(1, inmod6_counter);
+    GUI.put_value16(2, indiv96th_counter);
+    GUI.setLine(GUI.LINE2);
+    GUI.put_value16(0, div16th_counter);
+#endif
+      
+    
     if (_mod6_counter == 0) {
       if (on16Callback)
 	on16Callback();
       if (on32Callback)
 	on32Callback();
-      div16th_counter++;
-      div32th_counter++;
     }
     if (_mod6_counter == 3) {
       if (on32Callback)
 	on32Callback();
-      div32th_counter++;
     }
-
+    
     if ((MidiClock.mode == MidiClock.EXTERNAL ||
 	 MidiClock.mode == MidiClock.EXTERNAL_UART2)) {
       MidiClock.updateClockInterval();
