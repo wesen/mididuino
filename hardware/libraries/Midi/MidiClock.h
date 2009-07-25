@@ -49,12 +49,12 @@ class MidiClockClass {
   } state;
 
 #ifndef MIDIDUINO
-  enum {
+  typedef enum {
     OFF = 0,
     INTERNAL_MIDI,
     EXTERNAL_MIDI,
     EXTERNAL_UART2
-  } mode;
+  } clock_mode_t;
   // arduino
 
 #ifndef BOARD_ID
@@ -62,17 +62,19 @@ class MidiClockClass {
 #endif
 #else
 
-  enum {
+  typedef enum {
     OFF = 0,
     INTERNAL,
     EXTERNAL,
     EXTERNAL_UART2
-  } mode;
+  } clock_mode_t;
   #define INTERNAL_MIDI INTERNAL
   #define EXTERNAL_MIDI EXTERNAL
 
 #endif
 
+  clock_mode_t mode;
+  
   MidiClockClass();
   void setOn96Callback(void (*callback)()) {
     on96Callback = callback;
