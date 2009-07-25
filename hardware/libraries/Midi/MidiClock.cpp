@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include "MidiUart.h"
 
-#define DEBUG_MIDI_CLOCK 0
+//#define DEBUG_MIDI_CLOCK 0
 
 MidiClockClass::MidiClockClass() {
   init();
