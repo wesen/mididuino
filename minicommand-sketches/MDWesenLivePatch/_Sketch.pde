@@ -62,12 +62,11 @@ public:
 
 //    MidiClock.mode = MidiClock.EXTERNAL_UART2;
 //    MidiClock.transmit = true;
-    MidiClock.mode = MidiClock.EXTERNAL;
-    MidiClock.transmit = false;
+//    MidiClock.mode = MidiClock.EXTERNAL;
+//    MidiClock.transmit = false;
     
     MidiClock.setOn16Callback(_on16Callback);
     MidiClock.setOn32Callback(on32Callback);
-    MidiClock.start();
     setPage(&page);
   }
 
@@ -95,7 +94,9 @@ public:
       else if (EVENT_RELEASED(event, Buttons.BUTTON3)) {
         breakPage.stopSupatrigga();
       } 
-      else {
+      else if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+//        GUI.pushPage(&midiClockPage);
+      } else {
         return false;
       }
     }
@@ -161,9 +162,18 @@ void _onGlobalChanged() {
 }
 
 void setup() {
-  enableProfiling();
+//  enableProfiling();
   sketch.setup();
   GUI.setSketch(&sketch);
+  
+  if (SDCard.init() != 0) {
+    GUI.flash_strings_fill("SDCARD ERROR", "");
+    delay(800);
+  }
+  midiClockPage.setup();
+  if (BUTTON_DOWN(Buttons.BUTTON1)) {
+    GUI.pushPage(&midiClockPage);
+  }
 }
 
 void loop() {

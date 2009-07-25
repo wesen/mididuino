@@ -2,6 +2,9 @@
 #include <MD.h>
 #include <CCHandler.h>
 #include <Profiler.h>
+#include <MidiClockPage.h>
+#include <SDCard.h>
+
 
 CCHandler ccHandler;
 

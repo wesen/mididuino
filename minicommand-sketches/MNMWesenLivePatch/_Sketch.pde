@@ -46,7 +46,7 @@ public:
         MidiClock.mode = MidiClock.EXTERNAL;
         MidiClock.transmit = false;
    MidiClock.setOn32Callback(on32Callback);
-    MidiClock.start();
+    MidiClock.start();  
 
     setPage(&autoMNMPages[0]);
   }
@@ -137,7 +137,15 @@ void setup() {
 //  enableProfiling();
   sketch.setup();
   GUI.setSketch(&sketch);
+  if (SDCard.init() != 0) {
+    GUI.flash_strings_fill("SDCARD ERROR", "");
+    delay(800);
+  }
+  midiClockPage.setup();
+  if (BUTTON_DOWN(Buttons.BUTTON1)) {
+    GUI.pushPage(&midiClockPage);
+  }
 }
-
+  
 void loop() {
 }
