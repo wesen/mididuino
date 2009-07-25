@@ -102,6 +102,24 @@ public:
   virtual void displayAt(int i);
 };
 
+static const char *boolEnumStrings[] = { "OFF", "ON" };
+
+class BoolEncoder : public EnumEncoder {
+public:
+  BoolEncoder(const char *_name = NULL, bool init = false, encoder_handle_t _handler = NULL) :
+    EnumEncoder(boolEnumStrings, 2, _name, init ? 1 : 0, _handler) {
+  }
+
+  void initBoolEncoder(const char *_name = NULL, bool init = false) {
+    initEnumEncoder(boolEnumStrings, 2, _name, init ? 1 : 0);
+  }
+    
+
+  bool getBoolValue() {
+    return getValue() == 1;
+  }
+};
+
 
 class CCEncoder : public RangeEncoder {
  public:

@@ -14,12 +14,14 @@ class Page {
   char shortName[4];
   bool redisplay;
   PageContainer *parent;
+  bool isSetup;
 
   Page(char *_name = NULL, char *_shortName = NULL) {
     parent = NULL;
     redisplay = false;
     setName(_name);
     setShortName(_shortName);
+    isSetup = false;
   }
 
   void setName(char *_name = NULL) {
@@ -50,6 +52,7 @@ class Page {
   virtual bool handleEvent(gui_event_t *event) {
     return false;
   }
+  virtual void setup() { }
 
 #ifdef HOST_MIDIDUINO
   virtual ~Page() { }
@@ -117,6 +120,10 @@ class PageContainer {
   
   void pushPage(Page *page) {
     page->parent = this;
+    if (!page->isSetup) {
+      page->setup();
+      page->isSetup = true;
+    }
     page->redisplayPage();
     page->show();
     pageStack.push(page);

@@ -52,6 +52,10 @@ class GuiClass {
 
   void setSketch(Sketch *_sketch);
   void setPage(Page *page);
+  void pushPage(Page *page);
+  void popPage();
+  Page *currentPage();
+  void popPage(Page *page);
   
   void addEventHandler(event_handler_t handler) {
     eventHandlers.add(handler);

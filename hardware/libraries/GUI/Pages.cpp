@@ -3,7 +3,6 @@
 #include "Pages.hh"
 
 void Page::update() {
-  Encoders.clearEncoders();
 }
 
 void Page::redisplayPage() {
@@ -21,14 +20,13 @@ void EncoderPage::update() {
   USE_LOCK();
   SET_LOCK();
   m_memcpy(_encoders, Encoders.encoders, sizeof(_encoders));
+  Encoders.clearEncoders();
   CLEAR_LOCK();
   
   for (uint8_t i = 0; i < GUI_NUM_ENCODERS; i++) {
     if (encoders[i] != NULL) 
       encoders[i]->update(_encoders + i);
   }
-  
-  Encoders.clearEncoders();
 }
 
 void EncoderPage::clear() {
