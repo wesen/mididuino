@@ -3,7 +3,7 @@
 #include "helpers.h"
 #include "MidiUart.h"
 
-//#define DEBUG_MIDI_CLOCK 0
+#define DEBUG_MIDI_CLOCK 0
 
 MidiClockClass::MidiClockClass() {
   init();
@@ -142,6 +142,7 @@ void MidiClockClass::updateClockInterval() {
 #ifdef DEBUG_MIDI_CLOCK
     GUI.setLine(GUI.LINE2);
     GUI.put_value16(1, diff_rx);
+    GUI.put_value16(2, _interval);
 #endif
     
     if (!isInit) {
@@ -254,7 +255,7 @@ void MidiClockClass::handleTimerInt()  {
       mod6_counter = 0;
     
     if (transmit) {
-      uint8_t len = (div96th_counter - outdiv96th_counter);
+      int len = (div96th_counter - outdiv96th_counter);
       for (int i = 0; i < len; i++) {
 	MidiUart.putc_immediate(MIDI_CLOCK);
 	outdiv96th_counter++;
