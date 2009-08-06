@@ -203,6 +203,7 @@ void MidiClass::setOnControlChangeCallback(midi_callback_t cb) {
 void MidiClass::addOnNoteOnCallback(midi_callback_t cb) {
   addCallback(MIDI_NOTE_ON_CB, cb);
 }
+
 void MidiClass::removeOnNoteOnCallback(midi_callback_t cb) {
   removeCallback(MIDI_NOTE_ON_CB, cb);
 }

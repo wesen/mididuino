@@ -5,12 +5,10 @@
 #include <inttypes.h>
 #include "midi-common.hh"
 
+typedef void (*midi_clock_callback_t)();
+
 class MidiClockClass {
  public:
-  void (*on96Callback)();
-  void (*on32Callback)();
-  void (*on16Callback)();
-
   volatile uint32_t indiv96th_counter;
   volatile uint32_t outdiv96th_counter;
 
@@ -35,7 +33,6 @@ class MidiClockClass {
   uint16_t tempo;
   bool transmit;
   bool isInit;
-
 
   volatile enum {
     PAUSED = 0,
@@ -71,15 +68,28 @@ class MidiClockClass {
   clock_mode_t mode;
   
   MidiClockClass();
-  void setOn96Callback(void (*callback)()) {
-    on96Callback = callback;
-  }
-  void setOn32Callback(void (*callback)()) {
-    on32Callback = callback;
-  }
-  void setOn16Callback(void (*callback)()) {
-    on16Callback = callback;
-  }
+
+  midi_clock_callback_t on96Callback;
+  Vector<midi_clock_callback_t, 4> on96Callbacks;
+  
+  midi_clock_callback_t on32Callback;
+  Vector<midi_clock_callback_t, 4> on32Callbacks;
+  
+  midi_clock_callback_t on16Callback;
+  Vector<midi_clock_callback_t, 4> on16Callbacks;
+
+  void setOn96Callback(midi_clock_callback_t cb);
+  void addOn96Callback(midi_clock_callback_t cb);
+  void removeOn96Callback(midi_clock_callback_t cb);
+  
+  void setOn32Callback(midi_clock_callback_t cb);
+  void addOn32Callback(midi_clock_callback_t cb);
+  void removeOn32Callback(midi_clock_callback_t cb);
+  
+  void setOn16Callback(midi_clock_callback_t cb);
+  void addOn16Callback(midi_clock_callback_t cb);
+  void removeOn16Callback(midi_clock_callback_t cb);
+  
   void init();
   void handleClock();
   void updateClockPhase();
