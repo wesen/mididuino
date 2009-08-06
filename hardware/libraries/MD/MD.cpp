@@ -377,7 +377,7 @@ void MDClass::sliceTrack32(uint8_t track, uint8_t from, uint8_t to, bool correct
   } else {
     pfrom = MIN(127, from * 4);
     pto = MIN(127, to * 4);
-    if (correct && pfrom > 64)
+    if (correct && pfrom >= 64)
       pfrom++;
   }
   setTrackParam(track, 4, pfrom);
