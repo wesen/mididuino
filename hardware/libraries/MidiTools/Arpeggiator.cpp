@@ -2,13 +2,13 @@
 #include "helpers.h"
 #include "Arpeggiator.hh"
 
-char retrig_names[RETRIG_CNT][5] PROGMEM = {
+const char *retrig_names[RETRIG_CNT] = {
   "OFF ",
   "NOTE",
   "BEAT"
 };
 
-char arp_names[ARP_STYLE_CNT][8] PROGMEM = {
+const char *arp_names[ARP_STYLE_CNT] = {
     "UP     ",
     "DOWN   ",
     "UPDOWN ",

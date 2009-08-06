@@ -28,9 +28,8 @@ typedef enum {
   RETRIG_CNT
 } arp_retrig_type_t;
 
-extern char retrig_names[RETRIG_CNT][5] PROGMEM;
-
-extern char arp_names[ARP_STYLE_CNT][8] PROGMEM;
+extern const char *retrig_names[RETRIG_CNT];
+extern const char *arp_names[ARP_STYLE_CNT];
 
 #define NUM_NOTES 8
 #define MAX_ARP_LEN 64
