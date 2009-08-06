@@ -15,10 +15,10 @@ void TempoEncoderHandle(Encoder *enc);
 
 class Encoder {
  protected:
+ public:
   int old, cur;
   char name[4];
 
- public:
   encoder_handle_t handler;
   
   Encoder(const char *_name = NULL, encoder_handle_t _handler = NULL);
