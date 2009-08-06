@@ -80,14 +80,13 @@ public:
   }
 
   void on16Callback() {
-//    GUI.put_value(3, (uint8_t)(MidiClock.div16th_counter % 32));
     if (restorePlayback && !storedBreakdownActive) {
       uint8_t val = (MidiClock.div16th_counter) % 32;
       if ((val % 4) == 0) {
         restorePlayback = false;
         MD.sliceTrack32(ramP1Track, val, 32, true);
+        return;
       }
-
     }
     if (supaTriggaActive) {
       doSupatrigga();
@@ -98,20 +97,8 @@ public:
     else {
       uint8_t val = (MidiClock.div16th_counter) % 32;
       if (val == 0) {
-//        GUI.put_value(3, ramP1Track);
-//        GUI.put_value(2, MD.global.drumMapping[ramP1Track]);
-//        GUI.put_value(1, MD.global.drumMapping[0]);
         MD.sliceTrack32(ramP1Track, 0 , 32);
       }
-      /*
-if ((val % 8) == 0) {
-       if (BUTTON_DOWN(Buttons.BUTTON1)) {
-       MD.sliceTrack32(sketch.ramP1Track, val, val + 8, false);
-       } else {
-       MD.sliceTrack32(sketch.ramP1Track, val, val + 8, true);
-       }
-       }
-       */
     }
   }
 
