@@ -109,16 +109,7 @@ public:
   ConfigPage_1 configPage_1;
   ConfigPage_2 configPage_2;
 
-  bool loadedKit;
-  bool triggerRecording;
-  bool recording;
-  bool endRecording;
-
   ArpeggiatorSketch() {
-    loadedKit = false;
-    triggerRecording = false;
-    recording = false;
-    endRecording = false;
   }
 
   void setup() {
@@ -154,9 +145,7 @@ public:
     }
 
     if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
-      triggerRecording = true;
-      recording = false;
-      endRecording = false;
+      arpeggiator.startRecording();
     }
   }
 
@@ -165,32 +154,6 @@ public:
     GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
     GUI.setLine(GUI.LINE2);
     GUI.flash_string_fill(MD.kit.name);
-  }
-
-  void on16Callback() {
-    if (triggerRecording && (MidiClock.div16th_counter % 16) == 0) {
-      triggerRecording = false;
-      recording = true;
-      arpeggiator.recordStart = MidiClock.div16th_counter;
-      for (int i = 0; i < 64; i++) {
-	arpeggiator.recordPitches[i] = 128;
-      }
-    }
-    
-    if (recording || endRecording) {
-      int pos = MidiClock.div16th_counter - arpeggiator.recordStart;
-      if (pos >= (arpeggiator.recordLength * 3)) {
-	endRecording = false;
-      } else if (pos >= (arpeggiator.recordLength * 2)) {
-	recording = false;
-	endRecording = true;
-	return;
-      }
-    }
-    
-    if (!triggerRecording) {
-      arpeggiator.playNext(recording);
-    }
   }
 };
 
@@ -234,5 +197,5 @@ void _onNoteOnCallbackKeyboard(uint8_t *msg) {
 }
 
 void _on16Callback() {
-  sketch.on16Callback();
+  arpeggiator.on16Callback();
 }
