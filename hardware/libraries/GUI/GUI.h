@@ -9,6 +9,8 @@
 
 #if defined(MIDIDUINO_USE_GUI) || defined(HOST_MIDIDUINO)
 
+#define MIDIDUINO_GUI_ACTIVE 1
+
 #include "Events.hh"
 #include "Pages.hh"
 
