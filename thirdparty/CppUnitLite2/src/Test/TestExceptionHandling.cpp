@@ -42,7 +42,7 @@ TEST (ExceptionTestCaseHasCorrectFilename)
 
 TEST (ExceptionTestCaseThrowsExceptionIfNotHandled)
 {
-    ExceptionHandler::TurnOn(false);
+    UnitExceptionHandler::TurnOn(false);
 
     bool bExceptionFound = false;
     MockTestResult result;
@@ -53,7 +53,7 @@ TEST (ExceptionTestCaseThrowsExceptionIfNotHandled)
     catch(...) {
         bExceptionFound = true;
     }
-    ExceptionHandler::TurnOn(true);
+    UnitExceptionHandler::TurnOn(true);
     CHECK (bExceptionFound);
 }
 
@@ -97,7 +97,7 @@ TEST (ExceptionInsideCheckTestCaseHasCorrectFilename)
 
 TEST (ExceptionInsideCheckTestCaseThrowsExceptionIfNotHandled)
 {
-    ExceptionHandler::TurnOn(false);
+    UnitExceptionHandler::TurnOn(false);
 
     bool bExceptionFound = false;
     MockTestResult result;
@@ -108,7 +108,7 @@ TEST (ExceptionInsideCheckTestCaseThrowsExceptionIfNotHandled)
     catch(...) {
         bExceptionFound = true;
     }
-    ExceptionHandler::TurnOn(true);
+    UnitExceptionHandler::TurnOn(true);
     CHECK (bExceptionFound);
 }
 

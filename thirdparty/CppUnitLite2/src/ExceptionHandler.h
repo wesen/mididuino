@@ -12,7 +12,7 @@
 class TestResult;
 class TestException;
 
-namespace ExceptionHandler {
+namespace UnitExceptionHandler {
 
 bool IsOn ();
 void TurnOn (bool bOn = true);

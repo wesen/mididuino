@@ -5,7 +5,7 @@
 
 
 
-namespace ExceptionHandler {
+namespace UnitExceptionHandler {
 
 
 namespace {

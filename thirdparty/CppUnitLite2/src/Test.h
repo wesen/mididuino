@@ -107,9 +107,9 @@ public:
             if (!(condition))                                                          \
 				result_.AddFailure (Failure (#condition, m_name, __FILE__, __LINE__)); \
         } catch( const TestException& e ) {											   \
-            ExceptionHandler::Handle(result_, e, m_name, __FILE__, __LINE__); 	       \
+            UnitExceptionHandler::Handle(result_, e, m_name, __FILE__, __LINE__); 	       \
         } catch(...) {                                                                 \
-            ExceptionHandler::Handle(result_, #condition, m_name, __FILE__, __LINE__); \
+            UnitExceptionHandler::Handle(result_, #condition, m_name, __FILE__, __LINE__); \
         }                                                                              \
     } while (0)
 
@@ -156,7 +156,7 @@ public:
 			bExceptionCaught = true; 															\
 		} 																						\
 		catch (...) {																			\
-			ExceptionHandler::Handle(result_, #action, m_name, __FILE__, __LINE__);				\
+			UnitExceptionHandler::Handle(result_, #action, m_name, __FILE__, __LINE__);				\
 		}																						\
 		if (!bExceptionCaught) 																	\
 			result_.AddFailure (Failure	("No exception detected", m_name, __FILE__,	__LINE__));	\

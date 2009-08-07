@@ -23,11 +23,11 @@ void CheckEqual( TestResult& result_, const Type1& expected, const Type2& actual
             result_.AddFailure (Failure (msg.str().c_str(), name, file, line));                   
         }                                                                                              
     } catch( const TestException& e ) {                                                                
-        ExceptionHandler::Handle(result_, e, name, file, line );                             
+        UnitExceptionHandler::Handle(result_, e, name, file, line );                             
     } catch(...) {                                                                                     
         std::stringstream msg;                                                                         
         msg << "expected: '" << (expected) << "' but was: '" << (actual) << "'" << std::ends;       
-        ExceptionHandler::Handle(result_, msg.str().c_str(), name, file, line);                   
+        UnitExceptionHandler::Handle(result_, msg.str().c_str(), name, file, line);                   
     }                                                                                                  
 }
 
@@ -42,9 +42,9 @@ void CheckClose( TestResult& result_, const Type1& expected, const Type2& actual
             result_.AddFailure (Failure (msg.str().c_str(),  name, file, line));                
         }                                                                                              
     } catch( const TestException& e ) {                                                                
-        ExceptionHandler::Handle(result_, e, name, file, line);                              
+        UnitExceptionHandler::Handle(result_, e, name, file, line);                              
     } catch(...) {                                                                                     
-        ExceptionHandler::Handle(result_, "", name, file, line);                 
+        UnitExceptionHandler::Handle(result_, "", name, file, line);                 
     }
 }
 
@@ -80,9 +80,9 @@ void CheckArrayClose( TestResult& result_,
             result_.AddFailure (Failure (msg.str().c_str(),  name, file, line));
         }
     } catch( const TestException& e ) {                                                  
-        ExceptionHandler::Handle(result_, e, name, file, line);                
+        UnitExceptionHandler::Handle(result_, e, name, file, line);                
     } catch(...) {                                                                       
-        ExceptionHandler::Handle(result_, "", name, file, line);     
+        UnitExceptionHandler::Handle(result_, "", name, file, line);     
     }                                                                                    
 }
 
@@ -141,11 +141,11 @@ void CheckArrayClose2D( TestResult& result_,
     }
     catch( const TestException& e ) 
     {
-        ExceptionHandler::Handle(result_, e, name, file, line);                
+        UnitExceptionHandler::Handle(result_, e, name, file, line);                
     } 
     catch(...) 
     {
-        ExceptionHandler::Handle(result_, "", name, file, line);     
+        UnitExceptionHandler::Handle(result_, "", name, file, line);     
     }   
 }
 
