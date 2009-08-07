@@ -158,6 +158,13 @@ public:
   void setChar(char c);
 };
 
+class NotePitchEncoder : public RangeEncoder {
+public:
+  NotePitchEncoder(char *_name = NULL);
+
+  void displayAt(int i);
+};
+
 #include "RecordingEncoder.hh"
 
 

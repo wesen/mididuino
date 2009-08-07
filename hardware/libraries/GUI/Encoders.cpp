@@ -1,5 +1,5 @@
 #include "Encoders.hh"
-
+#include "MidiTools.h"
 #include "Midi.h"
 
 /* handlers */
@@ -117,3 +117,12 @@ void CharEncoder::setChar(char c) {
   }
 }
 
+/* notePitchEncoder */
+NotePitchEncoder::NotePitchEncoder(char *_name) : RangeEncoder(0, 127, _name) {
+}
+
+void NotePitchEncoder::displayAt(int i) {
+  char name[5];
+  getNotePitch(getValue(), name);
+  GUI.put_string_at(i * 4, name);
+}
