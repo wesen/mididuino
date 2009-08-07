@@ -3,9 +3,7 @@
 
 #include "Midi.h"
 
-#ifndef HOST_MIDIDUINO
 #include "MidiClock.h"
-#endif
 
 // #include "GUI.h"
 

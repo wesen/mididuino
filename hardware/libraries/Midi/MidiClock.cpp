@@ -1,7 +1,7 @@
 #include "MidiClock.h"
 #include "midi-common.hh"
 #include "helpers.h"
-#include "MidiUart.h"
+// #include "MidiUart.h"
 
 // #define DEBUG_MIDI_CLOCK 0
 
@@ -213,18 +213,17 @@ void MidiClockClass::updateClockInterval() {
   }
 }
 
-#define PHASE_FACTOR 32
-static uint32_t phase_mult(uint32_t val) {
-  //  return (val * PHASE_FACTOR) >> 8;
-  return val / 4;
-}
-
 /* in interrupt on receiving 0xF8 */
 void MidiClockClass::handleClock() {
   //  setLed();
 
   rx_phase = counter;
+#ifdef HOST_MIDIDUINO
+  uint16_t my_clock = read_clock();
+#else
   uint16_t my_clock = clock;
+#endif
+  
   rx_last_clock = rx_clock;
   rx_clock = my_clock;
 
@@ -341,8 +340,10 @@ void MidiClockClass::handleTimerInt()  {
       clearLed();
       inCallback = true;
     }
-    
+
+#ifndef HOST_MIDIDUINO
     sei();
+#endif
 
     for (int i = 0; i < on96Callbacks.size; i++) {
       if (on96Callbacks.arr[i] != NULL)

@@ -3,6 +3,7 @@
 
 #include "WProgram.h"
 #include <inttypes.h>
+#include "Vector.hh"
 #include "midi-common.hh"
 
 typedef void (*midi_clock_callback_t)();
@@ -40,7 +41,19 @@ class MidiClockClass {
     STARTED = 2,
   } state;
 
-#ifndef MIDIDUINO
+#if defined(MIDIDUINO) || defined(HOST_MIDIDUINO)
+
+
+  typedef enum {
+    OFF = 0,
+    INTERNAL,
+    EXTERNAL,
+    EXTERNAL_UART2
+  } clock_mode_t;
+  #define INTERNAL_MIDI INTERNAL
+  #define EXTERNAL_MIDI EXTERNAL
+
+#else  
   typedef enum {
     OFF = 0,
     INTERNAL_MIDI,
@@ -52,16 +65,6 @@ class MidiClockClass {
 #ifndef BOARD_ID
 #define BOARD_ID 0x80
 #endif
-#else
-
-  typedef enum {
-    OFF = 0,
-    INTERNAL,
-    EXTERNAL,
-    EXTERNAL_UART2
-  } clock_mode_t;
-  #define INTERNAL_MIDI INTERNAL
-  #define EXTERNAL_MIDI EXTERNAL
 
 #endif
 
