@@ -77,16 +77,24 @@ public:
   uint8_t recordPitches[64];
   int recordLength;
   int recordStart;
+  bool triggerRecording;
+  bool recording;
+  bool endRecording;
 
   MDArpeggiatorClass() : ArpeggiatorClass() {
     recordLength = 32;
     recordStart = 0;
+    triggerRecording = false;
+    recording = false;
+    endRecording = false;
   }
   
   /* recording */
   void recordNote(int pos, uint8_t track, uint8_t note, uint8_t velocity);
   void recordNoteSecond(int pos, uint8_t track);
   void playNext(uint32_t _my16thpos, bool recording = false);
+  void on16Callback();
+  void startRecording();
 };
 
 #endif /* ARPEGGIATOR_H__ */

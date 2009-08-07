@@ -68,3 +68,34 @@ void MDArpeggiatorClass::playNext(uint32_t _my16thpos, bool recording) {
   } 
 }
 
+void MDArpeggiatorClass::startRecording() {
+  triggerRecording = true;
+  recording = false;
+  endRecording = false;
+}  
+
+void MDArpeggiatorClass::on16Callback() {
+  if (triggerRecording && (MidiClock.div16th_counter % 16) == 0) {
+    triggerRecording = false;
+    recording = true;
+    recordStart = MidiClock.div16th_counter;
+    for (int i = 0; i < 64; i++) {
+      recordPitches[i] = 128;
+    }
+  }
+    
+  if (recording || endRecording) {
+    int pos = MidiClock.div16th_counter - recordStart;
+    if (pos >= (recordLength * 3)) {
+      endRecording = false;
+    } else if (pos >= (recordLength * 2)) {
+      recording = false;
+      endRecording = true;
+      return;
+    }
+  }
+    
+  if (!triggerRecording) {
+    playNext(recording);
+  }
+}
