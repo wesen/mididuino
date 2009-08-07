@@ -23,6 +23,11 @@ void handleIncomingMidi();
 #define BOARD_ID 0x89
 #define SYSEX_BUF_SIZE 8192
 
+#define setLed()
+#define clearLed()
+#define setLed2()
+#define clearLed2()
+
 #define PROGMEM
 
 #ifdef __cplusplus
@@ -39,6 +44,7 @@ extern "C" {
 
 #define MIDIDUINO_HANDLE_SYSEX
 #include "Midi.h"
+#include "MidiClock.h"
 
 #include "MidiUartOSX.h"
 #include "GUI_private.h"
