@@ -86,7 +86,6 @@ public:
   void removeOnControlChangeCallback(midi_callback_t cb) {
     CCCallbacks.remove(cb);
   }
-  
 
   inline void resetRunningStatus() {
     running_status = 0;
