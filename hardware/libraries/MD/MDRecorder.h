@@ -17,18 +17,27 @@ class MDRecorderClass {
 
   bool recording;
   bool playing;
+  bool looping;
   uint32_t start16th;
   uint8_t rec16th_counter;
+  uint8_t play16th_counter;
   uint8_t recordLength;
+
+  void setup();
   
   ListWithPool<md_recorder_event_t, 128> eventList;
+  ListElt<md_recorder_event_t> *playPtr;
 
   void startRecord(uint8_t length);
-  void playback();
+  void stopRecord();
+  void startPlayback();
+  void stopPlayback();
 
   void onNoteOnCallback(uint8_t *msg);
   void onCCCallback(uint8_t *msg);
   void on16Callback();
 };
+
+extern MDRecorderClass MDRecorder;
 
 #endif /* MDRECORDER_H__ */

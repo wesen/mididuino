@@ -10,24 +10,66 @@ MDRecorderClass::MDRecorderClass() {
   playing = false;
   start16th = 0;
   recordLength = 0;
+  playPtr = NULL;
+  looping = true;
+}
+
+void MDRecorderClass::setup() {
+  MidiClock.addOn16Callback(_MDRecorder_on16Callback);
 }
 
 void MDRecorderClass::startRecord(uint8_t length) {
-  eventList.freeAll();
+  if (playing) {
+    stopPlayback();
+  }
   
   USE_LOCK();
   SET_LOCK();
 
-  start16th = MidiClock.div16th_counter;
+  eventList.freeAll();
+  
+  //  start16th = MidiClock.div16th_counter;
   rec16th_counter = 0;
+  recording = true;
+  recordLength = length;
+  
   MidiUart.addOnNoteOnCallback(_MDRecorder_onNoteOnCallback);
   MidiUart.addOnControlChangeCallback(_MDRecorder_onCCCallback);
-  MidiClock.addOn16Callback(_MDRecorder_on16Callback);
+  CLEAR_LOCK();
+}
+
+void MDRecorderClass::stopRecord() {
+  USE_LOCK();
+  SET_LOCK();
+  recording = false;
+  MidiUart.removeOnNoteOnCallback(_MDRecorder_onNoteOnCallback);
+  MidiUart.removeOnControlChangeCallback(_MDRecorder_onCCCallback);
+  CLEAR_LOCK();
+  eventList.reverse();
+}
+
+void MDRecorderClass::startPlayback() {
+  if (recording) {
+    stopRecord();
+  }
+  
+  USE_LOCK();
+  SET_LOCK();
+
+  play16th_counter = 0;
+  playing = true;
+  playPtr = eventList.head;
 
   CLEAR_LOCK();
 }
 
-void MDRecorderClass::playback() {
+void MDRecorderClass::stopPlayback() {
+  USE_LOCK();
+  SET_LOCK();
+
+  playing = false;
+
+  CLEAR_LOCK();
 }
 
 void MDRecorderClass::onNoteOnCallback(uint8_t *msg) {
@@ -63,15 +105,35 @@ void MDRecorderClass::onCCCallback(uint8_t *msg) {
 }
 
 void MDRecorderClass::on16Callback() {
-  if (++rec16th_counter > recordLength) {
-    USE_LOCK();
-    SET_LOCK();
-    recording = false;
-    MidiUart.removeOnNoteOnCallback(_MDRecorder_onNoteOnCallback);
-    MidiUart.removeOnControlChangeCallback(_MDRecorder_onCCCallback);
-    MidiClock.removeOn16Callback(_MDRecorder_on16Callback);
-    CLEAR_LOCK();
+  USE_LOCK();
+  SET_LOCK();
+  
+  if (recording) {
+    if (++rec16th_counter >= recordLength) {
+      stopRecord();
+    }
+  } else if (playing) {
+    while ((playPtr != NULL) && (playPtr->obj.step <= play16th_counter)) {
+      if (playPtr->obj.channel & 0x80) {
+	MidiUart.sendCC(playPtr->obj.channel & 0xF, playPtr->obj.pitch, playPtr->obj.value);
+      } else {
+	MidiUart.sendNoteOn(playPtr->obj.channel, playPtr->obj.pitch, playPtr->obj.value);
+      }
+      playPtr = playPtr->next;
+    }
+    
+    if (++play16th_counter >= recordLength) {
+      if (looping) {
+	play16th_counter = 0;
+	playing = true;
+	playPtr = eventList.head;
+      } else {
+	stopPlayback();
+      }
+    }
   }
+  
+  CLEAR_LOCK();
 }
 
 MDRecorderClass MDRecorder;
