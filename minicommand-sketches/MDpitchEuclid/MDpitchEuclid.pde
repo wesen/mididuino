@@ -1,108 +1,227 @@
 #include <MD.h>
+#include <SDCard.h>
+#include <MidiClockPage.h>
 #include <Sequencer.h>
+#include <Scales.h>
 
-RangeEncoder pitchLengthEncoder(1, 32, "PTC");
-RangeEncoder pulseEncoder(1, 32, "PLS");
-RangeEncoder lengthEncoder(2, 32, "LEN");
-RangeEncoder offsetEncoder(0, 32, "OFF");
-RangeEncoder trackEncoder(0, 15, "TRK");
+#define NUM_SCALES 7
 
-EuclidDrumTrack track(3, 8);
-EncoderPage page;
-EncoderPage trackPage;
-uint8_t arpPitches[] = { 0, 3, 7, 10, 12, 15, 19, 22 };
+scale_t *scales[NUM_SCALES] = {
+  &ionianScale,
+  &aeolianScale,
+  &bluesScale,
+  &majorPentatonicScale,
+  &majorMaj7Arp,
+  &majorMin7Arp,
+  &minorMin7Arp
+};
 
-uint8_t pitches[32];
-uint8_t pitches_len = 0;
-uint8_t pitches_idx = 0;
+scale_t *scale = &majorScale;
 
-void setPitchLength(uint8_t len) {
-  for (uint8_t i = 0; i < len; i++) {
-    pitches[i] = 60 + arpPitches[random(8)];
+class PitchEuclid {
+public:
+  EuclidDrumTrack track;
+  scale_t *currentScale;
+
+  uint8_t pitches[32];
+  uint8_t pitches_len;
+  uint8_t pitches_idx;
+
+  uint8_t mdTrack;
+
+  uint8_t octaves;
+  uint8_t basePitch;
+
+  PitchEuclid() : 
+  track(3, 8, 0) {
+    currentScale = scales[0];
+    octaves = 0;
+
+    pitches_len = 0;
+    pitches_idx = 0;
+    setPitchLength(4);
+    mdTrack = 0;
   }
-  pitches_len = len;
-}
 
-void on16Callback() {
-  if (track.isHit(MidiClock.div16th_counter)) {
-    /*
-    uint8_t decay = random(40, 120);
-    MD.setTrackParam(trackEncoder.getValue(), 1, decay);
-    if (decay < 80) {
-      MD.setTrackParam(trackEncoder.getValue(), 15, 100);
-    } else {
-      MD.setTrackParam(trackEncoder.getValue(), 15, 0);
+  void setPitchLength(uint8_t len) {
+    pitches_len = len;
+    randomizePitches();
+  }
+  
+  void randomizePitches() {
+    for (uint8_t i = 0; i < pitches_len; i++) {
+      pitches[i] = randomScalePitch(currentScale, octaves);
     }
-    */
-    MD.sendNoteOn(trackEncoder.getValue(), pitches[pitches_idx], random(40, 110));
-    pitches_idx = (pitches_idx + 1) % pitches_len;
   }
-}
+
+  void on16Callback() {
+    if (track.isHit(MidiClock.div16th_counter)) {
+      uint8_t pitch = basePitch + pitches[pitches_idx];
+      if (pitch <= 127) {
+        MD.sendNoteOn(mdTrack, pitch, 100);
+      }
+      pitches_idx = (pitches_idx + 1) % pitches_len;
+    }
+  }
+};
+
+PitchEuclid pitchEuclid;
+
+class PitchEuclidConfigPage1 : 
+public EncoderPage {
+public:
+  RangeEncoder pitchLengthEncoder;
+  RangeEncoder pulseEncoder;
+  RangeEncoder lengthEncoder;
+  RangeEncoder offsetEncoder;
+
+  PitchEuclidConfigPage1() :
+  pitchLengthEncoder(1, 32, "PTC", 4),
+  pulseEncoder(1, 32, "PLS", 3),
+  lengthEncoder(2, 32, "LEN", 8),
+  offsetEncoder(0, 32, "OFF", 0) {
+    encoders[0] = &pitchLengthEncoder;
+    encoders[1] = &pulseEncoder;
+    encoders[2] = &lengthEncoder;
+    encoders[3] = &offsetEncoder;
+  }
+
+  void loop() {
+    if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
+      pitchEuclid.track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(),
+      offsetEncoder.getValue());
+    }
+    if (pitchLengthEncoder.hasChanged()) {
+      pitchEuclid.setPitchLength(pitchLengthEncoder.getValue());
+    }
+  }
+};
+
+class PitchEuclidConfigPage2 : 
+public EncoderPage {
+public:
+  RangeEncoder trackEncoder;
+  RangeEncoder scaleEncoder;
+  RangeEncoder octavesEncoder;
+  NotePitchEncoder basePitchEncoder;
+
+  PitchEuclidConfigPage2() :
+  trackEncoder(0, 15, "TRK", 0),
+  scaleEncoder(0, NUM_SCALES, "SCL", 0),
+  basePitchEncoder("BAS"),
+  octavesEncoder(0, 4, "OCT")
+  {
+    encoders[0] = &trackEncoder;
+    encoders[3] = &basePitchEncoder;
+    encoders[2] = &octavesEncoder;
+    encoders[1] = &scaleEncoder;
+  }
+
+  void loop() {
+    if (scaleEncoder.hasChanged()) {
+      pitchEuclid.currentScale = scales[scaleEncoder.getValue()];
+      pitchEuclid.randomizePitches();
+    }
+    if (basePitchEncoder.hasChanged()) {
+      pitchEuclid.basePitch = basePitchEncoder.getValue();
+    }
+    if (octavesEncoder.hasChanged()) {
+      pitchEuclid.octaves = octavesEncoder.getValue();
+      pitchEuclid.randomizePitches();
+    }
+  }
+
+  void display() {
+    if (trackEncoder.hasChanged()) {
+      GUI.setLine(GUI.LINE2);
+      uint8_t track = trackEncoder.getValue();
+        GUI.flash_put_value(0, track);
+      if (MD.isMelodicTrack(track)) {
+        GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
+        pitchEuclid.mdTrack = track;
+      } 
+      else {
+        GUI.flash_p_string_at_fill(4, PSTR("XXX"));
+        pitchEuclid.mdTrack = 255;
+      }
+    }
+    EncoderPage::display();
+  }    
+};
+
+class PitchEuclidSketch : 
+public Sketch {
+  public:
+  PitchEuclidConfigPage1 page1;
+  PitchEuclidConfigPage2 page2;
+
+  PitchEuclidSketch() {
+  }
+
+  void setup() {
+    MDTask.setup();
+    MDTask.autoLoadKit = true;
+    MDTask.reloadGlobal = true;
+    MDTask.addOnKitChangeCallback(_onKitChanged);
+//    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
+    GUI.addTask(&MDTask);
+
+    MidiClock.setOn16Callback(_on16Callback);
+
+    setPage(&page1);
+  }
+
+  bool handleEvent(gui_event_t *event) {
+    if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+      GUI.setPage(&page1);
+      return true;
+    } else if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+      GUI.setPage(&page2);
+      return true;
+    } else if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
+      pitchEuclid.randomizePitches();
+    }
+  }
+
+  void onKitChanged() {
+    GUI.setLine(GUI.LINE1);
+    GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+    GUI.setLine(GUI.LINE2);
+    GUI.flash_string_fill(MD.kit.name);
+  }  
+
+};
+
+PitchEuclidSketch sketch;
 
 void setup() {
-  page.encoders[0] = &pitchLengthEncoder;
-  page.encoders[1] = &pulseEncoder;
-  page.encoders[2] = &lengthEncoder;
-  page.encoders[3] = &offsetEncoder;
-  setPitchLength(4);
-  
-  trackPage.encoders[0] = &trackEncoder;
-  trackEncoder.setValue(0);
-  
-  pulseEncoder.setValue(3);
-  lengthEncoder.setValue(8);
-  offsetEncoder.setValue(0);
-  pitchLengthEncoder.setValue(4);
+  sketch.setup();
+  GUI.setSketch(&sketch);
 
-  GUI.setPage(&page);
-  
-  MidiClock.mode = MidiClock.EXTERNAL;
-  MidiClock.transmit = false;
-  MidiClock.setOn16Callback(on16Callback);
-  MidiClock.start();
+  if (SDCard.init() != 0) {
+    GUI.flash_strings_fill("SDCARD ERROR", "");
+    GUI.display();
+    delay(800);
+    MidiClock.mode = MidiClock.EXTERNAL_MIDI;
+    MidiClock.transmit = true;
+    MidiClock.start();
+  } 
+  else {
+    midiClockPage.setup();
+    if (BUTTON_DOWN(Buttons.BUTTON1)) {
+      GUI.pushPage(&midiClockPage);
+    }
+  }
 }
 
 void loop() {
-  GUI.updatePage();
-
-  if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
-    track.setEuclid(pulseEncoder.getValue(),
-		    lengthEncoder.getValue(),
-		    offsetEncoder.getValue());
-  }
-  if (pitchLengthEncoder.hasChanged()) {
-    setPitchLength(pitchLengthEncoder.getValue());
-  }
-  if (trackEncoder.hasChanged() && GUI.page == &trackPage) {
-    GUI.setLine(GUI.LINE2);
-    uint8_t track = trackEncoder.getValue();
-    if (MD.isMelodicTrack(track)) {
-      GUI.put_p_string_at_fill(5, MD.getMachineName(MD.kit.machines[track].model));
-    } else {
-      GUI.put_p_string_at_fill(5, PSTR("XXX"));
-    }
-  }
-  
-  GUI.update();
 }
 
-void onCurrentKitCallback() {
-  GUI.setLine(GUI.LINE1);
-  GUI.flash_string_fill(MD.kit.name);
+void _on16Callback() {
+  pitchEuclid.on16Callback();
 }
 
-void handleGui() {
-  if (BUTTON_PRESSED(0)) {
-    setPitchLength(pitchLengthEncoder.getValue());
-  }
-  
-  if (BUTTON_PRESSED(Buttons.BUTTON2)) {
-    GUI.setPage(&trackPage);
-  } else if (BUTTON_RELEASED(Buttons.BUTTON2)) {
-    GUI.setPage(&page);
-  }
-  
-  if (BUTTON_PRESSED(Buttons.BUTTON1)) {
-    MDSysexListener.getCurrentKit(onCurrentKitCallback);
-  }
+void _onKitChanged() {
+  sketch.onKitChanged();
 }
+
