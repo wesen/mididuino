@@ -255,6 +255,16 @@ TEST_F (ListDataFixture, ListDataRemove) {
   CHECK_EQUAL(&elts[7], elt);
 }
 
+TEST_F (ListDataFixture, ListReverse) {
+  list.reverse();
+  for (int i = 0; i < 8; i++) {
+    ListElt<int> *elt = list.getAt(i);
+    CHECK_EQUAL(&elts[i], elt);
+  }
+  CHECK_EQUAL(&elts[0], list.head);
+  CHECK_EQUAL(&elts[7], list.getLast());
+}
+
 /* insertAt */
 /* removeAt */
 /* remove */
