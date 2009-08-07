@@ -223,11 +223,34 @@ public:
     e1->next = e2->next;
     e2->next = tmp;
   }
+
+  void reverse() {
+    ListElt<C> *ptr = head;
+    ListElt<C> *next = NULL;
+    ListElt<C> *prev = NULL;
+
+    for (; ptr != NULL;) {
+      next = ptr->next;
+      ptr->prev = next;
+      ptr->next = prev;
+      prev = ptr;
+      ptr = next;
+    }
+
+    head = prev;
+  }
 };
 
 template <class C, int N> class ListWithPool : public List<C> {
 public:
   ListPool<C, N> pool;
+
+  void freeAll() {
+    for (ListElt<C> *ptr = List<C>::head; ptr != NULL; ptr = ptr->next) {
+      pool.free(ptr);
+    }
+    List<C>::head = NULL;
+  }
 
   bool getLastValue(C &c) {
     ListElt<C> *elt = List<C>::getLast();
