@@ -246,10 +246,9 @@ public:
   ListPool<C, N> pool;
 
   void freeAll() {
-    for (ListElt<C> *ptr = List<C>::head; ptr != NULL; ptr = ptr->next) {
+    for (ListElt<C> *ptr = List<C>::pop(); ptr != NULL; ptr = List<C>::pop()) {
       pool.free(ptr);
     }
-    List<C>::head = NULL;
   }
 
   bool getLastValue(C &c) {
