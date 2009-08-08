@@ -18,6 +18,7 @@ class Stack {
   bool push(T t);
   bool pop(T *t = NULL);
   bool peek(T *t);
+  bool peekAt(T *t, uint8_t idx);
   bool isEmpty();
   bool isFull();
   void reset();
@@ -28,6 +29,7 @@ class Stack {
 #define STACK_DEC(x) (uint8_t)(((x) == 0) ? (N - 1) : (x) - 1)
 #define STACK_START() (uint8_t)((wr  + start) % N)
 #define STACK_LAST() (uint8_t)((STACK_DEC(wr)  + start) % N)
+#define STACK_AT(x) (uint8_t)((STACK_DEC(wr) + start - x) % N)
 
 template <class T, int N>
 Stack<T,N>::Stack() {
@@ -94,6 +96,18 @@ bool Stack<T,N>::peek(T *t) {
   }
 
   //  SREG = tmp;
+
+  return true;
+}
+
+template <class T, int N>
+  bool Stack<T,N>::peekAt(T *t, uint8_t idx) {
+  if (size() <= idx) {
+    return false;
+  }
+  if (t != NULL) {
+    m_memcpy(t, &buf[STACK_AT(idx)], sizeof(T));
+  }
 
   return true;
 }

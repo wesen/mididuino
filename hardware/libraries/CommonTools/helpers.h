@@ -102,6 +102,11 @@ extern "C" {
 #define delayMicroseconds(us) _delay_us(us)
 #endif
 
+#ifdef HOST_MIDIDUINO
+#define delay(ms)
+#define delayMicroseconds(us)
+#endif
+
 
 void m_memcpy(void *dst, void *src, uint16_t cnt);
 void m_strncpy(void *dst, const char *src, uint16_t cnt);
