@@ -265,6 +265,9 @@ TEST_F (ListDataFixture, ListReverse) {
   CHECK_EQUAL(&elts[7], list.getLast());
 }
 
+TEST_F (ListDataFixture, ListFreeAll) {
+}
+
 /* insertAt */
 /* removeAt */
 /* remove */
