@@ -10,12 +10,16 @@ extern "C" {
 #endif
 #include <inttypes.h>
 #include <avr/interrupt.h>
-#include "helpers.h"
 
 #ifdef __cplusplus
   void __mainInnerLoop(bool callLoop = true);
+
 }
 #endif
+
+#include "helpers.h"
+
+
 
 /* default config flags */
 #define MIDIDUINO_POLL_GUI     1
