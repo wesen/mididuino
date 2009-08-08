@@ -202,3 +202,7 @@ int limit_value(int value, int encoder, int min, int max) {
   }
 }
 
+uint8_t interpolate_8(uint8_t start, uint8_t end, uint8_t amount) {
+  int diff = (end - start);
+  return start + ((diff * amount) >> 7);
+}

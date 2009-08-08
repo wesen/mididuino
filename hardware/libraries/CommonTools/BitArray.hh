@@ -44,4 +44,34 @@ public:
   }
 };
 
+template <int N> class BitField {
+public:
+  uint8_t _bits[(N / 8) + 1];
+
+  uint8_t isBitSet(uint16_t idx) {
+    return IS_BIT_SET(_bits[idx >> 3], idx & 7);
+  }
+
+  void setBit(uint16_t idx) {
+    SET_BIT(_bits[idx >> 3], idx & 7);
+  }
+
+
+  void setBit(uint16_t idx, uint8_t value) {
+    if (value) {
+      SET_BIT(_bits[idx >> 3], idx & 7);
+    } else {
+      CLEAR_BIT(_bits[idx >> 3], idx & 7);
+    }
+  }
+
+  void clearBit(uint16_t idx) {
+    CLEAR_BIT(_bits[idx >> 3], idx & 7);
+  }
+
+  void toggleBit(uint16_t idx) {
+    TOGGLE_BIT(_bits[idx >> 3], idx & 7);
+  }
+};
+
 #endif /* BITARRAY_H__ */
