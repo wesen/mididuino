@@ -18,9 +18,15 @@ class MDRandomizerClass {
   uint8_t track;
 
   void setTrack(uint8_t _track);
+
   void randomize(int amount, uint8_t mask);
-  void undo();
-  void loadKit();
+  bool undo();
+  void revert();
+  void morphOrig(uint8_t value);
+  void morphLast(uint8_t value);
+  
+  void onKitChanged();
+  void onCCCallback(uint8_t *msg);
 };
 
 

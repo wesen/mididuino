@@ -97,19 +97,27 @@ void MDRandomizerClass::randomize(int amount, uint8_t mask) {
     }
   }
 
-void MDRandomizerClass::undo() {
-    GUI.setLine(GUI.LINE1);
+bool MDRandomizerClass::undo() {
     if (undoStack.pop(&MD.kit.machines[track].params)) {
-      GUI.flash_p_string_fill(PSTR("UNDO"));
       for (uint8_t i = 0; i < 24; i++) {
         MD.setTrackParam(track, i, MD.kit.machines[track].params[i]);
       }
-    } 
-    else {
-      GUI.flash_p_string_fill(PSTR("UNDO XXX"));
+      return true;
+    } else {
+      return false;
     }
   }
 
-void MDRandomizerClass::loadKit() {
+void MDRandomizerClass::onKitChanged() {
   m_memcpy(origParams, MD.kit.machines[track].params, sizeof(origParams));
 }
+
+void MDRandomizerClass::onCCCallback(uint8_t *msg) {
+  uint8_t channel = MIDI_VOICE_CHANNEL(msg[0]);
+  uint8_t track, param;
+  MD.parseCC(channel, msg[1], &track, &param);
+  if (track != 255) {
+    MD.kit.machines[track].params[param] = msg[2];
+  }
+}
+
