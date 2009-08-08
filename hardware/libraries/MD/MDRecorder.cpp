@@ -1,4 +1,6 @@
 #include <inttypes.h>
+#include "WProgram.h"
+#include "helpers.h"
 #include "MDRecorder.h"
 
 void _MDRecorder_onNoteOnCallback(uint8_t *msg);
@@ -102,8 +104,8 @@ void MDRecorderClass::onNoteOnCallback(uint8_t *msg) {
     elt->obj.value = msg[2];
     elt->obj.step = pos;
     eventList.push(elt);
-    GUI.setLine(GUI.LINE2);
-    GUI.put_value(1, pos);
+    //    GUI.setLine(GUI.LINE2);
+    //    GUI.put_value(1, pos);
   }
 }
 
