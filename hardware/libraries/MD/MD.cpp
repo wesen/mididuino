@@ -112,6 +112,26 @@ void MDFXEncoder::loadFromKit() {
   }
 }
 
+void MDTrackFlashEncoder::displayAt(int i) {
+  uint8_t track = getValue();
+  RangeEncoder::displayAt(i);
+  GUI.setLine(GUI.LINE2);
+  GUI.flash_put_value(0, track);
+  GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
+}
+
+void MDMelodicTrackFlashEncoder::displayAt(int i) {
+    uint8_t track = getValue();
+    RangeEncoder::displayAt(i);
+    GUI.setLine(GUI.LINE2);
+    GUI.flash_put_value(0, track);
+    if (MD.isMelodicTrack(track)) {
+      GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
+    } else {
+      GUI.flash_p_string_at_fill(4, PSTR("XXX"));
+    }
+}
+
 #endif
 
 uint8_t standardDrumMapping[16] = {
