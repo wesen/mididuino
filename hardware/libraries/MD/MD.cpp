@@ -114,17 +114,19 @@ void MDFXEncoder::loadFromKit() {
 
 void MDTrackFlashEncoder::displayAt(int i) {
   uint8_t track = getValue();
-  RangeEncoder::displayAt(i);
+  GUI.put_value(i, getValue()+1);
+  redisplay = false;
   GUI.setLine(GUI.LINE2);
-  GUI.flash_put_value(0, track);
+  GUI.flash_put_value(0, track + 1);
   GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
 }
 
 void MDMelodicTrackFlashEncoder::displayAt(int i) {
     uint8_t track = getValue();
-    RangeEncoder::displayAt(i);
+    GUI.put_value(i, getValue()+1);
+    redisplay = false;
     GUI.setLine(GUI.LINE2);
-    GUI.flash_put_value(0, track);
+    GUI.flash_put_value(0, track + 1);
     if (MD.isMelodicTrack(track)) {
       GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
     } else {
@@ -540,6 +542,20 @@ void MDClass::requestSong(uint8_t song) {
 
 void MDClass::requestGlobal(uint8_t global) {
   sendRequest(MD_GLOBAL_REQUEST_ID, global);
+}
+
+bool MDClass::checkParamSettings() {
+  if (loadedGlobal) {
+    return (MD.global.baseChannel >= 0) && (MD.global.baseChannel <= 12);
+  } else {
+    return false;
+  }
+}
+
+bool MDClass::checkTriggerSettings() {
+}
+
+bool MDClass::checkClockSettings() {
 }
 
 MDClass MD;

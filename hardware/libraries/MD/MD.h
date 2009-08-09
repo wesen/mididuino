@@ -138,7 +138,11 @@ class MDClass {
   void requestPattern(uint8_t pattern);
   void requestSong(uint8_t song);
   void requestGlobal(uint8_t global);
-  
+
+  /* check channel settings to see if MD can receive and send CC for params */
+  bool checkParamSettings();
+  bool checkTriggerSettings();
+  bool checkClockSettings();
 };
 
 extern MDClass MD;
