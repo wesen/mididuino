@@ -42,7 +42,13 @@ class MidiSysexClass {
   uint8_t recvIds[3];
   bool sysexLongId;
 
+  void startRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
+  void stopRecord();
+  
  public:
+  void resetRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
+  bool recordByte(uint8_t c);
+
   uint16_t max_len;
   uint16_t recordLen;
   uint8_t *data;
@@ -77,7 +83,7 @@ class MidiSysexClass {
     }
     return false;
   }
-  void removeSysexListeners(MidiSysexListenerClass *listener) {
+  void removeSysexListener(MidiSysexListenerClass *listener) {
     for (int i = 0; i < NUM_SYSEX_SLAVES; i++) {
       if (listeners[i] == listener)
 	listeners[i] = NULL;
@@ -85,10 +91,6 @@ class MidiSysexClass {
   }
   bool isListenerActive(MidiSysexListenerClass *listener);
 
-  void startRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
-  void stopRecord();
-  void resetRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
-  bool recordByte(uint8_t c);
   void reset();
   
   void start();

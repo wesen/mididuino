@@ -11,6 +11,7 @@ void MidiSysexClass::reset() {
   recvIds[0] = 0;
   recvIds[1] = 0;
   recvIds[2] = 0;
+  startRecord();
 }
 
 void MidiSysexClass::resetRecord(uint8_t *buf, uint16_t maxLen) {
@@ -37,6 +38,9 @@ void MidiSysexClass::stopRecord() {
 bool MidiSysexClass::isListenerActive(MidiSysexListenerClass *listener) {
   if (listener == NULL)
     return false;
+  /* catch all */
+  if (listener->ids[0] == 0xFF)
+    return true;
   if (sysexLongId) {
     if (recvIds[0] == listener->ids[0] &&
 	recvIds[1] == listener->ids[1] &&
