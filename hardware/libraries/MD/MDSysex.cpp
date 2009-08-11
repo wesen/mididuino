@@ -24,23 +24,23 @@ void MDSysexListenerClass::handleByte(uint8_t byte) {
     msgType = byte;
     switch (byte) {
     case MD_GLOBAL_MESSAGE_ID:
-      MidiSysex.startRecord();
+      //      MidiSysex.startRecord();
       break;
       
     case MD_KIT_MESSAGE_ID:
-      MidiSysex.startRecord();
+      //      MidiSysex.startRecord();
       break;
       
     case MD_STATUS_RESPONSE_ID:
-      MidiSysex.startRecord();
+      //      MidiSysex.startRecord();
       break;
       
     case MD_PATTERN_MESSAGE_ID:
-      MidiSysex.startRecord();
+      //      MidiSysex.startRecord();
       break;
       
     case MD_SONG_MESSAGE_ID:
-      MidiSysex.startRecord();
+      //      MidiSysex.startRecord();
       break;
     }
   }
@@ -53,7 +53,7 @@ void MDSysexListenerClass::end() {
   case MD_STATUS_RESPONSE_ID:
     for (int i = 0 ; i < statusCallbacks.size; i++) {
       if (statusCallbacks.arr[i] != NULL)
-	statusCallbacks.arr[i](MidiSysex.data[1], MidiSysex.data[2]);
+	statusCallbacks.arr[i](MidiSysex.data[6], MidiSysex.data[7]);
     }
     break;
     

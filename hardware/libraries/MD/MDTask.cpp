@@ -69,7 +69,7 @@ MDTaskClass MDTask(3000);
 
 void mdTaskOnGlobalCallback() {
   MD.loadedGlobal = false;
-  if (MD.global.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+  if (MD.global.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
     MD.loadedGlobal = true;
     MDTask.callGlobalCallbacks();
   }
@@ -77,7 +77,7 @@ void mdTaskOnGlobalCallback() {
 
 void mdTaskOnKitCallback() {
   MD.loadedKit = false;
-  if (MD.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+  if (MD.kit.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
     MD.loadedKit = true;
     MDTask.callKitCallbacks();
   } else {
