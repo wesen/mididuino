@@ -9,10 +9,13 @@ class MidiClockPage : public EncoderPage {
  public:
   EnumEncoder clockSourceEncoder;
   BoolEncoder transmitEncoder;
+  EnumEncoder mergerEncoder;
   static const char *clockSourceEnum[];
 
   void readClockSettings();
   void writeClockSettings();
+  void readMergeSettings();
+  void writeMergeSettings();
   
   virtual void setup();
 

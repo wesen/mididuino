@@ -1,9 +1,34 @@
 #include "MidiClockPage.h"
 #include <SDCard.h>
+#include <Merger.h>
+
+Merger merger;
 
 const char *MidiClockPage::clockSourceEnum[] = {
-    "NONE", "MIDI1", "MIDI2"
+    "NO", "IN1", "IN2"
   };
+
+static const char *mergerConfigStrings[] = {
+  "NONE   ",
+  "CC     ",
+  "NOTE   ",
+  "SYX    ",
+  "CC+NOTE",
+  "CC+SYX ",
+  "NOT+SYX",
+  "ALL    "
+};
+
+static uint8_t mergerConfigMasks[] = {
+  0,
+  Merger::MERGE_CC_MASK,
+  Merger::MERGE_NOTE_MASK,
+  Merger::MERGE_SYSEX_MASK,
+  Merger::MERGE_CC_MASK | Merger::MERGE_NOTE_MASK,
+  Merger::MERGE_CC_MASK | Merger::MERGE_SYSEX_MASK,
+  Merger::MERGE_NOTE_MASK | Merger::MERGE_SYSEX_MASK,
+  Merger::MERGE_CC_MASK | Merger::MERGE_NOTE_MASK | Merger::MERGE_SYSEX_MASK,
+};
 
 void MidiClockPage::writeClockSettings() {
   uint8_t buf[2];
@@ -27,9 +52,27 @@ void MidiClockPage::readClockSettings() {
   }
 }
 
+void MidiClockPage::writeMergeSettings() {
+  uint8_t buf[2];
+  buf[0] = merger.mask;
+  if (!SDCard.writeFile("/MergeSettings.txt", buf, 2, true)) {
+    GUI.flash_strings_fill("ERROR SAVING", "MERGE SETUP");
+  }
+}
+
+void MidiClockPage::readMergeSettings() {
+  uint8_t buf[2];
+  if (!SDCard.readFile("/MergeSettings.txt", buf, 1)) {
+    GUI.flash_strings_fill("ERROR READING", "MERGE SETUP");
+  } else {
+    merger.setMergeMask(buf[0]);
+  }
+}
+
 void MidiClockPage::setup() {
   clockSourceEncoder.initEnumEncoder(clockSourceEnum, 3, "CLK");
   transmitEncoder.initBoolEncoder("SND");
+  mergerEncoder.initEnumEncoder(mergerConfigStrings, countof(mergerConfigStrings), "MRG");
   readClockSettings();
   switch (MidiClock.mode) {
   case MidiClockClass::OFF:
@@ -45,8 +88,18 @@ void MidiClockPage::setup() {
   if (MidiClock.transmit) {
     transmitEncoder.setValue(1);
   }
+
+  readMergeSettings();
+  for (uint8_t i = 0; i < countof(mergerConfigMasks); i++) {
+    if (mergerConfigMasks[i] == merger.mask) {
+      mergerEncoder.setValue(i);
+    }
+  }
+  
   encoders[0] = &clockSourceEncoder;
-  encoders[2] = &transmitEncoder;
+  encoders[1] = &transmitEncoder;
+  encoders[2] = &mergerEncoder;
+  
 }
 
 void MidiClockPage::show() {
@@ -90,8 +143,14 @@ void MidiClockPage::loop() {
     }
     changed = true;
   }
+  if (mergerEncoder.hasChanged()) {
+      uint8_t mask = mergerConfigMasks[mergerEncoder.getValue()];
+      merger.setMergeMask(mask);
+      changed = true;
+  }
 
   if (changed) {
+    writeMergeSettings();
     writeClockSettings();
   }
 }
