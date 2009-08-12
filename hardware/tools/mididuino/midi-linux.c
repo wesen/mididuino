@@ -27,17 +27,17 @@ static int is_input(snd_ctl_t *ctl, int card, int device, int sub)
 {
   snd_rawmidi_info_t *info;
   int err;
-
+  
   snd_rawmidi_info_alloca(&info);
   snd_rawmidi_info_set_device(info, device);
   snd_rawmidi_info_set_subdevice(info, sub);
   snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_INPUT);
-
+  
   if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0 && err != -ENXIO)
     return err;
   else if (err == 0)
     return 1;
-
+  
   return 0;
 }
 
@@ -45,17 +45,17 @@ static int is_output(snd_ctl_t *ctl, int card, int device, int sub)
 {
   snd_rawmidi_info_t *info;
   int err;
-
+  
   snd_rawmidi_info_alloca(&info);
   snd_rawmidi_info_set_device(info, device);
   snd_rawmidi_info_set_subdevice(info, sub);
   snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_OUTPUT);
-
+  
   if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0 && err != -ENXIO)
     return err;
   else if (err == 0)
     return 1;
-
+  
   return 0;
 }
 
@@ -66,21 +66,21 @@ void list_input_device(snd_ctl_t *ctl, int card, int device) {
   int subs, subs_in, subs_out;
   int sub, in, out;
   int err;
-
+  
   snd_rawmidi_info_alloca(&info);
   snd_rawmidi_info_set_device(info, device);
-
+  
   snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_INPUT);
   snd_ctl_rawmidi_info(ctl, info);
   subs = snd_rawmidi_info_get_subdevices_count(info);
-
+  
   sub = 0;
   in = out = 0;
   if ((err = is_input(ctl, card, device, sub)) < 0) {
     fprintf(stderr, "Cannot get raw information: %s\n", snd_strerror(err));
     exit(1);
   }
-
+  
   name = snd_rawmidi_info_get_name(info);
   sub_name = snd_rawmidi_info_get_subdevice_name(info);
   if (sub_name[0] == '\0') {
@@ -107,13 +107,13 @@ void list_input_device(snd_ctl_t *ctl, int card, int device) {
     }
   }
 }
-
+      
 void list_card_input_devices(int card) {
   snd_ctl_t *ctl;
   char name[32];
   int device;
   int err;
-
+  
   sprintf(name, "hw:%d", card);
   if ((err = snd_ctl_open(&ctl, name, 0)) < 0) {
     error("cannot open control for card %d: %s", card, snd_strerror(err));
@@ -131,11 +131,11 @@ void list_card_input_devices(int card) {
   }
   snd_ctl_close(ctl);
 }  
-
+  
 
 void listInputMidiDevices(void) {
   int card, err;
-
+  
   card = -1;
   if ((err = snd_card_next(&card)) < 0) {
     error("cannot determine card number: %s", snd_strerror(err));
@@ -150,7 +150,7 @@ void listInputMidiDevices(void) {
     if ((err = snd_card_next(&card)) < 0) {
       error("cannot determine card number: %s", snd_strerror(err));
       break;
-    }
+		}
   } while (card >= 0);
 }
 
@@ -161,21 +161,21 @@ void list_output_device(snd_ctl_t *ctl, int card, int device) {
   int subs, subs_in, subs_out;
   int sub, in, out;
   int err;
-
+  
   snd_rawmidi_info_alloca(&info);
   snd_rawmidi_info_set_device(info, device);
-
+  
   snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_OUTPUT);
   snd_ctl_rawmidi_info(ctl, info);
   subs = snd_rawmidi_info_get_subdevices_count(info);
-
+  
   sub = 0;
   in = out = 0;
   if ((err = is_output(ctl, card, device, sub)) < 0) {
     fprintf(stderr, "Cannot get raw information: %s\n", snd_strerror(err));
     exit(1);
   }
-
+  
   name = snd_rawmidi_info_get_name(info);
   sub_name = snd_rawmidi_info_get_subdevice_name(info);
   if (sub_name[0] == '\0') {
@@ -202,13 +202,13 @@ void list_output_device(snd_ctl_t *ctl, int card, int device) {
     }
   }
 }
-
+      
 void list_card_output_devices(int card) {
   snd_ctl_t *ctl;
   char name[32];
   int device;
   int err;
-
+  
   sprintf(name, "hw:%d", card);
   if ((err = snd_ctl_open(&ctl, name, 0)) < 0) {
     error("cannot open control for card %d: %s", card, snd_strerror(err));
@@ -226,11 +226,11 @@ void list_card_output_devices(int card) {
   }
   snd_ctl_close(ctl);
 }  
-
+  
 
 void listOutputMidiDevices(void) {
   int card, err;
-
+  
   card = -1;
   if ((err = snd_card_next(&card)) < 0) {
     error("cannot determine card number: %s", snd_strerror(err));
@@ -245,7 +245,7 @@ void listOutputMidiDevices(void) {
     if ((err = snd_card_next(&card)) < 0) {
       error("cannot determine card number: %s", snd_strerror(err));
       break;
-    }
+		}
   } while (card >= 0);
 }
 
@@ -304,10 +304,10 @@ void midiMainLoop(void) {
     if (len == -EAGAIN) {
       //      printf("usleep\n");
       usleep(timer_resolution_us);
-      timeout_us -= 1;
+      timeout_us -= timer_resolution_us;
       if (timeout_us <0) {
-	fprintf(stderr, "timeout\n");
-	exit(1);
+        fprintf(stderr, "timeout\n");
+        exit(1);
       }
     } else if (len < 0) {
       fprintf(stderr, "read error: %s\n", snd_strerror(len));
