@@ -28,13 +28,25 @@
  */
 package com.ruinwesen.patch.metadata;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.lf5.viewer.LogFactor5Dialog;
 
 public final class PatchMetadataIDInfo {
 
+    private static Log log = LogFactory.getLog(PatchMetadataIDInfo.class);
+    
     private PatchMetadataIDInfo() {
         super(); 
     }
@@ -90,13 +102,77 @@ public final class PatchMetadataIDInfo {
         {
             List<DeviceId> list = new ArrayList<DeviceId>();
             list.add(MINICOMMAND_1_1);
+            addDeviceIds(list, "/resources/device-id-list.txt");
+            Collections.sort(list);
             DEVICE_ID_LIST = Collections.unmodifiableList(list);
         }
         {
             List<EnvironmentId> list = new ArrayList<EnvironmentId>();
             list.add(ENVIRONMENT_MIDIDUINO_013);
+            addEnvIds(list, "/resources/environment-id-list.txt");
+            Collections.sort(list);
             ENVIRONMENT_ID_LIST = Collections.unmodifiableList(list);
         }
+    }
+
+    private static void addDeviceIds(List<DeviceId> dst, String src) {
+        for (String name: parseIDList(src)) {
+            DeviceId id = new DeviceId(name);
+            if (!dst.contains(id))
+                dst.add(id);
+        }
+    }
+
+    private static void addEnvIds(List<EnvironmentId> dst, String src) {
+        for (String name: parseIDList(src)) {
+            EnvironmentId id = new EnvironmentId(name);
+            if (!dst.contains(id))
+                dst.add(id);
+        }
+    }
+    
+    private static List<String> parseIDList(String name) {
+       
+       URL url = PatchMetadataIDInfo.class.getResource(name);
+       List<String> list = null;
+       if (url != null) {
+           try {
+               InputStream is = url.openStream();
+               try {
+                   list = parseIDList(is);
+               } finally {
+                   is.close();
+               }
+           } catch (IOException ex) {
+               if (log.isErrorEnabled()) {
+                   log.error("could not parse id list: "+name, ex);
+               }
+           }
+       }
+       if (list == null) {
+           if (log.isWarnEnabled()) {
+               log.warn("could not read id list:"+name);
+           }
+           list = Collections.emptyList();
+       }
+       return list;
+    }
+    
+    private static List<String> parseIDList(InputStream in) throws IOException {
+        List<String> list = new LinkedList<String>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            int comment_index = line.indexOf('#');
+            if (comment_index>=0) {
+                line = line.substring(0, comment_index);
+            }
+            line = line.trim();
+            if (!line.isEmpty()) {
+                list.add(line);
+            }
+        }
+        return list;
     }
 
     public static DeviceId getDeviceId(String name) {
