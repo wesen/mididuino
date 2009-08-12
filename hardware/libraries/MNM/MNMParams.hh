@@ -1,6 +1,9 @@
 #ifndef MNM_PARAMS_H__
 #define MNM_PARAMS_H__
 
+class MNMCallback {
+};
+
 extern uint8_t monomachine_sysex_hdr[5];
 
 #define MNM_GLOBAL_MESSAGE_ID   0x50

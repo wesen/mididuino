@@ -111,37 +111,24 @@ void MNMSysexListenerClass::end() {
 
   switch (msgType) {
   case MNM_STATUS_RESPONSE_ID:
-    for (int i = 0 ; i < statusCallbacks.size; i++) {
-      if (statusCallbacks.arr[i] != NULL) {
-	statusCallbacks.arr[i](MidiSysex.data[6], MidiSysex.data[7]);
-      }
-    }
-    for (int i = 0 ; i < statusCallbackObjs.size; i++) {
-      if (statusCallbackObjs.arr[i] != NULL) {
-	statusCallbackObjs.arr[i]->onMNMStatusCallback(MidiSysex.data[6], MidiSysex.data[7]);
-      }
-    }
+    onStatusResponseCallbacks.call(MidiSysex.data[6], MidiSysex.data[7]);
     break;
     
     
   case MNM_GLOBAL_MESSAGE_ID:
-    if (onGlobalMessageCallback != NULL)
-      onGlobalMessageCallback();
+    onGlobalMessageCallbacks.call();
     break;
     
   case MNM_KIT_MESSAGE_ID:
-    if (onKitMessageCallback != NULL)
-      onKitMessageCallback();
+    onKitMessageCallbacks.call();
     break;
     
   case MNM_PATTERN_MESSAGE_ID:
-    if (onPatternMessageCallback != NULL)
-      onPatternMessageCallback();
+    onPatternMessageCallbacks.call();
     break;
     
   case MNM_SONG_MESSAGE_ID:
-    if (onSongMessageCallback != NULL)
-      onSongMessageCallback();
+    onSongMessageCallbacks.call();
     break;
   }
 }

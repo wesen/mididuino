@@ -12,18 +12,21 @@ void MNMTaskClass::setup(uint16_t _interval, bool _autoLoadKit, bool _autoLoadGl
   reloadGlobal = _reloadGlobal;
 
   MNMSysexListener.setup();
-  MNMSysexListener.addOnStatusResponseCallback(mnmTaskOnStatusResponseCallback);
-  MNMSysexListener.setOnGlobalMessageCallback(mnmTaskOnGlobalCallback);
-  MNMSysexListener.setOnKitMessageCallback(mnmTaskOnKitCallback);
+  MNMSysexListener.addOnStatusResponseCallback
+    (this, (mnm_status_callback_ptr_t)&MNMTaskClass::onStatusResponseCallback);
+  MNMSysexListener.addOnGlobalMessageCallback
+    (this, (mnm_callback_ptr_t)&MNMTaskClass::onGlobalMessageCallback);
+  MNMSysexListener.addOnKitMessageCallback
+    (this, (mnm_callback_ptr_t)&MNMTaskClass::onKitMessageCallback);
 }
 
 void MNMTaskClass::destroy() {
-  MNMSysexListener.removeOnStatusResponseCallback(mnmTaskOnStatusResponseCallback);
-  MNMSysexListener.setOnGlobalMessageCallback(NULL);
-  MNMSysexListener.setOnKitMessageCallback(NULL);
+  MNMSysexListener.removeOnStatusResponseCallback(this);
+  MNMSysexListener.removeOnGlobalMessageCallback(this);
+  MNMSysexListener.removeOnKitMessageCallback(this);
 }
 
-void MNMTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
+void MNMTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
   switch (type) {
   case MNM_CURRENT_KIT_REQUEST:
     if (MNM.currentKit != value) {
@@ -31,7 +34,7 @@ void MNMTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       if (autoLoadKit) {
 	MNM.requestKit(MNM.currentKit);
       } else {
-	callKitCallbacks();
+	kitChangeCallbacks.call();
       }
     }
     if (reloadKit) {
@@ -46,7 +49,7 @@ void MNMTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       if (autoLoadGlobal) {
 	MNM.requestGlobal(MNM.currentGlobal);
       } else {
-	callGlobalCallbacks();
+	globalChangeCallbacks.call();
       }
     }
     if (reloadGlobal) {
@@ -58,39 +61,36 @@ void MNMTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
   case MNM_CURRENT_PATTERN_REQUEST:
     if (MNM.currentPattern != value) {
       MNM.currentPattern = value;
-      callPatternCallbacks();
+      patternChangeCallbacks.call();
     }
     break;
 
   case MNM_CURRENT_AUDIO_TRACK_REQUEST:
     if (MNM.currentTrack != value) {
       MNM.currentTrack = value;
-      callCurrentTrackCallbacks();
+      currentTrackChangeCallbacks.call();
     }
     break;
   }
   redisplay = true; 
 }
 
-MNMTaskClass MNMTask(3000);
-
-void mnmTaskOnGlobalCallback() {
+void MNMTaskClass::onGlobalMessageCallback() {
   MNM.loadedGlobal = false;
   if (MNM.global.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
     MNM.loadedGlobal = true;
-    MNMTask.callGlobalCallbacks();
+    globalChangeCallbacks.call();
   }
 }
 
-void mnmTaskOnKitCallback() {
+void MNMTaskClass::onKitMessageCallback() {
   MNM.loadedKit = false;
   if (MNM.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
     MNM.loadedKit = true;
-    MNMTask.callKitCallbacks();
+    kitChangeCallbacks.call();
   } else {
   }
 }
 
-void mnmTaskOnStatusResponseCallback(uint8_t type, uint8_t value) {
-  MNMTask.onStatusResponse(type, value);
-}
+MNMTaskClass MNMTask(3000);
+

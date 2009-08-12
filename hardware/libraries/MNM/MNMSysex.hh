@@ -8,59 +8,18 @@
 #include "Elektron.hh"
 #include "Circular.hh"
 
-typedef void (*mnm_callback_t)();
-typedef void (*mnm_status_callback_t)(uint8_t type, uint8_t param);
+typedef void(MNMCallback::*mnm_callback_ptr_t)();
+typedef void(MNMCallback::*mnm_status_callback_ptr_t)(uint8_t p1, uint8_t p2);
 
-class MNMSysexStatusCallback {
-public:
-  virtual void onMNMStatusCallback(uint8_t type, uint8_t param) = 0;
-#ifdef HOST_MIDIDUINO
-  virtual ~MNMSysexStatusCallback() { }
-#endif
-};
-
-class MNMSysexKitCallback {
-public:
-  virtual void onMNMKitCallback() = 0;
-#ifdef HOST_MIDIDUINO
-  virtual ~MNMSysexKitCallback() { }
-#endif
-};
-
-class MNMSysexGlobalCallback {
-public:
-  virtual void onMNMGlobalCallback() = 0;
-#ifdef HOST_MIDIDUINO
-  virtual ~MNMSysexGlobalCallback() { }
-#endif
-};
-
-class MNMSysexPatternCallback {
-public:
-  virtual void onMNMPatternCallback() = 0;
-#ifdef HOST_MIDIDUINO
-  virtual ~MNMSysexPatternCallback() { }
-#endif
-};
-
-class MNMSysexSongCallback {
-public:
-  virtual void onMNMSongCallback() = 0;
-#ifdef HOST_MIDIDUINO
-  virtual ~MNMSysexSongCallback() { }
-#endif
-};
 
 class MNMSysexListenerClass : public MidiSysexListenerClass {
 public:
-  mnm_status_callback_t onStatusResponseCallback;
-  Vector<mnm_status_callback_t, 4> statusCallbacks;
-  Vector<MNMSysexStatusCallback *, 4> statusCallbackObjs;
-  
-  mnm_callback_t onGlobalMessageCallback;
-  mnm_callback_t onKitMessageCallback;
-  mnm_callback_t onSongMessageCallback;
-  mnm_callback_t onPatternMessageCallback;
+  CallbackVector<MNMCallback,4> onGlobalMessageCallbacks;
+  CallbackVector<MNMCallback,4> onKitMessageCallbacks;
+  CallbackVector<MNMCallback,4> onSongMessageCallbacks;
+  CallbackVector<MNMCallback,4> onPatternMessageCallbacks;
+
+  CallbackVector2<MNMCallback,4,uint8_t,uint8_t> onStatusResponseCallbacks;
   
   bool isMNMMessage;
   bool isMNMEncodedMessage;
@@ -75,46 +34,6 @@ public:
     ids[0] = 0;
     ids[1] = 0x20;
     ids[2] = 0x3c;
-    onStatusResponseCallback = NULL;
-    onGlobalMessageCallback = NULL;
-    onKitMessageCallback = NULL;
-  }
-
-  void addOnStatusResponseCallback(mnm_status_callback_t callback) {
-    statusCallbacks.add(callback);
-  }
-  void removeOnStatusResponseCallback(mnm_status_callback_t callback) {
-    statusCallbacks.remove(callback);
-  }
-  void addOnStatusResponseCallback(MNMSysexStatusCallback *callback) {
-    statusCallbackObjs.add(callback);
-  }
-  void removeOnStatusResponseCallback(MNMSysexStatusCallback *callback) {
-    statusCallbackObjs.remove(callback);
-  }
-  /* compatibility to old stuff */
-  void setOnStatusResponseCallback(mnm_status_callback_t callback) {
-    if (onStatusResponseCallback != NULL) {
-      removeOnStatusResponseCallback(onStatusResponseCallback);
-    } 
-
-    onStatusResponseCallback = callback;
-    addOnStatusResponseCallback(onStatusResponseCallback);
-  }
-  
-  void setOnGlobalMessageCallback(mnm_callback_t callback) {
-    onGlobalMessageCallback = callback;
-  }
-  void setOnKitMessageCallback(mnm_callback_t callback) {
-    onKitMessageCallback = callback;
-  }
-
-  void setOnSongMessageCallback(mnm_callback_t callback) {
-    onSongMessageCallback = callback;
-  }
-
-  void setOnPatternMessageCallback(mnm_callback_t callback) {
-    onPatternMessageCallback = callback;
   }
   
   virtual void start();
@@ -122,7 +41,56 @@ public:
   virtual void end();
 
   void setup();
+
+  void addOnStatusResponseCallback(MNMCallback *obj, mnm_status_callback_ptr_t func) {
+    onStatusResponseCallbacks.add(obj, func);
+  }
+  void removeOnStatusResponseCallback(MNMCallback *obj, mnm_status_callback_ptr_t func) {
+    onStatusResponseCallbacks.remove(obj, func);
+  }
+  void removeOnStatusResponseCallback(MNMCallback *obj) {
+    onStatusResponseCallbacks.remove(obj);
+  }
+
+  void addOnGlobalMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onGlobalMessageCallbacks.add(obj, func);
+  }
+  void removeOnGlobalMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onGlobalMessageCallbacks.remove(obj, func);
+  }
+  void removeOnGlobalMessageCallback(MNMCallback *obj) {
+    onGlobalMessageCallbacks.remove(obj);
+  }
   
+  void addOnKitMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onKitMessageCallbacks.add(obj, func);
+  }
+  void removeOnKitMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onKitMessageCallbacks.remove(obj, func);
+  }
+  void removeOnKitMessageCallback(MNMCallback *obj) {
+    onKitMessageCallbacks.remove(obj);
+  }
+  
+  void addOnPatternMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onPatternMessageCallbacks.add(obj, func);
+  }
+  void removeOnPatternMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onPatternMessageCallbacks.remove(obj, func);
+  }
+  void removeOnPatternMessageCallback(MNMCallback *obj) {
+    onPatternMessageCallbacks.remove(obj);
+  }
+  
+  void addOnSongMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onSongMessageCallbacks.add(obj, func);
+  }
+  void removeOnSongMessageCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    onSongMessageCallbacks.remove(obj, func);
+  }
+  void removeOnSongMessageCallback(MNMCallback *obj) {
+    onSongMessageCallbacks.remove(obj);
+  }
 };
 
 extern MNMSysexListenerClass MNMSysexListener;

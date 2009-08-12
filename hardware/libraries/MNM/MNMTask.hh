@@ -5,9 +5,7 @@
 
 extern MNMClass MNM;
 
-typedef void (*mnm_task_callback_t)();
-
-class MNMTaskClass : public Task {
+class MNMTaskClass : public Task, public MNMCallback {
 public:
   bool autoLoadKit;
   bool autoLoadGlobal;
@@ -22,68 +20,50 @@ public:
     reloadGlobal = false;
   }
 
-  Vector<mnm_task_callback_t, 4>kitChangeCallbacks;
-  Vector<mnm_task_callback_t, 4>globalChangeCallbacks;
-  Vector<mnm_task_callback_t, 4>patternChangeCallbacks;
-  Vector<mnm_task_callback_t, 4>currentTrackChangeCallbacks;
+  CallbackVector<MNMCallback, 4>kitChangeCallbacks;
+  CallbackVector<MNMCallback, 4>globalChangeCallbacks;
+  CallbackVector<MNMCallback, 4>patternChangeCallbacks;
+  CallbackVector<MNMCallback, 4>currentTrackChangeCallbacks;
 
-  void addOnKitChangeCallback(mnm_task_callback_t cb) {
-    kitChangeCallbacks.add(cb);
+  void addOnKitChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    kitChangeCallbacks.add(obj, func);
   }
-  void removeOnKitChangeCallback(mnm_task_callback_t cb) {
-    kitChangeCallbacks.remove(cb);
+  void removeOnKitChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    kitChangeCallbacks.remove(obj, func);
   }
-  void addOnGlobalChangeCallback(mnm_task_callback_t cb) {
-    globalChangeCallbacks.add(cb);
-  }
-  void removeOnGlobalChangeCallback(mnm_task_callback_t cb) {
-    globalChangeCallbacks.remove(cb);
-  }
-  void addOnPatternChangeCallback(mnm_task_callback_t cb) {
-    patternChangeCallbacks.add(cb);
-  }
-  void removeOnPatternChangeCallback(mnm_task_callback_t cb) {
-    patternChangeCallbacks.remove(cb);
-  }
-  void addOnCurrentTrackChangeCallback(mnm_task_callback_t cb) {
-    currentTrackChangeCallbacks.add(cb);
-  }
-  void removeOnCurrentTrackChangeCallback(mnm_task_callback_t cb) {
-    currentTrackChangeCallbacks.remove(cb);
-  }
-
-  void callKitCallbacks() {
-    for (int i = 0; i < kitChangeCallbacks.size; i++) {
-      if (kitChangeCallbacks.arr[i] != NULL) {
-	kitChangeCallbacks.arr[i]();
-      }
-    }
-  }
-
-  void callGlobalCallbacks() {
-    for (int i = 0; i < globalChangeCallbacks.size; i++) {
-      if (globalChangeCallbacks.arr[i] != NULL) {
-	globalChangeCallbacks.arr[i]();
-      }
-    }
+  void removeOnKitChangeCallback(MNMCallback *obj) {
+    kitChangeCallbacks.remove(obj);
   }
   
-  void callPatternCallbacks() {
-    for (int i = 0; i < patternChangeCallbacks.size; i++) {
-      if (patternChangeCallbacks.arr[i] != NULL) {
-	patternChangeCallbacks.arr[i]();
-      }
-    }
+  void addOnGlobalChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    globalChangeCallbacks.add(obj, func);
   }
-
-  void callCurrentTrackCallbacks() {
-    for (int i = 0; i < currentTrackChangeCallbacks.size; i++) {
-      if (currentTrackChangeCallbacks.arr[i] != NULL) {
-	currentTrackChangeCallbacks.arr[i]();
-      }
-    }
+  void removeOnGlobalChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    globalChangeCallbacks.remove(obj, func);
+  }
+  void removeOnGlobalChangeCallback(MNMCallback *obj) {
+    globalChangeCallbacks.remove(obj);
   }
   
+  void addOnPatternChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    patternChangeCallbacks.add(obj, func);
+  }
+  void removeOnPatternChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    patternChangeCallbacks.remove(obj, func);
+  }
+  void removeOnPatternChangeCallback(MNMCallback *obj) {
+    patternChangeCallbacks.remove(obj);
+  }
+  
+  void addOnCurrentTrackChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    currentTrackChangeCallbacks.add(obj, func);
+  }
+  void removeOnCurrentTrackChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
+    currentTrackChangeCallbacks.remove(obj, func);
+  }
+  void removeOnCurrentTrackChangeCallback(MNMCallback *obj) {
+    currentTrackChangeCallbacks.remove(obj);
+  }
   
   void setup(uint16_t interval = 3000, bool autoLoadKit = false, bool autoLoadGlobal = true,
 	     bool reloadGlobal = true);
@@ -95,7 +75,9 @@ public:
     MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_AUDIO_TRACK_REQUEST);
   }
 
-  void onStatusResponse(uint8_t type, uint8_t value);
+  void onStatusResponseCallback(uint8_t type, uint8_t value);
+  void onGlobalMessageCallback();
+  void onKitMessageCallback();
 
   virtual void destroy();
 };
