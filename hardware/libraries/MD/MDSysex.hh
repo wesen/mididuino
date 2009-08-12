@@ -37,6 +37,12 @@ public:
     ids[2] = 0x3c;
   }
 
+  virtual void start();
+  virtual void handleByte(uint8_t byte);
+  virtual void end();
+
+  void setup();
+
   void addOnStatusResponseCallback(MDCallback *obj, md_status_callback_ptr_t func) {
     onStatusResponseCallbacks.add(obj, func);
   }
@@ -87,11 +93,6 @@ public:
     onSongMessageCallbacks.remove(obj);
   }
   
-  virtual void start();
-  virtual void handleByte(uint8_t byte);
-  virtual void end();
-
-  void setup();
 };
 
 #include "MDMessages.hh"
