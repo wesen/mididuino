@@ -33,7 +33,9 @@ all: test
 %.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-test: main.host.o bitTests.host.o listTest.host.o arpTest.host.o stackTest.host.o miscTest.host.o $(OBJS)
+test: main.host.o bitTests.host.o listTest.host.o \
+      arpTest.host.o stackTest.host.o miscTest.host.o \
+      midiTest.host.o callbackTest.host.o $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^
 
 clean:
