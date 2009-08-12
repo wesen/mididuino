@@ -46,7 +46,7 @@ static const char *breakdown_names[BREAKDOWN_CNT] = {
 
 
 class BreakdownPage : 
-public EncoderPage {
+public EncoderPage, public ClockCallback {
 public:
   EnumEncoder repeatSpeedEncoder, breakdownEncoder;
   bool supaTriggaActive, restorePlayback, breakdownActive, storedBreakdownActive;

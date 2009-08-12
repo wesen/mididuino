@@ -16,8 +16,6 @@ scale_t *scales[NUM_SCALES] = {
   &minorMin7Arp
 };
 
-scale_t *scale = &majorScale;
-
 class PitchEuclid {
 public:
   EuclidDrumTrack track;

@@ -1,5 +1,5 @@
 class MDWesenLivePatchSketch : 
-public Sketch {
+public Sketch, public MDCallback{
 public:
   MDFXEncoder flfEncoder, flwEncoder, fbEncoder, levEncoder;
   EncoderPage page;
@@ -50,8 +50,7 @@ public:
     MDTask.setup();
     MDTask.autoLoadKit = true;
     MDTask.reloadGlobal = true;
-    MDTask.addOnKitChangeCallback(_onKitChanged);
-    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
+    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDWesenLivePatchSketch::onKitChanged);
     GUI.addTask(&MDTask);
 
     for (int i = 0; i < 4; i++) {
@@ -60,13 +59,9 @@ public:
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
 
-//    MidiClock.mode = MidiClock.EXTERNAL_UART2;
-//    MidiClock.transmit = true;
-//    MidiClock.mode = MidiClock.EXTERNAL;
-//    MidiClock.transmit = false;
-    
-    MidiClock.setOn16Callback(_on16Callback);
-    MidiClock.setOn32Callback(on32Callback);
+    MidiClock.addOn16Callback(&breakPage, (midi_clock_callback_ptr_t)&BreakdownPage::on16Callback);
+    MidiClock.addOn32Callback(&autoMDPage, (midi_clock_callback_ptr_t)&AutoMDPage::on32Callback);
+
     setPage(&page);
   }
 
@@ -127,17 +122,6 @@ public:
     }
   }  
 
-
-  void onGlobalChanged() {
-    return;
-    GUI.setLine(GUI.LINE1);
-    GUI.flash_string_fill("GLOBAL CHANGED");
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_put_value(0, MD.global.keyMap[36]);
-    GUI.flash_put_value(1, MD.global.drumMapping[0]);
-  }  
-
-
   virtual void loop() {
   }    
 };
@@ -153,19 +137,12 @@ void _on16Callback() {
   sketch.breakPage.on16Callback();
 }
 
-void _onKitChanged() {
-  sketch.onKitChanged();
-}
-
-void _onGlobalChanged() {
-  sketch.onGlobalChanged();
-}
-
 void setup() {
 //  enableProfiling();
   sketch.setup();
   GUI.setSketch(&sketch);
-  
+
+#if 1
   if (SDCard.init() != 0) {
     GUI.flash_strings_fill("SDCARD ERROR", "");
     GUI.display();
@@ -179,6 +156,7 @@ void setup() {
       GUI.pushPage(&midiClockPage);
     }
   }
+  #endif
 }
 
 void loop() {

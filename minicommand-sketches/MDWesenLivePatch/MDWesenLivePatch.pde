@@ -9,7 +9,7 @@
 CCHandler ccHandler;
 
 class AutoMDPage : 
-public EncoderPage {
+public EncoderPage, public ClockCallback {
 public:
   MDEncoder mdEncoders[4];
   RecordingEncoder<64> recEncoders[4];
@@ -64,16 +64,6 @@ public:
         }
       }
     }
-
-#if 0
-    for (int i = 0; i < count; i++) {
-      GUI.setLine(GUI.LINE1);
-      //      GUI.flash_put_value(i, ccAssigned[i], 1800);
-      GUI.flash_put_value(i, mdEncoders[i].getCC(), 1800);
-      GUI.setLine(GUI.LINE2);
-      GUI.flash_put_value(i, ccs[i].cc, 1800);
-    }
-#endif
 
     for (int i = 0; i < count; i++) {
       incoming_cc_t *cc = &ccs[i];

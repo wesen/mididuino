@@ -1,7 +1,1 @@
-void setupPages() {
-}
-
-void handleGuiPages() {
-  
-}
 

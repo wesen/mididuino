@@ -5,13 +5,13 @@ MDRandomizerClass MDRandomizer;
 
 class RandomizePage : 
 public EncoderPage {
-public:
-  RangeEncoder trackEncoder;
+public: 
+  MDTrackFlashEncoder trackEncoder;
   RangeEncoder amtEncoder;
   EnumEncoder selectEncoder;
 
   RandomizePage() :
-  trackEncoder(0, 15, "TRK"),
+  trackEncoder("TRK"),
   amtEncoder(0, 128, "AMT"),
   selectEncoder(MDRandomizerClass::selectNames, countof(MDRandomizerClass::selectNames), "SEL") {
     encoders[0] = &trackEncoder;
@@ -21,19 +21,9 @@ public:
     MDRandomizer.setTrack(trackEncoder.getValue());
   }
 
-  void trackHandle() {
-    MDRandomizer.setTrack(trackEncoder.getValue());
-
-    if (MD.loadedKit) {
-      GUI.setLine(GUI.LINE2);
-      GUI.flash_put_value(0, MDRandomizer.track);
-      GUI.flash_p_string_at(4, MD.getMachineName(MD.kit.machines[trackEncoder.getValue()].model));
-    }
-  }    
-
   virtual void loop() {
     if (trackEncoder.hasChanged()) {
-      trackHandle();
+      MDRandomizer.setTrack(trackEncoder.getValue());
     }
   }
 
@@ -46,7 +36,8 @@ public:
       GUI.setLine(GUI.LINE1);
       if (MDRandomizer.undo()) {
         GUI.flash_p_string_fill(PSTR("UNDO"));
-      } else {
+      } 
+      else {
         GUI.flash_p_string_fill(PSTR("UNDO XXX"));
       }
       return true;
@@ -67,7 +58,8 @@ public:
     MDTask.autoLoadKit = true;
     MDTask.reloadGlobal = true;
     MDTask.addOnKitChangeCallback(_onKitChanged);
-    //    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
+    MDTask.checkSettingsFlags = MDTask.MD_CHECK_SETTINGS_PARAMS;
+    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
     GUI.addTask(&MDTask);
 
     setPage(&randomizePage);
@@ -96,4 +88,8 @@ void _onKitChanged() {
   GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
   GUI.setLine(GUI.LINE2);
   GUI.flash_string_fill(MD.kit.name);
+}
+
+void _onGlobalChanged() {
+  MDTask.reloadGlobal = true;
 }
