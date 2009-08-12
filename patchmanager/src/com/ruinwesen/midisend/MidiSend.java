@@ -224,8 +224,8 @@ public class MidiSend {
      * @param data the midi data
      * @throws MidiSendException sending the data failed
      */
-    public void send(byte[] data) throws MidiSendException {
-        send(data, 0, data.length);
+    public MidiSendProcess send(byte[] data) throws MidiSendException {
+        return send(data, 0, data.length);
     }
 
     /**
@@ -237,13 +237,14 @@ public class MidiSend {
      * @throws IllegalArgumentException if the range fromIndex to toIndex is invalid
      * @throws MidiSendException sending the data failed or the data range is empty
      */
-    public void send(byte[] data, int fromIndex, int toIndex)
+    public MidiSendProcess send(byte[] data, int fromIndex, int toIndex)
         throws MidiSendException {
         ensureDevicesAreSet();
         if (fromIndex<0 || toIndex>data.length || fromIndex>toIndex) {
             throw new IllegalArgumentException(
               "fromIndex:"+fromIndex+" toIndex:"+toIndex+" size:"+data.length);
         }
+        return null;
     }
     
     /**
@@ -253,8 +254,8 @@ public class MidiSend {
      * @throws FileNotFoundException the file does not exist
      * @throws MidiSendException sending the data failed
      */
-    public void send(File file) throws MidiSendException, FileNotFoundException {
-        send(new FileInputStream(file), true);
+    public MidiSendProcess send(File file) throws MidiSendException, FileNotFoundException {
+        return send(new FileInputStream(file), true);
     }
 
     /**
@@ -263,8 +264,8 @@ public class MidiSend {
      * @param stream the input stream containing the midi message
      * @throws MidiSendException sending the data failed
      */
-    public void send(InputStream stream) throws MidiSendException {
-        send(stream, false);
+    public MidiSendProcess send(InputStream is) throws MidiSendException {
+        return send(is, false);
     }
 
     /**
@@ -275,10 +276,10 @@ public class MidiSend {
      *               at the end of the operation
      * @throws MidiSendException sending the data failed
      */
-    public void send(InputStream is, boolean close) throws MidiSendException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream(2048);
+    public MidiSendProcess send(InputStream is, boolean close) throws MidiSendException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            CSUtils.copy(is, buffer);
+            CSUtils.copy(is, os);
         } catch (IOException ex) {
             throw new MidiSendException("could not read stream",ex);
         } finally {
@@ -290,7 +291,7 @@ public class MidiSend {
                 }
             }
         }
-        send(buffer.toByteArray());
+        return send(os.toByteArray());
     }
 
 }

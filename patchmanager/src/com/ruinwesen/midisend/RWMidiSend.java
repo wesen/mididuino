@@ -38,8 +38,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import name.cs.csutils.CSUtils;
+import name.cs.csutils.InputStreamReaderThread;
 import name.cs.csutils.Platform;
-import name.cs.csutils.StringInputBuffer;
 import name.cs.csutils.Platform.OS;
 
 import org.apache.commons.logging.Log;
@@ -191,7 +191,7 @@ public class RWMidiSend extends MidiSend {
      * {@inheritDoc}
      */
     @Override
-    public void send(byte[] data, int fromIndex, int toIndex)
+    public MidiSendProcess send(byte[] data, int fromIndex, int toIndex)
         throws MidiSendException {
         // reuse the argument testing of the parent class
         super.send(data, fromIndex, toIndex);
@@ -203,63 +203,39 @@ public class RWMidiSend extends MidiSend {
         // create a temporary file
         File tempFile;
         try {
-            tempFile = File.createTempFile("midi", ".bin");
+            tempFile = File.createTempFile("midi", ".hex");
+            tempFile.deleteOnExit();
         } catch (IOException ex) {
             throw new MidiSendException("could not create temporary file", ex);
         }
         try {
-            try {
-                CSUtils.copy(new ByteArrayInputStream(data, fromIndex, toIndex-fromIndex), tempFile, true);
-            } catch (IOException ex) {
-                throw new MidiSendException("could not write temporary file: "+tempFile.getAbsolutePath(), ex);
-            } 
-            
-            // then send the file
-            try {
-                send(tempFile);
-            } catch (FileNotFoundException ex) {
-                throw new MidiSendException("temporary file vanished magically", ex);
-            } 
-        } finally {
-            if (tempFile.exists() && !tempFile.delete()) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Could not delete temporary file: "+tempFile.getAbsolutePath());
-                }
-            }
-        }
+            CSUtils.copy(new ByteArrayInputStream(data, fromIndex, toIndex-fromIndex), tempFile, true);
+        } catch (IOException ex) {
+            tempFile.delete();
+            throw new MidiSendException("could not write temporary file: "+tempFile.getAbsolutePath(), ex);
+        } 
+        
+        return send(tempFile, true);
     }
-
+    
     private String parseAlsaName(String name) {
         int idx = name.indexOf(')');
         if (idx>0) return name.substring(0, idx);
         return name;
     }
     
-    public void cancel() {
-        Process p = getProcess();
-        if (p != null) {
-            p.destroy();
-        }
-    }
-    
-    private Process process;
-    
-    private synchronized void setProcess(Process  p) {
-        this.process = p;
-    }
-    
-    private synchronized Process getProcess() {
-        return process;
-    }
-    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void send(File file) throws MidiSendException, FileNotFoundException {
+    public MidiSendProcess send(File file) throws MidiSendException, FileNotFoundException {
+        return send(file, false);
+    }
+    
+    private MidiSendProcess send(File file, boolean deleteFileOnExit) throws MidiSendException {
         ensureDevicesAreSet();
         if (!file.exists()) {
-            throw new FileNotFoundException(file.getAbsolutePath());
+            throw new MidiSendException(new FileNotFoundException(file.getAbsolutePath()));
         }
         String cmd = getCommand(true);
 
@@ -279,40 +255,109 @@ public class RWMidiSend extends MidiSend {
                 log.debug("Decoding alsa device names. midi-in:"+inputArg+", midi-out:"+outputArg);
             }
         }
-
-        boolean interrupted = false;    
-        // create the process
-        Process process;
-        String[] commandArgs; 
+        
+        String filepath;
         try {
+            filepath = file.getCanonicalPath();
+        } catch (IOException ex) {
+            if (log.isErrorEnabled()) {
+                log.error("could not get canonical path", ex);
+            }
+            throw new MidiSendException("could not get canonical path", ex);
+        }
+
+        // create the process
+        String[] command 
             //File midisendFile = new File(command);
             //File midisendDir = midisendFile.getParentFile();
-            commandArgs = new String[] {
+            = new String[] {
                     cmd, "-b", "-I0x41", 
                     "-i",inputArg,
                     "-o",outputArg,
-                    file.getCanonicalPath()};
-            System.out.println("Invoking midi-send:"+CSUtils.join(" ", (String[])commandArgs));
+                    filepath};
             if (log.isDebugEnabled()) {
-                log.debug("Invoking midi-send:"+CSUtils.join(" ", (String[])commandArgs));
+                log.debug("Invoking midi-send:"+CSUtils.join(" ", (String[])command));
             }
-            
-        process = new ProcessBuilder(commandArgs).start();
-        //Runtime.getRuntime().exec( command );
-        } catch (IOException ex) {
-            throw new MidiSendException(
-                    "midi-send:send(File) failed, could start process", ex);
+
+        RWMidiSendProcess send = new RWMidiSendProcess(file, deleteFileOnExit, command,
+                callback);
+        new Thread(send).start();
+        return send;
+    }
+
+    private static class RWMidiSendProcess implements MidiSendProcess, Runnable {
+        
+        private File file;
+        private boolean deleteFileOnExit;
+        private String[] command;
+        private Process process;
+        private MidiSendCallback callback;
+        private Throwable error;
+        private boolean terminated = false;
+        private final Object TERMINATION_LOCK = new Object();
+
+        public RWMidiSendProcess(File file, boolean deleteFileOnExit,
+                String[] command, MidiSendCallback callback) {
+            this.file = file;
+            this.deleteFileOnExit = deleteFileOnExit;
+            this.command = command;
+            this.callback = callback;
+        }
+
+        private synchronized void setProcess(Process  p) {
+            this.process = p;
         }
         
-        try {
-            setProcess(process);
-            StringInputBuffer stderrBuffer = new StringInputBuffer(process.getErrorStream());
-            StringInputBuffer stdoutBuffer = new StringInputBuffer(process.getInputStream());
+        private synchronized Process getProcess() {
+            return process;
+        }
+
+        private synchronized void setError(Throwable t) {
+            this.error = t;
+        }
+
+        public synchronized boolean isTerminated() {
+            return terminated;
+        }
+        
+        private synchronized void setTerminated(boolean v) {
+            this.terminated = v;
+        }
+        
+        @Override
+        public synchronized Throwable getError() {
+            return error;
+        }
+
+        @Override
+        public void cancel() {
+            Process p = getProcess();
+            if (p != null) {
+                p.destroy();
+            }
+        }
+        
+        public void run() {
             try {
+                runProcess();
+            } catch (Exception ex) {
+                setError(ex);
+            }
+        }
+        
+        private void runProcess() throws IOException, MidiSendException {
+            boolean interrupted = false;
+            InputStreamReaderThread stderrBuffer = null;
+            InputStreamReaderThread stdoutBuffer = null;
+            try {
+                Process process = new ProcessBuilder(command).start();
+                setProcess(process);
+                stderrBuffer = new InputStreamReaderThread(process.getErrorStream(), false);
+                stdoutBuffer = new InputStreamReaderThread(process.getInputStream(), false);
                 stderrBuffer.start();
                 stdoutBuffer.start();
-                
-                CSUtils.ProcessResult presult = CSUtils.waitFor(process, 10000, 100);
+    
+                CSUtils.ProcessResult presult = CSUtils.waitFor(process,1000000, 100);
                 if (log.isDebugEnabled()) {
                     log.debug("midi-send:status("+presult.status+"),interrupted("+presult.interruptedException+")"
                             +",timeout("+presult.timeout+")");
@@ -321,43 +366,49 @@ public class RWMidiSend extends MidiSend {
                 if (presult.timeout) {
                     throw new MidiSendException(
                             "midi-send:send(File) timeout:"
-                            +stderrBuffer.getOutput());
+                            +stderrBuffer.getBuffer());
                 }
                 if (isErrorStatus(presult.status)) {
                     throw new MidiSendException(
                             "midi-send:send(File) failed, return status:"+presult.status+":"
-                            +stderrBuffer.getOutput());
+                            +stderrBuffer.getBuffer());
                 }
                 
                 if (callback != null) {
                     callback.midisendCompleted();
                 }
-                
             } finally {
-                try {
-                    stderrBuffer.close();
-                } catch (IOException ex) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("error closing stderrBuffer", ex);
-                    }
-                }
-                try {
-                    stdoutBuffer.close();
-                } catch (IOException ex) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("error closing stdoutBuffer", ex);
-                    }
-                }
+                if (stderrBuffer!=null)
+                    stderrBuffer.cancel();
+                if (stdoutBuffer!=null)
+                    stdoutBuffer.cancel();
                 process.destroy();
+                setTerminated(true);
+                if (deleteFileOnExit) {
+                    file.delete();
+                }
+                synchronized (TERMINATION_LOCK) {
+                    TERMINATION_LOCK.notifyAll();
+                }
                 if (interrupted) {
                     Thread.currentThread().interrupt();
                 }
             }
-        } finally {
-            setProcess(null);
         }
+
+        @Override
+        public void waitFor(long timeout) throws InterruptedException {
+            if (isTerminated()) {
+                return;
+            }
+            
+            synchronized (TERMINATION_LOCK) {
+                TERMINATION_LOCK.wait(timeout);
+            }
+        }
+        
     }
-    
+
     
     /**
      * Returns a list containing either all input devices or all output devices.
@@ -375,7 +426,7 @@ public class RWMidiSend extends MidiSend {
         Process process = null;
         boolean interrupted = false;
         List<MidiDevice> list = new LinkedList<MidiDevice>();
-        StringInputBuffer processInput = null;
+        InputStreamReaderThread processInput = null;
         try {
             try {
                 process = new ProcessBuilder(new String[] {
@@ -384,7 +435,8 @@ public class RWMidiSend extends MidiSend {
                 throw new MidiSendException(
                 "midi-send:getDeviceList() failed, could start process", ex);
             } 
-            processInput = new StringInputBuffer(process.getInputStream());
+            processInput = new InputStreamReaderThread(process.getInputStream(),
+                    true);
             
 
             CSUtils.ProcessResult presult = CSUtils.waitFor(process,100000, 100);
@@ -400,7 +452,7 @@ public class RWMidiSend extends MidiSend {
             }
             
             processInput.run();
-            String text = processInput.getOutput();
+            String text = processInput.getBuffer();
             for (String line: text.split("[\\n\\r]+")) {
                 if (line.indexOf("optarg")>=0||line.trim().length()==0) {
                     // workaround for midi-send debug output
@@ -410,15 +462,6 @@ public class RWMidiSend extends MidiSend {
             }
             return list;
         } finally {
-            if (processInput != null) {
-                try {
-                    processInput.close();
-                } catch (IOException ex) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("could not close process input buffer", ex);
-                    }
-                }
-            }
             if (process != null)
                 process.destroy();
             if (interrupted) {
@@ -434,9 +477,10 @@ public class RWMidiSend extends MidiSend {
      * @return the error output of the process
      */
     private String err(Process process) {
-        StringInputBuffer buf = new StringInputBuffer(process.getErrorStream());
+        InputStreamReaderThread buf = new InputStreamReaderThread(process.getErrorStream(),
+                true);
         buf.run();
-        return buf.getOutput();
+        return buf.getBuffer();
     }
 
     /**
@@ -444,7 +488,7 @@ public class RWMidiSend extends MidiSend {
      * @param status the status
      * @return true if the status value indicates an error otherwise false.
      */
-    private boolean isErrorStatus(int status) {
+    private static boolean isErrorStatus(int status) {
         return status != 0;
     }
 

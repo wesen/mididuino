@@ -67,6 +67,7 @@ import com.ruinwesen.midisend.MidiDevice;
 import com.ruinwesen.midisend.MidiSend;
 import com.ruinwesen.midisend.MidiSendCallback;
 import com.ruinwesen.midisend.MidiSendException;
+import com.ruinwesen.midisend.MidiSendProcess;
 import com.ruinwesen.midisend.RWMidiSend;
 import com.ruinwesen.patch.DefaultPatch;
 import com.ruinwesen.patch.Patch;
@@ -93,6 +94,10 @@ public class MidiSendForm extends Form implements DocumentListener, ItemListener
     private MidiSend midiSend ;
     private JTextField tfMidiFile;
     private CSAction acChooseMidiFile;
+    private static final String AC_CANCEL = "cancel";
+    private static final String AC_SEND = "send";
+
+    private MidiSendProcess midisendProcess;
     
     public MidiSendForm() {
         super();
@@ -256,12 +261,26 @@ public class MidiSendForm extends Form implements DocumentListener, ItemListener
     
     @SwingActionData("Close")    
     public void btnCloseClick() {
-        ((RWMidiSend)midiSend).cancel(); // dirty hack :(
+        cancelMidiSend();
         closeDialog();
+    }
+
+    private void cancelMidiSend() {
+        MidiSendProcess proc = midisendProcess;
+        if (proc != null) {
+            proc.cancel();
+            midisendProcess = null;
+        }
     }
 
     @SwingActionData("Send")
     public void btnSendClick() {
+        
+        if (AC_CANCEL.equals(acSend.getActionCommand())) {
+            cancelMidiSend();
+            return;
+        }
+        
         MidiDevice din = (MidiDevice) cbMidiIn.getSelectedItem();
         MidiDevice dout = (MidiDevice) cbMidiOut.getSelectedItem();
         File file = getMidiFile();
@@ -293,27 +312,64 @@ public class MidiSendForm extends Form implements DocumentListener, ItemListener
         midiSend.setInputDevice(din);
         midiSend.setOutputDevice(dout);
         
-        acSend.setEnabled(false);
+        MidiSendProcess proc;
+        try {
+            proc = midiSend.send(hexFileData);
+        } catch (MidiSendException ex) {
+            SwingPatchManagerUtils.showErrorDialog(panel, 
+                    "Error: "+ex
+            );
+            return;
+        }
         
-        new Thread(new SendThread(hexFileData)).start();
+        this.midisendProcess = proc;
+        new Thread(new SendThread(proc)).start();
     }
     
     
     private class SendThread extends SimpleSwingWorker {
-        private byte[] data;
-        public SendThread(byte[] data) {
-            this.data = data;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -5313078745023679652L;
+        private MidiSendProcess proc;
+        public SendThread(MidiSendProcess proc) {
+            this.proc = proc;
         }
 
         @Override
         protected void setup() {
-            acSend.setEnabled(false);
+            acSend.useName("Cancel").useActionCommand(AC_CANCEL);
             progressBar.setIndeterminate(true);
         }
         
         @Override
-        protected void process() throws MidiSendException {
-            midiSend.send(data);
+        protected void process() throws Exception {
+            boolean interrupted = false;
+            try {
+                while (!proc.isTerminated()) {
+                    try {
+                        proc.waitFor(1000);
+                    } catch (InterruptedException ex) {
+                        interrupted = true;
+                    }
+                }
+            
+                Throwable t = proc.getError();
+                if (t != null) {
+                    if (t instanceof Exception) {
+                        throw (Exception) t;
+                    } else if (t instanceof RuntimeException) {
+                        throw (RuntimeException) t;
+                    } else {
+                        throw new Exception(t);
+                    }
+                }
+            } finally {
+                if (interrupted) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
 
         @Override
@@ -322,10 +378,10 @@ public class MidiSendForm extends Form implements DocumentListener, ItemListener
             if (getException() != null) {
                 lblAtionStatusValue.setText("");
                 SwingPatchManagerUtils.showErrorDialog(panel, 
-                        "Error: "+getException()
+                        "Error: "+getException().getMessage()
                 );
             }
-            acSend.setEnabled(true);
+            acSend.useName("Send").useActionCommand(AC_SEND);
         }
         
     }
