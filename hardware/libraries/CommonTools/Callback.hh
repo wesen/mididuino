@@ -2,49 +2,92 @@
 #define CALLBACK_H__
 
 #include <inttypes.h>
-#include "Vector.hh"
+#include "helpers.h"
 
-class Callback {
+template <class C, typename M, int N> class CallbackVector {
 public:
-  virtual void onCallback(uint16_t type, void *obj) = 0;
+  struct {
+    C* obj;
+    M ptr;
+  } callbacks[N];
 
-#ifdef HOST_MIDIDUINO
-  virtual ~Callback() { }
-#endif
+  uint8_t size;
 
-
-};
-
-typedef void (*callback_func_t)(void *obj);
-template <uint8_t CLASSID, uint8_t CBID, int N> class CallbackHandler {
-public:
-  const static uint16_t id = ((uint16_t)CLASSID << 8) | CBID;
-
-  Vector<Callback *, N> callbacks;
-  Vector<callback_func_t, N> callbackFuncs;
-
-  CallbackHandler() {
+  CallbackVector() {
+    CallbackVector<C,M,N>::size = 0;
   }
 
-  void add(Callback *obj) {
-    callbacks.add(obj);
-  }
-
-  void remove(Callback *obj) {
-    callbacks.remove(obj);
-  }
-
-  void callback(void *data = NULL) {
-    for (int i = 0; i < callbacks.size; i++) {
-      if (callbacks.arr[i] != NULL) {
-	callbacks.arr[i]->onCallback(id, data);
+  bool add(C *obj, M ptr) {
+    if (size >= N) {
+      return false;
+    } else {
+      for (uint8_t i = 0; i < size; i++) {
+	if (callbacks[i].obj == obj &&
+	    callbacks[i].ptr == ptr)
+	  return true;
       }
-      if (callbackFuncs.arr[i] != NULL) {
-	callbackFuncs.arr[i](data);
+      callbacks[size].obj = obj;
+      callbacks[size].ptr = ptr;
+      size++;
+      return true;
+    }
+  }
+
+  void remove(C *obj, M ptr) {
+    USE_LOCK();
+    SET_LOCK();
+    for (uint8_t i = 0; i < size; i++) {
+      if (callbacks[i].obj == obj &&
+	  callbacks[i].ptr == ptr) {
+	m_memcpy(callbacks + i, callbacks + i + 1, sizeof(callbacks[0]) * (size - i - 1));
+	size--;
+	break;
       }
     }
+    CLEAR_LOCK();
+  }
 
+  void remove(C *obj) {
+    USE_LOCK();
+    SET_LOCK();
+  again:
+    for (uint8_t i = 0; i < size; i++) {
+      if (callbacks[i].obj == obj) {
+	m_memcpy(callbacks + i, callbacks + i + 1, sizeof(callbacks[0]) * (size - i - 1));
+	size--;
+	goto again;
+      }
+    }
+    CLEAR_LOCK();
+  }
+
+  void call() {
+    for (uint8_t i = 0; i < size; i++) {
+      ((callbacks[i].obj)->*(callbacks[i].ptr))();
+    }
   }
 };
+
+template <class C, typename M, int N = 4, typename Arg1 = void> class CallbackVector1 :
+  public CallbackVector<C, M, N> {
+public:
+  void call(Arg1 a1) {
+    for (uint8_t i = 0; i < CallbackVector<C,M,N>::size; i++) {
+      ((CallbackVector<C,M,N>::callbacks[i].obj)->*(CallbackVector<C,M,N>::callbacks[i].ptr))(a1);
+    }
+  }
+};
+
+template <class C, typename M, int N = 4, typename Arg1 = void, typename Arg2 = void>
+class CallbackVector2 :
+  public CallbackVector<C, M, N> {
+public:
+  void call(Arg1 a1, Arg2 a2) {
+    for (uint8_t i = 0; i < CallbackVector<C,M,N>::size; i++) {
+      ((CallbackVector<C,M,N>::callbacks[i].obj)->*(CallbackVector<C,M,N>::callbacks[i].ptr))(a1, a2);
+    }
+  }
+};
+
 
 #endif /* CALLBACK_H__ */
