@@ -50,7 +50,6 @@ public:
     return ret;
   }
 
-
   ListElt<C> *alloc(C c) {
     ListElt<C> *ret = alloc();
     if (ret != NULL) {
@@ -59,10 +58,11 @@ public:
     return ret;
   }
   
-  ListElt<C> *alloc(C &c) {
+
+  ListElt<C> *alloc(C *c) {
     ListElt<C> *ret = alloc();
     if (ret != NULL) {
-      ret->obj = c;
+      m_memcpy(&ret->obj, c, sizeof(C));
     }
     return ret;
   }
@@ -283,7 +283,7 @@ public:
     }
   }
 
-  bool pushValue(C &c) {
+  bool pushValue(C *c) {
     ListElt<C> *elt = pool.alloc(c);
     if (elt == NULL) {
       return false;
@@ -293,7 +293,7 @@ public:
     }
   }
 
-  void pushValue(C c) {
+  bool pushValue(C c) {
     ListElt<C> *elt = pool.alloc(c);
     if (elt == NULL) {
       return false;
@@ -303,7 +303,7 @@ public:
     }
   }
 
-  void pushLastValue(C &c) {
+  void pushLastValue(C *c) {
     ListElt<C> *elt = pool.alloc(c);
     if (elt == NULL) {
       return false;
@@ -320,6 +320,27 @@ public:
     } else {
       List<C>::pushLast(elt);
       return true;
+    }
+  }
+};
+
+template <class C, int N> class CallbackList : public ListWithPool<C*, N> {
+public:
+  bool add(C *obj) {
+    ListElt<C*> *elt = findFirst(obj);
+    if (elt != NULL)
+      return true;
+    else 
+      return pushValue(obj);
+  }
+
+  bool remove(C *obj) {
+    ListElt<C*> *elt = findFirst(obj);
+    if (elt != NULL) {
+      List<C*>::remove(elt);
+      return true;
+    } else {
+      return false;
     }
   }
 };
