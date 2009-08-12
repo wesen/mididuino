@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include "helpers.h"
 
-template <class C, typename M, int N> class CallbackVector {
+template <class C, int N, typename M = void(C::*)()> class CallbackVector {
 public:
   struct {
     C* obj;
@@ -14,7 +14,7 @@ public:
   uint8_t size;
 
   CallbackVector() {
-    CallbackVector<C,M,N>::size = 0;
+    CallbackVector<C,N,M>::size = 0;
   }
 
   bool add(C *obj, M ptr) {
@@ -68,23 +68,23 @@ public:
   }
 };
 
-template <class C, typename M, int N = 4, typename Arg1 = void> class CallbackVector1 :
-  public CallbackVector<C, M, N> {
+template <class C, int N = 4, typename Arg1 = void, typename M = void(C::*)(Arg1)> class CallbackVector1 :
+  public CallbackVector<C, N, M> {
 public:
   void call(Arg1 a1) {
-    for (uint8_t i = 0; i < CallbackVector<C,M,N>::size; i++) {
-      ((CallbackVector<C,M,N>::callbacks[i].obj)->*(CallbackVector<C,M,N>::callbacks[i].ptr))(a1);
+    for (uint8_t i = 0; i < CallbackVector<C,N,M>::size; i++) {
+      ((CallbackVector<C,N,M>::callbacks[i].obj)->*(CallbackVector<C,N,M>::callbacks[i].ptr))(a1);
     }
   }
 };
 
-template <class C, typename M, int N = 4, typename Arg1 = void, typename Arg2 = void>
+template <class C, int N = 4, typename Arg1 = void, typename Arg2 = void, typename M = void(C::*)(Arg1, Arg2)>
 class CallbackVector2 :
-  public CallbackVector<C, M, N> {
+  public CallbackVector<C, N, M> {
 public:
   void call(Arg1 a1, Arg2 a2) {
-    for (uint8_t i = 0; i < CallbackVector<C,M,N>::size; i++) {
-      ((CallbackVector<C,M,N>::callbacks[i].obj)->*(CallbackVector<C,M,N>::callbacks[i].ptr))(a1, a2);
+    for (uint8_t i = 0; i < CallbackVector<C,N,M>::size; i++) {
+      ((CallbackVector<C,N,M>::callbacks[i].obj)->*(CallbackVector<C,N,M>::callbacks[i].ptr))(a1, a2);
     }
   }
 };
