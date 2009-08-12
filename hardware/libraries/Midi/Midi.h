@@ -44,6 +44,7 @@ class MidiClass {
   uint8_t msg[3];
 
   MidiUartParent *uart;
+  MidiSysexClass *sysex;
 
   uint8_t callback;
   //  midi_callback_t callbacks[7];

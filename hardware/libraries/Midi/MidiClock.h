@@ -6,7 +6,10 @@
 #include "Vector.hh"
 #include "midi-common.hh"
 
-typedef void (*midi_clock_callback_t)();
+class ClockCallback {
+};
+
+typedef void (ClockCallback::*midi_clock_callback_ptr_t)();
 
 class MidiClockClass {
  public:
@@ -72,26 +75,39 @@ class MidiClockClass {
   
   MidiClockClass();
 
-  midi_clock_callback_t on96Callback;
-  Vector<midi_clock_callback_t, 4> on96Callbacks;
-  
-  midi_clock_callback_t on32Callback;
-  Vector<midi_clock_callback_t, 4> on32Callbacks;
-  
-  midi_clock_callback_t on16Callback;
-  Vector<midi_clock_callback_t, 4> on16Callbacks;
+  CallbackVector<ClockCallback,4> on96Callbacks;
+  CallbackVector<ClockCallback,4> on32Callbacks;
+  CallbackVector<ClockCallback,4> on16Callbacks;
 
-  void setOn96Callback(midi_clock_callback_t cb);
-  void addOn96Callback(midi_clock_callback_t cb);
-  void removeOn96Callback(midi_clock_callback_t cb);
+  void addOn96Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
+    on96Callbacks.add(obj, func);
+  }
+  void removeOn96Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
+    on96Callbacks.remove(obj, func);
+  }
+  void removeOn96Callback(ClockCallback *obj) {
+    on96Callbacks.remove(obj);
+  }
+
+  void addOn32Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
+    on32Callbacks.add(obj, func);
+  }
+  void removeOn32Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
+    on32Callbacks.remove(obj, func);
+  }
+  void removeOn32Callback(ClockCallback *obj) {
+    on32Callbacks.remove(obj);
+  }
   
-  void setOn32Callback(midi_clock_callback_t cb);
-  void addOn32Callback(midi_clock_callback_t cb);
-  void removeOn32Callback(midi_clock_callback_t cb);
-  
-  void setOn16Callback(midi_clock_callback_t cb);
-  void addOn16Callback(midi_clock_callback_t cb);
-  void removeOn16Callback(midi_clock_callback_t cb);
+  void addOn16Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
+    on16Callbacks.add(obj, func);
+  }
+  void removeOn16Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
+    on16Callbacks.remove(obj, func);
+  }
+  void removeOn16Callback(ClockCallback *obj) {
+    on16Callbacks.remove(obj);
+  }
   
   void init();
   void handleClock();

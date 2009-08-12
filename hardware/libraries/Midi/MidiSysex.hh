@@ -112,6 +112,7 @@ class MididuinoSysexListenerClass : public MidiSysexListenerClass {
 };
 
 extern MidiSysexClass MidiSysex;
+extern MidiSysexClass MidiSysex2;
 extern MididuinoSysexListenerClass MididuinoSysexListener;
 
 #endif /* MIDISYSEX_H__ */

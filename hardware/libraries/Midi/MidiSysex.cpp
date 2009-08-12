@@ -128,8 +128,10 @@ bool MidiSysexClass::recordByte(uint8_t c) {
 }
 
 static uint8_t sysexBuf[SYSEX_BUF_SIZE];
+static uint8_t sysexBuf2[SYSEX_BUF_SIZE];
 
 MidiSysexClass MidiSysex(sysexBuf, sizeof(sysexBuf));
+MidiSysexClass MidiSysex2(sysexBuf2, sizeof(sysexBuf2));
 
 MididuinoSysexListenerClass::MididuinoSysexListenerClass() {
   ids[0] = MIDIDUINO_SYSEX_VENDOR_1;

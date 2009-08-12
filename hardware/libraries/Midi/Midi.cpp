@@ -27,6 +27,11 @@ MidiClass::MidiClass(MidiUartParent *_uart) {
   midiActive = true;
   uart = _uart;
   receiveChannel = 0xFF;
+  if (this == &Midi) {
+    sysex = &MidiSysex;
+  } else if (this == &Midi2) {
+    sysex = &MidiSysex2;
+  }
   init();
 }
 
@@ -79,13 +84,13 @@ void MidiClass::handleByte(uint8_t byte) {
     if (MIDI_IS_STATUS_BYTE(byte)) {
       if (byte != MIDI_SYSEX_END) {
 	in_state = midi_wait_status;
-	MidiSysex.abort();
+	sysex->abort();
 	goto again;
       } else {
-	MidiSysex.end();
+	sysex->end();
       }
     } else {
-      MidiSysex.handleByte(byte);
+      sysex->handleByte(byte);
     }
     break;
 
@@ -93,7 +98,7 @@ void MidiClass::handleByte(uint8_t byte) {
     {
       if (byte == MIDI_SYSEX_START) {
 	in_state = midi_wait_sysex;
-	MidiSysex.reset();
+	sysex->reset();
 	last_status = running_status = 0;
 	return;
       }
@@ -134,15 +139,9 @@ void MidiClass::handleByte(uint8_t byte) {
 
   case midi_wait_byte_1:
     msg[in_msg_len++] = byte;
-    //    /* XXX check callback, note off, params, etc... */
     if (midi_parse[callback].midi_status == MIDI_NOTE_ON && msg[2] == 0) {
       callback = 0; // XXX ugly hack to recgnize NOTE on with velocity 0 as Note Off
     }
-    /*
-    if (callback < 7 && callbacks[callback] != NULL) {
-      callbacks[callback](msg);
-    }
-    */
     if (callback < 7) {
       midiCallbacks[callback].call(msg);
     } else if (msg[0] == MIDI_SONG_POSITION_PTR) {

@@ -9,9 +9,6 @@ MidiClockClass::MidiClockClass() {
   init();
   mode = OFF;
   setTempo(120);
-  on96Callback = NULL;
-  on32Callback = NULL;
-  on16Callback = NULL;
   transmit = false;
 }
 
@@ -27,48 +24,6 @@ void MidiClockClass::init() {
   pll_x = 200;
   counter = 10000;
   isInit = false;
-}
-
-void MidiClockClass::setOn96Callback(midi_clock_callback_t cb) {
-  if (cb != on96Callback) {
-    removeOn96Callback(on96Callback);
-  }
-  on96Callback = cb;
-  addOn96Callback(cb);
-}
-void MidiClockClass::addOn96Callback(midi_clock_callback_t cb) {
-  on96Callbacks.add(cb);
-}
-void MidiClockClass::removeOn96Callback(midi_clock_callback_t cb) {
-  on96Callbacks.remove(cb);
-}
-
-void MidiClockClass::setOn32Callback(midi_clock_callback_t cb) {
-  if (cb != on32Callback) {
-    removeOn32Callback(on32Callback);
-  }
-  on32Callback = cb;
-  addOn32Callback(cb);
-}
-void MidiClockClass::addOn32Callback(midi_clock_callback_t cb) {
-  on32Callbacks.add(cb);
-}
-void MidiClockClass::removeOn32Callback(midi_clock_callback_t cb) {
-  on32Callbacks.remove(cb);
-}
-
-void MidiClockClass::setOn16Callback(midi_clock_callback_t cb) {
-  if (cb != on16Callback) {
-    removeOn16Callback(on16Callback);
-  }
-  on16Callback = cb;
-  addOn16Callback(cb);
-}
-void MidiClockClass::addOn16Callback(midi_clock_callback_t cb) {
-  on16Callbacks.add(cb);
-}
-void MidiClockClass::removeOn16Callback(midi_clock_callback_t cb) {
-  on16Callbacks.remove(cb);
 }
 
 
@@ -345,10 +300,7 @@ void MidiClockClass::handleTimerInt()  {
     sei();
 #endif
 
-    for (int i = 0; i < on96Callbacks.size; i++) {
-      if (on96Callbacks.arr[i] != NULL)
-	on96Callbacks.arr[i]();
-    }
+    on96Callbacks.call();
 
 #ifdef DEBUG_MIDI_CLOCK
     GUI.setLine(GUI.LINE1);
@@ -362,20 +314,11 @@ void MidiClockClass::handleTimerInt()  {
       
     
     if (_mod6_counter == 0) {
-      for (int i = 0; i < on16Callbacks.size; i++) {
-	if (on16Callbacks.arr[i] != NULL)
-	  on16Callbacks.arr[i]();
-      }
-      for (int i = 0; i < on32Callbacks.size; i++) {
-	if (on32Callbacks.arr[i] != NULL)
-	  on32Callbacks.arr[i]();
-      }
+      on16Callbacks.call();
+      on32Callbacks.call();
     }
     if (_mod6_counter == 3) {
-      for (int i = 0; i < on32Callbacks.size; i++) {
-	if (on32Callbacks.arr[i] != NULL)
-	  on32Callbacks.arr[i]();
-      }
+      on32Callbacks.call();
     }
     
     if ((MidiClock.mode == MidiClock.EXTERNAL ||
