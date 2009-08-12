@@ -1,7 +1,5 @@
-#include "Profiler.h"
-
 class MNMWesenLivePatchSketch : 
-public Sketch {
+public Sketch, public MNMCallback, public ClockCallback {
 public:
   AutoMNMPage autoMNMPages[4];
   SwitchPage switchPage;
@@ -20,33 +18,23 @@ public:
     }
 
     switchPage.initPages(&autoMNMPages[0], &autoMNMPages[1], 
-                         &magicSwitchPages[0], &magicSwitchPages[1]);
+    &magicSwitchPages[0], &magicSwitchPages[1]);
     switchPage.parent = this;
   }
 
   virtual void setup() {
     setupPages();
 
-    Midi2.midiActive = false;
-    
-    #if 1
     MNMTask.setup();
     MNMTask.autoLoadKit = true;
     MNMTask.reloadGlobal = true;
-    MNMTask.addOnKitChangeCallback(_onKitChanged);
-    MNMTask.addOnGlobalChangeCallback(_onGlobalChanged);
+    MNMTask.addOnKitChangeCallback(this, (mnm_callback_ptr_t)&MNMWesenLivePatchSketch::onKitChanged);
     GUI.addTask(&MNMTask);
-    #endif  
-
+    
+    MidiClock.addOn32Callback(this, (midi_clock_callback_ptr_t)&MNMWesenLivePatchSketch::on32Callback);
+    
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
-
-//    MidiClock.mode = MidiClock.EXTERNAL_UART2;
-//   MidiClock.transmit = true;
-        MidiClock.mode = MidiClock.EXTERNAL;
-        MidiClock.transmit = false;
-   MidiClock.setOn32Callback(on32Callback);
-    MidiClock.start();  
 
     setPage(&autoMNMPages[0]);
   }
@@ -85,19 +73,32 @@ public:
   }
 
   void onKitChanged() {
+    clearAllRecording();
+
     GUI.setLine(GUI.LINE1);
     GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
     GUI.setLine(GUI.LINE2);
     GUI.flash_string_fill(MNM.kit.name);
   }  
 
+  void on32Callback() {
+    for (int i = 0; i < 2; i++) {
+      autoMNMPages[i].on32Callback();
+      for (int j = 0; j < 4; j++) {
+        magicSwitchPages[i].magicPages[j].on32Callback();
+      }
+    }
+  }
+  //  GUI.flash_put_value(0, MidiClock.div32th_counter);
 
-  void onGlobalChanged() {
-    return;
-    GUI.setLine(GUI.LINE1);
-    GUI.flash_string_fill("GLOBAL CHANGED");
-  }  
-
+  void clearAllRecording() {
+    for (int i = 0; i < 2; i++) {
+      autoMNMPages[i].clearRecording();
+      for (int j = 0; j < 4; j++) {
+        magicSwitchPages[i].magicPages[j].clearRecording();
+      }
+    }
+  }
 
   virtual void loop() {
   }    
@@ -105,47 +106,25 @@ public:
 
 MNMWesenLivePatchSketch sketch;
 
-void on32Callback() {
-  for (int i = 0; i < 2; i++) {
-    sketch.autoMNMPages[i].on32Callback();
-    for (int j = 0; j < 4; j++) {
-      sketch.magicSwitchPages[i].magicPages[j].on32Callback();
-    }
-  }
-  //  GUI.flash_put_value(0, MidiClock.div32th_counter);
-}
-
-void clearAllRecording() {
-  for (int i = 0; i < 2; i++) {
-    sketch.autoMNMPages[i].clearRecording();
-    for (int j = 0; j < 4; j++) {
-      sketch.magicSwitchPages[i].magicPages[j].clearRecording();
-    }
-  }
-}
-
-void _onKitChanged() {
-  sketch.onKitChanged();
-  clearAllRecording();
-}
-
-void _onGlobalChanged() {
-  sketch.onGlobalChanged();
-}
-
 void setup() {
-//  enableProfiling();
+  //  enableProfiling();
   sketch.setup();
   GUI.setSketch(&sketch);
+
   if (SDCard.init() != 0) {
     GUI.flash_strings_fill("SDCARD ERROR", "");
+    GUI.display();
     delay(800);
-  }
-  midiClockPage.setup();
-  if (BUTTON_DOWN(Buttons.BUTTON1)) {
-    GUI.pushPage(&midiClockPage);
+    MidiClock.mode = MidiClock.EXTERNAL_MIDI;
+    MidiClock.transmit = true;
+    MidiClock.start();
+  } else {
+    midiClockPage.setup();
+    if (BUTTON_DOWN(Buttons.BUTTON1)) {
+      GUI.pushPage(&midiClockPage);
+    }
   }
 }
-  
+
 void loop() {
 }
