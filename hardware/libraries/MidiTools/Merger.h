@@ -14,7 +14,7 @@ class MergerSysexListener : public MidiSysexListenerClass {
   virtual void end();
 };
 
-class Merger {
+class Merger : public MidiCallback {
  public:
   static const uint8_t MERGE_CC_MASK        = _BV(0);
   static const uint8_t MERGE_NOTE_MASK      = _BV(1);
@@ -30,6 +30,9 @@ class Merger {
   Merger(uint8_t _mask = 0) {
     setMergeMask(_mask);
   }
+
+  void on2ByteCallback(uint8_t *msg);
+  void on3ByteCallback(uint8_t *msg);
 
   void setMergeMask(uint8_t _mask);
 };

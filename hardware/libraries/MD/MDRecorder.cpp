@@ -3,8 +3,6 @@
 #include "helpers.h"
 #include "MDRecorder.h"
 
-void _MDRecorder_onNoteOnCallback(uint8_t *msg);
-void _MDRecorder_onCCCallback(uint8_t *msg);
 void _MDRecorder_on16Callback();
 
 MDRecorderClass::MDRecorderClass() {
@@ -41,8 +39,8 @@ void MDRecorderClass::startRecord(uint8_t length, uint8_t boundary) {
   }
   recordLength = length;
   
-  MidiUart.addOnNoteOnCallback(_MDRecorder_onNoteOnCallback);
-  MidiUart.addOnControlChangeCallback(_MDRecorder_onCCCallback);
+  MidiUart.addOnNoteOnCallback(this, (midi_callback_ptr_t)&MDRecorderClass::onNoteOnCallback);
+  MidiUart.addOnControlChangeCallback(this, (midi_callback_ptr_t)&MDRecorderClass::onCCCallback);
   CLEAR_LOCK();
 }
 
@@ -50,8 +48,8 @@ void MDRecorderClass::stopRecord() {
   USE_LOCK();
   SET_LOCK();
   recording = false;
-  MidiUart.removeOnNoteOnCallback(_MDRecorder_onNoteOnCallback);
-  MidiUart.removeOnControlChangeCallback(_MDRecorder_onCCCallback);
+  MidiUart.removeOnNoteOnCallback(this);
+  MidiUart.removeOnControlChangeCallback(this);
   CLEAR_LOCK();
   eventList.reverse();
 }
@@ -192,14 +190,6 @@ void MDRecorderClass::on16Callback() {
 }
 
 MDRecorderClass MDRecorder;
-
-void _MDRecorder_onNoteOnCallback(uint8_t *msg) {
-  MDRecorder.onNoteOnCallback(msg);
-}
-
-void _MDRecorder_onCCCallback(uint8_t *msg) {
-  MDRecorder.onCCCallback(msg);
-}
 
 void _MDRecorder_on16Callback() {
   MDRecorder.on16Callback();

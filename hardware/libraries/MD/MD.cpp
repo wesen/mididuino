@@ -553,9 +553,11 @@ bool MDClass::checkParamSettings() {
 }
 
 bool MDClass::checkTriggerSettings() {
+  return false;
 }
 
 bool MDClass::checkClockSettings() {
+  return false;
 }
 
 MDClass MD;

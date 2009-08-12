@@ -6,6 +6,14 @@
 #define NULL 0
 #endif
 
+class MidiCallback {
+ public:
+
+#ifdef HOST_MIDIDUINO
+  virtual ~MidiCallback() { }
+#endif
+};
+
 typedef enum {
   midi_wait_status = 0,
   midi_wait_byte_2,
@@ -78,7 +86,7 @@ typedef enum {
 #define CMD_SAVE_PAGE          0x14
 #define CMD_SET_FLASH          0x15
 
-typedef void (*midi_callback_t)(uint8_t *msg);
+// typedef void (*midi_callback_t)(uint8_t *msg);
 
 #endif /* MIDI_COMMON_H__ */
 

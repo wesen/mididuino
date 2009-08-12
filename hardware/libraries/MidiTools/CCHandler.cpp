@@ -5,27 +5,15 @@
 
 CCHandler *activeCCHandler = NULL;
 
-void CCHandlerOnCCCallback(uint8_t *msg) {
-  if (activeCCHandler != NULL) {
-    activeCCHandler->onCCCallback(msg);
-  }
-}
-
-void onOutgoingCCCallback(uint8_t *msg) {
-  if (activeCCHandler != NULL) {
-    activeCCHandler->onOutgoingCC(MIDI_VOICE_CHANNEL(msg[0]), msg[1], msg[2]);
-  }
-}
-
 void CCHandler::setup() {
   activeCCHandler = this;
-  Midi.addOnControlChangeCallback(CCHandlerOnCCCallback);
-  MidiUart.addOnControlChangeCallback(onOutgoingCCCallback);
+  Midi.addOnControlChangeCallback(this, (midi_callback_ptr_t)&CCHandler::onCCCallback);
+  MidiUart.addOnControlChangeCallback(this, (midi_callback_ptr_t)&CCHandler::onOutgoingCCCallback);
 }
 
 void CCHandler::destroy() {
-  Midi.removeOnControlChangeCallback(CCHandlerOnCCCallback);
-  MidiUart.removeOnControlChangeCallback(onOutgoingCCCallback);
+  Midi.removeOnControlChangeCallback(this);
+  MidiUart.removeOnControlChangeCallback(this);
 }
 
 void CCHandler::onCCCallback(uint8_t *msg) {
@@ -119,7 +107,11 @@ void CCHandler::onCCCallback(uint8_t *msg) {
   }
 }
 
-void CCHandler::onOutgoingCC(uint8_t channel, uint8_t cc, uint8_t value) {
+void CCHandler::onOutgoingCCCallback(uint8_t *msg) {
+  uint8_t channel = msg[0] & 0xF;
+  uint8_t cc = msg[1];
+  uint8_t value = msg[2];
+  
   for (int i = 0; i < encoders.size; i++) {
     if (encoders.arr[i] != NULL) {
       if (encoders.arr[i]->getChannel() == channel &&

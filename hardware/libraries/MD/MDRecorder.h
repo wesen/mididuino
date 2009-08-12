@@ -17,7 +17,7 @@ typedef enum {
   MD_PLAYBACK_CCS = 2
 } md_playback_phase_t;
 
-class MDRecorderClass {
+class MDRecorderClass : public MidiCallback {
  public:
   MDRecorderClass();
 

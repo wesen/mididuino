@@ -3,6 +3,7 @@
 
 #include <midi-common.hh>
 #include "Vector.hh"
+#include "Callback.hh"
 
 class MidiUartParent {
 public:
@@ -64,29 +65,41 @@ public:
     }
   }
 
-  Vector<midi_callback_t, 4>noteOnCallbacks;
-  Vector<midi_callback_t, 4>noteOffCallbacks;
-  Vector<midi_callback_t, 4>CCCallbacks;
+  CallbackVector1<MidiCallback, 8, uint8_t *>noteOnCallbacks;
+  CallbackVector1<MidiCallback, 8, uint8_t *>noteOffCallbacks;
+  CallbackVector1<MidiCallback, 8, uint8_t *>ccCallbacks;
 
-  void addOnNoteOnCallback(midi_callback_t cb) {
-    noteOnCallbacks.add(cb);
+  void addOnNoteOnCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+    noteOnCallbacks.add(obj, func);
   }
-  void removeOnNoteOnCallback(midi_callback_t cb) {
-    noteOnCallbacks.remove(cb);
+  void removeOnNoteOnCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg) ) {
+    noteOnCallbacks.remove(obj, func);
   }
-  void addOnNoteOffCallback(midi_callback_t cb) {
-    noteOffCallbacks.add(cb);
-  }
-  void removeOnNoteOffCallback(midi_callback_t cb) {
-    noteOffCallbacks.remove(cb);
-  }
-  void addOnControlChangeCallback(midi_callback_t cb) {
-    CCCallbacks.add(cb);
-  }
-  void removeOnControlChangeCallback(midi_callback_t cb) {
-    CCCallbacks.remove(cb);
+  void removeOnNoteOnCallback(MidiCallback *obj) {
+    noteOnCallbacks.remove(obj);
   }
 
+  void addOnNoteOffCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+    noteOffCallbacks.add(obj, func);
+  }
+  void removeOnNoteOffCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg) ) {
+    noteOffCallbacks.remove(obj, func);
+  }
+  void removeOnNoteOffCallback(MidiCallback *obj) {
+    noteOffCallbacks.remove(obj);
+  }
+
+  void addOnControlChangeCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+    ccCallbacks.add(obj, func);
+  }
+  void removeOnControlChangeCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg) ) {
+    ccCallbacks.remove(obj, func);
+  }
+  void removeOnControlChangeCallback(MidiCallback *obj) {
+    ccCallbacks.remove(obj);
+  }
+
+  
   inline void resetRunningStatus() {
     running_status = 0;
   }
@@ -139,10 +152,7 @@ public:
       note,
       velocity
     };
-    for (int i = 0 ; i < noteOnCallbacks.size; i++) {
-      if (noteOnCallbacks.arr[i] != NULL)
-	noteOnCallbacks.arr[i](msg);
-    }
+    noteOnCallbacks.call(msg);
     sendMessage(msg[0], msg[1], msg[2]);
   }
 
@@ -152,10 +162,7 @@ public:
       note,
       velocity
     };
-    for (int i = 0 ; i < noteOffCallbacks.size; i++) {
-      if (noteOffCallbacks.arr[i] != NULL)
-	noteOffCallbacks.arr[i](msg);
-    }
+    noteOffCallbacks.call(msg);
     sendMessage(msg[0], msg[1], msg[2]);
   }
 
@@ -165,10 +172,7 @@ public:
       cc,
       value
     };
-    for (int i = 0 ; i < CCCallbacks.size; i++) {
-      if (CCCallbacks.arr[i] != NULL)
-	CCCallbacks.arr[i](msg);
-    }
+    ccCallbacks.call(msg);
     sendMessage(msg[0], msg[1], msg[2]);
   }
 

@@ -1,9 +1,8 @@
 #include <Midi.h>
-#include <MidiUart.h>
+#include <MidiUartParent.hh>
 #include "Merger.h"
 
-void _merge_on2ByteCallback(uint8_t *msg);
-void _merge_on3ByteCallback(uint8_t *msg);
+#ifndef HOST_MIDIDUINO
 
 void MergerSysexListener::end() {
   MidiUart.sendCommandByte(0xF0);
@@ -15,36 +14,36 @@ void Merger::setMergeMask(uint8_t _mask) {
   mask = _mask;
 
   if (mask & MERGE_CC_MASK) {
-    Midi2.addOnControlChangeCallback(_merge_on3ByteCallback);
+    Midi2.addOnControlChangeCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   } else {
-    Midi2.removeOnControlChangeCallback(_merge_on3ByteCallback);
+    Midi2.removeOnControlChangeCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   }
   if (mask & MERGE_NOTE_MASK) {
-    Midi2.addOnNoteOnCallback(_merge_on3ByteCallback);
-    Midi2.addOnNoteOffCallback(_merge_on3ByteCallback);
+    Midi2.addOnNoteOnCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
+    Midi2.addOnNoteOffCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   } else {
-    Midi2.removeOnNoteOnCallback(_merge_on3ByteCallback);
-    Midi2.removeOnNoteOffCallback(_merge_on3ByteCallback);
+    Midi2.removeOnNoteOnCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
+    Midi2.removeOnNoteOffCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   }
   if (mask & MERGE_AT_MASK) {
-    Midi2.addOnAfterTouchCallback(_merge_on3ByteCallback);
+    Midi2.addOnAfterTouchCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   } else {
-    Midi2.removeOnAfterTouchCallback(_merge_on3ByteCallback);
+    Midi2.removeOnAfterTouchCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   }
   if (mask & MERGE_PRGCHG_MASK) {
-    Midi2.addOnProgramChangeCallback(_merge_on2ByteCallback);
+    Midi2.addOnProgramChangeCallback(this, (midi_callback_ptr_t)&Merger::on2ByteCallback);
   } else {
-    Midi2.removeOnProgramChangeCallback(_merge_on2ByteCallback);
+    Midi2.removeOnProgramChangeCallback(this, (midi_callback_ptr_t)&Merger::on2ByteCallback);
   }
   if (mask & MERGE_CHANPRESS_MASK) {
-    Midi2.addOnChannelPressureCallback(_merge_on2ByteCallback);
+    Midi2.addOnChannelPressureCallback(this, (midi_callback_ptr_t)&Merger::on2ByteCallback);
   } else {
-    Midi2.removeOnChannelPressureCallback(_merge_on2ByteCallback);
+    Midi2.removeOnChannelPressureCallback(this, (midi_callback_ptr_t)&Merger::on2ByteCallback);
   }
   if (mask & MERGE_PITCH_MASK) {
-    Midi2.addOnPitchWheelCallback(_merge_on3ByteCallback);
+    Midi2.addOnPitchWheelCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   } else {
-    Midi2.removeOnPitchWheelCallback(_merge_on3ByteCallback);
+    Midi2.removeOnPitchWheelCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   }
   if (mask & MERGE_SYSEX_MASK) {
     MidiSysex.addSysexListener(&mergerSysexListener);
@@ -53,10 +52,12 @@ void Merger::setMergeMask(uint8_t _mask) {
   }
 }
 
-void _merge_on2ByteCallback(uint8_t *msg) {
+void Merger::on2ByteCallback(uint8_t *msg) {
   MidiUart.sendMessage(msg[0], msg[1]);
 }
 
-void _merge_on3ByteCallback(uint8_t *msg) {
+void Merger::on3ByteCallback(uint8_t *msg) {
   MidiUart.sendMessage(msg[0], msg[1], msg[2]);
 }
+
+#endif
