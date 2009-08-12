@@ -15,7 +15,7 @@ MDRecorderClass::MDRecorderClass() {
 }
 
 void MDRecorderClass::setup() {
-  MidiClock.addOn16Callback(_MDRecorder_on16Callback);
+  MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&MDRecorderClass::on16Callback);
 }
 
 void MDRecorderClass::startRecord(uint8_t length, uint8_t boundary) {
@@ -191,6 +191,3 @@ void MDRecorderClass::on16Callback() {
 
 MDRecorderClass MDRecorder;
 
-void _MDRecorder_on16Callback() {
-  MDRecorder.on16Callback();
-}

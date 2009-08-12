@@ -46,9 +46,9 @@ void Merger::setMergeMask(uint8_t _mask) {
     Midi2.removeOnPitchWheelCallback(this, (midi_callback_ptr_t)&Merger::on3ByteCallback);
   }
   if (mask & MERGE_SYSEX_MASK) {
-    MidiSysex.addSysexListener(&mergerSysexListener);
+    MidiSysex2.addSysexListener(&mergerSysexListener);
   } else {
-    MidiSysex.removeSysexListener(&mergerSysexListener);
+    MidiSysex2.removeSysexListener(&mergerSysexListener);
   }
 }
 

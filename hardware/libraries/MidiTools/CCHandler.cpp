@@ -3,10 +3,7 @@
 
 // #define DEBUG_CCHANDLER
 
-CCHandler *activeCCHandler = NULL;
-
 void CCHandler::setup() {
-  activeCCHandler = this;
   Midi.addOnControlChangeCallback(this, (midi_callback_ptr_t)&CCHandler::onCCCallback);
   MidiUart.addOnControlChangeCallback(this, (midi_callback_ptr_t)&CCHandler::onOutgoingCCCallback);
 }
