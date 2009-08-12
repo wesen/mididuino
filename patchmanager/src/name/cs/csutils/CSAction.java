@@ -184,5 +184,9 @@ public class CSAction extends AbstractAction {
         setEnabled(enabled);
         return this;
     }
+
+    public Object getActionCommand() {
+        return getValue(ACTION_COMMAND_KEY);
+    }
     
 }
