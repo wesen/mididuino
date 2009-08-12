@@ -1,0 +1,55 @@
+body {
+  font-size:76%;
+  line-height:1.125em;
+  font-family:sans-serif;
+  color: black;
+  background-color: #fff;
+}
+
+code {
+  font-family:"Lucida Console", monospace;
+  font-size: 1em;
+}
+
+pre.code {
+  font-size: 1em;
+  border: solid #ddd 1px;
+  color: black;
+  background-color: #eee;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+table.table_fields {
+  width:90%;
+  border-collapse:collapse;
+}
+table.table_fields th {
+  color: black;
+  background-color: #eee;
+  text-align:left;
+  border: solid #ddd 1px;
+  vertical-align:top;
+}
+table.table_fields td {
+  color: black;
+  background-color: #fff;
+  text-align:left;
+  border: solid #ddd 1px;
+  vertical-align:top;
+}
+
+h1 {
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+}
+
+h2 {
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+}
+
+h3 {
+  margin-top: 1.6em;
+  margin-bottom: 1em;
+}
