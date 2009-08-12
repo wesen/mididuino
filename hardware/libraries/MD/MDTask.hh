@@ -6,10 +6,8 @@
 
 extern MDClass MD;
 
-typedef void(*md_task_callback_t)();
-
 class MDTaskClass : 
-  public Task {
+  public Task, public MDCallback {
 public:
   bool autoLoadKit;
   bool autoLoadGlobal;
@@ -26,54 +24,40 @@ public:
 
   const static uint8_t MD_CB_CLASS_ID = 10;
   const static uint8_t MD_CB_KITCHANGE_ID = 0;;
-  
-  Vector<md_task_callback_t, 4>kitChangeCallbacks;
-  Vector<md_task_callback_t, 4>globalChangeCallbacks;
-  Vector<md_task_callback_t, 4>patternChangeCallbacks;
 
-  void addOnKitChangeCallback(md_task_callback_t cb) {
-    kitChangeCallbacks.add(cb);
-  }
-  void removeOnKitChangeCallback(md_task_callback_t cb) {
-    kitChangeCallbacks.remove(cb);
-  }
-  void addOnGlobalChangeCallback(md_task_callback_t cb) {
-    globalChangeCallbacks.add(cb);
-  }
-  void removeOnGlobalChangeCallback(md_task_callback_t cb) {
-    globalChangeCallbacks.remove(cb);
-  }
-  void addOnPatternChangeCallback(md_task_callback_t cb) {
-    patternChangeCallbacks.add(cb);
-  }
-  void removeOnPatternChangeCallback(md_task_callback_t cb) {
-    patternChangeCallbacks.remove(cb);
-  }
+  CallbackVector<MDCallback, 4> kitChangeCallbacks;
+  CallbackVector<MDCallback, 4> globalChangeCallbacks;
+  CallbackVector<MDCallback, 4> patternChangeCallbacks;
 
-  void callKitCallbacks() {
-    for (int i = 0; i < kitChangeCallbacks.size; i++) {
-      if (kitChangeCallbacks.arr[i] != NULL) {
-	kitChangeCallbacks.arr[i]();
-      }
-    }
+  void addOnKitChangeCallback(MDCallback *obj, md_callback_ptr_t func) {
+    kitChangeCallbacks.add(obj, func);
   }
-
-  void callGlobalCallbacks() {
-    for (int i = 0; i < globalChangeCallbacks.size; i++) {
-      if (globalChangeCallbacks.arr[i] != NULL) {
-	globalChangeCallbacks.arr[i]();
-      }
-    }
+  void removeOnKitChangeCallback(MDCallback *obj, md_callback_ptr_t func) {
+    kitChangeCallbacks.remove(obj, func);
+  }
+  void removeOnKitChangeCallback(MDCallback *obj) {
+    kitChangeCallbacks.remove(obj);
   }
   
-  void callPatternCallbacks() {
-    for (int i = 0; i < patternChangeCallbacks.size; i++) {
-      if (patternChangeCallbacks.arr[i] != NULL) {
-	patternChangeCallbacks.arr[i]();
-      }
-    }
+  void addOnGlobalChangeCallback(MDCallback *obj, md_callback_ptr_t func) {
+    globalChangeCallbacks.add(obj, func);
+  }
+  void removeOnGlobalChangeCallback(MDCallback *obj, md_callback_ptr_t func) {
+    globalChangeCallbacks.remove(obj, func);
+  }
+  void removeOnGlobalChangeCallback(MDCallback *obj) {
+    globalChangeCallbacks.remove(obj);
   }
   
+  void addOnPatternChangeCallback(MDCallback *obj, md_callback_ptr_t func) {
+    patternChangeCallbacks.add(obj, func);
+  }
+  void removeOnPatternChangeCallback(MDCallback *obj, md_callback_ptr_t func) {
+    patternChangeCallbacks.remove(obj, func);
+  }
+  void removeOnPatternChangeCallback(MDCallback *obj) {
+    patternChangeCallbacks.remove(obj);
+  }
   
   void setup(uint16_t interval = 3000, bool autoLoadKit = false, bool autoLoadGlobal = true,
 	     bool reloadGlobal = true);
@@ -85,11 +69,12 @@ public:
     MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_PATTERN_REQUEST);
   }
 
-  void onStatusResponse(uint8_t type, uint8_t value);
+  void onStatusResponseCallback(uint8_t type, uint8_t value);
+  void onGlobalMessageCallback();
+  void onKitMessageCallback();
 
   virtual void destroy();
 };
-
 
 extern MDTaskClass MDTask;
 #endif /* MD_TASK_H__ */

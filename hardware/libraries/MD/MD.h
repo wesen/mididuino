@@ -4,6 +4,13 @@
 #include "WProgram.h"
 
 #include "Elektron.hh"
+
+class MDCallback {
+};
+typedef void(MDCallback::*md_callback_ptr_t)();
+typedef void(MDCallback::*md_status_callback_ptr_t)(uint8_t type, uint8_t param);
+
+
 #include "MDSysex.hh"
 #include "MDParams.hh"
 #include "MDMessages.hh"

@@ -51,31 +51,24 @@ void MDSysexListenerClass::end() {
     return;
   switch (msgType) {
   case MD_STATUS_RESPONSE_ID:
-    for (int i = 0 ; i < statusCallbacks.size; i++) {
-      if (statusCallbacks.arr[i] != NULL)
-	statusCallbacks.arr[i](MidiSysex.data[6], MidiSysex.data[7]);
-    }
+    onStatusResponseCallbacks.call(MidiSysex.data[6], MidiSysex.data[7]);
     break;
     
     
   case MD_GLOBAL_MESSAGE_ID:
-    if (onGlobalMessageCallback != NULL)
-      onGlobalMessageCallback();
+    onGlobalMessageCallbacks.call();
     break;
     
   case MD_KIT_MESSAGE_ID:
-    if (onKitMessageCallback != NULL)
-      onKitMessageCallback();
+    onKitMessageCallbacks.call();
     break;
     
   case MD_PATTERN_MESSAGE_ID:
-    if (onPatternMessageCallback != NULL)
-      onPatternMessageCallback();
+    onPatternMessageCallbacks.call();
     break;
     
   case MD_SONG_MESSAGE_ID:
-    if (onSongMessageCallback != NULL)
-      onSongMessageCallback();
+    onSongMessageCallbacks.call();
     break;
   }
 }

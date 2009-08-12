@@ -12,18 +12,22 @@ void MDTaskClass::setup(uint16_t _interval, bool _autoLoadKit, bool _autoLoadGlo
   reloadGlobal = _reloadGlobal;
   
   MDSysexListener.setup();
-  MDSysexListener.addOnStatusResponseCallback(mdTaskOnStatusResponseCallback);
-  MDSysexListener.setOnGlobalMessageCallback(mdTaskOnGlobalCallback);
-  MDSysexListener.setOnKitMessageCallback(mdTaskOnKitCallback);
+  MDSysexListener.addOnStatusResponseCallback
+    (this, (md_status_callback_ptr_t)&MDTaskClass::onStatusResponseCallback);
+  
+  MDSysexListener.addOnGlobalMessageCallback
+    (this, (md_callback_ptr_t)&MDTaskClass::onGlobalMessageCallback);
+  MDSysexListener.addOnKitMessageCallback
+    (this, (md_callback_ptr_t)&MDTaskClass::onKitMessageCallback);
 }
 
 void MDTaskClass::destroy() {
-  MDSysexListener.removeOnStatusResponseCallback(mdTaskOnStatusResponseCallback);
-  MDSysexListener.setOnGlobalMessageCallback(NULL);
-  MDSysexListener.setOnKitMessageCallback(NULL);
+  MDSysexListener.removeOnStatusResponseCallback(this);
+  MDSysexListener.removeOnGlobalMessageCallback(this);
+  MDSysexListener.removeOnKitMessageCallback(this);
 }
 
-void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
+void MDTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
   switch (type) {
   case MD_CURRENT_KIT_REQUEST:
     if (MD.currentKit != value) {
@@ -31,7 +35,7 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       if (autoLoadKit) {
 	MD.requestKit(MD.currentKit);
       } else {
-	callKitCallbacks();
+	kitChangeCallbacks.call();
       }
     }
     if (reloadKit) {
@@ -46,7 +50,7 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
       if (autoLoadGlobal) {
 	MD.requestGlobal(MD.currentGlobal);
       } else {
-	callGlobalCallbacks();
+	globalChangeCallbacks.call();
       }
     }
     if (reloadGlobal) {
@@ -58,33 +62,30 @@ void MDTaskClass::onStatusResponse(uint8_t type, uint8_t value) {
   case MD_CURRENT_PATTERN_REQUEST:
     if (MD.currentPattern != value) {
       MD.currentPattern = value;
-      callPatternCallbacks();
+      patternChangeCallbacks.call();
     }
     break;
   }
   redisplay = true;
 }
 
-MDTaskClass MDTask(3000);
-
-void mdTaskOnGlobalCallback() {
+void MDTaskClass::onGlobalMessageCallback() {
   MD.loadedGlobal = false;
   if (MD.global.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
     MD.loadedGlobal = true;
-    MDTask.callGlobalCallbacks();
+    globalChangeCallbacks.call();
   }
 }
 
-void mdTaskOnKitCallback() {
+void MDTaskClass::onKitMessageCallback() {
   MD.loadedKit = false;
   if (MD.kit.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
     MD.loadedKit = true;
-    MDTask.callKitCallbacks();
+    kitChangeCallbacks.call();
   } else {
     //    GUI.flash_strings_fill("FROM SYSEX", "ERROR");
   }
 }
 
-void mdTaskOnStatusResponseCallback(uint8_t type, uint8_t value) {
-  MDTask.onStatusResponse(type, value);
-}
+MDTaskClass MDTask(3000);
+

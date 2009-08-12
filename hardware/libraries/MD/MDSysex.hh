@@ -5,9 +5,8 @@
 #include "Midi.h"
 #include "MidiSysex.hh"
 #include "Vector.hh"
-
-typedef void (*md_callback_t)();
-typedef void (*md_status_callback_t)(uint8_t type, uint8_t param);
+#include "Callback.hh"
+#include "MD.h"
 
 typedef enum {
     MD_NONE,
@@ -23,13 +22,11 @@ typedef enum {
 
 class MDSysexListenerClass : public MidiSysexListenerClass {
 public:
-  md_status_callback_t onStatusResponseCallback;
-  Vector<md_status_callback_t, 4> statusCallbacks;
-
-  md_callback_t onGlobalMessageCallback;
-  md_callback_t onKitMessageCallback;
-  md_callback_t onSongMessageCallback;
-  md_callback_t onPatternMessageCallback;
+  CallbackVector<MDCallback,4> onGlobalMessageCallbacks;
+  CallbackVector<MDCallback,4> onKitMessageCallbacks;
+  CallbackVector<MDCallback,4> onSongMessageCallbacks;
+  CallbackVector<MDCallback,4> onPatternMessageCallbacks;
+  CallbackVector2<MDCallback,4,uint8_t,uint8_t> onStatusResponseCallbacks;
   
   bool isMDMessage;
   uint8_t msgType;
@@ -38,40 +35,56 @@ public:
     ids[0] = 0;
     ids[1] = 0x20;
     ids[2] = 0x3c;
-    onStatusResponseCallback = NULL;
-    onGlobalMessageCallback = NULL;
-    onKitMessageCallback = NULL;
   }
 
-  void addOnStatusResponseCallback(md_status_callback_t callback) {
-    statusCallbacks.add(callback);
+  void addOnStatusResponseCallback(MDCallback *obj, md_status_callback_ptr_t func) {
+    onStatusResponseCallbacks.add(obj, func);
   }
-  void removeOnStatusResponseCallback(md_status_callback_t callback) {
-    statusCallbacks.remove(callback);
+  void removeOnStatusResponseCallback(MDCallback *obj, md_status_callback_ptr_t func) {
+    onStatusResponseCallbacks.remove(obj, func);
   }
-  /* compatibility to old stuff */
-  void setOnStatusResponseCallback(md_status_callback_t callback) {
-    if (onStatusResponseCallback != NULL) {
-      removeOnStatusResponseCallback(onStatusResponseCallback);
-    } 
+  void removeOnStatusResponseCallback(MDCallback *obj) {
+    onStatusResponseCallbacks.remove(obj);
+  }
 
-    onStatusResponseCallback = callback;
-    addOnStatusResponseCallback(onStatusResponseCallback);
+  void addOnGlobalMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onGlobalMessageCallbacks.add(obj, func);
+  }
+  void removeOnGlobalMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onGlobalMessageCallbacks.remove(obj, func);
+  }
+  void removeOnGlobalMessageCallback(MDCallback *obj) {
+    onGlobalMessageCallbacks.remove(obj);
   }
   
-  void setOnGlobalMessageCallback(md_callback_t callback) {
-    onGlobalMessageCallback = callback;
+  void addOnKitMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onKitMessageCallbacks.add(obj, func);
   }
-  void setOnKitMessageCallback(md_callback_t callback) {
-    onKitMessageCallback = callback;
+  void removeOnKitMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onKitMessageCallbacks.remove(obj, func);
   }
-
-  void setOnSongMessageCallback(md_callback_t callback) {
-    onSongMessageCallback = callback;
+  void removeOnKitMessageCallback(MDCallback *obj) {
+    onKitMessageCallbacks.remove(obj);
   }
-
-  void setOnPatternMessageCallback(md_callback_t callback) {
-    onPatternMessageCallback = callback;
+  
+  void addOnPatternMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onPatternMessageCallbacks.add(obj, func);
+  }
+  void removeOnPatternMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onPatternMessageCallbacks.remove(obj, func);
+  }
+  void removeOnPatternMessageCallback(MDCallback *obj) {
+    onPatternMessageCallbacks.remove(obj);
+  }
+  
+  void addOnSongMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onSongMessageCallbacks.add(obj, func);
+  }
+  void removeOnSongMessageCallback(MDCallback *obj, md_callback_ptr_t func) {
+    onSongMessageCallbacks.remove(obj, func);
+  }
+  void removeOnSongMessageCallback(MDCallback *obj) {
+    onSongMessageCallbacks.remove(obj);
   }
   
   virtual void start();
