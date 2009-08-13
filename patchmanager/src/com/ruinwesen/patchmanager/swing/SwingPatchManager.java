@@ -378,7 +378,7 @@ public class SwingPatchManager {
         menuEdit.addSeparator(); // server tasks
         menuEdit.add(new CSAction(this, "publishPatch"));
         menuEdit.addSeparator(); // misc server tasks
-        menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
+        // menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
         menuEdit.add(new CSAction(this, "syncRepository"));
         
         jmenubar.add(menuEdit);
