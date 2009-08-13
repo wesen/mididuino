@@ -34,6 +34,8 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 
+import name.cs.csutils.CSUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -103,6 +105,7 @@ public class PatchDownloadTask implements Callable<File> {
         }
         meta.setPatchId(patchId);
         SwingPatchManagerUtils.updateMetadata(patch, meta);
+        CSUtils.copy(patch.getLocalFile(), dst, true);
     }
     
 }
