@@ -47,6 +47,23 @@ ArpeggiatorClass::ArpeggiatorClass() {
     orderedNotes[i] = 128;
   }
 }
+
+void ArpeggiatorClass::setup() {
+  Midi2.addOnNoteOnCallback(this, (midi_callback_ptr_t)&ArpeggiatorClass::onNoteOnCallback);
+  Midi2.addOnNoteOffCallback(this, (midi_callback_ptr_t)&ArpeggiatorClass::onNoteOffCallback);
+}
+
+void ArpeggiatorClass::onNoteOffCallback(uint8_t *msg) {
+  removeNote(msg[1]);
+}
+
+void ArpeggiatorClass::onNoteOnCallback(uint8_t *msg) {
+  if (msg[2] != 0) {
+    addNote(msg[1], msg[2]);
+  } else {
+    removeNote(msg[1]);
+  }
+}
   
 void ArpeggiatorClass::retrigger() {
   arpStep = 0;

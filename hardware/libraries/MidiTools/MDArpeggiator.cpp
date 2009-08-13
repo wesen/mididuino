@@ -99,3 +99,8 @@ void MDArpeggiatorClass::on16Callback() {
     playNext(recording);
   }
 }
+
+void MDArpeggiatorClass::setup() {
+  ArpeggiatorClass::setup();
+  MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&MDArpeggiatorClass::on16Callback);
+}

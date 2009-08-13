@@ -34,7 +34,7 @@ extern const char *arp_names[ARP_STYLE_CNT];
 #define NUM_NOTES 8
 #define MAX_ARP_LEN 64
 
-class ArpeggiatorClass {
+class ArpeggiatorClass : public MidiCallback {
 public:
   uint8_t notes[NUM_NOTES];
   uint8_t velocities[NUM_NOTES];
@@ -62,6 +62,7 @@ public:
   uint16_t speedCounter;
 
   ArpeggiatorClass();
+  void setup();
   void retrigger();
   void bubbleSortUp();
   void bubbleSortDown();
@@ -70,9 +71,11 @@ public:
   void addNote(uint8_t pitch, uint8_t velocity);
   void removeNote(uint8_t pitch);
 
+  void onNoteOffCallback(uint8_t *msg);
+  void onNoteOnCallback(uint8_t *msg);
 };
 
-class MDArpeggiatorClass : public ArpeggiatorClass {
+class MDArpeggiatorClass : public ArpeggiatorClass, public ClockCallback {
 public:
   uint8_t recordPitches[64];
   int recordLength;
@@ -88,6 +91,8 @@ public:
     recording = false;
     endRecording = false;
   }
+
+  void setup();
   
   /* recording */
   void recordNote(int pos, uint8_t track, uint8_t note, uint8_t velocity);
