@@ -2,6 +2,7 @@
 #define MIDI_COMMON_H__
 
 #include <inttypes.h>
+#include "MidiNotes.h"
 #ifndef NULL
 #define NULL 0
 #endif
