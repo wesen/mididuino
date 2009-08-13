@@ -104,7 +104,7 @@ class ConfigPage_2 : public EncoderPage {
 ConfigPage_1 configPage_1;
 ConfigPage_2 configPage_2;
 
-class ArpeggiatorSketch : public Sketch {
+class ArpeggiatorSketch : public Sketch, public MDCallback {
 public:
   ConfigPage_1 configPage_1;
   ConfigPage_2 configPage_2;
@@ -116,13 +116,11 @@ public:
     MDTask.setup();
     MDTask.autoLoadKit = true;
     MDTask.reloadGlobal = true;
-    MDTask.addOnKitChangeCallback(_onKitChanged);
+    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&ArpeggiatorSketch::onKitChanged);
     GUI.addTask(&MDTask);
-
-    Midi2.setOnNoteOnCallback(_onNoteOnCallbackKeyboard);
-    Midi2.setOnNoteOffCallback(_onNoteOffCallbackKeyboard);
     
-    MidiClock.setOn16Callback(_on16Callback);
+    arpeggiator.setup();
+
     setPage(&configPage_1);
   }
 
@@ -179,23 +177,4 @@ void setup() {
 }
 
 void loop() {
-}
-
-void _onKitChanged() {
-  sketch.onKitChanged();
-}
-void _onNoteOffCallbackKeyboard(uint8_t *msg) {
-  arpeggiator.removeNote(msg[1]);
-}
-
-void _onNoteOnCallbackKeyboard(uint8_t *msg) {
-  if (msg[2] != 0) {
-    arpeggiator.addNote(msg[1], msg[2]);
-  } else {
-    arpeggiator.removeNote(msg[1]);
-  }
-}
-
-void _on16Callback() {
-  arpeggiator.on16Callback();
 }
