@@ -244,7 +244,7 @@ void MNMClass::setMachine(uint8_t track, MNMMachine *machine) {
   setTrackLevel(track, machine->level);
 }
 
-class BlockCurrentStatusCallback : public MNMSysexStatusCallback {
+class BlockCurrentStatusCallback : public MNMCallback {
 public:
   uint8_t type;
   uint8_t value;
@@ -256,7 +256,7 @@ public:
     value = 255;
   }
 
-  void onMNMStatusCallback(uint8_t _type, uint8_t param) {
+  void onStatusResponseCallback(uint8_t _type, uint8_t param) {
     if (type == _type) {
       value = param;
       received = true;
@@ -269,7 +269,8 @@ uint8_t MNMClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
   uint16_t current_clock = start_clock;;
   BlockCurrentStatusCallback cb(type);
 
-  MNMSysexListener.addOnStatusResponseCallback(&cb);
+  MNMSysexListener.addOnStatusResponseCallback
+    (&cb, (mnm_status_callback_ptr_t)&BlockCurrentStatusCallback::onStatusResponseCallback);
   MNM.sendRequest(MNM_STATUS_REQUEST_ID, type);
   do {
     current_clock = read_slowclock();
