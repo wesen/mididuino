@@ -46,4 +46,6 @@ class CCHandler : public MidiCallback {
   }
 };
 
+extern CCHandler ccHandler;
+
 #endif /* CCHANDLER_H__ */

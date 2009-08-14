@@ -118,3 +118,5 @@ void CCHandler::onOutgoingCCCallback(uint8_t *msg) {
     }
   }
 }
+
+CCHandler ccHandler;
