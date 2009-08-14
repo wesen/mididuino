@@ -47,6 +47,7 @@ import javax.swing.JOptionPane;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import name.cs.csutils.CSFileSelectionContext;
 import name.cs.csutils.FileFilterFactory;
 
 import com.ruinwesen.patch.directory.FSDirectory;
@@ -99,7 +100,13 @@ public class CreatePublishPatchWizard extends Wizard {
         add(savePatchQuestion);
         add(loginForm);
     }
-    
+
+    protected void currentFormSelected(FormContainer currentform) {
+        if (currentform == savePatchQuestion) {
+            savePatchQuestion.update();
+        }
+    }
+
     @Override
     protected boolean action_next(FormContainer currentform) {
         if (currentform == savePatchQuestion) {
@@ -177,11 +184,15 @@ public class CreatePublishPatchWizard extends Wizard {
     
     private boolean save_patch_local() {
         JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
+        SwingPatchManagerUtils.setSaveRWPFile(fc);
+        
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        CSFileSelectionContext.getDefaultContext().beforeFileSelection(fc);
         if (SwingPatchManagerUtils.showFileChooserLoop(getContainer(), fc) != JOptionPane.YES_OPTION) {
             return false;
         }
+        CSFileSelectionContext.getDefaultContext().afterFileSelection(fc);
         File file = fc.getSelectedFile();
         this.fileSavedAs = file;
         
@@ -196,6 +207,7 @@ public class CreatePublishPatchWizard extends Wizard {
             if(log.isErrorEnabled()) {
                 log.error("could not save patch locally", ex);
             }
+            file.delete(); // delete corrupted file
             SwingPatchManagerUtils.showErrorDialog(getContainer(), "Could not save patch:\n"+ex.getMessage());
             return true;
         }
@@ -204,10 +216,10 @@ public class CreatePublishPatchWizard extends Wizard {
     protected void buildPatchFile(PatchMetadata meta, File dst) throws Exception {
         
         File sourceCodeFile = patchMetadataForm.feSourceDir.getFile();
-        File mididataFile = patchMetadataForm.feSourceDir.getFile();
+        File mididataFile = patchMetadataForm.feMidiFile.getFile();
         FileFilter sourceDirFilter = 
             FileFilterFactory.or(FileFilterFactory.DirectoriesOnly(), 
-                    FileFilterFactory.parseFilterList(patchMetadataForm.feSourceDir.getText()));
+                    FileFilterFactory.parseFilterList(patchMetadataForm.feSourceFileFilter.getText()));
         
         
         List<Path> paths = new LinkedList<Path>();
@@ -258,7 +270,11 @@ public class CreatePublishPatchWizard extends Wizard {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+            update();
+        }
+        
+        public void update() {
+
             boolean requiresNewUserAccount = 
                 cbAskPublishPatchfile.isSelected()
                 && auth == null;
