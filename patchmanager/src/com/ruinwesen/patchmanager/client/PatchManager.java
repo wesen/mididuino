@@ -101,6 +101,7 @@ public class PatchManager {
     private void initHTTPClient() {
         HttpParams params = new BasicHttpParams();
         ConnManagerParams.setMaxTotalConnections(params, 100);
+        ConnManagerParams.setTimeout(params, 5000);
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 
         // Create and initialize scheme registry 
