@@ -30,7 +30,6 @@ package com.ruinwesen.patch.metadata;
 import static com.ruinwesen.patch.metadata.PatchMetadataUtils.createTextElement;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +43,6 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -59,8 +57,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
+import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.DeviceId;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.EnvironmentId;
 
@@ -139,20 +137,20 @@ public class XMLPatchMetadata implements PatchMetadata {
     
     private Document doc;
     
-    public XMLPatchMetadata() throws ParserConfigurationException {
+    public XMLPatchMetadata() throws PatchDataException {
         this(PatchMetadataUtils.createDocument());
     }
 
-    public XMLPatchMetadata(File file) throws ParserConfigurationException, IOException, SAXException {
+    public XMLPatchMetadata(File file) throws PatchDataException {
         this(PatchMetadataUtils.parseDocument(file));
         doc.setDocumentURI(file.toURI().toString());
     }
 
-    public XMLPatchMetadata(InputStream in) throws ParserConfigurationException, IOException, SAXException {
+    public XMLPatchMetadata(InputStream in) throws PatchDataException {
         this(PatchMetadataUtils.parseDocument(in));
     }
     
-    public XMLPatchMetadata(PatchMetadata src) throws ParserConfigurationException {
+    public XMLPatchMetadata(PatchMetadata src) throws PatchDataException {
         this(PatchMetadataUtils.createDocument(src));
     }
     

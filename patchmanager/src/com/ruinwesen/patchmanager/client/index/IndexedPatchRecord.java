@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.directory.FSDirectory;
 import com.ruinwesen.patch.directory.JarDirectory;
@@ -52,10 +53,11 @@ class IndexedPatchRecord extends PatchRecord implements IndexedPatch {
     }
     
     @Override
-    public Directory openDirectory() throws IOException {
+    public Directory openDirectory() throws PatchDataException {
         if (indexDir == null) {
-            throw new IOException("index directory undefined");
+            throw new PatchDataException("index directory undefined");
         }
+        try {
         File file = getLocalFile();
         if (file.isFile()) {
             return new JarDirectory(file);
@@ -63,6 +65,9 @@ class IndexedPatchRecord extends PatchRecord implements IndexedPatch {
             return new FSDirectory(file);
         } else {
             throw new FileNotFoundException("file not found: "+file);
+        }
+        } catch (IOException ex) {
+            throw new PatchDataException(ex);
         }
     }
 

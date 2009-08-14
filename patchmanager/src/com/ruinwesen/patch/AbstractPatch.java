@@ -32,10 +32,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.directory.Entry;
 import com.ruinwesen.patch.metadata.PatchMetadata;
@@ -43,26 +39,30 @@ import com.ruinwesen.patch.metadata.XMLPatchMetadata;
 
 public abstract class AbstractPatch implements Patch {
     
-    public PatchMetadata getMetadata() throws IOException, ParserConfigurationException, SAXException {
+    public PatchMetadata getMetadata() throws PatchDataException {
         Directory dir = openDirectory();
         PatchMetadata result = null; 
         try {
-            Entry entry = dir.getEntry(PatchMetadata.FILENAME);
-            if (entry == null || !entry.isFile()) {
-                throw new FileNotFoundException(PatchMetadata.FILENAME);
-            }
-            InputStream is = dir.getInputStream(entry);
             try {
-                result = new XMLPatchMetadata(is);
+                Entry entry = dir.getEntry(PatchMetadata.FILENAME);
+                if (entry == null || !entry.isFile()) {
+                    throw new FileNotFoundException(PatchMetadata.FILENAME);
+                }
+                InputStream is = dir.getInputStream(entry);
+                try {
+                    result = new XMLPatchMetadata(is);
+                } finally {
+                    is.close();
+                }
             } finally {
-                is.close();
+                dir.close();
             }
-        } finally {
-            dir.close();
+        } catch (IOException ex) {
+            throw new PatchDataException(ex);
         }
         return result;
     }
     
-    public abstract Directory openDirectory() throws IOException;
+    public abstract Directory openDirectory() throws PatchDataException;
     
 }

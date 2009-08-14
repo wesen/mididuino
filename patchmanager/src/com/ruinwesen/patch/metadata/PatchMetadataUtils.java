@@ -47,7 +47,6 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -57,31 +56,36 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.ruinwesen.patch.PatchDataException;
+
 public final class PatchMetadataUtils {
     
     private PatchMetadataUtils() {
         super();
     }
     
-    public static String toXMLString(PatchMetadata metadata) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    public static String toXMLString(PatchMetadata metadata) throws PatchDataException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         writeXML(metadata, os);
         return new String(os.toByteArray());
     }
 
-    public static void writeXML(PatchMetadata metadata, File file) throws ParserConfigurationException, 
-        TransformerFactoryConfigurationError, TransformerException, IOException {
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+    public static void writeXML(PatchMetadata metadata, File file) throws PatchDataException {
         try {
-        writeXML(metadata, out);
-        } finally {
-            out.flush();
-            out.close();
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+            try {
+            writeXML(metadata, out);
+            } finally {
+                out.flush();
+                out.close();
+            }
+        } catch (IOException ex) {
+            throw new PatchDataException(ex);
         }
     }
     
     public static void writeXML(PatchMetadata metadata,
-            OutputStream out) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+            OutputStream out) throws PatchDataException {
         XMLPatchMetadata xml;
         if (metadata instanceof XMLPatchMetadata) {
             xml = (XMLPatchMetadata) metadata;
@@ -89,13 +93,17 @@ public final class PatchMetadataUtils {
             xml = new XMLPatchMetadata(metadata);
         }
 
-        Transformer serializer =
-            TransformerFactory.newInstance().newTransformer();
-        
-        serializer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
-        //serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
-        serializer.setOutputProperty(OutputKeys.INDENT,"yes");
-        serializer.transform(new DOMSource(xml.getDocument()), new StreamResult(out));
+        try {
+            Transformer serializer =
+                TransformerFactory.newInstance().newTransformer();
+            
+            serializer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
+            //serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
+            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            serializer.transform(new DOMSource(xml.getDocument()), new StreamResult(out));
+        } catch (TransformerException ex) {
+            throw new PatchDataException(ex);
+        }
     }
 
     public static void setAll(PatchMetadata dst, PatchMetadata src) {
@@ -116,27 +124,48 @@ public final class PatchMetadataUtils {
         
     }
 
-    static Document parseDocument(File file) throws ParserConfigurationException, SAXException, IOException {
+    static Document parseDocument(File file) throws PatchDataException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         docFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(file);
-        return doc;
+        try {
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(file);
+            return doc;
+        } catch (IOException ex) {
+            throw new PatchDataException(ex);
+        } catch (ParserConfigurationException ex) {
+            throw new PatchDataException(ex);
+        } catch (SAXException ex) {
+            throw new PatchDataException(ex);
+        }
     }
 
-    static Document parseDocument(InputStream in) throws ParserConfigurationException, SAXException, IOException {
+    static Document parseDocument(InputStream in) throws PatchDataException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         docFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(in);
-        return doc;
+        try {
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(in);
+            return doc;
+        } catch (IOException ex) {
+            throw new PatchDataException(ex);
+        } catch (ParserConfigurationException ex) {
+            throw new PatchDataException(ex);
+        } catch (SAXException ex) {
+            throw new PatchDataException(ex);
+        }
     }
     
-    public static Document createDocument() throws ParserConfigurationException {
+    public static Document createDocument() throws PatchDataException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         docFactory.setNamespaceAware(true);
         
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        DocumentBuilder docBuilder;
+        try {
+            docBuilder = docFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException ex) {
+            throw new PatchDataException(ex);
+        }
         Document doc = docBuilder.newDocument();
         
         doc.setXmlStandalone(true);
@@ -149,7 +178,7 @@ public final class PatchMetadataUtils {
         return doc;
     }
     
-    public static Document createDocument(PatchMetadata metadata) throws ParserConfigurationException {
+    public static Document createDocument(PatchMetadata metadata) throws PatchDataException {
         Document doc = createDocument();
         Element elemRoot = doc.getDocumentElement();
 
@@ -208,7 +237,7 @@ public final class PatchMetadataUtils {
         dst.setPaths(map);
     }
 
-    public static InputStream createXMLInputStream(PatchMetadata meta) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    public static InputStream createXMLInputStream(PatchMetadata meta) throws PatchDataException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         writeXML(meta, os);
         return new ByteArrayInputStream(os.toByteArray());

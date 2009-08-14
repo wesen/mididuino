@@ -29,8 +29,8 @@
 package com.ruinwesen.patchmanager.client.index;
 
 import java.io.File;
-import java.io.IOException;
 
+import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.metadata.PatchMetadata;
 
@@ -55,7 +55,7 @@ public class ScoredPatch implements IndexedPatch {
     }
 
     @Override
-    public Directory openDirectory() throws IOException {
+    public Directory openDirectory() throws PatchDataException {
         return delegate.openDirectory();
     }
 

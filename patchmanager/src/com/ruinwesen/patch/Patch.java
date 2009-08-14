@@ -29,19 +29,14 @@
 package com.ruinwesen.patch;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.metadata.PatchMetadata;
 
 public interface Patch {
     
-    public PatchMetadata getMetadata() throws IOException, ParserConfigurationException, SAXException;
-    public abstract Directory openDirectory() throws IOException;
+    public PatchMetadata getMetadata() throws PatchDataException;
+    public abstract Directory openDirectory() throws PatchDataException;
     
     public File getLocalFile();
     

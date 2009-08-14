@@ -58,7 +58,8 @@ public class DefaultPatch extends AbstractPatch {
     }
     
     @Override
-    public Directory openDirectory() throws IOException {
+    public Directory openDirectory() throws PatchDataException {
+        try {
         if (file.isFile()) {
             try {
             return new JarDirectory(file);
@@ -69,6 +70,9 @@ public class DefaultPatch extends AbstractPatch {
             return new FSDirectory(file);
         } else {
             throw new FileNotFoundException(file.getAbsolutePath());
+        }
+        } catch (IOException ex) {
+            throw new PatchDataException(ex);
         }
     }
 
