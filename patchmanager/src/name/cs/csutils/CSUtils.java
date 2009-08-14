@@ -366,5 +366,13 @@ public class CSUtils {
         int idx = name.lastIndexOf('.');
         return idx<0 ? name : name.substring(0, idx);
     }
+    
+    public static File addMissingFileNameSuffix(File file, String suffix) {
+        String name = file.getName();
+        if (name.indexOf('.')<0) {
+            return new File(file.getParentFile(), name+suffix);
+        }
+        return file;
+    }
 
 }
