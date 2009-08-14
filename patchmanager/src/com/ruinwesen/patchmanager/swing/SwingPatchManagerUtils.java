@@ -9,17 +9,15 @@ import java.util.NoSuchElementException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import name.cs.csutils.CSFileSelectionContext;
 import name.cs.csutils.CSUtils;
+import name.cs.csutils.FileFilterFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.ruinwesen.patch.Patch;
-import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.directory.Entry;
 import com.ruinwesen.patch.directory.JarFileBuilder;
@@ -30,6 +28,20 @@ import com.ruinwesen.patch.utils.HexFileValidator;
 import com.ruinwesen.patch.utils.ValidatorInputStream;
 
 public final class SwingPatchManagerUtils {
+
+    public static final javax.swing.filechooser.FileFilter RWP_FILE_FILTER =
+        FileFilterFactory.createNamedFileFilter(
+                "Ruin & Wesen Patch (*.rwp)",
+                FileFilterFactory.and(
+                FileFilterFactory.FilesOnly(),
+                FileFilterFactory.SuffixFilter(".rwp")));
+
+    public static final javax.swing.filechooser.FileFilter HEX_FILE_FILTER =
+        FileFilterFactory.createNamedFileFilter(
+                "Intel Hex File (*.hex)",
+                FileFilterFactory.and(
+                FileFilterFactory.FilesOnly(),
+                FileFilterFactory.SuffixFilter(".hex")));
     
     private static Log log = LogFactory.getLog(SwingPatchManagerUtils.class);
 
@@ -265,8 +277,12 @@ public final class SwingPatchManagerUtils {
         return JOptionPane.showConfirmDialog(parentComponent,
                 "Do you want to replace the existing file "+file+" ?",
                 "Warning",
-                JOptionPane.QUESTION_MESSAGE,
-                JOptionPane.YES_NO_CANCEL_OPTION);
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+    }
+
+    public static void setSaveRWPFile(JFileChooser fc) {
+        fc.setFileFilter(RWP_FILE_FILTER);
     }
     
 }
