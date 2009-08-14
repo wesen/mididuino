@@ -37,7 +37,6 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileView;
 
 import com.ruinwesen.patch.Patch;
 import com.ruinwesen.patch.PatchDataException;
@@ -51,6 +50,7 @@ import com.ruinwesen.patch.metadata.Tagset;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.DeviceId;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.EnvironmentId;
 import com.ruinwesen.patch.utils.Validator;
+import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 import com.ruinwesen.patchmanager.swing.form.AbstractFormElementValidator;
 import com.ruinwesen.patchmanager.swing.form.ComboBoxFormElement;
 import com.ruinwesen.patchmanager.swing.form.FileFormElement;
@@ -201,6 +201,7 @@ public class PatchMetadataForm extends FormContainer {
             new SourceDirOrFileValidator("Patch must contain either midi file or source code.");
         
         feMidiFile = new FileFormElement();
+        feMidiFile.setFileFilter(SwingPatchManagerUtils.HEX_FILE_FILTER);
         feMidiFile.setLabel("Midi File");
         feMidiFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
         feMidiFile.setValidator(
