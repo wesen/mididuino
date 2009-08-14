@@ -76,7 +76,7 @@ public final class FileFilterFactory {
         FileFilter includeFilter = NONE;
         for (String fstr: filterString.split(",")) {
             if (fstr.isEmpty()) {
-                throw new IllegalArgumentException("invalid filter list: "+filterString);
+                continue;
             }
             if (fstr.charAt(0)=='-') {
                 excludeFilter = or(excludeFilter, not(parseFilter(fstr.substring(1))));
