@@ -50,7 +50,7 @@ public class PatchTitleOrder implements Comparator<IndexedPatch> {
         if (b == null) {
             return -1;
         }
-        return a.compareTo(b);
+        return a.compareToIgnoreCase(b);
     }
     
 }
