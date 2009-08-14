@@ -55,7 +55,7 @@ public class SynchronizeRepositoryTask extends SimpleSwingWorker {
     protected void process() {
         try {    
             patchmanager.getPatchManager().syncRepository();
-            patchmanager.getFilterControl().rebuildFilterUI(patchmanager.getIndex());
+            patchmanager.getSearchOptionsControl().rebuildFilterUI(patchmanager.getIndex());
             patchmanager.executeQuery();
         } catch (Exception ex) {
             synchronized (this) {

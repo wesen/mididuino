@@ -28,82 +28,39 @@
  */
 package com.ruinwesen.patchmanager.swing.components;
 
-import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import name.cs.csutils.i18n.I18N;
-
 import com.ruinwesen.patchmanager.swing.SwingPatchManager;
+
 public class SearchPanel  {
 
     private JTextField textQueryField;
     private JPanel container;
-    private JComboBox cbOrder;
     private SwingPatchManager patchmanager;
     private String previousQueryString = "";
-    private boolean controlsEnabled = true;
     
     public SearchPanel(SwingPatchManager patchmanager) {
         this.patchmanager = patchmanager;
         textQueryField = new JTextField();
         textQueryField.setColumns(10);
-
-        new TextPopup().installAt(textQueryField);
-        
-        JLabel labelSearch = new JLabel(I18N.translate("translation.search", "Search")+":");
-        labelSearch.setLabelFor(textQueryField);
-
-        final String RELEVANCE = I18N.translate("translation.sortby.relevance", "Relevance");
-        final String DATE_ADDED = I18N.translate("translation.sortby.dateadded", "Date");
-        final String TITLE = I18N.translate("translation.sortby.title", "Title");
-        final String AUTHOR = I18N.translate("translation.sortby.author", "Author");
-        cbOrder = new JComboBox(new Object[]{RELEVANCE, DATE_ADDED, TITLE, AUTHOR});
-
-        JLabel labelSortby = new JLabel(I18N.translate("translation.sortby", "Sort by")+":");
-        labelSortby.setLabelFor(cbOrder);
-        
-        container = new JPanel();
-        container.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
-        
-        GroupLayout ly = new GroupLayout(container);
-        container.setLayout(ly);
-        
-        ly.setAutoCreateContainerGaps(false);
-        ly.setAutoCreateGaps(true);
-        ly.setHorizontalGroup(ly.createSequentialGroup()
-                .addComponent(labelSearch)
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.CENTER)
-                        .addComponent(textQueryField)
-                )
-                .addComponent(labelSortby)
-                .addComponent(cbOrder, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
-        ly.setVerticalGroup( ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                .addComponent(labelSearch)
-                .addComponent(textQueryField)
-                .addComponent(labelSortby)
-                .addComponent(cbOrder)
-        );
+        container = new JPanel(new BorderLayout());
+        container.setBorder(BorderFactory.createEmptyBorder(2,1,2,1));
+        container.add(textQueryField, BorderLayout.CENTER);
         new EventHandler().install();
     }
-
-    public void setControlsEnabled(boolean enabled) {
-        if (this.controlsEnabled != enabled) {
-            controlsEnabled = enabled;
-            textQueryField.setEnabled(controlsEnabled);
-            cbOrder.setEnabled(controlsEnabled);
-        }
-    }
     
+    public JTextField getSearchField() {
+        return textQueryField;
+    }
+
     public JComponent getContainer() {
         return container;
     }
@@ -131,7 +88,6 @@ public class SearchPanel  {
         long mostRecentQueryChange = 0;
         static final long queryChangeAcceptTime = 500; 
         public void install() {
-            cbOrder.addActionListener(this);
             textQueryField.getDocument().addDocumentListener(this);
             timer = new javax.swing.Timer(0, this);
             timer.setCoalesce(true);
@@ -142,17 +98,7 @@ public class SearchPanel  {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (cbOrder == e.getSource()) {
-                /*
-                SearchController controller = patchdownloader.getSearchController();
-                switch (cbOrder.getSelectedIndex()) {
-                case 0: controller.setOrder(Order.BY_RELEVANCE); break;
-                case 1: controller.setOrder(Order.BY_DATE); break;
-                case 2: controller.setOrder(Order.BY_TITLE); break;
-                case 3: controller.setOrder(Order.BY_AUTHOR); break;
-                }
-                controller.update();*/
-            } else if (e.getSource() == timer 
+            if (e.getSource() == timer 
                     && timer.isRunning()
                     && System.currentTimeMillis()>mostRecentQueryChange+queryChangeAcceptTime) {
                 timer.stop();

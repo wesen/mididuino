@@ -28,11 +28,13 @@
  */
 package com.ruinwesen.patchmanager.swing.tasks;
 
+import java.util.Comparator;
+
 import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 import com.ruinwesen.patchmanager.client.index.Query;
 import com.ruinwesen.patchmanager.swing.SwingPatchManager;
 import com.ruinwesen.patchmanager.swing.components.Highlighter;
-import com.ruinwesen.patchmanager.swing.components.FilterControl.FilterUpdater;
+import com.ruinwesen.patchmanager.swing.components.SearchOptionsControl.FilterUpdater;
 import com.ruinwesen.patchmanager.swing.model.PatchQueryCollector;
 
 import name.cs.csutils.collector.Collector;
@@ -48,6 +50,7 @@ public class PerformQueryTask extends SimpleSwingWorker {
     private SwingPatchManager patchmanager;
     private String queryString;
     private FilterUpdater filterUpdater;
+    private Comparator<IndexedPatch> order;
 
     public PerformQueryTask(SwingPatchManager patchmanager) {
         this.patchmanager = patchmanager;
@@ -55,9 +58,11 @@ public class PerformQueryTask extends SimpleSwingWorker {
 
     @Override
     protected synchronized void setup() {
+        this.order = patchmanager.getSearchOptionsControl().getOrder();
         this.queryString = patchmanager.getQueryString();
         patchmanager.getPatchListCellRenderer()
         .setHighlighter(new Highlighter(queryString));
+        patchmanager.getPatchListModel().setOrder(order);
     }
 
     @Override
@@ -69,11 +74,10 @@ public class PerformQueryTask extends SimpleSwingWorker {
         
         Query query = new Query(null, queryString, 0);
         Query filteringQuery = new Query(null, queryString, 0.5f);
-        patchmanager.getFilterControl().enableFiltersInQuery(filteringQuery);
-        
+        patchmanager.getSearchOptionsControl().enableFiltersInQuery(filteringQuery);
         patchmanager.getPatchListModel().clear();
 
-        FilterUpdater filterUpdater = patchmanager.getFilterControl().createFilterUpdater();
+        FilterUpdater filterUpdater = patchmanager.getSearchOptionsControl().createFilterUpdater();
         
         Collector<IndexedPatch> collector 
             = new MultiCollector<IndexedPatch>(

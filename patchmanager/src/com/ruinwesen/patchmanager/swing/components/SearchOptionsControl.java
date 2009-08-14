@@ -39,9 +39,12 @@ import java.awt.LayoutManager2;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +55,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,6 +70,7 @@ import javax.swing.event.EventListenerList;
 
 import name.cs.csutils.collector.Collector;
 import name.cs.csutils.event.EventUtils;
+import name.cs.csutils.i18n.I18N;
 
 import com.ruinwesen.patch.metadata.PatchMetadata;
 import com.ruinwesen.patch.metadata.Tag;
@@ -75,8 +80,9 @@ import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.EnvironmentId;
 import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 import com.ruinwesen.patchmanager.client.index.PatchIndex;
 import com.ruinwesen.patchmanager.client.index.Query;
+import com.ruinwesen.patchmanager.swing.model.Order;
 
-public class FilterControl implements ActionListener {
+public class SearchOptionsControl implements ActionListener, ItemListener {
 
     private Map<Object, Filter> allFiltersMap 
         = new HashMap<Object, Filter>();
@@ -84,18 +90,51 @@ public class FilterControl implements ActionListener {
     private JComponent container;
     private boolean controlsEnabled = true;
     private EventListenerList eventListenerList = new EventListenerList();
+    
+    private JComboBox cbSearchOrder;
+    private String SearchOptionByRelevance;
+    private String SearchOptionByDateAdded;
+    private String SearchOptionByTitle;
+    private String SearchOptionByAuthor;
 
-    public FilterControl() {
+    public SearchOptionsControl() {
         container = new ScrollablePanel();
         container.setLayout(new FilterBoxLayout());
         container.setBorder(BorderFactory.createEmptyBorder(3,6,3,6));
         container.setOpaque(true);
         container.setBackground(new Color(0xDEE4EA));
+
+        SearchOptionByRelevance = I18N.translate("search.order.by-relevance", "Relevance");
+        SearchOptionByDateAdded = I18N.translate("search.order.by-date-added", "Date Added");
+        SearchOptionByTitle = I18N.translate("search.order.by-title", "Title");
+        SearchOptionByAuthor = I18N.translate("search.order.by-author", "Author");
+        
+        cbSearchOrder = new JComboBox(
+                new String[]{
+                        SearchOptionByRelevance,
+                        SearchOptionByDateAdded,
+                        SearchOptionByTitle,
+                        SearchOptionByAuthor } );
+        
+        cbSearchOrder.addItemListener(this);
         
         // this will create the heading labels
         rebuildFilterUI((FilterDataCollector)null);
     }
-    
+
+    public Comparator<IndexedPatch> getOrder() {
+        Object selection = cbSearchOrder.getSelectedItem();
+        if (selection == SearchOptionByAuthor) {
+            return Order.BY_AUTHOR;
+        } else if (selection == SearchOptionByDateAdded) {
+            return Order.BY_DATE;
+        } else if (selection == SearchOptionByTitle) {
+            return Order.BY_TITLE;
+        } else {
+            return Order.BY_RELEVANCE;
+        }
+    }
+
     private static final class ScrollablePanel extends JPanel implements Scrollable {
 
         /**
@@ -155,6 +194,7 @@ public class FilterControl implements ActionListener {
     public void setControlsEnabled(boolean enabled) {
         if (this.controlsEnabled != enabled) {
             this.controlsEnabled = enabled;
+            cbSearchOrder.setEnabled(enabled);
             for (Filter filter: allFiltersMap.values()) {
                 filter.component.setEnabled(enabled);
             }
@@ -230,6 +270,11 @@ public class FilterControl implements ActionListener {
         fireChangeEvent();
     }
 
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        fireChangeEvent();
+    }
+
     private void rebuildFilterUI(FilterDataCollector indexer) {
         // remove all previous data / components / listener-configurations
         for (Filter filter: allFiltersMap.values()) {
@@ -237,6 +282,9 @@ public class FilterControl implements ActionListener {
         }
         allFiltersMap.clear();
         container.removeAll();
+        
+        container.add(newLabel("Sort results by"));
+        container.add(cbSearchOrder);
         
         // rebuild 
         List<Filter> filterList;
@@ -349,7 +397,7 @@ public class FilterControl implements ActionListener {
             } 
         }
         public void run() {
-            FilterControl.this.updateFilterUI(this);
+            SearchOptionsControl.this.updateFilterUI(this);
         }
     }
     
@@ -365,7 +413,7 @@ public class FilterControl implements ActionListener {
             }
         }
         public void run() {
-            FilterControl.this.rebuildFilterUI(this);
+            SearchOptionsControl.this.rebuildFilterUI(this);
         }
     }
     
