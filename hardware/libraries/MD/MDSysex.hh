@@ -22,11 +22,11 @@ typedef enum {
 
 class MDSysexListenerClass : public MidiSysexListenerClass {
 public:
-  CallbackVector<MDCallback,4> onGlobalMessageCallbacks;
-  CallbackVector<MDCallback,4> onKitMessageCallbacks;
-  CallbackVector<MDCallback,4> onSongMessageCallbacks;
-  CallbackVector<MDCallback,4> onPatternMessageCallbacks;
-  CallbackVector2<MDCallback,4,uint8_t,uint8_t> onStatusResponseCallbacks;
+  CallbackVector<MDCallback,8> onGlobalMessageCallbacks;
+  CallbackVector<MDCallback,8> onKitMessageCallbacks;
+  CallbackVector<MDCallback,8> onSongMessageCallbacks;
+  CallbackVector<MDCallback,8> onPatternMessageCallbacks;
+  CallbackVector2<MDCallback,8,uint8_t,uint8_t> onStatusResponseCallbacks;
   
   bool isMDMessage;
   uint8_t msgType;

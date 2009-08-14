@@ -75,9 +75,9 @@ class MidiClockClass {
   
   MidiClockClass();
 
-  CallbackVector<ClockCallback,4> on96Callbacks;
-  CallbackVector<ClockCallback,4> on32Callbacks;
-  CallbackVector<ClockCallback,4> on16Callbacks;
+  CallbackVector<ClockCallback,8> on96Callbacks;
+  CallbackVector<ClockCallback,8> on32Callbacks;
+  CallbackVector<ClockCallback,8> on16Callbacks;
 
   void addOn96Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
     on96Callbacks.add(obj, func);

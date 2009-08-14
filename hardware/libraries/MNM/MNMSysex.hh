@@ -14,12 +14,12 @@ typedef void(MNMCallback::*mnm_status_callback_ptr_t)(uint8_t p1, uint8_t p2);
 
 class MNMSysexListenerClass : public MidiSysexListenerClass {
 public:
-  CallbackVector<MNMCallback,4> onGlobalMessageCallbacks;
-  CallbackVector<MNMCallback,4> onKitMessageCallbacks;
-  CallbackVector<MNMCallback,4> onSongMessageCallbacks;
-  CallbackVector<MNMCallback,4> onPatternMessageCallbacks;
+  CallbackVector<MNMCallback,8> onGlobalMessageCallbacks;
+  CallbackVector<MNMCallback,8> onKitMessageCallbacks;
+  CallbackVector<MNMCallback,8> onSongMessageCallbacks;
+  CallbackVector<MNMCallback,8> onPatternMessageCallbacks;
 
-  CallbackVector2<MNMCallback,4,uint8_t,uint8_t> onStatusResponseCallbacks;
+  CallbackVector2<MNMCallback,8,uint8_t,uint8_t> onStatusResponseCallbacks;
   
   bool isMNMMessage;
   bool isMNMEncodedMessage;

@@ -20,10 +20,10 @@ public:
     reloadGlobal = false;
   }
 
-  CallbackVector<MNMCallback, 4>kitChangeCallbacks;
-  CallbackVector<MNMCallback, 4>globalChangeCallbacks;
-  CallbackVector<MNMCallback, 4>patternChangeCallbacks;
-  CallbackVector<MNMCallback, 4>currentTrackChangeCallbacks;
+  CallbackVector<MNMCallback, 8>kitChangeCallbacks;
+  CallbackVector<MNMCallback, 8>globalChangeCallbacks;
+  CallbackVector<MNMCallback, 8>patternChangeCallbacks;
+  CallbackVector<MNMCallback, 8>currentTrackChangeCallbacks;
 
   void addOnKitChangeCallback(MNMCallback *obj, mnm_callback_ptr_t func) {
     kitChangeCallbacks.add(obj, func);

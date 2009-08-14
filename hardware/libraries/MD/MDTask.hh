@@ -25,9 +25,9 @@ public:
   const static uint8_t MD_CB_CLASS_ID = 10;
   const static uint8_t MD_CB_KITCHANGE_ID = 0;;
 
-  CallbackVector<MDCallback, 4> kitChangeCallbacks;
-  CallbackVector<MDCallback, 4> globalChangeCallbacks;
-  CallbackVector<MDCallback, 4> patternChangeCallbacks;
+  CallbackVector<MDCallback, 8> kitChangeCallbacks;
+  CallbackVector<MDCallback, 8> globalChangeCallbacks;
+  CallbackVector<MDCallback, 8> patternChangeCallbacks;
 
   void addOnKitChangeCallback(MDCallback *obj, md_callback_ptr_t func) {
     kitChangeCallbacks.add(obj, func);
