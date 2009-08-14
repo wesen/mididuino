@@ -64,6 +64,7 @@ import name.cs.csutils.SwingActionData;
 
 import com.ruinwesen.patch.DefaultPatch;
 import com.ruinwesen.patch.Patch;
+import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.directory.FSDirectory;
 import com.ruinwesen.patch.directory.JarFileBuilder;
 import com.ruinwesen.patch.metadata.DefaultPatchMetadata;
@@ -75,6 +76,7 @@ import com.ruinwesen.patch.metadata.Tagset;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.DeviceId;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.EnvironmentId;
 import com.ruinwesen.patch.utils.HexFileValidator;
+import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 
 public class PatchEditForm extends Form {
     private static Log log = LogFactory.getLog(PatchEditForm.class);
@@ -357,12 +359,8 @@ public class PatchEditForm extends Form {
         CSFileSelectionContext.getDefaultContext().beforeFileSelection(fc);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.setMultiSelectionEnabled(false);
-        if (fc.showOpenDialog(pane) == JFileChooser.APPROVE_OPTION) {
+        if (SwingPatchManagerUtils.showFileChooserLoop(pane, fc)==JOptionPane.YES_OPTION) {
             File fdst = fc.getSelectedFile();
-            if (fdst.exists() && JOptionPane.showConfirmDialog(pane, "Replace existing file: "+fdst.getAbsolutePath())
-                    != JOptionPane.YES_OPTION) {
-                return;
-            }
             CSFileSelectionContext.getDefaultContext().afterFileSelection(fc);
             try {
             generatePatch(fdst);
@@ -374,7 +372,7 @@ public class PatchEditForm extends Form {
         }
     }
     
-    public PatchMetadata generatePatch(File file) throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    public PatchMetadata generatePatch(File file) throws PatchDataException, IOException {
         OutputStream os = new FileOutputStream(file);
         PatchMetadata meta = generatePatch(os);
         os.flush();
@@ -382,7 +380,7 @@ public class PatchEditForm extends Form {
         return meta;
     }
     
-    public PatchMetadata generatePatch(OutputStream out) throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    public PatchMetadata generatePatch(OutputStream out) throws PatchDataException, IOException {
         String fname;
         File midiFile = null;
         fname = tfMidiFile.getText();
