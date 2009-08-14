@@ -1,5 +1,6 @@
 <project name="patchmanager" basedir="." default="info">
 
+  <property name="installer.dir" value="installer" />
   <property name="build.dir" value="build" />
   <property name="dist.dir" value="dist/patchmanager" />
   <property name="dist-debug.dir" value="dist/patchmanager-debug" />
@@ -25,7 +26,7 @@
 <echo>PatchManager ANT build script (http://ruinwesen.com/)
 Following targets are available:
   dist       - Builds the PatchManager release version.
-  dist-debug - Builds the PatchManager debug version.
+  distdebug  - Builds the PatchManager debug version.
 
   run        - Runs the PatchManager release version.
   debug      - Runs the PatchManager debug version.
@@ -41,6 +42,7 @@ Following targets are available:
     <!-- delete the javadoc api directory -->
     <delete dir="${javadoc.dir}"/>
     <delete dir="${dist.dir}"/>
+    <delete dir="${dist-debug.dir}"/>
     <delete dir="${build.dir}"/>
   </target>
 
@@ -83,6 +85,13 @@ Following targets are available:
     <copy todir="${dist.dir}/resources">     
       <fileset dir="${source.dir}/resources"/> 
     </copy>
+  	<!--
+    <copy todir="${dist.dir}/installer/unix">     
+      <fileset dir="${installer.dir}/unix"/> 
+    </copy>
+    <copy file="${installer.dir}/unix-install.sh" todir="${dist.dir}" />
+    <copy file="${installer.dir}/unix-uninstall.sh" todir="${dist.dir}" />
+  	-->
     <mkdir dir="${dist.dir}/midi-send"/>
     <mkdir dir="${dist.dir}/midi-send/windows"/>
     <mkdir dir="${dist.dir}/midi-send/unix"/>
@@ -118,8 +127,22 @@ Following targets are available:
       </manifest>
     </jar>
   </target>
-	
-  <target name="dist-debug" depends="dist">
+
+	  <target name="run" depends="dist">
+	    <java jar="${dist.dir}/patchmanager.jar"
+	      dir="${dist.dir}"
+	      fork="true"
+	      failonerror="true">
+	      <!--
+	         <arg value="-h"/>
+	         <classpath>
+	           <pathelement location="dist/test.jar"/>
+	           <pathelement path="${java.class.path}"/>
+	         </classpath> -->   
+	    </java>
+	  </target>
+
+  <target name="distdebug" depends="dist">
 	<copy todir="${dist-debug.dir}">
 	  <fileset dir="${dist.dir}"/> 
   	</copy>
@@ -128,21 +151,7 @@ Following targets are available:
     <copy file="${source.dir}/log4j.properties" tofile="${dist-debug.dir}/log4j.properties" />
   </target>
 
-  <target name="run" depends="dist">
-    <java jar="${dist.dir}/patchmanager.jar"
-      dir="${dist.dir}"
-      fork="true"
-      failonerror="true">
-      <!--
-         <arg value="-h"/>
-         <classpath>
-           <pathelement location="dist/test.jar"/>
-           <pathelement path="${java.class.path}"/>
-         </classpath> -->   
-    </java>
-  </target>
-
-  <target name="debug" depends="dist-debug">
+  <target name="debug" depends="distdebug">
 	    <java jar="${dist-debug.dir}/patchmanager.jar"
 	      dir="${dist-debug.dir}"
 	      fork="true"
