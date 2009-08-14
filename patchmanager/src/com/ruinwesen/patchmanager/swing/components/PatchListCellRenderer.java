@@ -52,6 +52,8 @@ import com.ruinwesen.patch.metadata.Tagset;
 import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 
 import name.cs.csutils.CSUtils;
+import name.cs.csutils.debug.Debug;
+import name.cs.csutils.debug.DebugFactory;
 import name.cs.csutils.i18n.I18N;
 
 /**
@@ -83,6 +85,8 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
      * made it necessary to re-implement the painting method. 
      */
     
+    private static final Debug debug = DebugFactory.getDebug(PatchListCellRenderer.class);
+    
     /**
      * 
      */
@@ -92,6 +96,7 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
     private String comment = "";
     private String tags = "";
     private String categories = "";
+    private float score = 1.0f;
     private Highlighter highlighter = new Highlighter("");
     private boolean paintSelected = false;
     private Color selectionForeground = Color.BLACK;
@@ -124,15 +129,13 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(
         JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         PatchMetadata metadata = null;
+        this.score = 1.0f;
         if (value == null) {
             // no op
         } else if (value instanceof IndexedPatch) {
-            try {
-                metadata = ((IndexedPatch)value).getMetadata();
-            } catch (Exception ex) {
-                metadata = null;
-                value = ex;
-            }
+            IndexedPatch ip = (IndexedPatch) value;
+            metadata = ip.getMetadata();
+            this.score = ip.score();
         } else if (value instanceof PatchMetadata) {
             metadata = (PatchMetadata) value;
         }
@@ -346,6 +349,7 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
         int y = insets.top;
         
         String ltitleAddOn = layout(smallFontMetrics, titleAddOn, iw, h);
+        int ltitleAddOnWidth  = paintTextR.width;
         int wdate = paintIconR.width;
         
         // line 1:  BoldTitle
@@ -356,10 +360,15 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
         x = paintTextR.x+insets.left;
         y = paintTextR.y+boldFontMetrics.getAscent()+boldFontMetrics.getLeading()+insets.top;
         g.drawString(ltitle, x, y);
+        g.setFont(smallFont);        
         // line 1:  title addon
-        g.setFont(smallFont);
         g.setColor(paler); // paler
         g.drawString(ltitleAddOn, x+paintTextR.width, y);
+        if (debug.isDebugEnabled()) {
+            g.drawString("(dbg:score="+score+")", x+paintTextR.width+ltitleAddOnWidth, y);
+            
+        }
+
         g.setColor(fg); // restore
         y+= paintTextR.height;
 
@@ -476,7 +485,7 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
                 fromIndex = toIndex+1;
             } else {
                 // remaining string is normal and not empty
-                if (fromIndex+1<str.length()) {
+                if (fromIndex<str.length()) {
                     ensureCapacity(++count);
                     normal[count-1] = str.substring(fromIndex);
                     highlighted[count-1] = null;

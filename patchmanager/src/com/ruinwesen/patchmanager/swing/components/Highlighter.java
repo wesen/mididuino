@@ -28,46 +28,60 @@
  */
 package com.ruinwesen.patchmanager.swing.components;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class Highlighter {
+public class Highlighter implements Serializable {
     
+    private static final long serialVersionUID = 4846683601790665829L;
     private String words;
-    private transient List<String> tokenizedList;
+    private transient List<String> tokenList;
 
     public Highlighter(String words) {
         this.words = words.trim();
+        init();
     }
 
-    private List<String> tokenize() {
+    private void writeObject(java.io.ObjectOutputStream out)
+        throws IOException {
+        out.defaultWriteObject();
+    }
+    private void readObject(java.io.ObjectInputStream in)
+        throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        init();
+    }
+    
+    private void init() {
+        this.tokenList = createTokenList();
+    }
+    
+    private List<String> createTokenList() {
         if (words.isEmpty()) {
             return Collections.emptyList();
         }
-        if (tokenizedList != null) {
-            return tokenizedList;
-        }
-        List<String> keys = new ArrayList<String>();
+        // set ensures that list contains no duplicates
+        Set<String> keySet = new HashSet<String>();
         for (String key: words.split("[\\s]+")) {
             key = norm(key);
-            if (key.length()>0 && !keys.contains(key)) keys.add(key);
+            if (!key.isEmpty()) {
+                keySet.add(key);
+            }
         }
-        tokenizedList = keys;
-        return keys;
+        return new ArrayList<String>(keySet);
     }
     
     private static final String norm(String key) {
         return key.trim().toLowerCase();
     }
 
-    
     public String highlight(String text, String hlPrefix, String hlSuffix) {
-        if (text.trim().length() == 0) {
-            return text;
-        }
-        List<String> tokenLists = tokenize();       
-        if (tokenLists.isEmpty()) {
+        if (text.trim().isEmpty() || tokenList.isEmpty()) {
             return text;
         }
         
@@ -77,9 +91,9 @@ public class Highlighter {
         while (index<text.length()) {
             String selectedToken = null;
             int nextIndex = Integer.MAX_VALUE;
-            for (String token: tokenLists) {
+            for (String token: tokenList) {
                 int idx = lowercaseText.indexOf(token, index);
-                if (idx>=0 && idx<nextIndex && idx<text.length()) {
+                if (idx>=0 && idx<nextIndex) {
                     nextIndex = idx;
                     selectedToken = token;
                 }
@@ -90,6 +104,7 @@ public class Highlighter {
             if (highlighted == null) {
                 highlighted = new StringBuilder(text.length());
             } 
+            
             highlighted.append(text.substring(index, nextIndex));
             index = nextIndex;
             highlighted.append(hlPrefix);
@@ -98,9 +113,8 @@ public class Highlighter {
             index+=selectedToken.length();
         }
         if (highlighted != null) {
-            if (index<text.length()) {
-                highlighted.append(text.substring(index));
-            }
+            // append non-highlighted suffix
+            highlighted.append(text.substring(index));
             return highlighted.toString();
         }
         return text;
