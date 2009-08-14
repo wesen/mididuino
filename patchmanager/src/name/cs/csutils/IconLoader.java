@@ -28,40 +28,50 @@
  */
 package name.cs.csutils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public class IconLoader {
-    
-    private static Log log;
-    private static Log getLog() {
-        if (log == null) {
-            log = LogFactory.getLog(IconLoader.class);
-        }
-        return log;
-    }
-
-    private String iconsPropertiesPathPrefix = "/resources/icons/";
-    private String iconsPropertiesFile = 
-        iconsPropertiesPathPrefix+"icons.properties";
+public final class IconLoader implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2622648692957477946L;
+    private static final String iconsPropertiesPathPrefix = "/resources/icons/";
+    private static final String iconsPropertiesFile = iconsPropertiesPathPrefix+"icons.properties";
     
     private static IconLoader INSTANCE = new IconLoader();
+
+    private transient Map<String, ImageIcon> iconmap;
     
     private IconLoader() {
         super();
-        loadProperties();
+        init();
     }
     
-    public static IconLoader getSharedInstance() {
+    private void init() {
+        iconmap = new HashMap<String, ImageIcon>();
+        CSProperties properties = CSUtils.loadProperties(getClass().getResource(iconsPropertiesFile));
+        for (Map.Entry<Object,Object> entry: properties.entrySet()) {
+            if (entry.getKey() instanceof String 
+                    && entry.getValue() instanceof String) {
+                String key = (String) entry.getKey();
+                URL url = getClass().getResource(iconsPropertiesPathPrefix+
+                        (String)entry.getValue());
+                if (url != null) {
+                    iconmap.put(key, new ImageIcon(url));
+                }
+            }
+        }
+        
+    }
+    
+    public static IconLoader getInstance() {
         return INSTANCE;
     }
 
@@ -73,34 +83,6 @@ public class IconLoader {
         }
     }
     
-    private Properties properties;
-    
-    private void loadProperties() {
-        properties = new Properties();
-        try {
-            InputStream in = null;
-            try {
-                in = getClass().getResourceAsStream(iconsPropertiesFile);
-                if (in == null) {
-                    throw new FileNotFoundException("resource not found: "+iconsPropertiesFile);
-                }
-                properties.load(in);
-            } finally {
-                if (in != null) {
-                    in.close();
-                    in = null;
-                }
-            }
-        } catch (IOException ex) {
-            if (getLog().isDebugEnabled()) {
-                getLog().debug("Could not read icon properties: "+iconsPropertiesFile, ex);
-            }
-            properties.clear();
-        }
-    }
-
-    
-    
     public ImageIcon getEnabledIcon(String name) {
         return getIcon(name);        
     }
@@ -110,15 +92,18 @@ public class IconLoader {
     }
     
     public ImageIcon getIcon(String name) {
-        String value = properties.getProperty(name);
-        if (value == null) {
-            return null;
-        }
-        URL url = getClass().getResource(iconsPropertiesPathPrefix+value);
-        if (url == null) {
-            return null;
-        }
-        return new ImageIcon(url);
+        return iconmap.get(name);
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out)
+        throws IOException {
+        out.defaultWriteObject();
+    }
+    
+    private void readObject(java.io.ObjectInputStream in)
+        throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        init();
     }
     
 }

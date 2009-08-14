@@ -38,19 +38,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.Iterator;
+import java.util.Properties;
 
 import javax.swing.JComponent;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import name.cs.csutils.Platform.OS;
 
 public class CSUtils {
 
+    private static final Log log = LogFactory.getLog(CSUtils.class);
+    
     public static final String UNASSIGNED_STRING = "[Unassigned]";
 
     public static final String EMPTY_STRING = "";
@@ -373,6 +381,70 @@ public class CSUtils {
             return new File(file.getParentFile(), name+suffix);
         }
         return file;
+    }
+
+    public static boolean storeProperties(Properties properties, File dst) {
+        return storeProperties(properties, dst, "generated file - do not modify");
+    }
+    public static boolean storeProperties(Properties properties,
+            File dst, String comments) {
+        if (log.isDebugEnabled()) {
+            log.debug("Storing property file: "+dst);
+        }
+        OutputStream out = null;
+        try {
+            try {
+                out = new BufferedOutputStream(new FileOutputStream(dst));
+                properties.store(out, comments);
+                out.flush();
+            } finally {
+                if (out != null) {
+                    out.close();
+                    out = null;
+                }
+            }
+            return true;
+        } catch (IOException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug("Error while storing property file: "+dst, ex);
+            }   
+            dst.delete(); // delete corrupted property file
+            return false;
+        }
+    }
+
+    public static CSProperties loadProperties(File src) {
+        CSProperties properties = new CSProperties();
+        InputStream is = null;
+        try {
+            try {
+                is = new BufferedInputStream(new FileInputStream(src));
+                properties.load(is);
+            } finally {
+                if (is != null) {
+                    is.close();
+                    is = null;
+                }
+            }
+        } catch (IOException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug("Error while reading property file: "+src, ex);
+            }
+        }
+        return properties;
+    }
+
+    public static CSProperties loadProperties(URL url) {
+        if (url != null) {
+            try {
+                return loadProperties(new File(url.toURI()));
+            } catch (URISyntaxException ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("could not load properties: "+url, ex);
+                }
+            }
+        }
+        return new CSProperties();
     }
 
 }

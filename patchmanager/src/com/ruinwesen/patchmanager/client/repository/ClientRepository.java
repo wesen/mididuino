@@ -28,15 +28,9 @@
  */
 package com.ruinwesen.patchmanager.client.repository;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -165,46 +159,11 @@ public class ClientRepository {
     }
     
     public CSProperties readSettings()  {
-        CSProperties properties = new CSProperties();
-        try {
-            synchronized (SETTINGS_LOCK) {
-                InputStream is = new BufferedInputStream(new FileInputStream(settingsFile));
-                try {
-                    properties.load(is);
-                } finally {
-                    is.close();
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            if (log.isDebugEnabled()) {
-                log.debug("could not read settings:"+settingsFile, ex);
-            }
-        } catch (IOException ex) {
-            if (log.isWarnEnabled()) {
-                log.warn("could not parse settings:"+settingsFile, ex);
-            }
+        synchronized (SETTINGS_LOCK) {
+        return CSUtils.loadProperties(settingsFile);
         }
-        return properties;
     }
     
-    public void writeSettings(CSProperties p)  {
-        try {
-            synchronized (SETTINGS_LOCK) {
-                OutputStream os = new BufferedOutputStream(new FileOutputStream(settingsFile));
-                try {
-                    p.store(os, "this file is generated - do not modify");
-                    os.flush();
-                } finally {
-                    os.close();
-                }
-            }
-        } catch (IOException ex) {
-            if (log.isWarnEnabled()) {
-                log.warn("could not write settings:"+settingsFile, ex);
-            }
-        }
-    }
-
     public Date getLastSyncDate() {
         return readSettings().getDateProperty(LAST_SYNCED, CSUtils.now());
     }
@@ -212,7 +171,9 @@ public class ClientRepository {
     public void setLastSyncDate(Date value) {
         CSProperties p = readSettings();
         p.setDateProperty(LAST_SYNCED, value);
-        writeSettings(p);
+        synchronized (SETTINGS_LOCK) {
+        CSUtils.storeProperties(p, settingsFile);
+        }
     }
     
 }
