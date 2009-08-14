@@ -149,8 +149,9 @@ public class CSAction extends AbstractAction {
         return this;
     }
     
-    public void setSelected(boolean selected) {
+    public CSAction setSelected(boolean selected) {
         putValue(SELECTED_KEY, selected?Boolean.TRUE:Boolean.FALSE);
+        return this;
     }
     
     public boolean isSelected() {
