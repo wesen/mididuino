@@ -184,6 +184,34 @@ public final class FileFilterFactory {
         }
         
     }
+
+    public static javax.swing.filechooser.FileFilter createNamedFileFilter(String name, FileFilter filter) {
+        return new NamedFilter(name, filter);
+    }
+
+    private static final class NamedFilter extends javax.swing.filechooser.FileFilter implements FileFilter, Serializable {
+        private FileFilter delegate;
+        private String name;
+        public NamedFilter(String name, FileFilter delegate) {
+            if (name == null || delegate == null) {
+                throw new IllegalArgumentException("name:"+name+";delegate:"+delegate);
+            }
+            this.name = name;
+            this.delegate = delegate;
+        }
+        @Override
+        public boolean accept(File pathname) {
+            return delegate.accept(pathname);
+        }
+        @Override
+        public String toString() {
+            return name;
+        }
+        @Override
+        public String getDescription() {
+            return name;
+        }
+    }
     
     private static final class DirectoryFilter implements FileFilter, Serializable {
         /**
@@ -393,7 +421,6 @@ public final class FileFilterFactory {
             return "("+a+" and "+b+")";
         }
     }
-    
-    
+
     
 }
