@@ -607,7 +607,12 @@ public class SwingPatchManager {
             return;
         }
         
-        new Thread(new DeletePatchTask(this, patch)).start();        
+        if (JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the patch ?",
+                "Delete",
+                JOptionPane.YES_NO_OPTION)
+                == JOptionPane.YES_OPTION) {
+            new Thread(new DeletePatchTask(this, patch)).start();
+        }
     }
 
     public void patchListViewSelectedSaveMidiFile() {
@@ -792,7 +797,7 @@ public class SwingPatchManager {
         return new Auth(username, password, mail);
     }
     
-    @SwingActionData("Publish Patch...")
+    @SwingActionData("Create/Publish Patch...")
     public void publishPatch() {
         //new PublishPatchDialog(this).showDialog();
         
