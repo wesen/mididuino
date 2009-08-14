@@ -82,7 +82,7 @@ public class FormContainer implements FormElementListener {
 
     protected void buildContainer() {
         
-        ImageIcon warnIcon = IconLoader.getSharedInstance().getIcon("dialog.warning");
+        ImageIcon warnIcon = IconLoader.getInstance().getIcon("dialog.warning");
         
         form.addFormElementListener(this);
         
