@@ -30,24 +30,17 @@ package com.ruinwesen.patchmanager.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.MissingResourceException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
+import javax.swing.DebugGraphics;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -68,21 +61,22 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import name.cs.csutils.CSAction;
 import name.cs.csutils.CSEventAdapter;
 import name.cs.csutils.CSProperties;
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.SwingActionData;
+import name.cs.csutils.SynchronizedField;
 import name.cs.csutils.collector.Collector;
 import name.cs.csutils.concurrent.SimpleSwingWorker;
 import name.cs.csutils.debug.Debug;
 import name.cs.csutils.debug.DebugFactory;
 import name.cs.csutils.i18n.I18N;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.ruinwesen.patch.DefaultPatch;
-import com.ruinwesen.patch.Patch;
 import com.ruinwesen.patchmanager.client.PatchManager;
 import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 import com.ruinwesen.patchmanager.client.index.PatchIndex;
@@ -90,7 +84,7 @@ import com.ruinwesen.patchmanager.client.news.NewsIndex;
 import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.PatchManagerClient;
 import com.ruinwesen.patchmanager.client.repository.ClientRepository;
-import com.ruinwesen.patchmanager.swing.components.FilterControl;
+import com.ruinwesen.patchmanager.swing.components.SearchOptionsControl;
 import com.ruinwesen.patchmanager.swing.components.PatchDetailsView;
 import com.ruinwesen.patchmanager.swing.components.PatchListCellRenderer;
 import com.ruinwesen.patchmanager.swing.components.SearchPanel;
@@ -98,7 +92,6 @@ import com.ruinwesen.patchmanager.swing.forms.AboutDialog;
 import com.ruinwesen.patchmanager.swing.forms.BugreportForm;
 import com.ruinwesen.patchmanager.swing.forms.MidiSendForm;
 import com.ruinwesen.patchmanager.swing.forms.NewLoginForm;
-import com.ruinwesen.patchmanager.swing.forms.PublishPatchDialog;
 import com.ruinwesen.patchmanager.swing.model.Order;
 import com.ruinwesen.patchmanager.swing.model.PatchListModel;
 import com.ruinwesen.patchmanager.swing.tasks.BugReportBuilder;
@@ -139,18 +132,18 @@ public class SwingPatchManager {
     private PatchListCellRenderer patchListCellRenderer;
     private SearchPanel searchPanel;
     private EventHandler eventHandler ;
-    private FilterControl filterControl;
+    private SearchOptionsControl searchOptionsControl;
     private PatchDetailsView patchDetailsView;
     private NewsIndex newsIndex;
     private JPanel leftPanelHeader;
     private JPanel rightPanelHeader;
-    private JScrollPane scrollFilter;
+    private JScrollPane scrollSearchOptions;
     
     private JLabel lblStatusBar;
 
-    private String version = "<unknown version>";
-    private String build_number = "<unknown build id>";
-    private String build_timestamp = "<unknown build time>";
+    private String version = "<undefined>";
+    private String build_number = "<undefined>";
+    private String build_timestamp = "<undefined>";
 
     private CSAction acPatchListViewSendSelectedAction;
     private CSAction acPatchListViewDeleteSelectedAction;
@@ -160,6 +153,30 @@ public class SwingPatchManager {
     private CSAction acToggleFilterSidebarVisibility;
     private CSAction acTogglePatchDetailsSidebarVisibility;
 
+    private ExecutorService executorService = 
+        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()+2);
+
+    private SynchronizedField<String> statusTextField = new SynchronizedField<String>(" ") {
+        @Override
+        public void update(String value) {
+            lblStatusBar.setText(value == null ? " " : (" "+value));
+        }
+    };
+
+    private JPanel rightPanel;
+
+    private JSplitPane center_right_split;
+
+    private JPanel centerPanel;
+    
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+    
+    public void runInThread(Runnable r) {
+        executorService.execute(r);
+    }
+    
     public String getVersion() {
         return version;
     }
@@ -179,44 +196,11 @@ public class SwingPatchManager {
         init();
     }
 
-    private CSProperties getVersionProperties() {
-        try {
-            URL url = getClass().getResource("/version.properties");
-            if (url != null) {
-                return readProperties(new File(url.toURI()));
-            }
-        } catch (IOException ex) {
-            if (log.isDebugEnabled()) {
-                log.debug("Could not read version.properties file.");
-            }
-        } catch (URISyntaxException ex) {
-            if (log.isDebugEnabled()) {
-                log.debug("Could not read version.properties file.");
-            }
-        }
-        return new CSProperties();
-    }
-
-    private CSProperties readProperties(File file) throws IOException {
-        CSProperties props = new CSProperties();
-        InputStream in = new BufferedInputStream(new FileInputStream(
-                file));
-        try {
-            props.load(in);
-        } finally {
-            in.close();
-        }
-        return props;
-    }
-    
     private void loadVersionInfo() {
-        CSProperties versionInfo = getVersionProperties();
-        String str = versionInfo.getProperty("patchmanager.build.number");
-        if (str != null) { this.build_number = str; }
-        str = versionInfo.getProperty("patchmanager.build.timestamp");
-        if (str != null) { this.build_timestamp = str; }
-        str = versionInfo.getProperty("patchmanager.version");
-        if (str != null) { this.version = str; }
+        CSProperties versionInfo = CSUtils.loadProperties(getClass().getResource("/version.properties"));
+        this.build_number = versionInfo.getProperty("patchmanager.build.number", "<undefined>");
+        this.build_timestamp = versionInfo.getProperty("patchmanager.build.timestamp", "<undefined>");
+        this.version = versionInfo.getProperty("patchmanager.version", "<undefined>");
 
         // always print this
         log.info("Patchmanager Version:"+version
@@ -241,66 +225,7 @@ public class SwingPatchManager {
     }
     
     private void writeAppProperties() {
-        if (log.isDebugEnabled()) {
-            log.debug("Writing application properties: "+applicationPropertiesFile);
-        }
-        
-        OutputStream os = null;
-        try {
-            os = new FileOutputStream(applicationPropertiesFile);
-            appProperties.store(os, "generated file - do not modify");
-        } catch (IOException ex) {
-            if (log.isErrorEnabled()) {
-                log.error("could not write application properties", ex);
-            }
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException ex2) {
-                    
-                }
-            }
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException ex) {
-                    
-                }
-            }
-        }
-    }
-    
-    private void copyPatch800() throws  Exception {
-        File file = new File("/home/christian/.patchmanager/repository/808");
-        InputStream is = new FileInputStream(file);
-        byte[] tmp = new byte[1024];
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        
-        int r;
-        while ((r=is.read(tmp))!=-1) {
-            bos.write(tmp, 0, r);
-        }
-        tmp = bos.toByteArray();
-        
-        List<File> filelist = new ArrayList<File>(1000);
-        long Tnext = System.currentTimeMillis()+1000;
-        int start=801;
-        start+=1000;
-        for (int i=start;i<start+1000;i++) {
-            if (System.currentTimeMillis()>Tnext) {
-                Tnext+=1000;
-                System.out.println("copy file: "+(i-start));
-            }
-            
-            File fout = new File(file.getParent(), Integer.toString(i));
-            filelist.add(fout);
-            FileOutputStream fos = new FileOutputStream(fout);
-            fos.write(tmp);
-            fos.flush();
-            fos.close();
-        }
-        patchmanager.getIndex().addToIndex(filelist);
+        CSUtils.storeProperties(appProperties, applicationPropertiesFile);
     }
     
     private void init() {
@@ -318,27 +243,11 @@ public class SwingPatchManager {
         
         applicationUserdataDir = CSUtils.getApplicationConfigDir("patchmanager");
         applicationPropertiesFile = new File(applicationUserdataDir, "config.properties");
-        // load application properties
-        if (applicationPropertiesFile.exists()) {
-            try {
-                FileInputStream is = new FileInputStream(applicationPropertiesFile);
-                try {
-                    CSProperties p = new CSProperties();
-                    p.load(is);
-                    appProperties.putAll(p);
-                } finally {
-                    try {
-                        is.close();
-                    }
-                    catch (IOException ex) {
-                        
-                    }
-                }
-            } catch (IOException ex) {
-                
-            }
-        }
         
+        
+        
+        // load application properties
+        appProperties.putAll(CSUtils.loadProperties(applicationPropertiesFile));
         
         patchmanager = new PatchManager(applicationUserdataDir);
         
@@ -349,7 +258,7 @@ public class SwingPatchManager {
         
         
         acToggleFilterSidebarVisibility =
-            new CSAction("Filter")
+            new CSAction("Search Options")
             .useResourceKey("action.sidebar.filter.toggle-visibility")
             .useInvokationTarget(this, "toggleFilterSidebarVisibility")
             .setSelected(true);
@@ -423,7 +332,6 @@ public class SwingPatchManager {
             jmenubar.add(menuDebug);
         }
         
-        
         frame.setJMenuBar(jmenubar);
         
         patchListCellRenderer = new PatchListCellRenderer();
@@ -449,22 +357,19 @@ public class SwingPatchManager {
         
      //   updatePatchListViewFixedWidth();
         
-        
-        filterControl = new FilterControl();
-        scrollFilter = new JScrollPane(filterControl.getContainer());
-     //   scrollFilter.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        searchOptionsControl = new SearchOptionsControl();
+        scrollSearchOptions = new JScrollPane(searchOptionsControl.getContainer());
    
-
         centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(searchPanel.getContainer(), BorderLayout.NORTH);
         centerPanel.add(scrollPatchList, BorderLayout.CENTER);
-
+        
         leftPanel = new JPanel(new BorderLayout());
         leftPanelHeader = new JPanel(new BorderLayout());
         leftPanelHeader.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
-        leftPanelHeader.add(new JLabel("Filter"),BorderLayout.CENTER);
+        leftPanelHeader.add(new JLabel("Search"),BorderLayout.CENTER);
         leftPanel.add(leftPanelHeader, BorderLayout.NORTH);
-        leftPanel.add(scrollFilter, BorderLayout.CENTER);
+        leftPanel.add(scrollSearchOptions, BorderLayout.CENTER);
        
         rightPanel = new JPanel(new BorderLayout());
         rightPanelHeader = new JPanel(new BorderLayout());
@@ -481,6 +386,7 @@ public class SwingPatchManager {
         rightPanel.add(scrollPatchDetails, BorderLayout.CENTER);
 
         center_right_split = createSplitPane();
+        center_right_split.setContinuousLayout(true);
 /*
         patchmanager.getIndex().readIndex(null);
         try {
@@ -514,6 +420,20 @@ public class SwingPatchManager {
         this.newsIndex = new NewsIndex(new File(applicationUserdataDir, "news.index"));
   //      frame.setMinimumSize(new Dimension(600,300));
         frame.pack();
+        
+        {
+
+            int headerHeight = searchPanel.getContainer().getHeight();
+            {
+                int lw = leftPanelHeader.getWidth();
+                leftPanelHeader.setPreferredSize(new Dimension(lw, headerHeight));
+            }
+            {
+                int rw = rightPanelHeader.getWidth();
+                rightPanelHeader.setPreferredSize(new Dimension(rw, headerHeight));
+            }
+        }
+        
         Dimension size = frame.getSize();
         size.width+=3*20;
         frame.setSize(size);
@@ -552,9 +472,6 @@ public class SwingPatchManager {
         frame.getContentPane().repaint();
     }
 
-    private int lastDividerLocation = -1;
-    private int lastDividerSize = -1;
-    
     public void togglePatchDetailsSidebarVisibility() {
         boolean sidebarVisible;
         if (center_right_split != null) { // hide patch details
@@ -581,24 +498,6 @@ public class SwingPatchManager {
 
         appProperties.setBooleanProperty(KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, sidebarVisible);
         
-        /*
-        
-        if (rightPanel.isVisible()) {
-            lastDividerLocation = center_right_split.getDividerLocation();
-            lastDividerSize = center_right_split.getDividerSize();
-            center_right_split.setDividerSize(0);
-        }
-        rightPanel.setVisible(!rightPanel.isVisible());
-        if (rightPanel.isVisible()  && lastDividerLocation >= 0) {
-            center_right_split.setDividerSize(lastDividerSize);
-            center_right_split.setDividerLocation(lastDividerLocation);
-        }
-        acTogglePatchDetailsSidebarVisibility.setSelected(rightPanel.isVisible());
-        frame.getContentPane().invalidate();
-        if (frame.getContentPane() instanceof JComponent) {
-            ((JComponent)frame.getContentPane()).revalidate();
-        }
-        frame.getContentPane().repaint();*/
     }
     
     public void patchListViewSendSelected() {
@@ -627,7 +526,7 @@ public class SwingPatchManager {
                 "Delete",
                 JOptionPane.YES_NO_OPTION)
                 == JOptionPane.YES_OPTION) {
-            new Thread(new DeletePatchTask(this, patch)).start();
+            runInThread(new DeletePatchTask(this, patch));
         }
     }
 
@@ -652,42 +551,24 @@ public class SwingPatchManager {
         frame.dispose();
     }
     
-    private String statusText = "";
-
-    private JPanel rightPanel;
-
-    private JSplitPane center_right_split;
-
-    private JPanel centerPanel;
-    
     public void setStatus(String text) {
-        synchronized (this) {
-            this.statusText = text;
-        }
-        SwingUtilities.invokeLater(
-                new Runnable() {
-                    public void run() {
-                        String s;
-                        synchronized (this) {
-                            s = statusText;
-                        }
-                        if (s == null) {
-                            lblStatusBar.setText(" ");
-                        } else {
-                            lblStatusBar.setText(" "+s);
-                        }                        
-                    }
-                }
-        );
+        statusTextField.set(text);
     }
     
     public void indexUpdated() {
-        new Thread(new IndexUpdateThread(false)).start();
+        runInThread(new IndexUpdateThread(false));
     }
 
     @SwingActionData("Regenerate Index")
     public void regenerateIndex() {
-        new Thread(new IndexUpdateThread(true)).start();
+        runInThread(new IndexUpdateThread(true));
+    }
+    
+    public void setSearchRelatedControlsEnabled(boolean value) {
+        searchOptionsControl.setControlsEnabled(value);
+        
+        searchPanel.getSearchField().setEditable(value);
+        searchPanel.getSearchField().setEnabled(value);
     }
 
     public final class IndexUpdateThread extends SimpleSwingWorker implements
@@ -704,7 +585,7 @@ public class SwingPatchManager {
         
         @Override
         protected void setup() {
-            setControlsEnabled(false);
+            setSearchRelatedControlsEnabled(false);
             // this should be done in a thread
             int count = patchmanager.getIndex().computeEstimatedPatchCount();
             pm = new ProgressMonitor(frame, "Reading index. ("+count+" patch files)", "This may take a while.", 0, count);
@@ -715,13 +596,13 @@ public class SwingPatchManager {
             setStatus("Finished reading index.");
             pm.close();
             // TODO we can rebuild the filter ui using the thread
-            filterControl.rebuildFilterUI(patchmanager.getIndex());
+            searchOptionsControl.rebuildFilterUI(patchmanager.getIndex());
             executeQuery();
         }
 
         @Override
         protected void cleanup() {
-            setControlsEnabled(true);
+            setSearchRelatedControlsEnabled(true);
         }
 
         @Override
@@ -734,11 +615,6 @@ public class SwingPatchManager {
             }
         }
 
-        private void setControlsEnabled(boolean enabled) {
-            filterControl.setControlsEnabled(enabled);
-            searchPanel.setControlsEnabled(enabled);
-        }
-        
         @Override
         public void process() {
             if (regenerate) {
@@ -764,16 +640,16 @@ public class SwingPatchManager {
     
     @SwingActionData("Read News")
     public void getLatestNews() {
-        new Thread(new GetLatestNewsTask(this)).start();
+        runInThread(new GetLatestNewsTask(this));
     }
 
     public void executeQuery() {
-        new Thread(new PerformQueryTask(this)).start();
+        runInThread(new PerformQueryTask(this));
     }
     
     @SwingActionData("Download patches")
     public void syncRepository() {
-        new Thread(new SynchronizeRepositoryTask(this)).start();
+        runInThread(new SynchronizeRepositoryTask(this));
     }
 
     public Auth getUserAuthentication(boolean allowCreate) {
@@ -815,20 +691,14 @@ public class SwingPatchManager {
     
     @SwingActionData("Create/Publish Patch...")
     public void publishPatch() {
-        //new PublishPatchDialog(this).showDialog();
-        
         new CreatePublishPatchWizard(this).showDialog(frame);
-        
-        
-        //new PublishPatchDialog(this).showDialog(frame);
-        
     }
     
     @SwingActionData("Check for Updates")
     public void askServerAboutNewClientVersion() {
         CheckForUpdatesTask task = new CheckForUpdatesTask(this);
         task.setQuietModeEnabled(false);
-        new Thread(task).run();
+        runInThread(task);
     }
     
     @SwingActionData("Send Bug Report")
@@ -884,17 +754,16 @@ public class SwingPatchManager {
     ListSelectionListener {
 
         public void install() {
-            scrollPatchList.addComponentListener(this);
-            filterControl.addChangeListener(this);
+            searchOptionsControl.addChangeListener(this);
             patchListView.addListSelectionListener(this);
             patchListView.addMouseListener(this);
-            searchPanel.getContainer().addComponentListener(this);
             frame.addWindowListener(this);
         }
 
         @Override
         public void windowClosing(WindowEvent e) {
             writeAppProperties();
+            executorService.shutdown();
         }
 
         @Override
@@ -927,25 +796,8 @@ public class SwingPatchManager {
         }
 
         @Override
-        public void componentResized(ComponentEvent e) {
-            if (searchPanel.getContainer() == e.getComponent()) {
-                int height = searchPanel.getContainer().getHeight();
-
-                if (height != leftPanelHeader.getHeight()) {
-                    int lw = leftPanelHeader.getWidth();
-                    leftPanelHeader.setPreferredSize(new Dimension(lw, height));
-                }
-
-                if (height != rightPanelHeader.getHeight()) {
-                    int rw = rightPanelHeader.getWidth();
-                    rightPanelHeader.setPreferredSize(new Dimension(rw, height));
-                }
-            }
-        }
-
-        @Override
         public void stateChanged(ChangeEvent e) {
-            if (e.getSource() == SwingPatchManager.this.filterControl) {
+            if (e.getSource() == SwingPatchManager.this.searchOptionsControl) {
                 executeQuery();
             }
         }
@@ -974,16 +826,9 @@ public class SwingPatchManager {
         }
 
     } 
-    
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        new SwingPatchManager().start();
-    }
 
-    public FilterControl getFilterControl() {
-        return filterControl;
+    public SearchOptionsControl getSearchOptionsControl() {
+        return searchOptionsControl;
     }
 
     public PatchIndex getIndex() {
@@ -1012,6 +857,20 @@ public class SwingPatchManager {
 
     public JList getPatchListView() {
         return patchListView;
+    }
+    
+    /**
+     * @param args
+     */
+    public static void main(String[] args) throws Exception {
+        // create application on the event dispatch thread as required by swing
+        SwingUtilities.invokeAndWait(new SwingPatchManagerStarter());
+    }
+    
+    private static final class SwingPatchManagerStarter implements Runnable {
+        public void run() {
+            new SwingPatchManager().start();
+        }
     }
     
 }
