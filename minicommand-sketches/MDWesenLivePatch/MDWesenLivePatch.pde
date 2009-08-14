@@ -5,121 +5,207 @@
 #include <Profiler.h>
 #include <MidiClockPage.h>
 #include <SDCard.h>
+#include <AutoEncoderPage.h>
+#include <MDBreakdown.h>
 
-CCHandler ccHandler;
+MDBreakdown mdBreakdown;
 
-class AutoMDPage : 
-public EncoderPage, public ClockCallback {
+class BreakdownPage : public EncoderPage {
 public:
-  MDEncoder mdEncoders[4];
-  RecordingEncoder<64> recEncoders[4];
+  EnumEncoder repeatSpeedEncoder, breakdownEncoder;
 
-  void on32Callback() {
-    for (int i = 0; i < 4; i++) {
-      recEncoders[i].playback(MidiClock.div32th_counter);
-    }
+  BreakdownPage() : EncoderPage() {
+    repeatSpeedEncoder.initEnumEncoder(MDBreakdown::repeatSpeedNames, REPEAT_SPEED_CNT, "SPD", 0);
+    breakdownEncoder.initEnumEncoder(MDBreakdown::breakdownNames, BREAKDOWN_CNT, "BRK", 0);
+    encoders[0] = &repeatSpeedEncoder;
+    encoders[2] = &breakdownEncoder;
   }
-
-  void startRecording() {
-    for (int i = 0; i < 4; i++) {
-      recEncoders[i].startRecording();
-    }
-  }
-
-  void stopRecording() {
-    for (int i = 0; i < 4; i++) {
-      recEncoders[i].stopRecording();
-    }
-  }
-
-  void clearRecording(int i) {
-    recEncoders[i].clearRecording();
-  }
-
+  
   virtual void setup() {
-    for (int i = 0; i < 4; i++) {
-      mdEncoders[i].setName("___");
-      recEncoders[i].initRecordingEncoder(&mdEncoders[i]);
-      encoders[i] = &recEncoders[i];
-      ccHandler.addEncoder(&mdEncoders[i]);
-    }
+    mdBreakdown.setup();
   }
-
-  void autoLearnLast4() {
-    int8_t ccAssigned[4] = { 
-      -1, -1, -1, -1         };
-    int8_t encoderAssigned[4] = { 
-      -1, -1, -1, -1         };
-    incoming_cc_t ccs[4];
-    int count = ccHandler.incomingCCs.size();
-    for (int i = 0; i < count; i++) {
-      ccHandler.incomingCCs.getCopy(i, &ccs[i]);
-      incoming_cc_t *cc = &ccs[i];
-      for (int j = 0; j < 4; j++) {
-        if ((mdEncoders[j].getCC() == cc->cc) &&
-          (mdEncoders[j].getChannel() == cc->channel)) {
-          ccAssigned[i] = j;
-          encoderAssigned[j] = i;
-          break;
-        }
-      }
+  
+  virtual void loop() {
+    if (repeatSpeedEncoder.hasChanged()) {
+      mdBreakdown.repeatSpeed = (repeat_speed_type_t)repeatSpeedEncoder.getValue();
     }
-
-    for (int i = 0; i < count; i++) {
-      incoming_cc_t *cc = &ccs[i];
-      if (ccAssigned[i] != -1) {
-        if ((mdEncoders[ccAssigned[i]].getChannel() != cc->channel) &&
-          (mdEncoders[ccAssigned[i]].getCC() != cc->cc)) {
-          mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-          mdEncoders[ccAssigned[i]].setValue(cc->value);
-          clearRecording(ccAssigned[i]);
-        }
-      } else {
-        for (int j = 0; j < 4; j++) {
-          if (encoderAssigned[j] == -1) {
-            ccAssigned[i] = j;
-            encoderAssigned[j] = i;
-//            if ((mdEncoders[ccAssigned[i]].getChannel() != cc->channel) &&
-//                (mdEncoders[ccAssigned[i]].getCC() != cc->cc)) {
-              mdEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-              mdEncoders[ccAssigned[i]].setValue(cc->value);
-              clearRecording(ccAssigned[i]);
-//            }
-            break;
-          }
-        }
-      }
+    if (breakdownEncoder.hasChanged()) {
+      mdBreakdown.breakdown = (breakdown_type_t)breakdownEncoder.getValue();
     }
   }
 
   virtual bool handleEvent(gui_event_t *event) {
-    if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
-      autoLearnLast4();
-      return true;
-    }
-    if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
-      startRecording();
-      return true;
-    }
-    if (EVENT_RELEASED(event, Buttons.BUTTON3)) {
-      stopRecording();
-      return true;
-    }
-    if (EVENT_PRESSED(event, Buttons.BUTTON4) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
-      return true;
-    }
-    if (BUTTON_DOWN(Buttons.BUTTON4)) {
-      for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
-        if (EVENT_PRESSED(event, i)) {
-          GUI.setLine(GUI.LINE1);
-          GUI.flash_string_fill("CLEAR");
-          GUI.setLine(GUI.LINE2);
-          GUI.flash_put_value(0, i);
-          clearRecording(i);
-        }
+    if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+      mdBreakdown.storedBreakdownActive = !mdBreakdown.storedBreakdownActive;
+      if (mdBreakdown.storedBreakdownActive) {
+        GUI.flash_p_strings_fill(PSTR("BREAKDOWN ON"), PSTR(""));
+      } 
+      else {
+        GUI.flash_p_strings_fill(PSTR("BREAKDOWN OFF"), PSTR(""));
       }
-    }
+      return true;
+    } 
+
     return false;
+  }
+
+  virtual void show() {
+    mdBreakdown.startBreakdown();
+  }
+
+  virtual void hide() {
+    mdBreakdown.stopBreakdown();
   }
 };
 
+class MDWesenLivePatchSketch : 
+public Sketch, public MDCallback{
+public:
+  MDFXEncoder flfEncoder, flwEncoder, fbEncoder, levEncoder;
+  EncoderPage page;
+
+  MDFXEncoder timEncoder, frqEncoder, modEncoder;  
+  EncoderPage page2;
+
+  MDEncoder pFlfEncoder, pFlwEncoder, pSrrEncoder, pVolEncoder;
+  EncoderPage page4;
+  
+  BreakdownPage breakPage;
+  AutoEncoderPage<MDEncoder> autoMDPage;
+  SwitchPage switchPage;
+
+  uint8_t ramP1Track;
+
+  void setupPages() {
+    flfEncoder.initMDFXEncoder(MD_ECHO_FLTF, MD_FX_ECHO, "FLF", 0);
+    flwEncoder.initMDFXEncoder(MD_ECHO_FLTW, MD_FX_ECHO, "FLW", 127);
+    fbEncoder.initMDFXEncoder( MD_ECHO_FB,   MD_FX_ECHO, "FB",  32);
+    levEncoder.initMDFXEncoder(MD_ECHO_LEV,  MD_FX_ECHO, "LEV", 100);
+    page.setShortName("DL1");
+    page.setEncoders(&flfEncoder, &flwEncoder, &fbEncoder, &levEncoder);
+
+    timEncoder.initMDFXEncoder(MD_ECHO_TIME, MD_FX_ECHO, "TIM", 24);
+    frqEncoder.initMDFXEncoder(MD_ECHO_MFRQ, MD_FX_ECHO, "FRQ", 0);
+    modEncoder.initMDFXEncoder(MD_ECHO_MOD,  MD_FX_ECHO, "MOD", 0);
+    page2.setEncoders(&timEncoder, &frqEncoder, &modEncoder, &fbEncoder);
+    page2.setShortName("DL2");
+
+    pFlfEncoder.initMDEncoder(ramP1Track, MODEL_FLTF, "FLF", 0);
+    pFlwEncoder.initMDEncoder(ramP1Track, MODEL_FLTW, "FLW", 127);
+    pSrrEncoder.initMDEncoder(ramP1Track, MODEL_SRR, "SRR", 0);
+    pVolEncoder.initMDEncoder(ramP1Track, MODEL_VOL, "VOL", 100);
+    page4.setEncoders(&pFlfEncoder, &pFlwEncoder, &pSrrEncoder, &pVolEncoder);
+    page4.setShortName("RAM");
+
+    autoMDPage.setup();
+    autoMDPage.setShortName("AUT");
+    
+    switchPage.initPages(&page, &page2, &page4, &autoMDPage);
+    switchPage.parent = this;
+  }
+
+  virtual void setup() {
+    setupPages();
+    
+    MDTask.setup();
+    MDTask.autoLoadKit = true;
+    MDTask.reloadGlobal = true;
+    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDWesenLivePatchSketch::onKitChanged);
+    GUI.addTask(&MDTask);
+
+    for (int i = 0; i < 4; i++) {
+      ccHandler.addEncoder((CCEncoder *)page4.encoders[i]);
+    }
+    ccHandler.setup();
+    //    ccHandler.setCallback(onLearnCallback);
+
+    setPage(&page);
+  }
+
+  virtual void destroy() {
+    MidiClock.stop();
+    GUI.removeTask(&MDTask);
+    MDTask.destroy();
+  }
+
+  virtual bool handleEvent(gui_event_t *event) {
+    if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+      pushPage(&switchPage);
+    } else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
+      popPage(&switchPage);
+    } else {
+      if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
+        pushPage(&breakPage);
+      } 
+      else if (EVENT_RELEASED(event, Buttons.BUTTON4)) {
+        popPage(&breakPage);
+      } 
+      else if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+        mdBreakdown.startSupatrigga();
+      } 
+      else if (EVENT_RELEASED(event, Buttons.BUTTON3)) {
+        mdBreakdown.stopSupatrigga();
+      } 
+      else if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+//        GUI.pushPage(&midiClockPage);
+      } else {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  void onKitChanged() {
+    for (int i = 0; i < 16; i++) {
+      if (MD.kit.machines[i].model == RAM_P1_MODEL) {
+        GUI.setLine(GUI.LINE1);
+        GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+//        GUI.flash_put_value(3, (uint8_t)i);
+        GUI.setLine(GUI.LINE2);
+        GUI.flash_string_fill(MD.kit.name);
+        ramP1Track = i;
+        mdBreakdown.ramP1Track = i;
+        break;
+      }
+    }
+    for (int i = 0; i < 4; i++) {
+      ((MDEncoder *)page4.encoders[i])->track = ramP1Track;
+    }
+    for (int i = 0; i < 4; i++) {
+      ((MDFXEncoder *)page.encoders[i])->loadFromKit();
+      ((MDFXEncoder *)page2.encoders[i])->loadFromKit();
+      ((MDEncoder *)page4.encoders[i])->loadFromKit();
+    }
+  }  
+
+  virtual void loop() {
+  }    
+};
+
+MDWesenLivePatchSketch sketch;
+
+void setup() {
+//  enableProfiling();
+  sketch.setup();
+  GUI.setSketch(&sketch);
+
+#if 1
+  if (SDCard.init() != 0) {
+    GUI.flash_strings_fill("SDCARD ERROR", "");
+    GUI.display();
+    delay(800);
+    MidiClock.mode = MidiClock.EXTERNAL_MIDI;
+    MidiClock.transmit = true;
+    MidiClock.start();
+  } else {
+    midiClockPage.setup();
+    if (BUTTON_DOWN(Buttons.BUTTON1)) {
+      GUI.pushPage(&midiClockPage);
+    }
+  }
+#endif
+}
+
+void loop() {
+}
