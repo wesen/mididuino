@@ -100,7 +100,7 @@ public class DefaultPatchManagerClient extends PatchManagerClient {
         try {
             response = httpclient.execute(httppost);
         } catch (Exception ex) {
-            throw new ProtocolException("Could not execute request.");
+            throw new ProtocolException("Could not execute request:"+requestString);
         }
         HttpEntity resEntity = response.getEntity();
 
