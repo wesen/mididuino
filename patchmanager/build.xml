@@ -89,7 +89,7 @@
       <manifest>      
         <attribute name="Built-By" value="${user.name}"/> 
         <attribute name="Specification-Vendor" value="Ruin&amp;Wesen"/>      
-	<attribute name="Specification-Title" value="Patchdownloader"/>
+	<attribute name="Specification-Title" value="PatchManager"/>
 	<attribute name="Specification-Version" value="0.0.1"/>
         <attribute name="Implementation-Vendor" value="Ruin&amp;Wesen"/>      
 	<attribute name="Implementation-Title" value="com.ruinwesen.patchmanager"/>
@@ -115,7 +115,8 @@
          </classpath> -->   
     </java>
   </target>
-	
+
+		
   <!-- creates the javadoc api -->
   <target name="javadoc">
     <javadoc
