@@ -71,6 +71,7 @@ import com.ruinwesen.midisend.MidiSendProcess;
 import com.ruinwesen.midisend.RWMidiSend;
 import com.ruinwesen.patch.DefaultPatch;
 import com.ruinwesen.patch.Patch;
+import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.metadata.PatchMetadata;
 import com.ruinwesen.patch.metadata.Path;
@@ -298,7 +299,7 @@ public class MidiSendForm extends Form implements DocumentListener, ItemListener
         final byte[] hexFileData;
         try {
             hexFileData = getHexFileData(new DefaultPatch(file));
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             return;
         }
 
@@ -386,23 +387,16 @@ public class MidiSendForm extends Form implements DocumentListener, ItemListener
         
     }
     
-    private byte[] getHexFileData(Patch patch) throws IOException {
-        PatchMetadata meta;
-        try {
-            meta = patch.getMetadata();
-        } catch (ParserConfigurationException ex) {
-            throw new IOException(ex);
-        } catch (SAXException ex) {
-            throw new IOException(ex);
-        }
-        
+    private byte[] getHexFileData(Patch patch) throws PatchDataException, IOException {
+        PatchMetadata meta = patch.getMetadata();
+
         Path hexfilepath = meta.getPath(PatchMetadata.DEFAULT_MIDIFILE_PATH_NAME);
         if (hexfilepath == null) {
-            throw new IOException("patch contains no Intel HEX file");
+            throw new PatchDataException("patch contains no Intel HEX file");
         }
         String hexfilepathString = hexfilepath.getPath();
         if (hexfilepathString != null && hexfilepathString.trim().isEmpty()) {
-            throw new IOException("invalid patch file");
+            throw new PatchDataException("invalid patch file");
         }
         
         Directory dir = patch.openDirectory();
