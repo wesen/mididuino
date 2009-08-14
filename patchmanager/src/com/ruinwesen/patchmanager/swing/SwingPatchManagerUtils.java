@@ -19,6 +19,7 @@ import name.cs.csutils.CSUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.ruinwesen.patch.Patch;
+import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.directory.Entry;
 import com.ruinwesen.patch.directory.JarFileBuilder;
@@ -46,15 +47,8 @@ public final class SwingPatchManagerUtils {
         File file = patch.getLocalFile();
         if (file != null && file.isDirectory()) {
             File dstfile = new File(file, PatchMetadata.FILENAME);
-            try {
-                PatchMetadataUtils.writeXML(meta, dstfile);
-            } catch (ParserConfigurationException ex) {
-                throw new IOException(ex);
-            } catch (TransformerFactoryConfigurationError ex) {
-                throw new IOException(ex);
-            } catch (TransformerException ex) {
-                throw new IOException(ex);
-            }
+
+            PatchMetadataUtils.writeXML(meta, dstfile);
             return;
         }
         
@@ -232,7 +226,7 @@ public final class SwingPatchManagerUtils {
                 } finally {
                     dir.close();
                 }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 if (log.isErrorEnabled()) {
                     log.error("Could not store midifile", ex);
                 }
@@ -243,6 +237,36 @@ public final class SwingPatchManagerUtils {
                 done = true; // ensure we exit the infinite-loop 
             }
         }
+    }
+
+    public static int showFileChooserLoop(Component parentComponent, JFileChooser chooser) {
+        for (;;) {
+            int option = chooser.showOpenDialog(parentComponent);
+            if (option != JFileChooser.APPROVE_OPTION) {
+                return JOptionPane.CANCEL_OPTION;
+            }
+            
+            File file = chooser.getSelectedFile();
+            if (file.exists()) {
+                int op2 = showReplaceExistingFileConfirmDialog(parentComponent, file);
+                if (op2 == JOptionPane.YES_OPTION) {
+                    return JOptionPane.YES_OPTION;
+                } else if (op2 == JOptionPane.CANCEL_OPTION) {
+                    return JOptionPane.CANCEL_OPTION;
+                }
+            } else {
+                return JOptionPane.YES_OPTION;
+            }
+        }
+    }
+    
+    public static int showReplaceExistingFileConfirmDialog(Component parentComponent,
+            File file) {
+        return JOptionPane.showConfirmDialog(parentComponent,
+                "Do you want to replace the existing file "+file+" ?",
+                "Warning",
+                JOptionPane.QUESTION_MESSAGE,
+                JOptionPane.YES_NO_CANCEL_OPTION);
     }
     
 }
