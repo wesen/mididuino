@@ -106,6 +106,7 @@ import com.ruinwesen.patchmanager.swing.tasks.DeletePatchTask;
 import com.ruinwesen.patchmanager.swing.tasks.GetLatestNewsTask;
 import com.ruinwesen.patchmanager.swing.tasks.PerformQueryTask;
 import com.ruinwesen.patchmanager.swing.tasks.SynchronizeRepositoryTask;
+import com.ruinwesen.patchmanager.swing.wizards.CreatePublishPatchWizard;
 
 public class SwingPatchManager {
 
@@ -231,6 +232,10 @@ public class SwingPatchManager {
     }
     
     private void writeAppProperties() {
+        if (log.isDebugEnabled()) {
+            log.debug("Writing application properties: "+applicationPropertiesFile);
+        }
+        
         OutputStream os = null;
         try {
             os = new FileOutputStream(applicationPropertiesFile);
@@ -337,12 +342,14 @@ public class SwingPatchManager {
         acToggleFilterSidebarVisibility =
             new CSAction("Filter")
             .useResourceKey("action.sidebar.filter.toggle-visibility")
-            .useInvokationTarget(this, "toggleFilterSidebarVisibility");
+            .useInvokationTarget(this, "toggleFilterSidebarVisibility")
+            .setSelected(true);
             
         acTogglePatchDetailsSidebarVisibility =
             new CSAction("Patch Details")
             .useResourceKey("action.sidebar.patch-details.toggle-visibility")
-            .useInvokationTarget(this, "togglePatchDetailsSidebarVisibility");
+            .useInvokationTarget(this, "togglePatchDetailsSidebarVisibility")
+            .setSelected(true);
 
         acPatchListViewSendSelectedAction = 
             new CSAction("Send Patch")
@@ -378,7 +385,9 @@ public class SwingPatchManager {
         menuEdit.addSeparator(); // server tasks
         menuEdit.add(new CSAction(this, "publishPatch"));
         menuEdit.addSeparator(); // misc server tasks
-        // menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
+        if (debug.isDebugEnabled()) {
+            menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
+        }
         menuEdit.add(new CSAction(this, "syncRepository"));
         
         jmenubar.add(menuEdit);
@@ -390,8 +399,10 @@ public class SwingPatchManager {
         JMenu menuHelp = new JMenu("Help") ;
         menuHelp.add(new CSAction(this, "regenerateIndex")
         .useResourceKey("action.index.regenerate"));
+        if (debug.isDebugEnabled()) {
         menuHelp.add(new CSAction(this, "askServerAboutNewClientVersion")
         .useResourceKey("action.check-for-updates"));
+        }
         
         jmenubar.add(menuHelp);
 
@@ -433,7 +444,7 @@ public class SwingPatchManager {
      //   scrollFilter.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
    
 
-        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(searchPanel.getContainer(), BorderLayout.NORTH);
         centerPanel.add(scrollPatchList, BorderLayout.CENTER);
 
@@ -458,9 +469,7 @@ public class SwingPatchManager {
         scrollPatchDetails = new JScrollPane(patchDetailsView.getContainer());
         rightPanel.add(scrollPatchDetails, BorderLayout.CENTER);
 
-        center_right_split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                false, centerPanel, rightPanel);
-        center_right_split.setResizeWeight(1);
+        center_right_split = createSplitPane();
 /*
         patchmanager.getIndex().readIndex(null);
         try {
@@ -482,10 +491,12 @@ public class SwingPatchManager {
 
         if (!appProperties.getBooleanProperty(
                         KEY_SIDEBAR_FILTER_VISIBLE, true)) {
+            acToggleFilterSidebarVisibility.setSelected(false);
             toggleFilterSidebarVisibility();
         }
         if (!appProperties.getBooleanProperty(
                         KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, true)) {
+            acTogglePatchDetailsSidebarVisibility.setSelected(false);
             togglePatchDetailsSidebarVisibility();
         }
         
@@ -502,6 +513,13 @@ public class SwingPatchManager {
         
     }
     
+    private JSplitPane createSplitPane() {
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                false, centerPanel, rightPanel);
+        split.setResizeWeight(1);
+        return split;
+    }
+    
     public void toggleFilterSidebarVisibility() {
         leftPanel.setVisible(!leftPanel.isVisible());
         
@@ -509,7 +527,7 @@ public class SwingPatchManager {
         appProperties.setBooleanProperty(KEY_SIDEBAR_FILTER_VISIBLE, acToggleFilterSidebarVisibility.isSelected());
 
         if (leftPanel.isVisible()) {
-        center_right_split.setDividerLocation(center_right_split.getLastDividerLocation());
+      //  center_right_split.setDividerLocation(center_right_split.getLastDividerLocation());
         }
         frame.getContentPane().invalidate();
         if (frame.getContentPane() instanceof JComponent) {
@@ -522,6 +540,33 @@ public class SwingPatchManager {
     private int lastDividerSize = -1;
     
     public void togglePatchDetailsSidebarVisibility() {
+        boolean sidebarVisible;
+        if (center_right_split != null) { // hide patch details
+            sidebarVisible = false;
+            center_right_split.removeAll();
+            frame.getContentPane().remove(center_right_split);
+            center_right_split = null;
+            frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
+        } else { // show patch details
+            sidebarVisible = true;
+            frame.getContentPane().remove(centerPanel);
+            center_right_split = createSplitPane();
+            frame.getContentPane().add(center_right_split, BorderLayout.CENTER);
+        }
+        centerPanel.invalidate();
+        centerPanel.revalidate();
+        centerPanel.repaint();
+        
+        frame.getContentPane().invalidate();
+        if (frame.getContentPane() instanceof JComponent)
+            ((JComponent)frame.getContentPane()).revalidate();
+        frame.getContentPane().repaint();
+        
+
+        appProperties.setBooleanProperty(KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, sidebarVisible);
+        
+        /*
+        
         if (rightPanel.isVisible()) {
             lastDividerLocation = center_right_split.getDividerLocation();
             lastDividerSize = center_right_split.getDividerSize();
@@ -533,12 +578,11 @@ public class SwingPatchManager {
             center_right_split.setDividerLocation(lastDividerLocation);
         }
         acTogglePatchDetailsSidebarVisibility.setSelected(rightPanel.isVisible());
-        appProperties.setBooleanProperty(KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, acTogglePatchDetailsSidebarVisibility.isSelected());
         frame.getContentPane().invalidate();
         if (frame.getContentPane() instanceof JComponent) {
             ((JComponent)frame.getContentPane()).revalidate();
         }
-        frame.getContentPane().repaint();
+        frame.getContentPane().repaint();*/
     }
     
     public void patchListViewSendSelected() {
@@ -592,6 +636,8 @@ public class SwingPatchManager {
     private JPanel rightPanel;
 
     private JSplitPane center_right_split;
+
+    private JPanel centerPanel;
     
     public void setStatus(String text) {
         synchronized (this) {
@@ -748,7 +794,10 @@ public class SwingPatchManager {
     
     @SwingActionData("Publish Patch...")
     public void publishPatch() {
-        new PublishPatchDialog(this).showDialog();
+        //new PublishPatchDialog(this).showDialog();
+        
+        new CreatePublishPatchWizard(this).showDialog(frame);
+        
         
         //new PublishPatchDialog(this).showDialog(frame);
         
@@ -882,7 +931,7 @@ public class SwingPatchManager {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            Patch patch = (Patch) patchListView.getSelectedValue();
+            IndexedPatch patch = (IndexedPatch) patchListView.getSelectedValue();
             patchDetailsView.setPatch(patch);
 
             boolean midifileop = patch != null
@@ -890,10 +939,16 @@ public class SwingPatchManager {
             boolean sourcecodeop = patch != null
                 && DefaultPatch.containsSource(patch);
             
+            Auth auth = getUserAuthentication(false);
+            boolean deleteop = patch != null
+                && auth != null 
+                && auth.getUsername() != null
+                && auth.getUsername().equals(patch.getMetadata().getAuthor());
+            
             acPatchListViewSendSelectedAction.setEnabled(midifileop);
             acPatchListViewSelectedSaveMidiFileAction.setEnabled(midifileop);
 
-            acPatchListViewDeleteSelectedAction.setEnabled(sourcecodeop);
+            acPatchListViewDeleteSelectedAction.setEnabled(deleteop);
             acPatchListViewSelectedSaveSourceAction.setEnabled(sourcecodeop);
         }
 
