@@ -94,6 +94,7 @@ import com.ruinwesen.patchmanager.swing.components.FilterControl;
 import com.ruinwesen.patchmanager.swing.components.PatchDetailsView;
 import com.ruinwesen.patchmanager.swing.components.PatchListCellRenderer;
 import com.ruinwesen.patchmanager.swing.components.SearchPanel;
+import com.ruinwesen.patchmanager.swing.forms.AboutDialog;
 import com.ruinwesen.patchmanager.swing.forms.BugreportForm;
 import com.ruinwesen.patchmanager.swing.forms.MidiSendForm;
 import com.ruinwesen.patchmanager.swing.forms.NewLoginForm;
@@ -158,9 +159,17 @@ public class SwingPatchManager {
 
     private CSAction acToggleFilterSidebarVisibility;
     private CSAction acTogglePatchDetailsSidebarVisibility;
-    
+
     public String getVersion() {
         return version;
+    }
+
+    public String getBuildNumber() {
+        return build_number;
+    }
+
+    public String getBuildTimestamp() {
+        return build_timestamp;
     }
     
     public void start() {
@@ -202,11 +211,11 @@ public class SwingPatchManager {
     
     private void loadVersionInfo() {
         CSProperties versionInfo = getVersionProperties();
-        String str = versionInfo.getProperty("patchdownloader.build.number");
+        String str = versionInfo.getProperty("patchmanager.build.number");
         if (str != null) { this.build_number = str; }
-        str = versionInfo.getProperty("patchdownloader.build.timestamp");
+        str = versionInfo.getProperty("patchmanager.build.timestamp");
         if (str != null) { this.build_timestamp = str; }
-        str = versionInfo.getProperty("patchdownloader.version");
+        str = versionInfo.getProperty("patchmanager.version");
         if (str != null) { this.version = str; }
 
         // always print this
@@ -403,6 +412,8 @@ public class SwingPatchManager {
         menuHelp.add(new CSAction(this, "askServerAboutNewClientVersion")
         .useResourceKey("action.check-for-updates"));
         }
+
+        menuHelp.add(new CSAction(this, "showAboutDialog"));
         
         jmenubar.add(menuHelp);
 
@@ -511,6 +522,11 @@ public class SwingPatchManager {
         indexUpdated();
         
         
+    }
+    
+    @SwingActionData("About Patchmanager")
+    public void showAboutDialog() {
+        AboutDialog.showDialog(this);
     }
     
     private JSplitPane createSplitPane() {
