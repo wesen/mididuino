@@ -175,11 +175,10 @@ public class Tagset extends AbstractCollection<Tag> implements Comparator<Tag> {
     
     public static Tagset parseTags(String tags) {
         Tagset set = new Tagset();
-        for (String tag: tags.split("[\\n\\r\\s]+")) {
-            if (tag.length() == 0) {
-                continue;
+        for (String tag: tags.split("[\\n\\r\\s,]+")) {
+            if (!tag.isEmpty()) {
+                set.add(tag);
             }
-            set.add(tag);
         }
         return set;
     }
