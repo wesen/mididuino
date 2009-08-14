@@ -36,10 +36,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.filechooser.FileFilter;
 
 import com.ruinwesen.patchmanager.swing.components.TextPopup;
 
 import name.cs.csutils.CSAction;
+import name.cs.csutils.CSFileSelectionContext;
 
 public class FileFormElement extends TextFieldFormElement 
     implements ActionListener {
@@ -48,6 +50,8 @@ public class FileFormElement extends TextFieldFormElement
     
     private JButton btnSelectFile;
     private int fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES;
+
+    private FileFilter fileFilter;
     
     public FileFormElement() {
         new TextPopup().installAt(getField());
@@ -107,7 +111,16 @@ public class FileFormElement extends TextFieldFormElement
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(fileSelectionMode);
         fc.setMultiSelectionEnabled(false);
+        if (fileFilter != null) {
+            fc.setFileFilter(fileFilter);
+        }
+        /*if (fileSelectionMode == JFileChooser.DIRECTORIES_ONLY) {
+            fc.setAcceptAllFileFilterUsed(false);
+        }*/
+        CSFileSelectionContext.getDefaultContext().beforeFileSelection(fc);
+        fc.setSelectedFile(getFile());
         if (fc.showOpenDialog(getField()) == JFileChooser.APPROVE_OPTION) {
+            CSFileSelectionContext.getDefaultContext().afterFileSelection(fc);
             setFile(fc.getSelectedFile());
         }
     }
@@ -119,6 +132,10 @@ public class FileFormElement extends TextFieldFormElement
             return new JComponent[]{label, getField(), btnSelectFile};
         }
         return new JComponent[]{getField(), btnSelectFile};
+    }
+
+    public void setFileFilter(FileFilter fileFilter) {
+        this.fileFilter = fileFilter;
     }
 
 }
