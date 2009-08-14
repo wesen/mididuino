@@ -102,8 +102,14 @@ public class CheckForUpdatesTask extends SimpleSwingWorker {
             Response response = patchmanager.getPatchManagerClient().execute(new RequestGetClientInfo());
             if (response.isOkStatus()) {
                 latestVersion = response.getProperty(Response.KEY_CLIENT_VERSION);
+                if (log.isDebugEnabled()) {
+                    log.debug("request new client version ok:"+latestVersion);
+                }
             }
         } catch (Exception ex) {
+            if (log.isDebugEnabled()) {
+                log.debug("request new client version failed", ex);
+            }
         }
 
         synchronized (this) {
