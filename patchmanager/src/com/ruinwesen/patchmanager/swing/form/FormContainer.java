@@ -28,19 +28,19 @@
  */
 package com.ruinwesen.patchmanager.swing.form;
 
-import java.awt.Dimension;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 
 import name.cs.csutils.IconLoader;
 
@@ -80,6 +80,19 @@ public class FormContainer implements FormElementListener {
         return panel;
     }
 
+    private GroupLayout.Alignment horizontalAlignment(Component c) {
+        float a = c.getAlignmentX();
+        if (a == Component.LEFT_ALIGNMENT) {
+            return GroupLayout.Alignment.LEADING;
+        } else if (a ==  Component.RIGHT_ALIGNMENT) {
+            return GroupLayout.Alignment.TRAILING;
+        } else if (a == Component.CENTER_ALIGNMENT) {
+            return null;//GroupLayout.Alignment.CENTER;
+        } else {
+            return null;
+        }
+    }
+    
     protected void buildContainer() {
         
         ImageIcon warnIcon = IconLoader.getInstance().getIcon("dialog.warning");
@@ -97,7 +110,7 @@ public class FormContainer implements FormElementListener {
             // label column
             {
                 int rowcount = 0;
-                Group column = ly.createParallelGroup();
+                ParallelGroup column = ly.createParallelGroup();
                 
                 for (FormElement elem: form) {
                     JComponent[] components = elem.getComponents();
@@ -114,22 +127,30 @@ public class FormContainer implements FormElementListener {
             // remaining
             {
                 int rowcount = 0;
-                Group column = ly.createParallelGroup();
+                ParallelGroup column = ly.createParallelGroup();
                 
                 for (FormElement elem: form) {
                     JComponent[] components = elem.getComponents();
-                    Group compact = ly.createSequentialGroup();
-                    
-                    for (int i=0;i<components.length;i++) {
-                        if (i == 0 && components[i] == elem.getLabel()) {
-                           // System.out.println("ignore: "+((JLabel)components[i]).getText());
-                            continue; // ignore label
-                        } else {
-                            compact.addComponent(components[i]);
+                    if (components.length == 1  && components[0] == elem.getMainComponent()) {
+                        GroupLayout.Alignment al = horizontalAlignment(components[0]);
+                        if (al != null)
+                            column.addComponent(components[0], al);
+                        else
+                            column.addComponent(components[0]);
+                    } else {
+                        SequentialGroup compact = ly.createSequentialGroup();
+                        
+                        for (int i=0;i<components.length;i++) {
+                            if (i == 0 && components[i] == elem.getLabel()) {
+                               // System.out.println("ignore: "+((JLabel)components[i]).getText());
+                                continue; // ignore label
+                            } else {
+                                compact.addComponent(components[i]);
+                            } 
                         }
+                        
+                        column.addGroup(compact);
                     }
-                    
-                    column.addGroup(compact);
                     rowcount++;
                 }
                 
