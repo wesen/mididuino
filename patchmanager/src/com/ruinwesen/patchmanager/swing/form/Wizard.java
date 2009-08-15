@@ -45,6 +45,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import name.cs.csutils.CSAction;
 import name.cs.csutils.CSEventAdapter;
@@ -60,21 +61,52 @@ public class Wizard implements ActionListener, FormElementListener {
     private JPanel container;
     private JPanel formContainer;
 
-    private CSAction acNext;
-    private CSAction acFinish;
-    private CSAction acCancel;
+    protected CSAction acNext;
+    protected CSAction acFinish;
+    protected CSAction acCancel;
+
+    protected JButton btnNext;
+    protected JButton btnFinish;
+    protected JButton btnCancel;
+    
     private JLabel labelErrorHint;
     
     private FormContainer currentForm;
     private JDialog dialog;
     private boolean finishCapable = false;
     private boolean nextCapable = true;
+    private String title;
+    protected boolean allowResize = true;
+    private boolean confirmOnCancel;
     
     public Wizard() {
         super();
         init();
     }
+    
+    public void setHint(String text) {
+        labelErrorHint.setText(text);
+    }
+    
+    public void setConfirmOnCancelEnabled(boolean value) {
+        this.confirmOnCancel  = value;
+    }
+    
+    public void setResizable(boolean resizable) {
+        this.allowResize = resizable;
+    }
+    
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+        if (dialog != null) {
+            dialog.setTitle(title);
+        }
+    }
+    
     public void setNextCapable(boolean value) {
         nextCapable = value;
         updateOptions();
@@ -90,7 +122,7 @@ public class Wizard implements ActionListener, FormElementListener {
     }
     
     public void showDialog(JFrame parentComponent) {
-        JDialog dialog = new JDialog(parentComponent);
+        JDialog dialog = new JDialog(parentComponent, title);
         this.dialog = dialog;
         
         dialog.addWindowListener(new CSEventAdapter() {
@@ -99,10 +131,12 @@ public class Wizard implements ActionListener, FormElementListener {
                 action_cancel();
             }
         });
-        dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        dialog.setResizable(allowResize);
+        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.getContentPane().add(getContainer());
         dialog.pack();
         dialog.setLocationByPlatform(true);
+        dialog.setLocationRelativeTo(parentComponent);
         dialog.setModal(true);
         dialog.setVisible(true);
         dialog.dispose();
@@ -133,6 +167,7 @@ public class Wizard implements ActionListener, FormElementListener {
     
     public void add(FormContainer form) {
         forms.add(form);
+        btnNext.setVisible(forms.size()>1);
         form.getForm().addFormElementListener(this);
         formContainer.add(form.getContainer(), form.getName());
         if (forms.size()==1) { // first form
@@ -159,9 +194,10 @@ public class Wizard implements ActionListener, FormElementListener {
         .useResourceKey(AC_CANCEL)
         .useActionListener(this);
 
-        JButton btnNext = new JButton(acNext);
-        JButton btnFinish = new JButton(acFinish);
-        JButton btnCancel = new JButton(acCancel);
+        btnNext = new JButton(acNext);
+        btnNext.setVisible(false);
+        btnFinish = new JButton(acFinish);
+        btnCancel = new JButton(acCancel);
         
         labelErrorHint = new JLabel("aaaaaaaaa ");
 
@@ -246,14 +282,22 @@ public class Wizard implements ActionListener, FormElementListener {
         if (!acFinish.isEnabled()) {
             return;
         }
+        handle_finish();
+    }
+    
+    protected void handle_finish() {
+        closeDialog();
     }
 
     protected void action_cancel() {
         if (!acCancel.isEnabled()) {
             return;
         }
-
-        if (JOptionPane.showConfirmDialog(getContainer(), 
+        handle_cancel();
+    }
+    
+    protected void handle_cancel() {
+        if ((!confirmOnCancel) || JOptionPane.showConfirmDialog(getContainer(), 
                 "Are you sure you want to cancel ?",
                 "Cancel",
                 JOptionPane.YES_NO_OPTION
@@ -261,7 +305,7 @@ public class Wizard implements ActionListener, FormElementListener {
             closeDialog();
         }
     }
-    
+
     protected void closeDialog() {
         JDialog dlg = getDialog();
         if (dlg != null) {
