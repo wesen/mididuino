@@ -28,15 +28,24 @@
  */
 package com.ruinwesen.patch;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.ZipException;
+
+import name.cs.csutils.CSUtils;
 
 import com.ruinwesen.patch.directory.Directory;
 import com.ruinwesen.patch.directory.FSDirectory;
 import com.ruinwesen.patch.directory.JarDirectory;
 import com.ruinwesen.patch.metadata.PatchMetadata;
+import com.ruinwesen.patch.metadata.Path;
+import com.ruinwesen.patch.utils.HexFileValidator;
+import com.ruinwesen.patch.utils.Validator;
+import com.ruinwesen.patch.utils.ValidatorInputStream;
 
 public class DefaultPatch extends AbstractPatch {
 
@@ -96,6 +105,39 @@ public class DefaultPatch extends AbstractPatch {
         }
     }
     
+    public static InputStream getMidiFileInputStream(Patch patch) throws PatchDataException, IOException {
+        PatchMetadata meta = patch.getMetadata();
+        Path path = meta.getPath(PatchMetadata.DEFAULT_MIDIFILE_PATH_NAME);
+        if (path == null) {
+            return null;
+        }
+        Directory dir = patch.openDirectory();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            InputStream is = dir.getInputStream(path.getPath());
+            if (is == null) {
+                throw new IOException("path does not exist: "+path.getPath());
+            }
+            Validator validator = new HexFileValidator(true);
+            is = new ValidatorInputStream(is, validator);
+            try {
+                CSUtils.copy(is, os);
+            } finally {
+                is.close();
+            }
+            if (!validator.isValid()) {
+                throw new IOException("not a valid intel hex file");
+            }
+        } finally {
+            dir.close();
+        }
+        byte [] data = os.toByteArray();
+        if (data.length==0) {
+            return null;
+        }
+        return new ByteArrayInputStream(data);
+    }
+    
     public static boolean containsMidiFile(Patch patch) {
         try {
             return patch
@@ -107,3 +149,4 @@ public class DefaultPatch extends AbstractPatch {
     }
     
 }
+ 
