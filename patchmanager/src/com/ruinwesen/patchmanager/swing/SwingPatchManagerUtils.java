@@ -32,16 +32,20 @@ public final class SwingPatchManagerUtils {
     public static final javax.swing.filechooser.FileFilter RWP_FILE_FILTER =
         FileFilterFactory.createNamedFileFilter(
                 "Ruin & Wesen Patch (*.rwp)",
+                FileFilterFactory.or(
+                        FileFilterFactory.DirectoriesOnly(),
                 FileFilterFactory.and(
                 FileFilterFactory.FilesOnly(),
-                FileFilterFactory.SuffixFilter(".rwp")));
+                FileFilterFactory.SuffixFilter(".rwp"))));
 
     public static final javax.swing.filechooser.FileFilter HEX_FILE_FILTER =
         FileFilterFactory.createNamedFileFilter(
                 "Intel Hex File (*.hex)",
+                FileFilterFactory.or(
+                        FileFilterFactory.DirectoriesOnly(),
                 FileFilterFactory.and(
                 FileFilterFactory.FilesOnly(),
-                FileFilterFactory.SuffixFilter(".hex")));
+                FileFilterFactory.SuffixFilter(".hex"))));
     
     private static Log log = LogFactory.getLog(SwingPatchManagerUtils.class);
 
