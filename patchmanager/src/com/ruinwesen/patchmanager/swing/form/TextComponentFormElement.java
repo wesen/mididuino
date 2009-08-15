@@ -28,8 +28,6 @@
  */
 package com.ruinwesen.patchmanager.swing.form;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -52,6 +50,7 @@ public class TextComponentFormElement extends FormElement implements DocumentLis
         }
         this.field = field;
         this.oldValue = getText();
+        setMainComponent(field);
         install();
     }
 
@@ -100,20 +99,6 @@ public class TextComponentFormElement extends FormElement implements DocumentLis
         String newValue = getText();
         handleValueChange(oldValue, newValue);
         oldValue = newValue;
-    }
-
-    @Override
-    protected void setFormInputElementsEnabled(boolean enabled) {
-        field.setEnabled(enabled);
-    }
-
-    @Override
-    public JComponent[] getComponents() {
-        JLabel label = getLabel();
-        if (label != null) {
-            return new JComponent[]{label, field};
-        }
-        return new JComponent[]{field};
     }
 
 }

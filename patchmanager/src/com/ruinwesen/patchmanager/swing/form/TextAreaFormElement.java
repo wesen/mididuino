@@ -29,7 +29,6 @@
 package com.ruinwesen.patchmanager.swing.form;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -60,11 +59,7 @@ public class TextAreaFormElement extends TextComponentFormElement {
 
     @Override
     public JComponent[] getComponents() {
-        JLabel label = getLabel();
-        if (label != null) {
-            return new JComponent[]{label, scrollPane};
-        }
-        return new JComponent[]{scrollPane};
+        return componentArray(getLabel(), scrollPane);
     }
 
 }

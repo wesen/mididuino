@@ -30,6 +30,7 @@ package com.ruinwesen.patchmanager.swing.form;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -46,14 +47,54 @@ public abstract class FormElement {
     private boolean enabled = true;
     private JLabel label;
     private FormElementValidator validator;
+    private JComponent mainComponent;
 
     public FormElement() {
         propertyChangeSupport = new PropertyChangeSupport(this);
         listenerList = new EventListenerList();
     }
     
+    public void setMainComponent(JComponent c) {
+        this.mainComponent = c;
+        JLabel label = getLabel();
+        if (label != null) {
+            label.setLabelFor(c);
+        }
+    }
+    
+    public JComponent getMainComponent() {
+        return mainComponent;
+    }
+    
     public String getLabelText() {
         return label == null ? null : label.getText();
+    }
+
+    public void setLabel(String labelValue) {
+        if (labelValue == null) {
+            throw new IllegalArgumentException("labelValue==null");
+        }
+        JLabel label = getLabel();
+        if (label != null) {
+            label.setText(labelValue);
+        } else {
+            setLabel(new JLabel(labelValue));
+        }
+    }
+
+    public void setLabel(JLabel label) {
+        JLabel oldLabel = this.label;
+        if (oldLabel != null) {
+            oldLabel.setLabelFor(null);
+        } 
+        this.label = label;
+        if  (label != null) {
+            label.setLabelFor(getMainComponent());
+        }
+    }
+    
+    public JLabel getLabel() {
+        return label;
     }
     
     public void validate() throws ValidationError {
@@ -92,22 +133,22 @@ public abstract class FormElement {
         return validator;
     }
     
-    public void setLabel(String labelValue) {
-        if (labelValue == null) {
-            throw new IllegalArgumentException("labelValue==null");
+    protected JComponent[] componentArray(JComponent ... components) {
+        int length = 0;
+        // shift components to begin of array so there are no null-fields between them
+        for (int i=0;i<components.length;i++) {
+            if (components[i] != null) {
+                components[length++] = components[i];
+            }
         }
-        setLabel(new JLabel(labelValue));
+        return length == components.length 
+                ? components 
+                : Arrays.copyOf(components, length);        
     }
     
-    public void setLabel(JLabel label) {
-        this.label = label;
+    public JComponent[] getComponents() {
+        return componentArray(getLabel(), getMainComponent());
     }
-    
-    public JLabel getLabel() {
-        return label;
-    }
-    
-    public abstract JComponent[] getComponents();
     
     public void setValid(boolean value) {
         boolean oldValue = this.validity_flag;
@@ -131,7 +172,12 @@ public abstract class FormElement {
         }
     }
     
-    protected abstract void setFormInputElementsEnabled(boolean enabled);
+    protected void setFormInputElementsEnabled(boolean enabled) {
+        JComponent main = getMainComponent();
+        if (main != null) {
+            main.setEnabled(enabled);
+        }
+    }
     
     public boolean isValid() {
         return validity_flag;
