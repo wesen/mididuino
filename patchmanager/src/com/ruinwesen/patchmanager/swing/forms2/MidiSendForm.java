@@ -37,18 +37,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JProgressBar;
 import javax.swing.ListModel;
 
 import name.cs.csutils.CSAction;
 import name.cs.csutils.CSUtils;
+import name.cs.csutils.concurrent.SimpleSwingWorker;
 
 import com.ruinwesen.midisend.MidiDevice;
 import com.ruinwesen.midisend.MidiSend;
@@ -75,11 +78,122 @@ public class MidiSendForm extends Form {
     CSAction acRefresh;
     JProgressBar progressBar;
     private boolean sourcefileSelectable;
+    private String preferredInputDeviceName;
+    private String preferredOutputDeviceName;
+    private boolean firstRefresh = true;
     
     public MidiSendForm() {
         this(new RWMidiSend());
     }
+
+    public MidiSendForm(MidiSend midisend) {
+        super("midi-send");
+        if (midisend == null) {
+            throw new IllegalArgumentException("midisend==null");
+        }
+        this.midisend = midisend;
+        
+        feSourceFile = new FileFormElement();
+        feSourceFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        feSourceFile.setValidator(new SourceFileValidator("File must be a Intel Hex File or a patch containing an Intel Hex file"));
+        feSourceFile.setLabel("File");
+        feSourceFile.setFileFilterList(Arrays.asList(
+                SwingPatchManagerUtils.HEX_FILE_FILTER,
+                SwingPatchManagerUtils.RWP_FILE_FILTER
+                        ));
+        
+        feMidiInput = new ComboBoxFormElement();
+        feMidiInput.setLabel("MIDI-In");
+        feMidiInput.setValidator(new DeviceValidator("No device selected"));
+        feMidiOutput = new ComboBoxFormElement();
+        feMidiOutput.setLabel("MIDI-Out");
+        feMidiOutput.setValidator(new DeviceValidator("No device selected"));
+        
+        add(feSourceFile);
+        add(feMidiInput);
+        add(feMidiOutput);
+
+        progressBar = new JProgressBar();
+        
+        acRefresh = new CSAction("Refresh")
+        .useInvokationTarget(this,"refreshDeviceList")
+        .useInvokeLater();
+        JButton btnRefresh = new JButton(acRefresh);
+        btnRefresh.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        
+        add(new CustomFormElement(btnRefresh));
+        
+        CustomFormElement pbelem = new CustomFormElement(progressBar);
+        pbelem.setLabel("Status");
+        add(pbelem);
+        
+        refreshDeviceList();
+    }
+
+    private class DeviceRefresher extends SimpleSwingWorker {
+
+        private static final long serialVersionUID = 7564497263941075449L;
+        private List<MidiDevice> inputList = Collections.emptyList();
+        private List<MidiDevice> outputList = Collections.emptyList();
+        
+        @Override
+        protected void setup() {
+            acRefresh.setEnabled(false);
+        }
+        
+        @Override
+        protected synchronized void process() {
+            try {
+                inputList = midisend.getInputDeviceList();
+            } catch (MidiSendException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                outputList = midisend.getOutputDeviceList();
+            } catch (MidiSendException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+        @Override
+        protected void cleanup() {
+            acRefresh.setEnabled(true);
+            refreshDeviceList(feMidiInput, inputList);
+            refreshDeviceList(feMidiOutput, outputList);
+            if (firstRefresh) {
+                firstRefresh = false;
+                if (preferredInputDeviceName != null) {
+                    selectInputDeviceByName(preferredInputDeviceName);
+                }
+                if (preferredOutputDeviceName != null) {
+                    selectOutputDeviceByName(preferredOutputDeviceName);
+                }
+            }
+        }
+        
+    }
     
+    public void selectInputDeviceByName(String name) {
+        this.preferredInputDeviceName = name;
+        selectDeviceByName(feMidiInput.getField(), name);
+    }
+
+    public void selectOutputDeviceByName(String name) {
+        this.preferredOutputDeviceName = name;
+        selectDeviceByName(feMidiOutput.getField(), name);
+    }
+
+    private void selectDeviceByName(JComboBox cb, String name) {
+        ComboBoxModel model = cb.getModel();
+        for (int i=model.getSize()-1;i>=0;i--) {
+            MidiDevice dev = (MidiDevice) model.getElementAt(i);
+            if (dev.getName().equals(name)) {
+                cb.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+
     public void setSourceFile(File file) {
         feSourceFile.setFile(file);
     }
@@ -127,50 +241,6 @@ public class MidiSendForm extends Form {
         return (MidiDevice) feMidiOutput.getValue();
     }
     
-    public MidiSendForm(MidiSend midisend) {
-        super("midi-send");
-        if (midisend == null) {
-            throw new IllegalArgumentException("midisend==null");
-        }
-        this.midisend = midisend;
-        
-        feSourceFile = new FileFormElement();
-        feSourceFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        feSourceFile.setValidator(new SourceFileValidator("File must be a Intel Hex File or a patch containing an Intel Hex file"));
-        feSourceFile.setLabel("File");
-        feSourceFile.setFileFilterList(Arrays.asList(
-                SwingPatchManagerUtils.HEX_FILE_FILTER,
-                SwingPatchManagerUtils.RWP_FILE_FILTER
-                        ));
-        
-        feMidiInput = new ComboBoxFormElement();
-        feMidiInput.setLabel("MIDI-In");
-        feMidiInput.setValidator(new DeviceValidator("No device selected"));
-        feMidiOutput = new ComboBoxFormElement();
-        feMidiOutput.setLabel("MIDI-Out");
-        feMidiOutput.setValidator(new DeviceValidator("No device selected"));
-        
-        add(feSourceFile);
-        add(feMidiInput);
-        add(feMidiOutput);
-
-        progressBar = new JProgressBar();
-        
-        acRefresh = new CSAction("Refresh")
-        .useInvokationTarget(this,"refreshDeviceList")
-        .useInvokeLater();
-        JButton btnRefresh = new JButton(acRefresh);
-        btnRefresh.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        
-        add(new CustomFormElement(btnRefresh));
-        
-        CustomFormElement pbelem = new CustomFormElement(progressBar);
-        pbelem.setLabel("Status");
-        add(pbelem);
-        
-        refreshDeviceList();
-    }
-
     public void setInputControlsEnabled(boolean value) {
         feSourceFile.setEnabled(value && sourcefileSelectable);
         feMidiInput.setEnabled(value);
@@ -179,23 +249,9 @@ public class MidiSendForm extends Form {
     }
 
     public void refreshDeviceList() {
-        try {
-            acRefresh.setEnabled(false);
-            try {
-                refreshDeviceList(feMidiInput, midisend.getInputDeviceList());
-            } catch (MidiSendException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                refreshDeviceList(feMidiOutput, midisend.getOutputDeviceList());
-            } catch (MidiSendException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
-            acRefresh.setEnabled(true);
-        }
+        new Thread(new DeviceRefresher()).start();
     }
-    
+
     private void refreshDeviceList(ComboBoxFormElement fe,
             List<MidiDevice> list) {
         Object previousSelection = fe.getField().getSelectedItem();

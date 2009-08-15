@@ -30,8 +30,10 @@ package com.ruinwesen.patchmanager.swing.wizards;
 
 import java.io.File;
 
+import name.cs.csutils.CSProperties;
 import name.cs.csutils.concurrent.SimpleSwingWorker;
 
+import com.ruinwesen.midisend.MidiDevice;
 import com.ruinwesen.midisend.MidiSend;
 import com.ruinwesen.midisend.MidiSendProcess;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
@@ -41,8 +43,14 @@ import com.ruinwesen.patchmanager.swing.forms2.MidiSendForm;
 
 public class MidiSendWizard extends Wizard {
 
+    public static final String KEY_INPUT_DEVICE = 
+        MidiSendWizard.class.getName()+"input-device";
+    public static final String KEY_OUTPUT_DEVICE = 
+        MidiSendWizard.class.getName()+"output-device";
+    
     private MidiSendForm midisendForm;
     private SendThread sendThread;
+    private CSProperties properties = null;
     
     public MidiSendWizard() {
         super();
@@ -56,6 +64,21 @@ public class MidiSendWizard extends Wizard {
         setFinishCapable(true);
     }
 
+    public void setProperties(CSProperties properties) {
+        this.properties = properties;
+        if (properties != null) {
+            String in = properties.getProperty(KEY_INPUT_DEVICE);
+            String out = properties.getProperty(KEY_OUTPUT_DEVICE);
+            if (in != null) {
+                midisendForm.selectInputDeviceByName(in);
+            }
+            if (out != null) {
+                midisendForm.selectOutputDeviceByName(out);
+            }
+        }
+    }
+    
+    
     public void setSourceFileSelectable(boolean value) {
         midisendForm.setSourceFileSelectable(value);
     }
@@ -91,9 +114,17 @@ public class MidiSendWizard extends Wizard {
     private void doSend()  {
         setHint("Sending ...");
         MidiSend midisend = midisendForm.getMidiSend();
+
+        MidiDevice input = midisendForm.getInputDevice();
+        MidiDevice output = midisendForm.getOutputDevice();
         
-        midisend.setInputDevice(midisendForm.getInputDevice());
-        midisend.setOutputDevice(midisendForm.getOutputDevice());
+        if (properties != null) {
+            properties.put(KEY_INPUT_DEVICE, input.getName());
+            properties.put(KEY_OUTPUT_DEVICE, output.getName());
+        }
+        
+        midisend.setInputDevice(input);
+        midisend.setOutputDevice(output);
         
         MidiSendProcess proc;
         try {
@@ -182,6 +213,5 @@ public class MidiSendWizard extends Wizard {
         }
         
     }
-    
-    
+
 }

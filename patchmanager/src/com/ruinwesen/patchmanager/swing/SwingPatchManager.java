@@ -534,13 +534,16 @@ public class SwingPatchManager {
         }        
         
         MidiSendWizard send = new MidiSendWizard();
+        send.setProperties(appProperties);
         send.setSourceFile(file);
         send.setSourceFileSelectable(false);
         send.showDialog(frame);
     }
     
     public void sendPatch() {
-        new MidiSendWizard().showDialog(frame);
+        MidiSendWizard send = new MidiSendWizard();
+        send.setProperties(appProperties);
+        send.showDialog(frame);
     }
 
     public void patchListViewDeleteSelected() {
