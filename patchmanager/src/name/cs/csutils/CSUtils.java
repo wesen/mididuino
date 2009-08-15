@@ -55,7 +55,7 @@ import org.apache.commons.logging.LogFactory;
 
 import name.cs.csutils.Platform.OS;
 
-public class CSUtils {
+public final class CSUtils {
 
     private static final Log log = LogFactory.getLog(CSUtils.class);
     
@@ -66,6 +66,14 @@ public class CSUtils {
     private static final
         SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 
+    private CSUtils() {
+        super();
+    }
+    
+    public static final boolean equals(Object a, Object b) {
+        return (a==b) || (a != null && a.equals(b));
+    }
+    
     public static String limitString(String str, int maxlen) {
         return limitString(str, maxlen, "...");
     }
