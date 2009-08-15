@@ -40,7 +40,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
-import javax.swing.DebugGraphics;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -90,7 +89,6 @@ import com.ruinwesen.patchmanager.swing.components.PatchListCellRenderer;
 import com.ruinwesen.patchmanager.swing.components.SearchPanel;
 import com.ruinwesen.patchmanager.swing.forms.AboutDialog;
 import com.ruinwesen.patchmanager.swing.forms.BugreportForm;
-import com.ruinwesen.patchmanager.swing.forms.MidiSendForm;
 import com.ruinwesen.patchmanager.swing.forms.NewLoginForm;
 import com.ruinwesen.patchmanager.swing.model.Order;
 import com.ruinwesen.patchmanager.swing.model.PatchListModel;
@@ -101,6 +99,7 @@ import com.ruinwesen.patchmanager.swing.tasks.GetLatestNewsTask;
 import com.ruinwesen.patchmanager.swing.tasks.PerformQueryTask;
 import com.ruinwesen.patchmanager.swing.tasks.SynchronizeRepositoryTask;
 import com.ruinwesen.patchmanager.swing.wizards.CreatePublishPatchWizard;
+import com.ruinwesen.patchmanager.swing.wizards.MidiSendWizard;
 
 public class SwingPatchManager {
 
@@ -292,6 +291,7 @@ public class SwingPatchManager {
         
         JMenuBar jmenubar = new JMenuBar();
         JMenu menuFile = new JMenu(new CSAction("File", "menu.file"));
+        menuFile.add(new CSAction("Send Patch...", "menu.send-patch").useInvokationTarget(this, "sendPatch"));
         menuFile.add(new CSAction("Exit", "menu.exit").useInvokationTarget(this, "quit"));
         jmenubar.add(menuFile);
         JMenu menuEdit = new JMenu(new CSAction("Edit","menu.edit")) ;
@@ -318,8 +318,8 @@ public class SwingPatchManager {
         menuHelp.add(new CSAction(this, "regenerateIndex")
         .useResourceKey("action.index.regenerate"));
         if (debug.isDebugEnabled()) {
-        menuHelp.add(new CSAction(this, "askServerAboutNewClientVersion")
-        .useResourceKey("action.check-for-updates"));
+            menuHelp.add(new CSAction(this, "askServerAboutNewClientVersion")
+            .useResourceKey("action.check-for-updates"));
         }
 
         menuHelp.add(new CSAction(this, "showAboutDialog"));
@@ -329,6 +329,7 @@ public class SwingPatchManager {
         if (debug.isDebugEnabled()) {
             JMenu menuDebug = new JMenu("Debug") ;
             menuDebug.add(new CSAction(this, "sendBugreport"));
+            menuDebug.add(new CSAction(this, "debugRunNeverEndingTask"));
             jmenubar.add(menuDebug);
         }
         
@@ -444,6 +445,27 @@ public class SwingPatchManager {
         
     }
     
+    @SwingActionData("Run Never Ending Task")
+    public void debugRunNeverEndingTask() {
+        runInThread(new Runnable () {
+           public void run() {
+               if (log.isDebugEnabled()) {
+                   log.debug(this+": Never Ending thread started.");
+               }
+               try {
+                   while (true) {
+                       Thread.sleep(Long.MAX_VALUE);
+                   }
+               } catch (InterruptedException ex) {
+                   if (log.isDebugEnabled()) {
+                       log.debug(this+": Never Ending thread was interrupted.");
+                   }
+                   Thread.currentThread().interrupt();
+               }
+           }
+        });
+    }
+    
     @SwingActionData("About Patchmanager")
     public void showAboutDialog() {
         AboutDialog.showDialog(this);
@@ -510,10 +532,15 @@ public class SwingPatchManager {
         if (file == null) {
             return;
         }        
-        MidiSendForm ms = new MidiSendForm();
-        ms.setMidiFile(file);
-        ms.setSelectMidiFileEnabled(false);
-        ms.showDialog(frame);
+        
+        MidiSendWizard send = new MidiSendWizard();
+        send.setSourceFile(file);
+        send.setSourceFileSelectable(false);
+        send.showDialog(frame);
+    }
+    
+    public void sendPatch() {
+        new MidiSendWizard().showDialog(frame);
     }
 
     public void patchListViewDeleteSelected() {
