@@ -365,13 +365,16 @@ public class RWMidiSend extends MidiSend {
                 interrupted = presult.interrupted;
                 if (presult.timeout) {
                     throw new MidiSendException(
-                            "midi-send:send(File) timeout:"
+                            "timeout "
                             +stderrBuffer.getBuffer());
                 }
                 if (isErrorStatus(presult.status)) {
+                    String err = stderrBuffer.getBuffer();
+                    if (!err.trim().isEmpty()) {
+                        err = " "+err;
+                    }
                     throw new MidiSendException(
-                            "midi-send:send(File) failed, return status:"+presult.status+":"
-                            +stderrBuffer.getBuffer());
+                            "midi-send exited with status:"+presult.status+err);
                 }
                 
                 if (callback != null) {
