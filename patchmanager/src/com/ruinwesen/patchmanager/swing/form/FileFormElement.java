@@ -31,11 +31,14 @@ package com.ruinwesen.patchmanager.swing.form;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.filechooser.FileFilter;
 
 import com.ruinwesen.patchmanager.swing.components.TextPopup;
@@ -51,7 +54,7 @@ public class FileFormElement extends TextFieldFormElement
     private JButton btnSelectFile;
     private int fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES;
 
-    private FileFilter fileFilter;
+    private List<FileFilter> fileFilterList = Collections.emptyList();
     
     public FileFormElement() {
         new TextPopup().installAt(getField());
@@ -60,6 +63,7 @@ public class FileFormElement extends TextFieldFormElement
                 .useResourceKey("form.element.file.select-action")
                 .useActionCommand(AC_SELECT_FILE)
                 .useActionListener(this));
+        getField().setColumns(20);
     }
 
     public void setFileSelectionMode(int mode) {
@@ -111,9 +115,16 @@ public class FileFormElement extends TextFieldFormElement
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(fileSelectionMode);
         fc.setMultiSelectionEnabled(false);
-        if (fileFilter != null) {
-            fc.setFileFilter(fileFilter);
+        FileFilter selectedFilter = null;
+        for (FileFilter filter: fileFilterList) {
+            if (selectedFilter == null) {
+                selectedFilter = filter;
+            }
+            fc.addChoosableFileFilter(filter);
         }
+        fc.setFileFilter(selectedFilter);
+        
+        
         /*if (fileSelectionMode == JFileChooser.DIRECTORIES_ONLY) {
             fc.setAcceptAllFileFilterUsed(false);
         }*/
@@ -127,15 +138,21 @@ public class FileFormElement extends TextFieldFormElement
 
     @Override
     public JComponent[] getComponents() {
-        JLabel label = getLabel();
-        if (label != null) {
-            return new JComponent[]{label, getField(), btnSelectFile};
-        }
-        return new JComponent[]{getField(), btnSelectFile};
+        return componentArray(getLabel(), getField(), btnSelectFile);
     }
 
     public void setFileFilter(FileFilter fileFilter) {
-        this.fileFilter = fileFilter;
+        fileFilterList = 
+            fileFilter == null 
+            ? Collections.<FileFilter>emptyList()
+            : Arrays.<FileFilter>asList(fileFilter);
+    }
+
+    public void setFileFilterList(List<FileFilter> list) {
+        if (list == null) {
+            throw new IllegalArgumentException("list==null");
+        }
+        fileFilterList = new ArrayList<FileFilter>(list);
     }
 
 }
