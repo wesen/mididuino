@@ -35,8 +35,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 
 public class ComboBoxFormElement extends FormElement implements ItemListener,
     PropertyChangeListener {
@@ -59,6 +57,7 @@ public class ComboBoxFormElement extends FormElement implements ItemListener,
         if (field == null) {
             throw new IllegalArgumentException();
         }
+        setMainComponent(field);
         oldValue = field.getSelectedItem();
         install();
     }
@@ -83,11 +82,6 @@ public class ComboBoxFormElement extends FormElement implements ItemListener,
     }
 
     @Override
-    protected void setFormInputElementsEnabled(boolean enabled) {
-        field.setEnabled(enabled);
-    }
-
-    @Override
     public void itemStateChanged(ItemEvent e) {
         Object newValue = getValue();
         if ((oldValue == null && oldValue != newValue) || !oldValue.equals(newValue)) {
@@ -105,15 +99,6 @@ public class ComboBoxFormElement extends FormElement implements ItemListener,
                 oldValue = newValue;
             }
         }
-    }
-
-    @Override
-    public JComponent[] getComponents() {
-        JLabel label = getLabel();
-        if (label != null) {
-            return new JComponent[]{label, field};
-        }
-        return new JComponent[]{field};
     }
 
 }

@@ -29,34 +29,16 @@
 package com.ruinwesen.patchmanager.swing.form;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 
 public class CustomFormElement extends FormElement {
 
-    
-    private JComponent component;
-
     public CustomFormElement(JComponent component) {
-        this.component = component;
-    }
-    
-    @Override
-    public JComponent[] getComponents() {
-        JLabel label = getLabel();
-        if (label != null) {
-            return new JComponent[] {label, component}; 
-        }
-        return new JComponent[] { component };
+        setMainComponent(component);
     }
 
     @Override
     public Object getValue() {
         return null;
-    }
-
-    @Override
-    protected void setFormInputElementsEnabled(boolean enabled) {
-        component.setEnabled(enabled);
     }
 
     @Override
