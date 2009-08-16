@@ -42,7 +42,7 @@ import org.apache.commons.logging.LogFactory;
 import name.cs.csutils.Launcher;
 import name.cs.csutils.concurrent.SimpleSwingWorker;
 
-import com.ruinwesen.patchmanager.client.news.NewsIndex;
+import com.ruinwesen.patchmanager.client.index.NewsIndex;
 import com.ruinwesen.patchmanager.swing.SwingPatchManager;
 
 public class GetLatestNewsTask extends SimpleSwingWorker {
