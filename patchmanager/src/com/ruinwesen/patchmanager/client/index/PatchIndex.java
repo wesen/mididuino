@@ -28,25 +28,30 @@
  */
 package com.ruinwesen.patchmanager.client.index;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import name.cs.csutils.CSUtils;
 import name.cs.csutils.FileFilterFactory;
 import name.cs.csutils.collector.CollectionCollector;
 import name.cs.csutils.collector.Collector;
 import name.cs.csutils.collector.MultiCollector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.ruinwesen.patch.DefaultPatch;
 import com.ruinwesen.patch.Patch;
+import com.ruinwesen.patch.metadata.DefaultPatchMetadata;
+import com.ruinwesen.patch.metadata.PatchMetadata;
+import com.ruinwesen.patch.metadata.PatchMetadataIDInfo;
+import com.ruinwesen.patch.metadata.Path;
+import com.ruinwesen.patch.metadata.Tagset;
 
 public class PatchIndex {
     private static Log log = LogFactory.getLog(PatchIndex.class);
@@ -77,29 +82,7 @@ public class PatchIndex {
         return repositoryDir.listFiles(patchFileFilter).length;
     }
     
-    public void writeIndex() {
-        PatchRecordIO io = new PatchRecordIO();
-        
-        List<IndexedPatchRecord> copy = copyList();
-        synchronized (PATCH_FILE_LOCK) {
-            try {
-                PrintWriter os = new PrintWriter(new BufferedWriter(new FileWriter(indexFile)));
-                try {
-                    io.writeIndex(os, copy);
-                } finally {
-                    os.close();
-                }
-            } catch (IOException ex) {
-                if (log.isErrorEnabled()) {
-                    log.error("Writing index failed", ex);
-                }
-                indexFile.delete();
-            }
-        }
-    }
-    
     public void readIndex(Collector<IndexedPatch> collector) {
-        PatchRecordIO io = new PatchRecordIO();
         List<IndexedPatchRecord> list = new ArrayList<IndexedPatchRecord>();
         try {
             Collector<IndexedPatchRecord> collectionCollector =
@@ -110,43 +93,67 @@ public class PatchIndex {
                         : new MultiCollector<IndexedPatchRecord>(collectionCollector, collector);
             
             synchronized (PATCH_FILE_LOCK) {
-                io.readIndex(repositoryDir, indexFile, passedCollector);
+                RecordIO io = new RecordIO(indexFile, RecordIO.READ);
+                readRecords(io, passedCollector);
             }
             synchronized (PATCH_LIST_LOCK) {
                 this.patchList = list;
             }
-            return;
         } catch (IOException ex) {
             if (log.isErrorEnabled()) {
                 log.error("could not read index", ex);
             }
+            // rebuild index
+            rebuildIndex();
         }
-        
-        // rebuild index
-        rebuildIndex();
     }
     
     public void rebuildIndex() {
+        if (log.isDebugEnabled()) {
+            log.debug("rebuilding index");
+        }
         synchronized (PATCH_LIST_LOCK) {
             this.patchList.clear();
         }
-        PatchRecordIO io = new PatchRecordIO();
         File[] files = repositoryDir.listFiles(patchFileFilter);
         try {
-            PrintWriter os = new PrintWriter(new BufferedWriter(new FileWriter(indexFile)));
+            RecordIO io = new RecordIO(indexFile, RecordIO.WRITE);
             try {
                 List<IndexedPatchRecord> list = new ArrayList<IndexedPatchRecord>();
-                io.rebuildIndex(repositoryDir, os, Arrays.asList(files), new CollectionCollector<IndexedPatchRecord>(list));
+                rebuildIndex(io, Arrays.asList(files), new CollectionCollector<IndexedPatchRecord>(list));
                 synchronized (PATCH_LIST_LOCK) {
                     this.patchList = list;
                 }
-                os.flush();
+                io.flush();
             } finally {
-                os.close();
+                io.close();
             }
         } catch (IOException  ex) {
             if (log.isErrorEnabled()) {
                 log.error("Could not write index", ex);
+            }
+            indexFile.delete(); // delete corrupted index
+        }
+    }
+
+    public void writeIndex() {
+        List<IndexedPatchRecord> copy = copyList();
+        synchronized (PATCH_FILE_LOCK) {
+            try {
+                RecordIO io = new RecordIO(indexFile, RecordIO.WRITE);
+                try {
+                    for (IndexedPatchRecord record: copy) {
+                        writeRecord(io, record);
+                    }
+                    io.flush();
+                } finally {
+                    io.close();
+                }
+            } catch (IOException ex) {
+                if (log.isErrorEnabled()) {
+                    log.error("Writing index failed", ex);
+                }
+                indexFile.delete();
             }
         }
     }
@@ -156,29 +163,24 @@ public class PatchIndex {
         try {
             List<IndexedPatchRecord> list = new ArrayList<IndexedPatchRecord>(files.size());
             synchronized (PATCH_FILE_LOCK) {
-                if (!indexFile.exists()) {
-                    return;
-                }   
-                PrintWriter os =
-                    new PrintWriter(new BufferedWriter(new FileWriter(indexFile, true)));
+                RecordIO io = new RecordIO(indexFile, RecordIO.APPEND);
                 try {
-                    PatchRecordIO io = new PatchRecordIO();
-                    io.rebuildIndex(indexFile, os, files, new CollectionCollector<IndexedPatchRecord>(list));
-                    os.flush();
+                    rebuildIndex(io, files, new CollectionCollector<IndexedPatchRecord>(list));
+                    io.flush();
                 } finally {
-                    os.close();
+                    io.close();
                 }
             }
             // add new items
             synchronized (PATCH_LIST_LOCK) {
                 this.patchList.addAll(list);
             }
-            
         } catch (IOException ex) {
             if (log.isErrorEnabled()) {
-                log.error("Appending to index failed", ex);
+                log.error("Appending to index failed: deleting index", ex);
             }
-            return;
+            indexFile.delete(); // delete corrupted index
+            
         }
         
         
@@ -226,5 +228,87 @@ public class PatchIndex {
         }
     }
     
+    
+    // record io
+
+    private IndexedPatchRecord readRecord(RecordIO io) throws IOException {
+        IndexedPatchRecord record = new IndexedPatchRecord(repositoryDir);
+        record.patchfileName = io.readString();
+        int pathcount = io.readInteger();
+        PatchMetadata meta = new DefaultPatchMetadata();
+        for (int i=0;i<pathcount;i++) {
+            String name = io.readString();
+            String path = io.readString();
+            meta.addPath(new Path(name, path));
+        }
+        meta.setAuthor(io.readString());
+        meta.setComment(io.readString());
+        String l = io.readString();
+        meta.setDeviceId(l.isEmpty() ? null : PatchMetadataIDInfo.getDeviceId(l));
+        l = io.readString();
+        meta.setEnvironmentId(l.isEmpty() ? null:PatchMetadataIDInfo.getEnvironmentId(l));
+        try {
+        meta.setLastModifiedDate(CSUtils.parseDate(io.readString()));
+        } catch (NumberFormatException ex) {
+            throw new IOException("index corrupted", ex);
+        }
+        meta.setName(io.readString());
+        meta.setPatchId(io.readString());
+        meta.setTags(Tagset.parseTags(io.readString()));
+        meta.setTitle(io.readString());
+        meta.setVersion(io.readString());
+        record.meta = meta;
+        return record;
+    }
+    
+    private void writeRecord(RecordIO io, PatchRecord record) throws IOException {
+        io.writeString(record.patchfileName);
+        PatchMetadata meta = record.meta;
+        Collection<Path> paths = meta.getPaths().values();
+        io.writeInteger(paths.size());
+        for (Path path: paths) {
+            io.writeString(path.getName());
+            io.writeString(path.getPath());
+        }
+        io.writeString(meta.getAuthor(),"");
+        io.writeString(meta.getComment(),"");
+        io.writeString(meta.getDeviceId() == null ? "" : meta.getDeviceId().value());
+        io.writeString(meta.getEnvironmentId() == null ? "" : meta.getEnvironmentId().value());
+        io.writeString(meta.getLastModifiedDateString(),"");
+        io.writeString(meta.getName(),"");
+        io.writeString(meta.getPatchId(),"");
+        io.writeString(meta.getTags().toString(),"");
+        io.writeString(meta.getTitle(),"");
+        io.writeString(meta.getVersion(),"");
+    }
+    
+    private void rebuildIndex(RecordIO io, Collection<File> files, Collector<IndexedPatchRecord> collector) throws IOException {
+        PatchRecord record = new PatchRecord();
+        for (File file: files) {
+            try {
+                record.meta = new DefaultPatch(file).getMetadata();
+            } catch (Exception ex) {
+                continue;
+            }
+            record.patchfileName = file.getName();
+            writeRecord(io, record);
+            if (collector != null) {
+                if (collector.collect(new IndexedPatchRecord(repositoryDir, record.patchfileName, record.meta)) == Collector.FINISHED) {
+                    collector = null;
+                }
+            }
+        }
+    }
+    
+    private int readRecords(RecordIO io, Collector<IndexedPatchRecord> collector) throws IOException {
+        int count = 0;
+        for(;io.hasMore();count++) {
+            IndexedPatchRecord patch = readRecord(io);
+            if (collector != null && collector.collect(patch)==Collector.FINISHED) {
+                collector = null;
+            }
+        }
+        return count;
+    }
 }
  
