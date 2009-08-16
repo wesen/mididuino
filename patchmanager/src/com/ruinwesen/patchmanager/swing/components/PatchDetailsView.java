@@ -31,7 +31,10 @@ package com.ruinwesen.patchmanager.swing.components;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Rectangle;
+import java.text.DateFormat;
+import java.util.Date;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -64,6 +67,7 @@ public class PatchDetailsView {
     private JLabel lblAuthor;    
     private JLabel lblTitle;
     private JLabel lblDeviceId;
+    private JLabel lblDate;
     private JLabel lblEnvironmentId;
     private JTextArea taComment;
     private JTextArea taTags;
@@ -146,6 +150,7 @@ public class PatchDetailsView {
         lblTitle = new JLabel();
         lblDeviceId = new JLabel();
         lblEnvironmentId = new JLabel();
+        lblDate = new JLabel();
         taComment = new JTextArea();
         taComment.setEditable(false);
         taComment.setLineWrap(true);
@@ -156,21 +161,28 @@ public class PatchDetailsView {
         taTags.setWrapStyleWord(true);
         scrollComment = new JScrollPane(taComment);
         scrollTags = new JScrollPane(taTags);
+        scrollComment.setBorder(null);
+        scrollTags.setBorder(null);
 
+        taTags.setBackground(panel.getBackground());
+        taComment.setBackground(panel.getBackground());
+        taComment.setBorder(null);
+        taTags.setBorder(null);
+        
+        Font labelFont = lblTitle.getFont();
+        lblTitle.setFont(new Font(labelFont.getName(), Font.BOLD, labelFont.getSize()));
+        
         taComment.setRows(3);
         taComment.setColumns(10);
         taTags.setColumns(10);
-        taTags.setRows(3);
+        taTags.setRows(6);
               
         btnSaveSourceAs = new JButton();        
         btnSaveMidiFileAs = new JButton();
 
         // labels
-        JLabel lblAuthorLabel = new JLabel("Author:");
-        JLabel lblTitleLabel = new JLabel("Title:");
         JLabel lblDeviceIdLabel = new JLabel("Device:");
         JLabel lblEnvironmentIdLabel = new JLabel("Environment:");
-        JLabel lblCommentLabel = new JLabel("Comment:");
         JLabel lblTagsLabel = new JLabel("Tags:");
         JLabel lblMidiFileSaveAsLabel = new JLabel("Midi File:");
         JLabel lblSourceSaveAsLabel = new JLabel("Source:");
@@ -180,25 +192,27 @@ public class PatchDetailsView {
         
         ly.setHorizontalGroup(ly.createSequentialGroup()
                 .addGroup(ly.createParallelGroup()
+                        .addComponent(lblTitle)
+                        .addGroup(ly.createSequentialGroup()
+                                .addComponent(lblAuthor)
+                                .addComponent(lblDate)
+                        )
                         .addGroup(ly.createSequentialGroup()
                                 .addGroup(ly.createParallelGroup()
-                                        .addComponent(lblAuthorLabel)
-                                        .addComponent(lblTitleLabel)
                                         .addComponent(lblDeviceIdLabel)
                                         .addComponent(lblEnvironmentIdLabel)
                                 )
                                 .addGroup(
                                         ly.createParallelGroup()
-                                        .addComponent(lblAuthor)
-                                        .addComponent(lblTitle)
                                         .addComponent(lblDeviceId)
                                         .addComponent(lblEnvironmentId)
                                 )
                         )
-                        .addComponent(lblCommentLabel)
                         .addComponent(scrollComment)
-                        .addComponent(lblTagsLabel)
-                        .addComponent(scrollTags)
+                        .addGroup(ly.createSequentialGroup()
+                                .addComponent(lblTagsLabel)
+                                .addComponent(scrollTags)
+                        )
                         .addGroup(ly.createSequentialGroup()
                                 .addGroup(ly.createParallelGroup()
                                         .addComponent(lblSourceSaveAsLabel)
@@ -214,15 +228,19 @@ public class PatchDetailsView {
         );
         
         ly.setVerticalGroup(ly.createSequentialGroup()
+                .addComponent(lblTitle)
                 .addGroup(
                         ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblAuthorLabel)
                         .addComponent(lblAuthor)
+                        .addComponent(lblDate)
                 )
+                .addComponent(scrollComment)
                 .addGroup(
                         ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblTitleLabel)
-                        .addComponent(lblTitle)
+                        .addComponent(lblTagsLabel)
+                        .addComponent(scrollTags, GroupLayout.DEFAULT_SIZE, 
+                                GroupLayout.PREFERRED_SIZE,
+                                GroupLayout.PREFERRED_SIZE)
                 )
                 .addGroup(
                         ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -235,18 +253,6 @@ public class PatchDetailsView {
                         .addComponent(lblEnvironmentId)
                 )
                 .addGroup(
-                        ly.createSequentialGroup()
-                        .addComponent(lblCommentLabel)
-                        .addComponent(scrollComment)
-                )
-                .addGroup(
-                        ly.createSequentialGroup()
-                        .addComponent(lblTagsLabel)
-                        .addComponent(scrollTags, GroupLayout.DEFAULT_SIZE, 
-                                GroupLayout.PREFERRED_SIZE,
-                                GroupLayout.PREFERRED_SIZE)
-                )
-                .addGroup(
                         ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(lblSourceSaveAsLabel)
                         .addComponent(btnSaveSourceAs)
@@ -257,9 +263,8 @@ public class PatchDetailsView {
                         .addComponent(btnSaveMidiFileAs)
                 )
         );
+        updateUI();
         ly.linkSize(SwingConstants.HORIZONTAL,
-                lblAuthorLabel, 
-                lblTitleLabel,
                 lblDeviceIdLabel, 
                 lblEnvironmentIdLabel,
                 lblSourceSaveAsLabel,
@@ -294,7 +299,21 @@ public class PatchDetailsView {
             updateUI();
         }
     }
- 
+
+    /**
+     * The dateformat used to create the date string.
+     */
+    private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+    
+    /**
+     * Returns a formated string containing day,month and year of the specified date.
+     * @param date a date
+     * @return a formated string containing day,month and year of the specified date
+     */
+    private String dateToString(Date date) {
+        return dateFormat.format(date);
+    }
+    
     private void updateUI() {
         Patch patch = this.patch;
         PatchMetadata meta;
@@ -304,22 +323,24 @@ public class PatchDetailsView {
             meta = null;
         }
         if (meta == null) {
-            lblAuthor.setText("-");
-            lblTitle.setText("-");
+            lblTitle.setText("- no patch selected -");
+            lblAuthor.setText("");
             lblEnvironmentId.setText("-");
             lblDeviceId.setText("-");
             taComment.setText("");
             taTags.setText("");
+            lblDate.setText("");
         } else {
-            setText(lblAuthor, meta.getAuthor());
+            setText(lblAuthor, meta.getAuthor()+", ");
             setText(lblTitle, meta.getTitle());
             setText(lblDeviceId, meta.getDeviceId());
             setText(lblEnvironmentId, meta.getEnvironmentId());
+            lblDate.setText(dateToString(meta.getLastModifiedDate())); 
             taComment.setText(meta.getComment());
-            taTags.setText(meta.getTags().filterPrefix(PatchMetadata.CATEGORY_TAG_PREFIX, false, true).toSortedString());
+            taTags.setText(meta.getTags()
+                    .filterPrefix(PatchMetadata.CATEGORY_TAG_PREFIX, false, true)
+                    .toSortedString());
         }
-        scrollComment.scrollRectToVisible(new Rectangle(0, 0, 10, 10));
-        scrollTags.scrollRectToVisible(new Rectangle(0, 0, 10, 10));
     }
     
     private void setText(JLabel lbl, Object value) {
