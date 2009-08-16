@@ -47,6 +47,8 @@ import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
+import javax.swing.text.Caret;
+import javax.swing.text.DefaultCaret;
 
 import name.cs.csutils.SwingActionData;
 
@@ -73,9 +75,7 @@ public class PatchDetailsView {
     private JTextArea taTags;
     private JButton btnSaveSourceAs;
     private JButton btnSaveMidiFileAs;
-    private JScrollPane scrollComment;
-    private JScrollPane scrollTags;
-    
+
     public PatchDetailsView() {
         init();
     }
@@ -159,10 +159,6 @@ public class PatchDetailsView {
         taTags.setEditable(false);
         taTags.setLineWrap(true);
         taTags.setWrapStyleWord(true);
-        scrollComment = new JScrollPane(taComment);
-        scrollTags = new JScrollPane(taTags);
-        scrollComment.setBorder(null);
-        scrollTags.setBorder(null);
 
         taTags.setBackground(panel.getBackground());
         taComment.setBackground(panel.getBackground());
@@ -172,11 +168,11 @@ public class PatchDetailsView {
         Font labelFont = lblTitle.getFont();
         lblTitle.setFont(new Font(labelFont.getName(), Font.BOLD, labelFont.getSize()));
         
-        taComment.setRows(3);
         taComment.setColumns(10);
         taTags.setColumns(10);
-        taTags.setRows(6);
-              
+        configCaret(taComment.getCaret());
+        configCaret(taTags.getCaret());
+
         btnSaveSourceAs = new JButton();        
         btnSaveMidiFileAs = new JButton();
 
@@ -208,10 +204,10 @@ public class PatchDetailsView {
                                         .addComponent(lblEnvironmentId)
                                 )
                         )
-                        .addComponent(scrollComment)
+                        .addComponent(taComment)
                         .addGroup(ly.createSequentialGroup()
                                 .addComponent(lblTagsLabel)
-                                .addComponent(scrollTags)
+                                .addComponent(taTags)
                         )
                         .addGroup(ly.createSequentialGroup()
                                 .addGroup(ly.createParallelGroup()
@@ -234,11 +230,11 @@ public class PatchDetailsView {
                         .addComponent(lblAuthor)
                         .addComponent(lblDate)
                 )
-                .addComponent(scrollComment)
+                .addComponent(taComment)
                 .addGroup(
                         ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(lblTagsLabel)
-                        .addComponent(scrollTags, GroupLayout.DEFAULT_SIZE, 
+                        .addComponent(taTags, GroupLayout.DEFAULT_SIZE, 
                                 GroupLayout.PREFERRED_SIZE,
                                 GroupLayout.PREFERRED_SIZE)
                 )
@@ -273,6 +269,12 @@ public class PatchDetailsView {
                 btnSaveMidiFileAs, btnSaveSourceAs);
     }
     
+    private void configCaret(Caret caret) {
+        if (caret instanceof DefaultCaret) {
+            ((DefaultCaret)caret).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        }
+    }
+
     @SwingActionData("Save As...")
     public void btnSaveMidiFileAsClick() {
         if (patch == null) {
