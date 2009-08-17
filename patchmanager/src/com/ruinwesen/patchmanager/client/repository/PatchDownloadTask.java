@@ -30,8 +30,6 @@ package com.ruinwesen.patchmanager.client.repository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 
 import name.cs.csutils.CSUtils;
@@ -41,11 +39,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.ruinwesen.patch.DefaultPatch;
 import com.ruinwesen.patch.Patch;
-import com.ruinwesen.patch.directory.Directory;
-import com.ruinwesen.patch.directory.Entry;
-import com.ruinwesen.patch.directory.JarFileBuilder;
 import com.ruinwesen.patch.metadata.PatchMetadata;
-import com.ruinwesen.patch.metadata.PatchMetadataUtils;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 
 public class PatchDownloadTask implements Callable<File> {

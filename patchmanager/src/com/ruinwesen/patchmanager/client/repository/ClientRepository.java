@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -76,10 +77,10 @@ public class ClientRepository {
         this.patchindex = patchindex;
     }
 
-    public void sync(DefaultPatchManagerClient client, Auth auth) throws ProtocolException, IOException, InterruptedException {
+    public void sync(DefaultPatchManagerClient client, Auth auth, PatchDownloadCallback cb) throws ProtocolException, IOException, InterruptedException {
         try {
             synchronized (LOCK) {
-                __sync(client, auth);
+                __sync(client, auth, cb);
             }
         } catch (IOException ex) {
             if (log.isErrorEnabled()) {
@@ -94,7 +95,7 @@ public class ClientRepository {
         }
     }
     
-    private void __sync(DefaultPatchManagerClient client, Auth auth) throws ProtocolException, IOException, InterruptedException {
+    private void __sync(DefaultPatchManagerClient client, Auth auth, PatchDownloadCallback cb) throws ProtocolException, IOException, InterruptedException {
         
         Date lsd = getLastSyncDate();
 
@@ -124,6 +125,18 @@ public class ClientRepository {
         List<PatchDownloadTask> taskList = new ArrayList<PatchDownloadTask>(list.size());
         HashSet<String> deletedPatchIds = new HashSet<String>();
         
+        int numDownloadFiles = 0;
+        for (PatchSource source: list) {
+            if (!source.isDeleteFlagSet()) {
+                String name = source.getPatchId();
+                File dstfile = new File(dir, name);
+                if (!dstfile.exists()) {
+                    numDownloadFiles++;
+                }
+            }
+        }
+        
+        int noDownloadPatch = 0;
         for (PatchSource source: list) {
             String name = source.getPatchId();
             File dstfile = new File(dir, name);
@@ -149,7 +162,14 @@ public class ClientRepository {
                 new HTTPGetTask(hc, new HttpGet(source.getPatchURL()), tmpFile);
             PatchDownloadTask dlTask =  
                 new PatchDownloadTask(getTask, dstfile, source.getPatchId());
-            Future<File> future = executorService.submit(dlTask);
+            if (cb != null) {
+                noDownloadPatch++;
+                executorService.submit(new TaskWithUpdate(cb,
+                        "Downloaded patch "+noDownloadPatch+" of "+numDownloadFiles,
+                        dlTask));
+            } else {
+                executorService.submit(dlTask);
+            }
             taskList.add(dlTask);
         }
         executorService.shutdown();
@@ -164,6 +184,25 @@ public class ClientRepository {
         
         if (patchindex != null) {
             patchindex.addToIndex(fileList, deletedPatchIds);
+        }
+    }
+    
+    private static final class TaskWithUpdate implements Callable<File>  {
+        private PatchDownloadCallback cb;
+        private String message;
+        private Callable<File> call;
+
+        public TaskWithUpdate(PatchDownloadCallback cb, String message, Callable<File> call) {
+            this.cb = cb;
+            this.message = message;
+            this.call = call;
+        }
+
+        @Override
+        public File call() throws Exception {
+            File result = call.call();
+            cb.patchDownloaded(message);
+            return result;
         }
     }
     
