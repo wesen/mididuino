@@ -45,7 +45,7 @@ public:
     pitches_len = len;
     randomizePitches();
   }
-  
+
   void randomizePitches() {
     for (uint8_t i = 0; i < pitches_len; i++) {
       pitches[i] = randomScalePitch(currentScale, octaves);
@@ -133,7 +133,7 @@ public:
     if (trackEncoder.hasChanged()) {
       GUI.setLine(GUI.LINE2);
       uint8_t track = trackEncoder.getValue();
-        GUI.flash_put_value(0, track);
+      GUI.flash_put_value(0, track);
       if (MD.isMelodicTrack(track)) {
         GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
         pitchEuclid.mdTrack = track;
@@ -148,8 +148,8 @@ public:
 };
 
 class PitchEuclidSketch : 
-public Sketch {
-  public:
+public Sketch, public MDCallback, public ClockCallback {
+public:
   PitchEuclidConfigPage1 page1;
   PitchEuclidConfigPage2 page2;
 
@@ -160,11 +160,11 @@ public Sketch {
     MDTask.setup();
     MDTask.autoLoadKit = true;
     MDTask.reloadGlobal = true;
-    MDTask.addOnKitChangeCallback(_onKitChanged);
-//    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
+    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&PitchEuclidSketch::onKitChanged);
+    //    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
     GUI.addTask(&MDTask);
 
-    MidiClock.setOn16Callback(_on16Callback);
+    MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&PitchEuclidSketch::on16Callback);
 
     setPage(&page1);
   }
@@ -173,10 +173,12 @@ public Sketch {
     if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
       GUI.setPage(&page1);
       return true;
-    } else if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+    } 
+    else if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
       GUI.setPage(&page2);
       return true;
-    } else if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
+    } 
+    else if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
       pitchEuclid.randomizePitches();
     }
   }
@@ -187,6 +189,11 @@ public Sketch {
     GUI.setLine(GUI.LINE2);
     GUI.flash_string_fill(MD.kit.name);
   }  
+
+  void on16Callback() {
+    pitchEuclid.on16Callback();
+  }
+
 
 };
 
@@ -214,12 +221,3 @@ void setup() {
 
 void loop() {
 }
-
-void _on16Callback() {
-  pitchEuclid.on16Callback();
-}
-
-void _onKitChanged() {
-  sketch.onKitChanged();
-}
-

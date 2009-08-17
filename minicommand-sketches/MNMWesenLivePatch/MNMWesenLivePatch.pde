@@ -4,8 +4,6 @@
 #include <MidiClockPage.h>
 #include <SDCard.h>
 
-CCHandler ccHandler;
-
 class MagicMNMPage : 
 public EncoderPage {
 public:
