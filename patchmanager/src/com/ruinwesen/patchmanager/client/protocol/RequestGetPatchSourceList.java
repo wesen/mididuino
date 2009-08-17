@@ -45,7 +45,7 @@ public class RequestGetPatchSourceList extends AuthenticatingRequest {
 	}
 
 	public RequestGetPatchSourceList(Date dateSince, Auth auth) {
-		this(null, CSUtils.dateToString(dateSince), auth);
+		this(null, dateSince == null ? (String)null : CSUtils.dateToString(dateSince), auth);
 	}
 
 	public RequestGetPatchSourceList(String dateSince) {
