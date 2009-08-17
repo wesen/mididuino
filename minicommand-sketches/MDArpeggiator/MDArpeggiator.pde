@@ -8,13 +8,13 @@ MDArpeggiatorClass arpeggiator;
 
 class ConfigPage_1 : public EncoderPage {
   public:
-  RangeEncoder trackEncoder;
+  MDMelodicTrackFlashEncoder trackEncoder;
   RangeEncoder speedEncoder;
   RangeEncoder octavesEncoder;
   RangeEncoder lenEncoder;
   
   ConfigPage_1() :
-    trackEncoder(0, 15, "TRK"),
+    trackEncoder("TRK"),
     speedEncoder(1, 16, "SPD"),
     octavesEncoder(0, 5, "OCT"),
     lenEncoder(0, 16, "LEN")
@@ -48,14 +48,8 @@ class ConfigPage_1 : public EncoderPage {
     }
     if (trackEncoder.hasChanged()) {
       uint8_t track = trackEncoder.getValue();
-      GUI.setLine(GUI.LINE2);
-      GUI.clearFlash();
-      GUI.flash_put_value(0, track);
       if (MD.isMelodicTrack(track)) {
         arpeggiator.arpTrack = track;
-        GUI.flash_p_string_at_fill(8, MD.getMachineName(MD.kit.machines[track].model));
-      } else {
-        GUI.flash_p_string_at_fill(8, PSTR("XXX"));
       }
     }
   }

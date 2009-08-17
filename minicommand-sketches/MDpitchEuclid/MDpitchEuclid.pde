@@ -98,14 +98,14 @@ public:
 class PitchEuclidConfigPage2 : 
 public EncoderPage {
 public:
-  RangeEncoder trackEncoder;
+  MDMelodicTrackFlashEncoder trackEncoder;
   RangeEncoder scaleEncoder;
   RangeEncoder octavesEncoder;
   NotePitchEncoder basePitchEncoder;
 
   PitchEuclidConfigPage2() :
-  trackEncoder(0, 15, "TRK", 0),
-  scaleEncoder(0, NUM_SCALES, "SCL", 0),
+  trackEncoder("TRK", 0),
+  scaleEncoder(0, NUM_SCALES - 1, "SCL", 0),
   basePitchEncoder("BAS"),
   octavesEncoder(0, 4, "OCT")
   {
@@ -127,24 +127,10 @@ public:
       pitchEuclid.octaves = octavesEncoder.getValue();
       pitchEuclid.randomizePitches();
     }
-  }
-
-  void display() {
     if (trackEncoder.hasChanged()) {
-      GUI.setLine(GUI.LINE2);
-      uint8_t track = trackEncoder.getValue();
-      GUI.flash_put_value(0, track);
-      if (MD.isMelodicTrack(track)) {
-        GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
-        pitchEuclid.mdTrack = track;
-      } 
-      else {
-        GUI.flash_p_string_at_fill(4, PSTR("XXX"));
-        pitchEuclid.mdTrack = 255;
-      }
+      pitchEuclid.mdTrack = trackEncoder.getValue();
     }
-    EncoderPage::display();
-  }    
+  }
 };
 
 class PitchEuclidSketch : 
