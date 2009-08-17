@@ -66,8 +66,8 @@ Following targets are available:
     <copy file="${source.dir}/version.properties" todir="${build.dir}" />
     <javac
       destdir="${build.dir}/classes"
-      source="1.5" debug="on"
-      target="1.5" classpathref="class.path">
+      source="1.6" debug="on"
+      target="1.6" classpathref="class.path">
       <src path="${source.dir}" />
       <include name="com/**" />
       <include name="name/**" />
