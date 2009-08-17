@@ -3,6 +3,7 @@
   <property name="installer.dir" value="installer" />
   <property name="build.dir" value="build" />
   <property name="dist.dir" value="dist/patchmanager" />
+  <property name="osxdist" value="osx-dist"/>
   <property name="dist-debug.dir" value="dist/patchmanager-debug" />
   <property name="source.dir" value="src" />
   <property name="javadoc.dir" value="docs/api" />
@@ -100,9 +101,12 @@ Following targets are available:
     <copy todir="${dist.dir}/midi-send/windows">     
       <fileset dir="${source.dir}/midi-send/windows"/> 
     </copy>
-    <copy todir="${dist.dir}/midi-send/mac">     
-      <fileset dir="${source.dir}/midi-send/mac"/> 
-    </copy>
+    <!-- keep executable permissions in mac binary -->
+    <exec executable="cp"> 
+      <arg value="-p" />
+      <arg value="${basedir}/${source.dir}/midi-send/mac/midi-send" />
+      <arg value="${basedir}/${dist.dir}/midi-send/mac/midi-send" />
+    </exec> 
     <!-- keep executable permissions in linux binary -->
     <exec executable="cp"> 
       <arg value="-p" />
@@ -160,6 +164,39 @@ Following targets are available:
 	      <jvmarg value="-Dname.cs.csutils.debug.Debug#debug=true" />
 	    </java>
    </target>
+
+   	<taskdef name="jarbundler"
+	     classpath="ant/jarbundler-1.9.jar"
+         classname="net.sourceforge.jarbundler.JarBundler" />
+
+	<target name="osx-dist" depends="jarbundle-osx-dist">
+	      <exec executable="chmod"> 
+      <arg value="+x" />
+      <arg value="${basedir}/${osxdist}/PatchManager.app/Contents/Resources/Java/midi-send/mac/midi-send"/>
+    </exec>
+    
+	</target>
+
+
+     <target name="jarbundle-osx-dist" depends="dist,clean-osx-dist">
+	<mkdir dir="${osxdist}"/>
+  	<jarbundler dir="${osxdist}"
+		    icon="firmwareflash.icns"
+            name="PatchManager"
+            mainclass="com.ruinwesen.patchmanager.swing.SwingPatchManager"
+            jvmversion="1.6*"
+            workingdirectory="$APP_PACKAGE/Contents/Resources/Java">
+       <jarfilelist dir="${dist.dir}" files="patchmanager.jar"/>
+       <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
+       <javafileset dir="${dist.dir}">
+         <include name="**/*"/>
+       </javafileset>
+    </jarbundler>
+  </target>	
+  
+  <target name="clean-osx-dist">
+     <delete dir="${osxdist}"/>
+  </target>
 
 		
   <!-- creates the javadoc api -->
