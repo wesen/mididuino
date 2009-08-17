@@ -132,6 +132,10 @@ public class ClientProtocol1 extends Protocol {
 
         Response response = new Response(decodeProtocolId(obj), requestedAction, status, message);
         
+        if (!response.isOkStatus()) {
+            return response;
+        }
+        
         if (Message.ACTION_STORE_NEW_PATCH.equals(requestedAction)) {
 
 
