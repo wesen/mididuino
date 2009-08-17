@@ -411,6 +411,7 @@ public class SwingPatchManager {
 
 		center_right_split = createSplitPane();
 		center_right_split.setContinuousLayout(true);
+		center_right_split.setBorder(null);
 		/*
         patchmanager.getIndex().readIndex(null);
         try {
