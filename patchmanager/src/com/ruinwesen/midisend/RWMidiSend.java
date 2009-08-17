@@ -89,7 +89,7 @@ public class RWMidiSend extends MidiSend {
         } else if (Platform.isFlavor(OS.MacOSFlavor)) {
             PATH = "/midi-send/mac/midi-send";
         } else if (Platform.isFlavor(OS.WindowsFlavor)) {
-            PATH = "/midi-send/windowsx/midi-send.exe";
+            PATH = "/midi-send/windows/midi-send.exe";
         } else {
             throw new FileNotFoundException("midi-send is not available on your platform");
         }
