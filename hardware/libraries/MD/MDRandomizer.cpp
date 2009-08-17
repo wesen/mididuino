@@ -95,7 +95,11 @@ void MDRandomizerClass::randomize(int amount, uint8_t mask) {
         MD.setTrackParam(track, i, param);
       }
     }
-  }
+}
+
+void MDRandomizerClass::setup() {
+  Midi.addOnControlChangeCallback(this, (midi_callback_ptr_t)&MDRandomizerClass::onCCCallback);
+}
 
 bool MDRandomizerClass::undo() {
     if (undoStack.pop(&MD.kit.machines[track].params)) {

@@ -3,8 +3,9 @@
 
 #include <inttypes.h>
 #include "Stack.h"
+#include "Midi.h"
 
-class MDRandomizerClass {
+class MDRandomizerClass : public MidiCallback {
  public:
   static const uint32_t paramSelectMask[13];
   static const char *selectNames[13];
@@ -19,6 +20,8 @@ class MDRandomizerClass {
 
   void setTrack(uint8_t _track);
 
+  void setup();
+  
   void randomize(int amount, uint8_t mask);
   bool undo();
   void revert();
