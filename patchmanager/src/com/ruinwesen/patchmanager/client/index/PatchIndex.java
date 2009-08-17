@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -166,7 +167,6 @@ public class PatchIndex {
             List<IndexedPatchRecord> list = new ArrayList<IndexedPatchRecord>(files.size());
             
             if (deletedPatchIds != null && !deletedPatchIds.isEmpty()) {
-                rebuildIndex();
                 synchronized (PATCH_LIST_LOCK) {
                     Iterator<IndexedPatchRecord> iter = patchList.iterator();
                     while (iter.hasNext()) {
@@ -175,6 +175,8 @@ public class PatchIndex {
                         }
                     }
                     rebuildIndex(null, files, new CollectionCollector<IndexedPatchRecord>(list));
+
+                    removeDuplicates(list, patchList);
                     this.patchList.addAll(list);
                     writeIndex();      
                 }      
@@ -189,8 +191,11 @@ public class PatchIndex {
                         io.close();
                     }
                 }
+                
+                
                 // add new items
                 synchronized (PATCH_LIST_LOCK) {
+                    removeDuplicates(list, patchList);
                     this.patchList.addAll(list);
                 }
             }
@@ -211,6 +216,20 @@ public class PatchIndex {
         }*/
     }
     
+    private void removeDuplicates(List<IndexedPatchRecord> list,
+            List<IndexedPatchRecord> compareList) {
+        Iterator<IndexedPatchRecord> iter = list.iterator();
+        Set<String> existing = new HashSet<String>();
+        for (IndexedPatchRecord rec: compareList) {
+            existing.add(rec.getMetadata().getPatchId());
+        }
+        while (iter.hasNext()) {
+            if (existing.contains(iter.next().getMetadata().getPatchId())) {
+                iter.remove();
+            }
+        }
+    }
+
     private List<IndexedPatchRecord> copyList() {
         synchronized (PATCH_LIST_LOCK) {
             return new ArrayList<IndexedPatchRecord>(patchList);
