@@ -48,6 +48,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 
 import com.ruinwesen.patchmanager.client.index.PatchIndex;
+import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.ClientProtocol1;
 import com.ruinwesen.patchmanager.client.protocol.DefaultPatchManagerClient;
 import com.ruinwesen.patchmanager.client.protocol.ProtocolException;
@@ -82,8 +83,8 @@ public class PatchManager {
         return patchindex;
     }
     
-    public void syncRepository() throws ProtocolException, IOException, InterruptedException {
-        repository.sync(managerClient); // updates patch-index
+    public void syncRepository(Auth auth) throws ProtocolException, IOException, InterruptedException {
+        repository.sync(managerClient, auth); // updates patch-index
     }
     
     public DefaultPatchManagerClient getPatchManagerClient() {

@@ -34,9 +34,6 @@ public abstract class AuthenticatingRequest extends Request {
     
     public AuthenticatingRequest(String protocolId, String action, Auth auth) {
         super(protocolId, action);
-        if (auth == null) {
-            throw new IllegalArgumentException("auth:"+auth);
-        }
         this.auth = auth;
     }
     

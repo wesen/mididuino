@@ -28,7 +28,7 @@
  */
 package com.ruinwesen.patchmanager.client.protocol;
 
-public class RequestRegisterNewUser extends AuthenticatingRequest {
+public class RequestRegisterNewUser extends MandatoryAuthenticatingRequest {
 
     public RequestRegisterNewUser(Auth auth) {
         super(null, ACTION_REGISTER_NEW_USER, auth);

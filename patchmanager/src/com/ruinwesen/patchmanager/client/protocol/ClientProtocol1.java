@@ -335,6 +335,9 @@ public class ClientProtocol1 extends Protocol {
         map.put("auth", new JSONObject(map2));
     }
     protected void encodeAuth(Map<String,Object> map, Auth auth, boolean encodeUsermail) throws ProtocolException {
+    	if (auth == null)
+    		return;
+    	
         Map<String, Object> map2 = createMap();
         map2.put("username", auth.getUsername());
         map2.put("password", auth.getPassword());

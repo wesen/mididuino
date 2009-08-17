@@ -103,676 +103,679 @@ import com.ruinwesen.patchmanager.swing.wizards.MidiSendWizard;
 
 public class SwingPatchManager {
 
-    private static 
-        final Debug debug = DebugFactory.getDebug(SwingPatchManager.class);
-    
-    private static Log log = LogFactory.getLog(SwingPatchManager.class);
+	private static 
+	final Debug debug = DebugFactory.getDebug(SwingPatchManager.class);
 
-	private static boolean adminMode = false;
+	private static Log log = LogFactory.getLog(SwingPatchManager.class);
 
-    public static final String KEY_SIDEBAR_FILTER_VISIBLE
-        = SwingPatchManager.class.getName()+".sidebar.filter.visible";
-    public static final String KEY_SIDEBAR_PATCH_DETAILS_VISIBLE
-    = SwingPatchManager.class.getName()+".sidebar.patch-details.visible";
-    
-    private JFrame frame = null;
-    private PatchManager patchmanager;
-    private File applicationUserdataDir;
-    public File getApplicationUserdataDir() {
-        return applicationUserdataDir;
-    }
+	public static boolean adminMode = false;
 
-    private File applicationPropertiesFile;
-    private CSProperties appProperties = new CSProperties();
+	public static final String KEY_SIDEBAR_FILTER_VISIBLE
+	= SwingPatchManager.class.getName()+".sidebar.filter.visible";
+	public static final String KEY_SIDEBAR_PATCH_DETAILS_VISIBLE
+	= SwingPatchManager.class.getName()+".sidebar.patch-details.visible";
 
-    private JPanel leftPanel;
-    private JList patchListView;
-    private JScrollPane scrollPatchList;
-    private JScrollPane scrollPatchDetails;
-    private PatchListModel<IndexedPatch> patchListModel;
-    private PatchListCellRenderer patchListCellRenderer;
-    private SearchPanel searchPanel;
-    private EventHandler eventHandler ;
-    private SearchOptionsControl searchOptionsControl;
-    private PatchDetailsView patchDetailsView;
-    private NewsIndex newsIndex;
-    private JPanel leftPanelHeader;
-    private JPanel rightPanelHeader;
-    private JScrollPane scrollSearchOptions;
-    
-    private JLabel lblStatusBar;
+	private JFrame frame = null;
+	private PatchManager patchmanager;
+	private File applicationUserdataDir;
+	public File getApplicationUserdataDir() {
+		return applicationUserdataDir;
+	}
 
-    private String version = "<undefined>";
-    private String build_number = "<undefined>";
-    private String build_timestamp = "<undefined>";
+	private File applicationPropertiesFile;
+	private CSProperties appProperties = new CSProperties();
 
-    private CSAction acPatchListViewSendSelectedAction;
-    private CSAction acPatchListViewDeleteSelectedAction;
-    private CSAction acPatchListViewSelectedSaveMidiFileAction;
-    private CSAction acPatchListViewSelectedSaveSourceAction;
+	private JPanel leftPanel;
+	private JList patchListView;
+	private JScrollPane scrollPatchList;
+	private JScrollPane scrollPatchDetails;
+	private PatchListModel<IndexedPatch> patchListModel;
+	private PatchListCellRenderer patchListCellRenderer;
+	private SearchPanel searchPanel;
+	private EventHandler eventHandler ;
+	private SearchOptionsControl searchOptionsControl;
+	private PatchDetailsView patchDetailsView;
+	private NewsIndex newsIndex;
+	private JPanel leftPanelHeader;
+	private JPanel rightPanelHeader;
+	private JScrollPane scrollSearchOptions;
 
-    private CSAction acToggleFilterSidebarVisibility;
-    private CSAction acTogglePatchDetailsSidebarVisibility;
+	private JLabel lblStatusBar;
 
-    private ExecutorService executorService = 
-        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()+2);
+	private String version = "<undefined>";
+	private String build_number = "<undefined>";
+	private String build_timestamp = "<undefined>";
 
-    private SynchronizedField<String> statusTextField = new SynchronizedField<String>(" ") {
-        @Override
-        public void update(String value) {
-            lblStatusBar.setText(value == null ? " " : (" "+value));
-        }
-    };
+	private CSAction acPatchListViewSendSelectedAction;
+	private CSAction acPatchListViewDeleteSelectedAction;
+	private CSAction acPatchListViewSelectedSaveMidiFileAction;
+	private CSAction acPatchListViewSelectedSaveSourceAction;
 
-    private JPanel rightPanel;
+	private CSAction acToggleFilterSidebarVisibility;
+	private CSAction acTogglePatchDetailsSidebarVisibility;
 
-    private JSplitPane center_right_split;
+	private ExecutorService executorService = 
+		Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()+2);
 
-    private JPanel centerPanel;
-    
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
-    
-    public void runInThread(Runnable r) {
-        executorService.execute(r);
-    }
-    
-    public String getVersion() {
-        return version;
-    }
+	private SynchronizedField<String> statusTextField = new SynchronizedField<String>(" ") {
+		@Override
+		public void update(String value) {
+			lblStatusBar.setText(value == null ? " " : (" "+value));
+		}
+	};
 
-    public String getBuildNumber() {
-        return build_number;
-    }
+	private JPanel rightPanel;
 
-    public String getBuildTimestamp() {
-        return build_timestamp;
-    }
-    
-    public void start() {
-        if (frame != null) {
-            return;
-        }
-        init();
-    }
+	private JSplitPane center_right_split;
 
-    private void loadVersionInfo() {
-        CSProperties versionInfo = CSUtils.loadProperties(getClass().getResource("/version.properties"));
-        this.build_number = versionInfo.getProperty("patchmanager.build.number", "<undefined>");
-        this.build_timestamp = versionInfo.getProperty("patchmanager.build.timestamp", "<undefined>");
-        this.version = versionInfo.getProperty("patchmanager.version", "<undefined>");
+	private JPanel centerPanel;
 
-        // always print this
-        log.info("Patchmanager Version:"+version
-                +", Build id:"+build_number
-                +", Build time:"+build_timestamp);
-    }
-    
-    public NewsIndex getNewsIndex() {
-        return newsIndex;
-    }
-    
-    public PatchManagerClient getPatchManagerClient() {
-        return patchmanager.getPatchManagerClient();
-    }
-    
-    public JFrame getFrame() {
-        return frame;
-    }
-    
-    public CSProperties getAppProperties() {
-        return appProperties;
-    }
-    
-    private void writeAppProperties() {
-        CSUtils.storeProperties(appProperties, applicationPropertiesFile);
-    }
-    
-    private void init() {
-        loadVersionInfo();
-        
+	public ExecutorService getExecutorService() {
+		return executorService;
+	}
 
-        // load translations+keybindings,...
-        try {
-            I18N.getSharedInstance().setResourceBundleName("resources/lang/MessageBundle");
-        } catch (MissingResourceException ex) {
-            if (log.isErrorEnabled()) {
-                log.error("MessageBundle resource not found", ex);
-            }
-        }
-        
-        applicationUserdataDir = CSUtils.getApplicationConfigDir("patchmanager");
-        applicationPropertiesFile = new File(applicationUserdataDir, "config.properties");
-        
-        
-        
-        // load application properties
-        appProperties.putAll(CSUtils.loadProperties(applicationPropertiesFile));
-        
-        patchmanager = new PatchManager(applicationUserdataDir);
-        
-        frame = new JFrame("PatchManager");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationByPlatform(true);
-        
-        
-        
-        acToggleFilterSidebarVisibility =
-            new CSAction("Search Options")
-            .useResourceKey("action.sidebar.filter.toggle-visibility")
-            .useInvokationTarget(this, "toggleFilterSidebarVisibility")
-            .setSelected(true);
-            
-        acTogglePatchDetailsSidebarVisibility =
-            new CSAction("Patch Details")
-            .useResourceKey("action.sidebar.patch-details.toggle-visibility")
-            .useInvokationTarget(this, "togglePatchDetailsSidebarVisibility")
-            .setSelected(true);
+	public void runInThread(Runnable r) {
+		executorService.execute(r);
+	}
 
-        acPatchListViewSendSelectedAction = 
-            new CSAction("Send Patch")
-            .useResourceKey("action.patch.send-to-device")
-            .useInvokationTarget(this, "patchListViewSendSelected")
-            .setAsEnabled(false);
-        
-        if (SwingPatchManager.adminMode) {
-        	acPatchListViewDeleteSelectedAction = 
-        		new CSAction("Delete Patch")
-        	.useResourceKey("action.patch.delete")
-        	.useInvokationTarget(this, "patchListViewDeleteSelected")
-        	.setAsEnabled(false);
-        	acPatchListViewSelectedSaveMidiFileAction = 
-        		new CSAction("Save Midifile...")
-        	.useResourceKey("patchdetails.midifile.saveas")
-        	.useInvokationTarget(this, "patchListViewSelectedSaveMidiFile")
-        	.setAsEnabled(false);
-        	acPatchListViewSelectedSaveSourceAction = 
-        		new CSAction("Save Source...")
-        	.useResourceKey("patchdetails.sourcecode.saveas")
-        	.useInvokationTarget(this, "patchListViewSelectedSaveSource")
-        	.setAsEnabled(false);
-        }
+	public String getVersion() {
+		return version;
+	}
 
-        JMenuBar jmenubar = new JMenuBar();
-        JMenu menuFile = new JMenu(new CSAction("File", "menu.file"));
-        menuFile.add(new CSAction("Send Patch...", "menu.send-patch").useInvokationTarget(this, "sendPatch"));
-        menuFile.add(new CSAction("Exit", "menu.exit").useInvokationTarget(this, "quit"));
-        jmenubar.add(menuFile);
-        JMenu menuEdit = new JMenu(new CSAction("Edit","menu.edit")) ;
-        // selected patch tasks
-        if (SwingPatchManager.adminMode) {
-        	menuEdit.add(acPatchListViewSendSelectedAction);
-        	menuEdit.add(acPatchListViewDeleteSelectedAction);
-        	menuEdit.add(acPatchListViewSelectedSaveMidiFileAction);
-        	menuEdit.add(acPatchListViewSelectedSaveSourceAction);
-        	menuEdit.addSeparator(); // server tasks
-        	menuEdit.add(new CSAction(this, "publishPatch"));
-        	menuEdit.addSeparator(); // misc server tasks
-        	if (debug.isDebugEnabled()) {
-        		menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
-        	}
-        }
-        menuEdit.add(new CSAction(this, "syncRepository"));
-        
-        jmenubar.add(menuEdit);
-        JMenu menuView = new JMenu("View") ;
-        menuView.add(new JCheckBoxMenuItem(acToggleFilterSidebarVisibility));
-        menuView.add(new JCheckBoxMenuItem(acTogglePatchDetailsSidebarVisibility));
-        jmenubar.add(menuView);
-        
-        JMenu menuHelp = new JMenu("Help") ;
-        menuHelp.add(new CSAction(this, "regenerateIndex")
-        .useResourceKey("action.index.regenerate"));
-        if (debug.isDebugEnabled()) {
-            menuHelp.add(new CSAction(this, "askServerAboutNewClientVersion")
-            .useResourceKey("action.check-for-updates"));
-        }
+	public String getBuildNumber() {
+		return build_number;
+	}
 
-        menuHelp.add(new CSAction(this, "showAboutDialog"));
-        
-        jmenubar.add(menuHelp);
+	public String getBuildTimestamp() {
+		return build_timestamp;
+	}
 
-        if (debug.isDebugEnabled()) {
-            JMenu menuDebug = new JMenu("Debug") ;
-            menuDebug.add(new CSAction(this, "sendBugreport"));
-            menuDebug.add(new CSAction(this, "debugRunNeverEndingTask"));
-            jmenubar.add(menuDebug);
-        }
-        
-        frame.setJMenuBar(jmenubar);
-        
-        patchListCellRenderer = new PatchListCellRenderer();
+	public void start() {
+		if (frame != null) {
+			return;
+		}
+		init();
+	}
 
-        searchPanel = new SearchPanel(this);
-        
-        patchListModel = new PatchListModel<IndexedPatch>(Order.BY_RELEVANCE);
-        patchListView = new JList(patchListModel);
-        patchListView.setCellRenderer(patchListCellRenderer);
-        patchListView.setFixedCellHeight(patchListCellRenderer.computeFixedCellHeight());
-        patchListView.setVisibleRowCount(5);
-        
-        scrollPatchList = new JScrollPane(patchListView);
-        
-        JPopupMenu listPopup = new JPopupMenu();
-        listPopup.add(acPatchListViewSendSelectedAction);
-        listPopup.add(acPatchListViewSelectedSaveMidiFileAction);
-        listPopup.add(acPatchListViewSelectedSaveSourceAction);
-        listPopup.addSeparator();
-        listPopup.add(acPatchListViewDeleteSelectedAction);
-        patchListView.setComponentPopupMenu(listPopup);
-        
-        
-     //   updatePatchListViewFixedWidth();
-        
-        searchOptionsControl = new SearchOptionsControl();
-        scrollSearchOptions = new JScrollPane(searchOptionsControl.getContainer());
-   
-        centerPanel = new JPanel(new BorderLayout());
-        centerPanel.add(searchPanel.getContainer(), BorderLayout.NORTH);
-        centerPanel.add(scrollPatchList, BorderLayout.CENTER);
-        
-        leftPanel = new JPanel(new BorderLayout());
-        leftPanelHeader = new JPanel(new BorderLayout());
-        leftPanelHeader.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
-        leftPanelHeader.add(new JLabel("Search"),BorderLayout.CENTER);
-        leftPanel.add(leftPanelHeader, BorderLayout.NORTH);
-        leftPanel.add(scrollSearchOptions, BorderLayout.CENTER);
-       
-        rightPanel = new JPanel(new BorderLayout());
-        rightPanelHeader = new JPanel(new BorderLayout());
-        rightPanelHeader.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
-        rightPanelHeader.add(new JLabel("Patch"),BorderLayout.CENTER);
-        rightPanelHeader.add(new JButton(acPatchListViewSendSelectedAction),BorderLayout.EAST);
-        rightPanel.add(rightPanelHeader, BorderLayout.NORTH);
-        
-        patchDetailsView = new PatchDetailsView();
-        patchDetailsView.getSaveMidifileButton().setAction(acPatchListViewSelectedSaveMidiFileAction);
-        patchDetailsView.getSaveSourceButton().setAction(acPatchListViewSelectedSaveSourceAction);
-        
-        scrollPatchDetails = new JScrollPane(patchDetailsView.getContainer());
-        rightPanel.add(scrollPatchDetails, BorderLayout.CENTER);
+	private void loadVersionInfo() {
+		CSProperties versionInfo = CSUtils.loadProperties(getClass().getResource("/version.properties"));
+		this.build_number = versionInfo.getProperty("patchmanager.build.number", "<undefined>");
+		this.build_timestamp = versionInfo.getProperty("patchmanager.build.timestamp", "<undefined>");
+		this.version = versionInfo.getProperty("patchmanager.version", "<undefined>");
 
-        center_right_split = createSplitPane();
-        center_right_split.setContinuousLayout(true);
-/*
+		// always print this
+		log.info("Patchmanager Version:"+version
+				+", Build id:"+build_number
+				+", Build time:"+build_timestamp);
+	}
+
+	public NewsIndex getNewsIndex() {
+		return newsIndex;
+	}
+
+	public PatchManagerClient getPatchManagerClient() {
+		return patchmanager.getPatchManagerClient();
+	}
+
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	public CSProperties getAppProperties() {
+		return appProperties;
+	}
+
+	private void writeAppProperties() {
+		CSUtils.storeProperties(appProperties, applicationPropertiesFile);
+	}
+
+	private void init() {
+		loadVersionInfo();
+
+
+		// load translations+keybindings,...
+		try {
+			I18N.getSharedInstance().setResourceBundleName("resources/lang/MessageBundle");
+		} catch (MissingResourceException ex) {
+			if (log.isErrorEnabled()) {
+				log.error("MessageBundle resource not found", ex);
+			}
+		}
+
+		applicationUserdataDir = CSUtils.getApplicationConfigDir("patchmanager");
+		applicationPropertiesFile = new File(applicationUserdataDir, "config.properties");
+
+
+
+		// load application properties
+		appProperties.putAll(CSUtils.loadProperties(applicationPropertiesFile));
+
+		patchmanager = new PatchManager(applicationUserdataDir);
+
+		frame = new JFrame("PatchManager");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationByPlatform(true);
+
+
+
+		acToggleFilterSidebarVisibility =
+			new CSAction("Search Options")
+		.useResourceKey("action.sidebar.filter.toggle-visibility")
+		.useInvokationTarget(this, "toggleFilterSidebarVisibility")
+		.setSelected(true);
+
+		acTogglePatchDetailsSidebarVisibility =
+			new CSAction("Patch Details")
+		.useResourceKey("action.sidebar.patch-details.toggle-visibility")
+		.useInvokationTarget(this, "togglePatchDetailsSidebarVisibility")
+		.setSelected(true);
+
+		acPatchListViewSendSelectedAction = 
+			new CSAction("Send Patch")
+		.useResourceKey("action.patch.send-to-device")
+		.useInvokationTarget(this, "patchListViewSendSelected")
+		.setAsEnabled(false);
+
+		if (SwingPatchManager.adminMode) {
+			acPatchListViewDeleteSelectedAction = 
+				new CSAction("Delete Patch")
+			.useResourceKey("action.patch.delete")
+			.useInvokationTarget(this, "patchListViewDeleteSelected")
+			.setAsEnabled(false);
+			acPatchListViewSelectedSaveMidiFileAction = 
+				new CSAction("Save Midifile...")
+			.useResourceKey("patchdetails.midifile.saveas")
+			.useInvokationTarget(this, "patchListViewSelectedSaveMidiFile")
+			.setAsEnabled(false);
+			acPatchListViewSelectedSaveSourceAction = 
+				new CSAction("Save Source...")
+			.useResourceKey("patchdetails.sourcecode.saveas")
+			.useInvokationTarget(this, "patchListViewSelectedSaveSource")
+			.setAsEnabled(false);
+		}
+
+		JMenuBar jmenubar = new JMenuBar();
+		JMenu menuFile = new JMenu(new CSAction("File", "menu.file"));
+		menuFile.add(new CSAction("Send Patch...", "menu.send-patch").useInvokationTarget(this, "sendPatch"));
+		menuFile.add(new CSAction("Exit", "menu.exit").useInvokationTarget(this, "quit"));
+		jmenubar.add(menuFile);
+		JMenu menuEdit = new JMenu(new CSAction("Edit","menu.edit")) ;
+		// selected patch tasks
+		if (SwingPatchManager.adminMode) {
+			menuEdit.add(acPatchListViewSendSelectedAction);
+			menuEdit.add(acPatchListViewDeleteSelectedAction);
+			menuEdit.add(acPatchListViewSelectedSaveMidiFileAction);
+			menuEdit.add(acPatchListViewSelectedSaveSourceAction);
+			menuEdit.addSeparator(); // server tasks
+			menuEdit.add(new CSAction(this, "publishPatch"));
+			menuEdit.addSeparator(); // misc server tasks
+			if (debug.isDebugEnabled()) {
+				menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
+			}
+		}
+		menuEdit.add(new CSAction(this, "syncRepository"));
+
+		jmenubar.add(menuEdit);
+		JMenu menuView = new JMenu("View") ;
+		menuView.add(new JCheckBoxMenuItem(acToggleFilterSidebarVisibility));
+		menuView.add(new JCheckBoxMenuItem(acTogglePatchDetailsSidebarVisibility));
+		jmenubar.add(menuView);
+
+		JMenu menuHelp = new JMenu("Help") ;
+		menuHelp.add(new CSAction(this, "regenerateIndex")
+		.useResourceKey("action.index.regenerate"));
+		if (debug.isDebugEnabled()) {
+			menuHelp.add(new CSAction(this, "askServerAboutNewClientVersion")
+			.useResourceKey("action.check-for-updates"));
+		}
+
+		menuHelp.add(new CSAction(this, "showAboutDialog"));
+
+		jmenubar.add(menuHelp);
+
+		if (debug.isDebugEnabled()) {
+			JMenu menuDebug = new JMenu("Debug") ;
+			menuDebug.add(new CSAction(this, "sendBugreport"));
+			menuDebug.add(new CSAction(this, "debugRunNeverEndingTask"));
+			jmenubar.add(menuDebug);
+		}
+
+		frame.setJMenuBar(jmenubar);
+
+		patchListCellRenderer = new PatchListCellRenderer();
+
+		searchPanel = new SearchPanel(this);
+
+		patchListModel = new PatchListModel<IndexedPatch>(Order.BY_RELEVANCE);
+		patchListView = new JList(patchListModel);
+		patchListView.setCellRenderer(patchListCellRenderer);
+		patchListView.setFixedCellHeight(patchListCellRenderer.computeFixedCellHeight());
+		patchListView.setVisibleRowCount(5);
+
+		scrollPatchList = new JScrollPane(patchListView);
+
+		JPopupMenu listPopup = new JPopupMenu();
+		listPopup.add(acPatchListViewSendSelectedAction);
+		listPopup.add(acPatchListViewSelectedSaveMidiFileAction);
+		listPopup.add(acPatchListViewSelectedSaveSourceAction);
+		listPopup.addSeparator();
+		listPopup.add(acPatchListViewDeleteSelectedAction);
+		patchListView.setComponentPopupMenu(listPopup);
+
+
+		//   updatePatchListViewFixedWidth();
+
+		searchOptionsControl = new SearchOptionsControl();
+		scrollSearchOptions = new JScrollPane(searchOptionsControl.getContainer());
+
+		centerPanel = new JPanel(new BorderLayout());
+		centerPanel.add(searchPanel.getContainer(), BorderLayout.NORTH);
+		centerPanel.add(scrollPatchList, BorderLayout.CENTER);
+
+		leftPanel = new JPanel(new BorderLayout());
+		leftPanelHeader = new JPanel(new BorderLayout());
+		leftPanelHeader.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
+		leftPanelHeader.add(new JLabel("Search"),BorderLayout.CENTER);
+		leftPanel.add(leftPanelHeader, BorderLayout.NORTH);
+		leftPanel.add(scrollSearchOptions, BorderLayout.CENTER);
+
+		rightPanel = new JPanel(new BorderLayout());
+		rightPanelHeader = new JPanel(new BorderLayout());
+		rightPanelHeader.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
+		rightPanelHeader.add(new JLabel("Patch"),BorderLayout.CENTER);
+		rightPanelHeader.add(new JButton(acPatchListViewSendSelectedAction),BorderLayout.EAST);
+		rightPanel.add(rightPanelHeader, BorderLayout.NORTH);
+
+		patchDetailsView = new PatchDetailsView();
+		patchDetailsView.getSaveMidifileButton().setAction(acPatchListViewSelectedSaveMidiFileAction);
+		patchDetailsView.getSaveSourceButton().setAction(acPatchListViewSelectedSaveSourceAction);
+
+		scrollPatchDetails = new JScrollPane(patchDetailsView.getContainer());
+		rightPanel.add(scrollPatchDetails, BorderLayout.CENTER);
+
+		center_right_split = createSplitPane();
+		center_right_split.setContinuousLayout(true);
+		/*
         patchmanager.getIndex().readIndex(null);
         try {
         copyPatch800();
         } catch (Exception ex){
             ex.printStackTrace();
         }*/
-        lblStatusBar = new JLabel(" ");
-        
-        
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(leftPanel, BorderLayout.WEST);
-        frame.getContentPane().add(center_right_split, BorderLayout.CENTER);
-        frame.getContentPane().add(lblStatusBar, BorderLayout.SOUTH);
-
-        eventHandler = new EventHandler();
-        eventHandler.install();
+		lblStatusBar = new JLabel(" ");
 
 
-        if (!appProperties.getBooleanProperty(
-                        KEY_SIDEBAR_FILTER_VISIBLE, true)) {
-            acToggleFilterSidebarVisibility.setSelected(false);
-            toggleFilterSidebarVisibility();
-        }
-        if (!appProperties.getBooleanProperty(
-                        KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, true)) {
-            acTogglePatchDetailsSidebarVisibility.setSelected(false);
-            togglePatchDetailsSidebarVisibility();
-        }
-        
-        this.newsIndex = new NewsIndex(new File(applicationUserdataDir, "news.index"));
-  //      frame.setMinimumSize(new Dimension(600,300));
-        frame.pack();
-        
-        {
+		frame.getContentPane().setLayout(new BorderLayout());
+		frame.getContentPane().add(leftPanel, BorderLayout.WEST);
+		frame.getContentPane().add(center_right_split, BorderLayout.CENTER);
+		frame.getContentPane().add(lblStatusBar, BorderLayout.SOUTH);
 
-            int headerHeight = searchPanel.getContainer().getHeight();
-            {
-                int lw = leftPanelHeader.getWidth();
-                leftPanelHeader.setPreferredSize(new Dimension(lw, headerHeight));
-            }
-            {
-                int rw = rightPanelHeader.getWidth();
-                rightPanelHeader.setPreferredSize(new Dimension(rw, headerHeight));
-            }
-        }
-        
-        Dimension size = frame.getSize();
-        size.width+=3*20;
-        frame.setSize(size);
-        
-        frame.setVisible(true);
-        indexUpdated();
-        
-        
-    }
-    
-    @SwingActionData("Run Never Ending Task")
-    public void debugRunNeverEndingTask() {
-        runInThread(new Runnable () {
-           public void run() {
-               if (log.isDebugEnabled()) {
-                   log.debug(this+": Never Ending thread started.");
-               }
-               try {
-                   while (true) {
-                       Thread.sleep(Long.MAX_VALUE);
-                   }
-               } catch (InterruptedException ex) {
-                   if (log.isDebugEnabled()) {
-                       log.debug(this+": Never Ending thread was interrupted.");
-                   }
-                   Thread.currentThread().interrupt();
-               }
-           }
-        });
-    }
-    
-    @SwingActionData("About Patchmanager")
-    public void showAboutDialog() {
-        AboutDialog.showDialog(this);
-    }
-    
-    private JSplitPane createSplitPane() {
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                false, centerPanel, rightPanel);
-        split.setResizeWeight(1);
-        return split;
-    }
-    
-    public void toggleFilterSidebarVisibility() {
-        leftPanel.setVisible(!leftPanel.isVisible());
-        
-        acToggleFilterSidebarVisibility.setSelected(leftPanel.isVisible());
-        appProperties.setBooleanProperty(KEY_SIDEBAR_FILTER_VISIBLE, acToggleFilterSidebarVisibility.isSelected());
-
-        if (leftPanel.isVisible()) {
-      //  center_right_split.setDividerLocation(center_right_split.getLastDividerLocation());
-        }
-        frame.getContentPane().invalidate();
-        if (frame.getContentPane() instanceof JComponent) {
-            ((JComponent)frame.getContentPane()).revalidate();
-        }
-        frame.getContentPane().repaint();
-    }
-
-    public void togglePatchDetailsSidebarVisibility() {
-        boolean sidebarVisible;
-        if (center_right_split != null) { // hide patch details
-            sidebarVisible = false;
-            center_right_split.removeAll();
-            frame.getContentPane().remove(center_right_split);
-            center_right_split = null;
-            frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
-        } else { // show patch details
-            sidebarVisible = true;
-            frame.getContentPane().remove(centerPanel);
-            center_right_split = createSplitPane();
-            frame.getContentPane().add(center_right_split, BorderLayout.CENTER);
-        }
-        centerPanel.invalidate();
-        centerPanel.revalidate();
-        centerPanel.repaint();
-        
-        frame.getContentPane().invalidate();
-        if (frame.getContentPane() instanceof JComponent)
-            ((JComponent)frame.getContentPane()).revalidate();
-        frame.getContentPane().repaint();
-        
-
-        appProperties.setBooleanProperty(KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, sidebarVisible);
-        
-    }
-    
-    public void patchListViewSendSelected() {
-        IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
-        if (patch == null) {
-            return;
-        }
-        
-        File file = patch.getLocalFile();
-        if (file == null) {
-            return;
-        }        
-        
-        MidiSendWizard send = new MidiSendWizard();
-        send.setProperties(appProperties);
-        send.setSourceFile(file);
-        send.setSourceFileSelectable(false);
-        send.showDialog(frame);
-    }
-    
-    public void sendPatch() {
-        MidiSendWizard send = new MidiSendWizard();
-        send.setProperties(appProperties);
-        send.showDialog(frame);
-    }
-
-    public void patchListViewDeleteSelected() {
-        IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
-        if (patch == null) {
-            return;
-        }
-        
-        if (JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the patch ?",
-                "Delete",
-                JOptionPane.YES_NO_OPTION)
-                == JOptionPane.YES_OPTION) {
-            runInThread(new DeletePatchTask(this, patch));
-        }
-    }
-
-    public void patchListViewSelectedSaveMidiFile() {
-        IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
-        if (patch == null) {
-            return;
-        }
-        SwingPatchManagerUtils.showStoreMidiFileDialog(frame, patch);    
-    }
+		eventHandler = new EventHandler();
+		eventHandler.install();
 
 
-    public void patchListViewSelectedSaveSource() {
-        IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
-        if (patch == null) {
-            return;
-        }
-        SwingPatchManagerUtils.showStoreSourceDialog(frame, patch);    
-    }
-    public void quit() {
-        frame.setVisible(false);
-        frame.dispose();
-    }
-    
-    public void setStatus(String text) {
-        statusTextField.set(text);
-    }
-    
-    public void indexUpdated() {
-        runInThread(new IndexUpdateThread(false));
-    }
+		if (!appProperties.getBooleanProperty(
+				KEY_SIDEBAR_FILTER_VISIBLE, true)) {
+			acToggleFilterSidebarVisibility.setSelected(false);
+			toggleFilterSidebarVisibility();
+		}
+		if (!appProperties.getBooleanProperty(
+				KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, true)) {
+			acTogglePatchDetailsSidebarVisibility.setSelected(false);
+			togglePatchDetailsSidebarVisibility();
+		}
 
-    @SwingActionData("Regenerate Index")
-    public void regenerateIndex() {
-        runInThread(new IndexUpdateThread(true));
-    }
-    
-    public void setSearchRelatedControlsEnabled(boolean value) {
-        searchOptionsControl.setControlsEnabled(value);
-        
-        searchPanel.getSearchField().setEditable(value);
-        searchPanel.getSearchField().setEnabled(value);
-    }
+		this.newsIndex = new NewsIndex(new File(applicationUserdataDir, "news.index"));
+		//      frame.setMinimumSize(new Dimension(600,300));
+		frame.pack();
 
-    public final class IndexUpdateThread extends SimpleSwingWorker implements
-        Collector<IndexedPatch> {
-        private static final long serialVersionUID = 6481174902097150715L;
-        private ProgressMonitor pm;
-        private int counter = 0;
-        private boolean regenerate;
-        private static final int CANCELED = -1;
-        
-        public IndexUpdateThread(boolean regenerate) {
-            this.regenerate = regenerate;
-        }
-        
-        @Override
-        protected void setup() {
-            setSearchRelatedControlsEnabled(false);
-            // this should be done in a thread
-            int count = patchmanager.getIndex().computeEstimatedPatchCount();
-            pm = new ProgressMonitor(frame, "Reading index. ("+count+" patch files)", "This may take a while.", 0, count);
-        }
+		{
 
-        @Override
-        protected void finish() {
-            setStatus("Finished reading index.");
-            pm.close();
-            // TODO we can rebuild the filter ui using the thread
-            searchOptionsControl.rebuildFilterUI(patchmanager.getIndex());
-            executeQuery();
-        }
+			int headerHeight = searchPanel.getContainer().getHeight();
+			{
+				int lw = leftPanelHeader.getWidth();
+				leftPanelHeader.setPreferredSize(new Dimension(lw, headerHeight));
+			}
+			{
+				int rw = rightPanelHeader.getWidth();
+				rightPanelHeader.setPreferredSize(new Dimension(rw, headerHeight));
+			}
+		}
 
-        @Override
-        protected void cleanup() {
-            setSearchRelatedControlsEnabled(true);
-        }
+		Dimension size = frame.getSize();
+		size.width+=3*20;
+		frame.setSize(size);
 
-        @Override
-        protected void update() {
-            pm.setProgress(++counter);
-            if (pm.isCanceled()) {
-                synchronized (this) {
-                    counter = CANCELED;
-                }
-            }
-        }
+		frame.setVisible(true);
+		
+		runInThread(new SynchronizeRepositoryTask(this));
 
-        @Override
-        public void process() {
-            if (regenerate) {
-                setStatus("Regenerating index...");
-                patchmanager.getIndex().rebuildIndex();
-            }
-            setStatus("Reading index...");
-            patchmanager.getIndex().readIndex(this);
-        }
-        
-        @Override
-        public int collect(IndexedPatch item) {
-            synchronized (this) {
-                if (counter == CANCELED) {
-                    return Collector.FINISHED;
-                }
-                ++counter;
-            }
-            callUpdate();
-            return Collector.ACCEPTED_MORE;
-        }
-    }
-    
-    @SwingActionData("Read News")
-    public void getLatestNews() {
-        runInThread(new GetLatestNewsTask(this));
-    }
+		indexUpdated();
 
-    public void executeQuery() {
-        runInThread(new PerformQueryTask(this));
-    }
-    
-    @SwingActionData("Download patches")
-    public void syncRepository() {
-        runInThread(new SynchronizeRepositoryTask(this));
-    }
 
-    public Auth getUserAuthentication(boolean allowCreate) {
-        final String KEY_USERNAME = "client.username";
-        final String KEY_PASSWORD = "client.password";
-        final String KEY_MAIL = "client.mail";
-        
-        String username = appProperties.getProperty(KEY_USERNAME);
-        String password = appProperties.getProperty(KEY_PASSWORD);
-        String mail = appProperties.getProperty(KEY_MAIL);
-        
-        if (username != null && password != null && mail != null) {
-            return new Auth(username, password, mail);
-        }
-        if (!allowCreate) {
-            return null;
-        }
-        // create login
-        NewLoginForm nlf = new NewLoginForm(patchmanager.getPatchManagerClient(), 
-                NewLoginForm.OPTION_CREATE_USER_OR_CANCEL);
-        
-        nlf.showDialog(frame);
-        
-        if (nlf.getSelectedOption() != JOptionPane.OK_OPTION) {
-            return null;
-        }
-        
-        username = nlf.getUsername();
-        password = nlf.getPassword();
-        mail = nlf.getMail();
+	}
 
-        appProperties.put(KEY_USERNAME, username);
-        appProperties.put(KEY_PASSWORD, password);
-        appProperties.put(KEY_MAIL, mail);
-        writeAppProperties();
-        
-        return new Auth(username, password, mail);
-    }
-    
-    @SwingActionData("Create/Publish Patch...")
-    public void publishPatch() {
-        new CreatePublishPatchWizard(this).showDialog(frame);
-    }
-    
-    @SwingActionData("Check for Updates")
-    public void askServerAboutNewClientVersion() {
-        CheckForUpdatesTask task = new CheckForUpdatesTask(this);
-        task.setQuietModeEnabled(false);
-        runInThread(task);
-    }
-    
-    @SwingActionData("Send Bug Report")
-    public void sendBugreport() {
-        BugReportBuilder brb = new BugReportBuilder();
-        brb.format("PatchManager Version:%s Build:%s Build-time:%s\n",
-                version,
-                build_number,
-                build_timestamp);
-        brb.appendSystemInfo();
-        // load logfile
-        URL log = getClass().getResource("/patchmanager.log");
-        
-        
-        boolean logFileAppended = false;
-        if (log != null) {
-            try {
-                brb.appendLogFile(new File(log.toURI()));
-                logFileAppended = true;
-            } catch (URISyntaxException ex) {
-                // no op
-            }
-        }
-        if (!logFileAppended) {
-            brb.append("Could not locate log file.\n");
-        }
-        
-        new BugreportForm( 
-                getPatchManagerClient(),
-                getUserAuthentication(false),
-                brb.toString()).showDialog(frame);
-        
-    }
-    
-    /*
+	@SwingActionData("Run Never Ending Task")
+	public void debugRunNeverEndingTask() {
+		runInThread(new Runnable () {
+			public void run() {
+				if (log.isDebugEnabled()) {
+					log.debug(this+": Never Ending thread started.");
+				}
+				try {
+					while (true) {
+						Thread.sleep(Long.MAX_VALUE);
+					}
+				} catch (InterruptedException ex) {
+					if (log.isDebugEnabled()) {
+						log.debug(this+": Never Ending thread was interrupted.");
+					}
+					Thread.currentThread().interrupt();
+				}
+			}
+		});
+	}
+
+	@SwingActionData("About Patchmanager")
+	public void showAboutDialog() {
+		AboutDialog.showDialog(this);
+	}
+
+	private JSplitPane createSplitPane() {
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				false, centerPanel, rightPanel);
+		split.setResizeWeight(1);
+		return split;
+	}
+
+	public void toggleFilterSidebarVisibility() {
+		leftPanel.setVisible(!leftPanel.isVisible());
+
+		acToggleFilterSidebarVisibility.setSelected(leftPanel.isVisible());
+		appProperties.setBooleanProperty(KEY_SIDEBAR_FILTER_VISIBLE, acToggleFilterSidebarVisibility.isSelected());
+
+		if (leftPanel.isVisible()) {
+			//  center_right_split.setDividerLocation(center_right_split.getLastDividerLocation());
+		}
+		frame.getContentPane().invalidate();
+		if (frame.getContentPane() instanceof JComponent) {
+			((JComponent)frame.getContentPane()).revalidate();
+		}
+		frame.getContentPane().repaint();
+	}
+
+	public void togglePatchDetailsSidebarVisibility() {
+		boolean sidebarVisible;
+		if (center_right_split != null) { // hide patch details
+			sidebarVisible = false;
+			center_right_split.removeAll();
+			frame.getContentPane().remove(center_right_split);
+			center_right_split = null;
+			frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
+		} else { // show patch details
+			sidebarVisible = true;
+			frame.getContentPane().remove(centerPanel);
+			center_right_split = createSplitPane();
+			frame.getContentPane().add(center_right_split, BorderLayout.CENTER);
+		}
+		centerPanel.invalidate();
+		centerPanel.revalidate();
+		centerPanel.repaint();
+
+		frame.getContentPane().invalidate();
+		if (frame.getContentPane() instanceof JComponent)
+			((JComponent)frame.getContentPane()).revalidate();
+		frame.getContentPane().repaint();
+
+
+		appProperties.setBooleanProperty(KEY_SIDEBAR_PATCH_DETAILS_VISIBLE, sidebarVisible);
+
+	}
+
+	public void patchListViewSendSelected() {
+		IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
+		if (patch == null) {
+			return;
+		}
+
+		File file = patch.getLocalFile();
+		if (file == null) {
+			return;
+		}        
+
+		MidiSendWizard send = new MidiSendWizard();
+		send.setProperties(appProperties);
+		send.setSourceFile(file);
+		send.setSourceFileSelectable(false);
+		send.showDialog(frame);
+	}
+
+	public void sendPatch() {
+		MidiSendWizard send = new MidiSendWizard();
+		send.setProperties(appProperties);
+		send.showDialog(frame);
+	}
+
+	public void patchListViewDeleteSelected() {
+		IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
+		if (patch == null) {
+			return;
+		}
+
+		if (JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the patch ?",
+				"Delete",
+				JOptionPane.YES_NO_OPTION)
+				== JOptionPane.YES_OPTION) {
+			runInThread(new DeletePatchTask(this, patch));
+		}
+	}
+
+	public void patchListViewSelectedSaveMidiFile() {
+		IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
+		if (patch == null) {
+			return;
+		}
+		SwingPatchManagerUtils.showStoreMidiFileDialog(frame, patch);    
+	}
+
+
+	public void patchListViewSelectedSaveSource() {
+		IndexedPatch patch = (IndexedPatch)patchListView.getSelectedValue();
+		if (patch == null) {
+			return;
+		}
+		SwingPatchManagerUtils.showStoreSourceDialog(frame, patch);    
+	}
+	public void quit() {
+		frame.setVisible(false);
+		frame.dispose();
+	}
+
+	public void setStatus(String text) {
+		statusTextField.set(text);
+	}
+
+	public void indexUpdated() {
+		runInThread(new IndexUpdateThread(false));
+	}
+
+	@SwingActionData("Regenerate Index")
+	public void regenerateIndex() {
+		runInThread(new IndexUpdateThread(true));
+	}
+
+	public void setSearchRelatedControlsEnabled(boolean value) {
+		searchOptionsControl.setControlsEnabled(value);
+
+		searchPanel.getSearchField().setEditable(value);
+		searchPanel.getSearchField().setEnabled(value);
+	}
+
+	public final class IndexUpdateThread extends SimpleSwingWorker implements
+	Collector<IndexedPatch> {
+		private static final long serialVersionUID = 6481174902097150715L;
+		private ProgressMonitor pm;
+		private int counter = 0;
+		private boolean regenerate;
+		private static final int CANCELED = -1;
+
+		public IndexUpdateThread(boolean regenerate) {
+			this.regenerate = regenerate;
+		}
+
+		@Override
+		protected void setup() {
+			setSearchRelatedControlsEnabled(false);
+			// this should be done in a thread
+			int count = patchmanager.getIndex().computeEstimatedPatchCount();
+			pm = new ProgressMonitor(frame, "Reading index. ("+count+" patch files)", "This may take a while.", 0, count);
+		}
+
+		@Override
+		protected void finish() {
+			setStatus("Finished reading index.");
+			pm.close();
+			// TODO we can rebuild the filter ui using the thread
+			searchOptionsControl.rebuildFilterUI(patchmanager.getIndex());
+			executeQuery();
+		}
+
+		@Override
+		protected void cleanup() {
+			setSearchRelatedControlsEnabled(true);
+		}
+
+		@Override
+		protected void update() {
+			pm.setProgress(++counter);
+			if (pm.isCanceled()) {
+				synchronized (this) {
+					counter = CANCELED;
+				}
+			}
+		}
+
+		@Override
+		public void process() {
+			if (regenerate) {
+				setStatus("Regenerating index...");
+				patchmanager.getIndex().rebuildIndex();
+			}
+			setStatus("Reading index...");
+			patchmanager.getIndex().readIndex(this);
+		}
+
+		@Override
+		public int collect(IndexedPatch item) {
+			synchronized (this) {
+				if (counter == CANCELED) {
+					return Collector.FINISHED;
+				}
+				++counter;
+			}
+			callUpdate();
+			return Collector.ACCEPTED_MORE;
+		}
+	}
+
+	@SwingActionData("Read News")
+	public void getLatestNews() {
+		runInThread(new GetLatestNewsTask(this));
+	}
+
+	public void executeQuery() {
+		runInThread(new PerformQueryTask(this));
+	}
+
+	@SwingActionData("Download patches")
+	public void syncRepository() {
+		runInThread(new SynchronizeRepositoryTask(this));
+	}
+
+	public Auth getUserAuthentication(boolean allowCreate) {
+		final String KEY_USERNAME = "client.username";
+		final String KEY_PASSWORD = "client.password";
+		final String KEY_MAIL = "client.mail";
+
+		String username = appProperties.getProperty(KEY_USERNAME);
+		String password = appProperties.getProperty(KEY_PASSWORD);
+		String mail = appProperties.getProperty(KEY_MAIL);
+
+		if (username != null && password != null && mail != null) {
+			return new Auth(username, password, mail);
+		}
+		if (!allowCreate) {
+			return null;
+		}
+		// create login
+		NewLoginForm nlf = new NewLoginForm(patchmanager.getPatchManagerClient(), 
+				NewLoginForm.OPTION_CREATE_USER_OR_CANCEL);
+
+		nlf.showDialog(frame);
+
+		if (nlf.getSelectedOption() != JOptionPane.OK_OPTION) {
+			return null;
+		}
+
+		username = nlf.getUsername();
+		password = nlf.getPassword();
+		mail = nlf.getMail();
+
+		appProperties.put(KEY_USERNAME, username);
+		appProperties.put(KEY_PASSWORD, password);
+		appProperties.put(KEY_MAIL, mail);
+		writeAppProperties();
+
+		return new Auth(username, password, mail);
+	}
+
+	@SwingActionData("Create/Publish Patch...")
+	public void publishPatch() {
+		new CreatePublishPatchWizard(this).showDialog(frame);
+	}
+
+	@SwingActionData("Check for Updates")
+	public void askServerAboutNewClientVersion() {
+		CheckForUpdatesTask task = new CheckForUpdatesTask(this);
+		task.setQuietModeEnabled(false);
+		runInThread(task);
+	}
+
+	@SwingActionData("Send Bug Report")
+	public void sendBugreport() {
+		BugReportBuilder brb = new BugReportBuilder();
+		brb.format("PatchManager Version:%s Build:%s Build-time:%s\n",
+				version,
+				build_number,
+				build_timestamp);
+		brb.appendSystemInfo();
+		// load logfile
+		URL log = getClass().getResource("/patchmanager.log");
+
+
+		boolean logFileAppended = false;
+		if (log != null) {
+			try {
+				brb.appendLogFile(new File(log.toURI()));
+				logFileAppended = true;
+			} catch (URISyntaxException ex) {
+				// no op
+			}
+		}
+		if (!logFileAppended) {
+			brb.append("Could not locate log file.\n");
+		}
+
+		new BugreportForm( 
+				getPatchManagerClient(),
+				getUserAuthentication(false),
+				brb.toString()).showDialog(frame);
+
+	}
+
+	/*
     private void updatePatchListViewFixedWidth() {
-        
+
         int w = patchListView.getWidth();
         Insets insets = new Insets(0,0,0,0);
         insets = scrollPatchList.getInsets(insets);
@@ -785,134 +788,137 @@ public class SwingPatchManager {
         System.out.printf("cw:%d\n",w);
         patchListView.setFixedCellWidth(w);
     }*/
-    
-    private class EventHandler extends CSEventAdapter 
-    implements ChangeListener,
-    ListSelectionListener {
 
-        public void install() {
-            searchOptionsControl.addChangeListener(this);
-            patchListView.addListSelectionListener(this);
-            patchListView.addMouseListener(this);
-            frame.addWindowListener(this);
-        }
+	private class EventHandler extends CSEventAdapter 
+	implements ChangeListener,
+	ListSelectionListener {
 
-        @Override
-        public void windowClosing(WindowEvent e) {
-            writeAppProperties();
-            executorService.shutdown();
-        }
+		public void install() {
+			searchOptionsControl.addChangeListener(this);
+			patchListView.addListSelectionListener(this);
+			patchListView.addMouseListener(this);
+			frame.addWindowListener(this);
+		}
 
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            selectListItemIgnoreMouseButton(e);
-        }
-        
-        @Override
-        public void mousePressed(MouseEvent e) {
-            selectListItemIgnoreMouseButton(e);
-        }
-        
-        public void selectListItemIgnoreMouseButton(MouseEvent e) {
-            if (e.getComponent() == patchListView) {
-                int index = patchListView.locationToIndex(e.getPoint());
-                if (patchListView.getSelectedIndex() != index) {
-                    patchListView.setSelectedIndex(index);
-                    
-                    if (e.isPopupTrigger()) { 
-                        // changing the selected list item may 
-                        // prevent the patchlist popup from showing
-                        // => force show popup menu
-                        JPopupMenu popup = patchListView.getComponentPopupMenu();
-                        if (popup != null) {
-                            popup.show(patchListView, e.getX(), e.getY());
-                        }
-                    }
-                }
-            }
-        }
+		@Override
+		public void windowClosing(WindowEvent e) {
+			writeAppProperties();
+			executorService.shutdown();
+		}
 
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            if (e.getSource() == SwingPatchManager.this.searchOptionsControl) {
-                executeQuery();
-            }
-        }
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			selectListItemIgnoreMouseButton(e);
+		}
 
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            IndexedPatch patch = (IndexedPatch) patchListView.getSelectedValue();
-            patchDetailsView.setPatch(patch);
+		@Override
+		public void mousePressed(MouseEvent e) {
+			selectListItemIgnoreMouseButton(e);
+		}
 
-            boolean midifileop = patch != null
-                && DefaultPatch.containsMidiFile(patch);
-            boolean sourcecodeop = patch != null
-                && DefaultPatch.containsSource(patch);
-            
-            Auth auth = getUserAuthentication(false);
-            boolean deleteop = patch != null
-                && auth != null 
-                && auth.getUsername() != null
-                && auth.getUsername().equals(patch.getMetadata().getAuthor());
-            
-            acPatchListViewSendSelectedAction.setEnabled(midifileop);
-            acPatchListViewSelectedSaveMidiFileAction.setEnabled(midifileop);
+		public void selectListItemIgnoreMouseButton(MouseEvent e) {
+			if (e.getComponent() == patchListView) {
+				int index = patchListView.locationToIndex(e.getPoint());
+				if (patchListView.getSelectedIndex() != index) {
+					patchListView.setSelectedIndex(index);
 
-            acPatchListViewDeleteSelectedAction.setEnabled(deleteop);
-            acPatchListViewSelectedSaveSourceAction.setEnabled(sourcecodeop);
-        }
+					if (e.isPopupTrigger()) { 
+						// changing the selected list item may 
+						// prevent the patchlist popup from showing
+						// => force show popup menu
+						JPopupMenu popup = patchListView.getComponentPopupMenu();
+						if (popup != null) {
+							popup.show(patchListView, e.getX(), e.getY());
+						}
+					}
+				}
+			}
+		}
 
-    } 
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			if (e.getSource() == SwingPatchManager.this.searchOptionsControl) {
+				executeQuery();
+			}
+		}
 
-    public SearchOptionsControl getSearchOptionsControl() {
-        return searchOptionsControl;
-    }
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			IndexedPatch patch = (IndexedPatch) patchListView.getSelectedValue();
+			patchDetailsView.setPatch(patch);
 
-    public PatchIndex getIndex() {
-        return patchmanager.getIndex();
-    }
+			boolean midifileop = patch != null
+			&& DefaultPatch.containsMidiFile(patch);
+			boolean sourcecodeop = patch != null
+			&& DefaultPatch.containsSource(patch);
 
-    public ClientRepository getRepository() {
-        return patchmanager.getRepository();
-    }
+			Auth auth = getUserAuthentication(false);
+			boolean deleteop = patch != null
+			&& auth != null 
+			&& auth.getUsername() != null
+			&& auth.getUsername().equals(patch.getMetadata().getAuthor());
 
-    public PatchManager getPatchManager() {
-        return patchmanager;
-    }
+			acPatchListViewSendSelectedAction.setEnabled(midifileop);
 
-    public String getQueryString() {
-        return searchPanel.getQueryString();
-    }
+			if (SwingPatchManager.adminMode == true) {
+				acPatchListViewSelectedSaveMidiFileAction.setEnabled(midifileop);
 
-    public PatchListCellRenderer getPatchListCellRenderer() {
-        return patchListCellRenderer;
-    }
+				acPatchListViewDeleteSelectedAction.setEnabled(deleteop);
+				acPatchListViewSelectedSaveSourceAction.setEnabled(sourcecodeop);
+			}
+		}
 
-    public PatchListModel<IndexedPatch> getPatchListModel() {
-        return patchListModel;
-    }
+	} 
 
-    public JList getPatchListView() {
-        return patchListView;
-    }
-    
-    /**
-     * @param args
-     */
-    public static void main(String[] args) throws Exception {
-    	if (args.length > 0) {
-    		if (args[0].equals("-admin")) {
-    			SwingPatchManager.adminMode = true;
-    		}
-    	}
-        // create application on the event dispatch thread as required by swing
-        SwingUtilities.invokeAndWait(new SwingPatchManagerStarter());
-    }
-    
-    private static final class SwingPatchManagerStarter implements Runnable {
-        public void run() {
-            new SwingPatchManager().start();
-        }
-    }
-    
+	public SearchOptionsControl getSearchOptionsControl() {
+		return searchOptionsControl;
+	}
+
+	public PatchIndex getIndex() {
+		return patchmanager.getIndex();
+	}
+
+	public ClientRepository getRepository() {
+		return patchmanager.getRepository();
+	}
+
+	public PatchManager getPatchManager() {
+		return patchmanager;
+	}
+
+	public String getQueryString() {
+		return searchPanel.getQueryString();
+	}
+
+	public PatchListCellRenderer getPatchListCellRenderer() {
+		return patchListCellRenderer;
+	}
+
+	public PatchListModel<IndexedPatch> getPatchListModel() {
+		return patchListModel;
+	}
+
+	public JList getPatchListView() {
+		return patchListView;
+	}
+
+	/**
+	 * @param args
+	 */
+	 public static void main(String[] args) throws Exception {
+		 if (args.length > 0) {
+			 if (args[0].equals("-admin")) {
+				 SwingPatchManager.adminMode = true;
+			 }
+		 }
+		 // create application on the event dispatch thread as required by swing
+		 SwingUtilities.invokeAndWait(new SwingPatchManagerStarter());
+	 }
+
+	 private static final class SwingPatchManagerStarter implements Runnable {
+		 public void run() {
+			 new SwingPatchManager().start();
+		 }
+	 }
+
 }

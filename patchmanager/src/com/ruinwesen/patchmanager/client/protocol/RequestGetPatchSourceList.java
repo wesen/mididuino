@@ -32,30 +32,43 @@ import java.util.Date;
 
 import name.cs.csutils.CSUtils;
 
-public class RequestGetPatchSourceList extends Request {
+public class RequestGetPatchSourceList extends AuthenticatingRequest {
 
-    private String date;
+	private String date;
 
-    public RequestGetPatchSourceList() {
-        this((String)null);
-    }
-    
-    public RequestGetPatchSourceList(Date dateSince) {
-        this(null, CSUtils.dateToString(dateSince));
-    }
-    
-    public RequestGetPatchSourceList(String dateSince) {
-        this(null, dateSince);
-    }
-    
-    public RequestGetPatchSourceList(String protocolId, 
-            String dateSince) {
-        super(protocolId, ACTION_GET_PATCH_SOURCE_LIST);
-        this.date = dateSince;
-    }
+	public RequestGetPatchSourceList() {
+		this((String)null);
+	}
 
-    public String getDateSinceString() {
-        return date;
-    }
+	public RequestGetPatchSourceList(Date dateSince) {
+		this(null, CSUtils.dateToString(dateSince));
+	}
+
+	public RequestGetPatchSourceList(Date dateSince, Auth auth) {
+		this(null, CSUtils.dateToString(dateSince), auth);
+	}
+
+	public RequestGetPatchSourceList(String dateSince) {
+		this(null, dateSince);
+	}
+
+	public RequestGetPatchSourceList(String dateSince, Auth auth) {
+		this(null, dateSince, auth);
+	}
+
+
+	public RequestGetPatchSourceList(String protocolId, 
+			String dateSince) {
+		this(protocolId, dateSince, null);
+	}
+
+	public RequestGetPatchSourceList(String protocolId, String dateSince, Auth auth) {
+		super(protocolId, ACTION_GET_PATCH_SOURCE_LIST, auth);
+		this.date = dateSince;
+	}
+
+	public String getDateSinceString() {
+		return date;
+	}
 
 }

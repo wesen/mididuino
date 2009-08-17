@@ -28,7 +28,7 @@
  */
 package com.ruinwesen.patchmanager.client.protocol;
 
-public class RequestDeletePatch extends AuthenticatingRequest {
+public class RequestDeletePatch extends MandatoryAuthenticatingRequest {
 
     private String patchid;
 

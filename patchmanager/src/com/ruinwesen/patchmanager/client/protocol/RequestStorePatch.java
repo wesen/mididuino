@@ -34,7 +34,7 @@ import java.security.NoSuchAlgorithmException;
 
 import com.ruinwesen.patch.metadata.PatchMetadata;
 
-public class RequestStorePatch extends AuthenticatingRequest {
+public class RequestStorePatch extends MandatoryAuthenticatingRequest {
 
     private PatchMetadata metadata;
     private InputStream is;

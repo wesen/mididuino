@@ -48,6 +48,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 
 import com.ruinwesen.patchmanager.client.index.PatchIndex;
+import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.DefaultPatchManagerClient;
 import com.ruinwesen.patchmanager.client.protocol.PatchSource;
 import com.ruinwesen.patchmanager.client.protocol.ProtocolException;
@@ -74,10 +75,10 @@ public class ClientRepository {
         this.patchindex = patchindex;
     }
 
-    public void sync(DefaultPatchManagerClient client) throws ProtocolException, IOException, InterruptedException {
+    public void sync(DefaultPatchManagerClient client, Auth auth) throws ProtocolException, IOException, InterruptedException {
         try {
             synchronized (LOCK) {
-                __sync(client);
+                __sync(client, auth);
             }
         } catch (IOException ex) {
             if (log.isErrorEnabled()) {
@@ -92,9 +93,9 @@ public class ClientRepository {
         }
     }
     
-    private void __sync(DefaultPatchManagerClient client) throws ProtocolException, IOException, InterruptedException {
+    private void __sync(DefaultPatchManagerClient client, Auth auth) throws ProtocolException, IOException, InterruptedException {
         Response response = 
-            client.execute(new RequestGetPatchSourceList(getLastSyncDate()));
+            client.execute(new RequestGetPatchSourceList(getLastSyncDate(), auth)); 
         if (!response.isOkStatus()) {
             throw new IOException(response.getMessage());
         }
@@ -165,7 +166,7 @@ public class ClientRepository {
     }
     
     public Date getLastSyncDate() {
-        return readSettings().getDateProperty(LAST_SYNCED, CSUtils.now());
+        return readSettings().getDateProperty(LAST_SYNCED, CSUtils.parseDate("1990-01-01"	));
     }
     
     public void setLastSyncDate(Date value) {
