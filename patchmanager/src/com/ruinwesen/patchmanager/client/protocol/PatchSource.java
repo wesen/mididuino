@@ -35,14 +35,21 @@ public class PatchSource {
     private String patchId;
     private String patchURL;
     private PatchMetadata metadata;
+    private boolean deleted;
     
-    public PatchSource(String patchId, String patchURL, PatchMetadata metadata) {
+    public PatchSource(String patchId, String patchURL, PatchMetadata metadata,
+            boolean deleted) {
         if (patchId == null) {
             throw new IllegalArgumentException("patchId:"+patchId);
         }
         this.patchId = patchId;
         this.patchURL = patchURL;
         this.metadata = metadata;
+        this.deleted = deleted;
+    }
+    
+    public boolean isDeleteFlagSet() {
+        return deleted;
     }
     
     public String getPatchId() {
@@ -59,7 +66,7 @@ public class PatchSource {
     
     @Override
     public String toString() {
-        return "PatchSource[patch-id='"+patchId+"',patch-url='"+patchURL+"'meta="+metadata+"]";
+        return "PatchSource[patch-id='"+patchId+"',patch-url='"+patchURL+"'meta="+metadata+",deleted="+deleted+"]";
     }
     
     

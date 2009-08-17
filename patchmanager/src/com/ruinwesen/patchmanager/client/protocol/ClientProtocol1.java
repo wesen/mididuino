@@ -39,6 +39,8 @@ import java.util.Map;
 
 import name.cs.csutils.CSUtils;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +52,8 @@ import com.ruinwesen.patch.metadata.Tagset;
 
 public class ClientProtocol1 extends Protocol {
 
+    private Log log = LogFactory.getLog(ClientProtocol1.class);
+    
     public ClientProtocol1() {
         this("1.1");
     }
@@ -151,7 +155,8 @@ public class ClientProtocol1 extends Protocol {
             } catch (JSONException ex) {
                 throw new ProtocolException("could not read patch-metadata field", ex);
             }
-            PatchSource source = new PatchSource(getField(psobj, "patch-id"), getField(psobj, "patch-url"),meta);
+            
+            PatchSource source = new PatchSource(getField(psobj, "patch-id"), getField(psobj, "patch-url"),meta, false);
             List<PatchSource> list = new LinkedList<PatchSource>();
             list.add(source);
             response.setPatchSourceList(list);
@@ -166,10 +171,17 @@ public class ClientProtocol1 extends Protocol {
             List<PatchSource> list = new ArrayList<PatchSource>(ar.length());
             for (int i=0;i<ar.length();i++) {
                 JSONObject psobj;
+                boolean deleted = false;
                 try {
                     psobj = ar.getJSONObject(i);
+                    if (psobj.has("deleted")) {
+                        deleted = psobj.getBoolean("deleted");
+                    }
                 } catch (JSONException ex) {
                     throw new ProtocolException(ex);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("PatchSource object:"+psobj);
                 }
                 PatchMetadata meta;
                 try {
@@ -177,7 +189,7 @@ public class ClientProtocol1 extends Protocol {
                 } catch (JSONException ex) {
                     throw new ProtocolException("could not read patch-metadata field", ex);
                 }
-                PatchSource source = new PatchSource(getField(psobj, "patch-id"), getField(psobj, "patch-url"),meta);
+                PatchSource source = new PatchSource(getField(psobj, "patch-id"), getField(psobj, "patch-url"),meta, deleted);
                 list.add(source);
             }
             response.setPatchSourceList(list);

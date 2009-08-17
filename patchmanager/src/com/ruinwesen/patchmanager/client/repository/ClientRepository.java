@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -121,9 +122,20 @@ public class ClientRepository {
         
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()+2);
         List<PatchDownloadTask> taskList = new ArrayList<PatchDownloadTask>(list.size());
+        HashSet<String> deletedPatchIds = new HashSet<String>();
+        
         for (PatchSource source: list) {
             String name = source.getPatchId();
             File dstfile = new File(dir, name);
+            if (source.isDeleteFlagSet()) {
+                boolean delete_ok = dstfile.delete();
+                if (log.isDebugEnabled()) {
+                    log.debug("Deleting patch file:"+dstfile+" ok:"+delete_ok
+                            +" file exists:"+dstfile.exists());
+                }
+                deletedPatchIds.add(name);
+                continue;
+            }
             if (dstfile.exists()) {
                 if (log.isDebugEnabled()) {
                    log.debug("sync:dst file exists:"+dstfile);
@@ -151,7 +163,7 @@ public class ClientRepository {
         }
         
         if (patchindex != null) {
-            patchindex.addToIndex(fileList);
+            patchindex.addToIndex(fileList, deletedPatchIds);
         }
     }
     

@@ -34,7 +34,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.FileFilterFactory;
@@ -158,22 +160,38 @@ public class PatchIndex {
         }
     }
     
-    public void addToIndex(List<File> files) {
+    public void addToIndex(List<File> files, Set<String> deletedPatchIds) {
         // append to existing index file
         try {
             List<IndexedPatchRecord> list = new ArrayList<IndexedPatchRecord>(files.size());
-            synchronized (PATCH_FILE_LOCK) {
-                RecordIO io = new RecordIO(indexFile, RecordIO.APPEND);
-                try {
-                    rebuildIndex(io, files, new CollectionCollector<IndexedPatchRecord>(list));
-                    io.flush();
-                } finally {
-                    io.close();
-                }
+            
+            if (deletedPatchIds != null && !deletedPatchIds.isEmpty()) {
+                
+                synchronized (PATCH_LIST_LOCK) {
+                    Iterator<IndexedPatchRecord> iter = patchList.iterator();
+                    while (iter.hasNext()) {
+                        if (deletedPatchIds.contains(iter.next().getMetadata().getPatchId())) {
+                            iter.remove();
+                        }
+                    }
+                    this.patchList.addAll(list);
+                    writeIndex();          
+                }      
             }
-            // add new items
-            synchronized (PATCH_LIST_LOCK) {
-                this.patchList.addAll(list);
+            else {
+                synchronized (PATCH_FILE_LOCK) {
+                    RecordIO io = new RecordIO(indexFile, RecordIO.APPEND);
+                    try {
+                        rebuildIndex(io, files, new CollectionCollector<IndexedPatchRecord>(list));
+                        io.flush();
+                    } finally {
+                        io.close();
+                    }
+                }
+                // add new items
+                synchronized (PATCH_LIST_LOCK) {
+                    this.patchList.addAll(list);
+                }
             }
         } catch (IOException ex) {
             if (log.isErrorEnabled()) {
