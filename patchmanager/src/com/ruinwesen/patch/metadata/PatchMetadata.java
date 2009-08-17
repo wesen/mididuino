@@ -42,6 +42,8 @@ public interface PatchMetadata {
     public static final String CATEGORY_TAG_PREFIX = "category:";
     public static final String DEFAULT_MIDIFILE_PATH_NAME = "midifile";
     public static final String DEFAULT_SOURCE_PATH_NAME = "source";
+    // points to a .txt file containing a documentation text file
+    public static final String TEXT_DOCUMENTATION_PATH_NAME = "text-documentation";
 
     DeviceId getDeviceId();
 

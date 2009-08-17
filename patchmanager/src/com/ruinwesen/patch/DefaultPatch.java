@@ -147,6 +147,26 @@ public class DefaultPatch extends AbstractPatch {
         return false;
         }
     }
+
+    public static String readDocumentationFile(Patch patch) throws IOException, PatchDataException {
+        Path path = patch.getMetadata().getPath(PatchMetadata.TEXT_DOCUMENTATION_PATH_NAME);
+        if (path == null) {
+            return null;
+        }
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        Directory dir = patch.openDirectory();
+        try {
+            InputStream is = dir.getInputStream(path.getPath());
+            try {
+                CSUtils.copy(is, os);
+            } finally {
+                is.close();
+            }
+        } finally {
+            dir.close();
+        }
+        return new String(os.toByteArray());
+    }
     
 }
  
