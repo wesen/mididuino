@@ -29,6 +29,7 @@
 package com.ruinwesen.patchmanager.swing.form;
 
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -78,10 +79,20 @@ public class Wizard implements ActionListener, FormElementListener {
     private String title;
     protected boolean allowResize = true;
     private boolean confirmOnCancel;
-    
+    private boolean modalDialog = true;
+    private JSeparator ehintSeparator;
     public Wizard() {
         super();
         init();
+    }
+
+    public void setHintVisible(boolean value) {
+        labelErrorHint.setVisible(value);
+        ehintSeparator.setVisible(value);
+    }
+
+    public void setModal(boolean value) {
+        this.modalDialog = value;
     }
     
     public void setHint(String text) {
@@ -121,8 +132,31 @@ public class Wizard implements ActionListener, FormElementListener {
         return dialog;
     }
     
+    public void showDialog(JComponent parentComponent) {
+        if (parentComponent.getRootPane() == null) {
+            throw new IllegalArgumentException("component has no root panel");
+        }
+        Component comp = parentComponent.getRootPane().getParent();
+        if (comp instanceof JFrame) {
+            showDialog((JFrame)comp);
+        } else if (comp instanceof JDialog) {
+            showDialog((JDialog)comp);
+        } else {
+            throw new IllegalArgumentException("");
+        }
+    }
+    
     public void showDialog(JFrame parentComponent) {
         JDialog dialog = new JDialog(parentComponent, title);
+        useDialog(dialog, parentComponent);
+    }
+    
+    public void showDialog(JDialog parentComponent) {
+        JDialog dialog = new JDialog(parentComponent, title);
+        useDialog(dialog, parentComponent);
+    }
+        
+    private void useDialog(JDialog dialog, Component parentComponent) {
         this.dialog = dialog;
         
         dialog.addWindowListener(new CSEventAdapter() {
@@ -137,10 +171,12 @@ public class Wizard implements ActionListener, FormElementListener {
         dialog.pack();
         dialog.setLocationByPlatform(true);
         dialog.setLocationRelativeTo(parentComponent);
-        dialog.setModal(true);
+        dialog.setModal(modalDialog);
         dialog.setVisible(true);
-        dialog.dispose();
-        this.dialog = null;
+        if (modalDialog) {
+            dialog.dispose();
+            this.dialog = null;
+        }
     }
     
     private void setCurrentForm(FormContainer form) {
@@ -201,7 +237,7 @@ public class Wizard implements ActionListener, FormElementListener {
         
         labelErrorHint = new JLabel("aaaaaaaaa ");
 
-        JSeparator ehintSeparator = new JSeparator(SwingConstants.HORIZONTAL);
+        ehintSeparator = new JSeparator(SwingConstants.HORIZONTAL);
         
         JSeparator buttonSeparator = new JSeparator(SwingConstants.HORIZONTAL);
         
