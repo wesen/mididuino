@@ -50,7 +50,11 @@ import javax.swing.SwingConstants;
 import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
 
+import com.ruinwesen.patch.DefaultPatch;
+import name.cs.csutils.CSAction;
 import name.cs.csutils.SwingActionData;
+import name.cs.csutils.debug.Debug;
+import name.cs.csutils.debug.DebugFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,10 +62,12 @@ import org.apache.commons.logging.LogFactory;
 import com.ruinwesen.patch.Patch;
 import com.ruinwesen.patch.metadata.PatchMetadata;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
+import com.ruinwesen.patchmanager.swing.wizards.TextEditorWizard;
 
 public class PatchDetailsView {
 
     private static Log log = LogFactory.getLog(PatchDetailsView.class);
+    private static Debug debug = DebugFactory.getDebug(PatchDetailsView.class);
     
     private Patch patch;
     private JPanel panel;
@@ -73,12 +79,15 @@ public class PatchDetailsView {
     private JLabel lblEnvironmentId;
     private JTextArea taComment;
     private JTextArea taTags;
+    private JButton btnReadDocumentation;
     private JButton btnSaveSourceAs;
     private JButton btnSaveMidiFileAs;
-
+    private CSAction acReadDocumentation;
+    
     public PatchDetailsView() {
         init();
     }
+    
     private static final class ScrollablePanel extends JPanel implements Scrollable {
 
         /**
@@ -172,14 +181,19 @@ public class PatchDetailsView {
         taTags.setColumns(10);
         configCaret(taComment.getCaret());
         configCaret(taTags.getCaret());
+        
+        acReadDocumentation = new CSAction("Read...")
+        .useInvokationTarget(this, "readDocumentation");
 
         btnSaveSourceAs = new JButton();        
         btnSaveMidiFileAs = new JButton();
+        btnReadDocumentation = new JButton(acReadDocumentation);
 
         // labels
         JLabel lblDeviceIdLabel = new JLabel("Device:");
         JLabel lblEnvironmentIdLabel = new JLabel("Environment:");
         JLabel lblTagsLabel = new JLabel("Tags:");
+        JLabel lblReadDocuLabel = new JLabel("Documentation:");
         JLabel lblMidiFileSaveAsLabel = new JLabel("Midi File:");
         JLabel lblSourceSaveAsLabel = new JLabel("Source:");
         
@@ -211,11 +225,13 @@ public class PatchDetailsView {
                         )
                         .addGroup(ly.createSequentialGroup()
                                 .addGroup(ly.createParallelGroup()
+                                        .addComponent(lblReadDocuLabel)
                                         .addComponent(lblSourceSaveAsLabel)
                                         .addComponent(lblMidiFileSaveAsLabel)
                                 )
                                 .addGroup(
                                         ly.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addComponent(btnReadDocumentation)
                                         .addComponent(btnSaveSourceAs, GroupLayout.Alignment.TRAILING)
                                         .addComponent(btnSaveMidiFileAs, GroupLayout.Alignment.TRAILING)
                                 )
@@ -250,6 +266,11 @@ public class PatchDetailsView {
                 )
                 .addGroup(
                         ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblReadDocuLabel)
+                        .addComponent(btnReadDocumentation)
+                )
+                .addGroup(
+                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(lblSourceSaveAsLabel)
                         .addComponent(btnSaveSourceAs)
                 )
@@ -259,6 +280,12 @@ public class PatchDetailsView {
                         .addComponent(btnSaveMidiFileAs)
                 )
         );
+        
+        if (!debug.isDebugEnabled()) {
+            lblSourceSaveAsLabel.setVisible(false);
+            btnSaveSourceAs.setVisible(false);
+        }
+        
         updateUI();
         ly.linkSize(SwingConstants.HORIZONTAL,
                 lblDeviceIdLabel, 
@@ -266,7 +293,26 @@ public class PatchDetailsView {
                 lblSourceSaveAsLabel,
                 lblMidiFileSaveAsLabel);
         ly.linkSize(SwingConstants.HORIZONTAL,
-                btnSaveMidiFileAs, btnSaveSourceAs);
+                btnSaveMidiFileAs, btnSaveSourceAs,
+                btnReadDocumentation);
+    }
+    
+    public void readDocumentation() {
+        String text = null;
+        if (patch != null) {
+            try {
+                text = DefaultPatch.readDocumentationFile(patch);
+            } catch (Exception ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not read documentation", ex);
+                }
+            }
+        }
+        
+        TextEditorWizard wiz = new TextEditorWizard(false);
+        wiz.setText(text == null ? "" : text);
+        wiz.setModal(false);
+        wiz.showDialog(getContainer());
     }
     
     private void configCaret(Caret caret) {
@@ -324,6 +370,7 @@ public class PatchDetailsView {
         } catch (Exception ex) {
             meta = null;
         }
+        
         if (meta == null) {
             lblTitle.setText("- no patch selected -");
             lblAuthor.setText("");
@@ -332,11 +379,15 @@ public class PatchDetailsView {
             taComment.setText("");
             taTags.setText("");
             lblDate.setText("");
+            acReadDocumentation.setEnabled(false);
         } else {
             setText(lblAuthor, meta.getAuthor()+", ");
             setText(lblTitle, meta.getTitle());
             setText(lblDeviceId, meta.getDeviceId());
             setText(lblEnvironmentId, meta.getEnvironmentId());
+
+            acReadDocumentation.setEnabled(meta.getPath(PatchMetadata.TEXT_DOCUMENTATION_PATH_NAME) != null);
+            
             lblDate.setText(dateToString(meta.getLastModifiedDate())); 
             taComment.setText(meta.getComment());
             taTags.setText(meta.getTags()
