@@ -30,6 +30,8 @@ package com.ruinwesen.patchmanager.swing.wizards;
 
 import java.io.File;
 
+import javax.swing.JFrame;
+
 import name.cs.csutils.CSProperties;
 import name.cs.csutils.concurrent.SimpleSwingWorker;
 
@@ -89,7 +91,7 @@ public class MidiSendWizard extends Wizard {
 
     public static void main(String[] args) {
         Wizard w = new MidiSendWizard();
-        w.showDialog(null);
+        w.showDialog((JFrame)null);
     }
 
     @Override
