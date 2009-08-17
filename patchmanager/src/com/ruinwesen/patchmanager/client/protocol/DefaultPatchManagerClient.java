@@ -108,7 +108,12 @@ public class DefaultPatchManagerClient extends PatchManagerClient {
             if (resEntity != null) {
                 Response robj;
                 try {
-                    robj = createResponseObject(request.getAction(), EntityUtils.toString(resEntity));
+                    String str = EntityUtils.toString(resEntity);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Response-Content:"+str);
+                    }
+                    
+                    robj = createResponseObject(request.getAction(), str);
                 } catch (Exception ex) {
                     throw new ProtocolException("could not parse response", ex);
                 } finally {
