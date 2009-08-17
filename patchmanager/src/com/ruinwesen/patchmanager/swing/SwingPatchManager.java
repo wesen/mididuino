@@ -83,7 +83,6 @@ import com.ruinwesen.patchmanager.client.index.NewsIndex;
 import com.ruinwesen.patchmanager.client.index.PatchIndex;
 import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.PatchManagerClient;
-import com.ruinwesen.patchmanager.client.protocol.RequestRegisterNewUser;
 import com.ruinwesen.patchmanager.client.repository.ClientRepository;
 import com.ruinwesen.patchmanager.swing.components.SearchOptionsControl;
 import com.ruinwesen.patchmanager.swing.components.PatchDetailsView;
