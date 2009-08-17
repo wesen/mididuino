@@ -62,6 +62,7 @@ import javax.swing.event.ListSelectionListener;
 
 import name.cs.csutils.CSAction;
 import name.cs.csutils.CSEventAdapter;
+import name.cs.csutils.CSFileSelectionContext;
 import name.cs.csutils.CSProperties;
 import name.cs.csutils.CSUtils;
 import name.cs.csutils.SwingActionData;
@@ -82,6 +83,7 @@ import com.ruinwesen.patchmanager.client.index.NewsIndex;
 import com.ruinwesen.patchmanager.client.index.PatchIndex;
 import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.PatchManagerClient;
+import com.ruinwesen.patchmanager.client.protocol.RequestRegisterNewUser;
 import com.ruinwesen.patchmanager.client.repository.ClientRepository;
 import com.ruinwesen.patchmanager.swing.components.SearchOptionsControl;
 import com.ruinwesen.patchmanager.swing.components.PatchDetailsView;
@@ -110,6 +112,8 @@ public class SwingPatchManager {
 
 	public static boolean adminMode = false;
 
+	public static final String KEY_LAST_SELECTED_FILE
+	= SwingPatchManager.class.getName()+".last-selected-file";
 	public static final String KEY_SIDEBAR_FILTER_VISIBLE
 	= SwingPatchManager.class.getName()+".sidebar.filter.visible";
 	public static final String KEY_SIDEBAR_PATCH_DETAILS_VISIBLE
@@ -226,6 +230,11 @@ public class SwingPatchManager {
 	}
 
 	private void writeAppProperties() {
+	    appProperties.remove(KEY_LAST_SELECTED_FILE);
+	    File file = CSFileSelectionContext.getDefaultContext().getFile();
+	    if (file != null) {
+	        appProperties.put(KEY_LAST_SELECTED_FILE, file.getAbsolutePath());
+	    }
 		CSUtils.storeProperties(appProperties, applicationPropertiesFile);
 	}
 
@@ -249,6 +258,11 @@ public class SwingPatchManager {
 
 		// load application properties
 		appProperties.putAll(CSUtils.loadProperties(applicationPropertiesFile));
+		String lastSelectedFileName = appProperties.getProperty(KEY_LAST_SELECTED_FILE);
+		if (lastSelectedFileName != null) {
+		    CSFileSelectionContext.getDefaultContext().setFile(new File(lastSelectedFileName));
+		}
+		
 
 		patchmanager = new PatchManager(applicationUserdataDir);
 
@@ -276,24 +290,22 @@ public class SwingPatchManager {
 		.useInvokationTarget(this, "patchListViewSendSelected")
 		.setAsEnabled(false);
 
-		if (SwingPatchManager.adminMode) {
-			acPatchListViewDeleteSelectedAction = 
-				new CSAction("Delete Patch")
-			.useResourceKey("action.patch.delete")
-			.useInvokationTarget(this, "patchListViewDeleteSelected")
-			.setAsEnabled(false);
-			acPatchListViewSelectedSaveMidiFileAction = 
-				new CSAction("Save Midifile...")
-			.useResourceKey("patchdetails.midifile.saveas")
-			.useInvokationTarget(this, "patchListViewSelectedSaveMidiFile")
-			.setAsEnabled(false);
-			acPatchListViewSelectedSaveSourceAction = 
-				new CSAction("Save Source...")
-			.useResourceKey("patchdetails.sourcecode.saveas")
-			.useInvokationTarget(this, "patchListViewSelectedSaveSource")
-			.setAsEnabled(false);
-		}
-
+        acPatchListViewDeleteSelectedAction = 
+            new CSAction("Delete Patch")
+        .useResourceKey("action.patch.delete")
+        .useInvokationTarget(this, "patchListViewDeleteSelected")
+        .setAsEnabled(false);
+        acPatchListViewSelectedSaveMidiFileAction = 
+            new CSAction("Save Midifile...")
+        .useResourceKey("patchdetails.midifile.saveas")
+        .useInvokationTarget(this, "patchListViewSelectedSaveMidiFile")
+        .setAsEnabled(false);
+        acPatchListViewSelectedSaveSourceAction = 
+            new CSAction("Save Source...")
+        .useResourceKey("patchdetails.sourcecode.saveas")
+        .useInvokationTarget(this, "patchListViewSelectedSaveSource")
+        .setAsEnabled(false);
+        
 		JMenuBar jmenubar = new JMenuBar();
 		JMenu menuFile = new JMenu(new CSAction("File", "menu.file"));
 		menuFile.add(new CSAction("Send Patch...", "menu.send-patch").useInvokationTarget(this, "sendPatch"));
@@ -356,10 +368,14 @@ public class SwingPatchManager {
 
 		JPopupMenu listPopup = new JPopupMenu();
 		listPopup.add(acPatchListViewSendSelectedAction);
+
+        if (SwingPatchManager.adminMode) {
 		listPopup.add(acPatchListViewSelectedSaveMidiFileAction);
 		listPopup.add(acPatchListViewSelectedSaveSourceAction);
 		listPopup.addSeparator();
 		listPopup.add(acPatchListViewDeleteSelectedAction);
+        }
+
 		patchListView.setComponentPopupMenu(listPopup);
 
 
@@ -451,7 +467,6 @@ public class SwingPatchManager {
 		runInThread(new SynchronizeRepositoryTask(this));
 
 		indexUpdated();
-
 
 	}
 
@@ -839,7 +854,7 @@ public class SwingPatchManager {
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == SwingPatchManager.this.searchOptionsControl) {
 				executeQuery();
-			}
+			} 
 		}
 
 		@Override
@@ -854,9 +869,9 @@ public class SwingPatchManager {
 
 			Auth auth = getUserAuthentication(false);
 			boolean deleteop = patch != null
-			&& auth != null 
+			&& auth != null
 			&& auth.getUsername() != null
-			&& auth.getUsername().equals(patch.getMetadata().getAuthor());
+			&& (SwingPatchManager.adminMode || auth.getUsername().equals(patch.getMetadata().getAuthor()));
 
 			acPatchListViewSendSelectedAction.setEnabled(midifileop);
 
