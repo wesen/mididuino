@@ -1,9 +1,12 @@
 Ruin & Wesen Patch Manager
 --------------------------
 
+Requires: Java 1.6.0, which is usually already installed. You can get it from
+http://java.sun.com/
+
 The Patch Manager is a utility to upload firmwares to the MiniCommand.
 It connects to the Ruin & Wesen website and checks if new firmwares are 
-available.
+available. 
 
 To upload a firmware to the MiniCommand, connect it to your computer over
 MIDI, select a firmware, and press the "Send Patch" button. This will open
