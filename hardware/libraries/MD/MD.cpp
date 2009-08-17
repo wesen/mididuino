@@ -30,11 +30,6 @@ void MDEncoderHandle(Encoder *enc) {
   MD.setTrackParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
 }
 
-void MDFXEncoderHandle(Encoder *enc) {
-  MDFXEncoder *mdEnc = (MDFXEncoder *)enc;
-  MD.sendFXParam(mdEnc->param, mdEnc->getValue(), mdEnc->effect);
-}
-
 MDEncoder::MDEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
   CCEncoder(0, 0, _name, init) {
   initMDEncoder(_track, _param);
@@ -86,6 +81,11 @@ void MDEncoder::loadFromKit() {
   setValue(MD.kit.machines[track].params[param]);
 }
 
+void MDFXEncoderHandle(Encoder *enc) {
+  MDFXEncoder *mdEnc = (MDFXEncoder *)enc;
+  MD.sendFXParam(mdEnc->param, mdEnc->getValue(), mdEnc->effect);
+}
+
 MDFXEncoder::MDFXEncoder(uint8_t _param, uint8_t _effect, char *_name, uint8_t init) :
   RangeEncoder(127, 0, _name, init) {
   initMDFXEncoder(_effect, _param);
@@ -109,6 +109,68 @@ void MDFXEncoder::loadFromKit() {
   case MD_FX_DYN:
     setValue(MD.kit.dynamics[param]);
     break;
+  }
+}
+
+void MDLFOEncoderHandle(Encoder *enc) {
+  MDLFOEncoder *mdEnc = (MDLFOEncoder *)enc;
+  MD.setLFOParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
+}
+
+MDLFOEncoder::MDLFOEncoder(uint8_t _param, uint8_t _track, char *_name, uint8_t init) :
+  RangeEncoder(127, 0, _name, init) {
+  initMDLFOEncoder(_param, _track, _name, init);
+  handler = MDLFOEncoderHandle;
+}
+
+void MDLFOEncoder::setLFOParamName() {
+  setName(MDLFONames[param]);
+}
+
+void MDLFOEncoder::loadFromKit() {
+  if (MD.loadedKit) {
+    switch (param) {
+    case MD_LFO_TRACK:
+      setValue(MD.kit.machines[track].lfo.destinationTrack);
+      break;
+
+    case MD_LFO_PARAM:
+      setValue(MD.kit.machines[track].lfo.destinationParam);
+      break;
+
+    case MD_LFO_SHP1:
+      setValue(MD.kit.machines[track].lfo.shape1);
+      break;
+
+    case MD_LFO_SHP2:
+      setValue(MD.kit.machines[track].lfo.shape2);
+      break;
+
+    case MD_LFO_UPDTE:
+      setValue(MD.kit.machines[track].lfo.type);
+      break;
+
+    case MD_LFO_SPEED:
+      setValue(MD.kit.machines[track].lfo.speed);
+      break;
+
+    case MD_LFO_DEPTH:
+      setValue(MD.kit.machines[track].lfo.depth);
+      break;
+
+    case MD_LFO_SHMIX:
+      setValue(MD.kit.machines[track].lfo.mix);
+      break;
+    }
+  }
+}
+
+void MDLFOEncoder::displayAt(int i) {
+  if (param == MD_LFO_SHP1 || param == MD_LFO_SHP2) {
+    Encoder::displayAt(i);
+    // XXX fill with waveform name
+  } else {
+    Encoder::displayAt(i);
   }
 }
 

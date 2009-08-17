@@ -1,6 +1,17 @@
 #include "helpers.h"
 #include "MD.h"
 
+const char *MDLFONames[8] = {
+  "TRK",
+  "PRM",
+  "SH1",
+  "SH2",
+  "TYP",
+  "SPD",
+  "DPT",
+  "MIX"
+};
+
 machine_name_t machine_names[] PROGMEM = {
   { "GND---", 0},
   { "GND-SN", 1},
@@ -886,3 +897,4 @@ const tuning_t PROGMEM *MDClass::getModelTuning(uint8_t model) {
 
   return NULL;
 }
+

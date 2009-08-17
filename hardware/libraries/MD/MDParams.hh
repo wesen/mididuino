@@ -758,15 +758,17 @@
 #define MD_DYN_OUTG 6
 #define MD_DYN_MIX  7
 
-#define LFO_TRACK  0
-#define LFO_PARAM  1
-#define LFO_SHP1   2
-#define LFO_SHP2   3
-#define LFO_UPDTE  4
-#define LFO_SPEED  5
-#define LFO_DEPTH  6
-#define LFO_SHMIX  7
+#define MD_LFO_TRACK  0
+#define MD_LFO_PARAM  1
+#define MD_LFO_SHP1   2
+#define MD_LFO_SHP2   3
+#define MD_LFO_UPDTE  4
+#define MD_LFO_SPEED  5
+#define MD_LFO_DEPTH  6
+#define MD_LFO_SHMIX  7
 
 PGM_P model_param_name(uint8_t model, uint8_t param);
+
+extern const char *MDLFONames[8];
 
 #endif /* MD_PARAMS_H__ */

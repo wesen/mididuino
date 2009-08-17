@@ -60,6 +60,36 @@ class MDFXEncoder : public RangeEncoder {
   void loadFromKit();
 };
 
+class MDLFOEncoder : public RangeEncoder {
+ public:
+  uint8_t track;
+  uint8_t param;
+
+  void initMDLFOEncoder(uint8_t _param = MD_LFO_TRACK, uint8_t _track = 0,
+			char *_name = NULL, uint8_t init = 0) {
+    param = _param;
+    track = _track;
+    if (_name == NULL) {
+      setLFOParamName();
+    } else {
+      setName(_name);
+    }
+    setValue(init);
+  }
+
+  MDLFOEncoder(uint8_t _param = MD_LFO_TRACK, uint8_t _track = 0,
+	       char *_name = NULL, uint8_t init = 0);
+  
+  void loadFromKit();
+  void setLFOParamName();
+  void setParam(uint8_t _param) {
+    param = _param;
+    setLFOParamName();
+  }
+
+  virtual void displayAt(int i);
+};
+
 class MDTrackFlashEncoder : public RangeEncoder {
  public:
  MDTrackFlashEncoder(char *_name = NULL, uint8_t init = 0) : RangeEncoder(0, 15, _name, init) {
