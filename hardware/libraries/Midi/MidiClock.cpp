@@ -245,7 +245,7 @@ void MidiClockClass::handleClock() {
 void MidiClockClass::handleTimerInt()  {
   //  sei();
   if (counter == 0) {
-    setLed2();
+    //    setLed2();
     uint8_t _mod6_counter = mod6_counter;
     
     if (mod6_counter == 5) {
@@ -284,15 +284,15 @@ void MidiClockClass::handleTimerInt()  {
       }
     }
 
-    clearLed2();
+    //    clearLed2();
 
     static bool inCallback = false;
     if (inCallback) {
-      setLed();
+      //      setLed();
       //      inCallback = false;
       return;
     } else {
-      clearLed();
+      //      clearLed();
       inCallback = true;
     }
 
@@ -320,6 +320,12 @@ void MidiClockClass::handleTimerInt()  {
     if (_mod6_counter == 3) {
       on32Callbacks.call();
     }
+
+    if (div16th_counter % 4 == 0) {
+      setLed();
+    } else {
+      clearLed();
+    }
     
     if ((MidiClock.mode == MidiClock.EXTERNAL ||
 	 MidiClock.mode == MidiClock.EXTERNAL_UART2)) {
@@ -331,7 +337,7 @@ void MidiClockClass::handleTimerInt()  {
     counter--;
   }
 
-  clearLed2();
+  //  clearLed2();
 }
     
 MidiClockClass MidiClock;
