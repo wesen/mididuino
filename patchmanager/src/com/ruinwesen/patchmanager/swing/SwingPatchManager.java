@@ -35,6 +35,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
 import java.util.MissingResourceException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -111,8 +112,11 @@ public class SwingPatchManager {
 
 	public static boolean adminMode = false;
 
-	public static final String KEY_LAST_SELECTED_FILE
-	= SwingPatchManager.class.getName()+".last-selected-file";
+    public static final String KEY_LAST_SELECTED_FILE
+    = SwingPatchManager.class.getName()+".last-selected-file";
+    public static final String KEY_LAST_SYNC_DATE
+    = ClientRepository.class.getName()+".last-sync-date";
+	
 	public static final String KEY_SIDEBAR_FILTER_VISIBLE
 	= SwingPatchManager.class.getName()+".sidebar.filter.visible";
 	public static final String KEY_SIDEBAR_PATCH_DETAILS_VISIBLE
@@ -234,6 +238,11 @@ public class SwingPatchManager {
 	    if (file != null) {
 	        appProperties.put(KEY_LAST_SELECTED_FILE, file.getAbsolutePath());
 	    }
+	    
+	    Date date = patchmanager.getRepository().getLastSyncDate();
+	    if (date != null) {
+	        appProperties.setDateProperty(KEY_LAST_SYNC_DATE, date);
+	    }
 		CSUtils.storeProperties(appProperties, applicationPropertiesFile);
 	}
 
@@ -254,6 +263,8 @@ public class SwingPatchManager {
 		applicationPropertiesFile = new File(applicationUserdataDir, "config.properties");
 
 
+        patchmanager = new PatchManager(applicationUserdataDir);
+
 
 		// load application properties
 		appProperties.putAll(CSUtils.loadProperties(applicationPropertiesFile));
@@ -261,10 +272,12 @@ public class SwingPatchManager {
 		if (lastSelectedFileName != null) {
 		    CSFileSelectionContext.getDefaultContext().setFile(new File(lastSelectedFileName));
 		}
+
+		Date lastSyncDate = appProperties.getDateProperty(KEY_LAST_SYNC_DATE, null);
+		if (lastSyncDate != null) {
+		    patchmanager.getRepository().setLastSyncDate(lastSyncDate);
+		}
 		
-
-		patchmanager = new PatchManager(applicationUserdataDir);
-
 		frame = new JFrame("PatchManager");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationByPlatform(true);

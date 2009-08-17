@@ -33,10 +33,11 @@ import org.apache.commons.logging.LogFactory;
 
 import name.cs.csutils.concurrent.SimpleSwingWorker;
 
+import com.ruinwesen.patchmanager.client.repository.PatchDownloadCallback;
 import com.ruinwesen.patchmanager.swing.SwingPatchManager;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 
-public class SynchronizeRepositoryTask extends SimpleSwingWorker {
+public class SynchronizeRepositoryTask extends SimpleSwingWorker implements PatchDownloadCallback {
 
     /**
      * 
@@ -64,7 +65,8 @@ public class SynchronizeRepositoryTask extends SimpleSwingWorker {
             
             patchmanager.getPatchManager().syncRepository(
             		SwingPatchManager.adminMode ?
-            				patchmanager.getUserAuthentication(false) : null);
+            				patchmanager.getUserAuthentication(false) : null,
+            				this);
             patchmanager.indexUpdated();
         } catch (Exception ex) {
             if (log.isErrorEnabled()) {
@@ -86,6 +88,11 @@ public class SynchronizeRepositoryTask extends SimpleSwingWorker {
         } else {
             patchmanager.setStatus("Checking for new patches done.");
         }
+    }
+
+    @Override
+    public void patchDownloaded(String message) {
+        patchmanager.setStatus(message);
     }
     
 }
