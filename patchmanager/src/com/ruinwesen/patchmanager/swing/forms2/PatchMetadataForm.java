@@ -28,7 +28,9 @@
  */
 package com.ruinwesen.patchmanager.swing.forms2;
 
+import java.awt.Component;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,7 +38,11 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+
+import name.cs.csutils.CSAction;
+import name.cs.csutils.CSUtils;
 
 import com.ruinwesen.patch.Patch;
 import com.ruinwesen.patch.PatchDataException;
@@ -53,6 +59,7 @@ import com.ruinwesen.patch.utils.Validator;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 import com.ruinwesen.patchmanager.swing.form.AbstractFormElementValidator;
 import com.ruinwesen.patchmanager.swing.form.ComboBoxFormElement;
+import com.ruinwesen.patchmanager.swing.form.CustomFormElement;
 import com.ruinwesen.patchmanager.swing.form.FileFormElement;
 import com.ruinwesen.patchmanager.swing.form.Form;
 import com.ruinwesen.patchmanager.swing.form.FormContainer;
@@ -62,6 +69,7 @@ import com.ruinwesen.patchmanager.swing.form.StringLengthValidator;
 import com.ruinwesen.patchmanager.swing.form.TextAreaFormElement;
 import com.ruinwesen.patchmanager.swing.form.TextFieldFormElement;
 import com.ruinwesen.patchmanager.swing.form.ValidatorList;
+import com.ruinwesen.patchmanager.swing.wizards.TextEditorWizard;
 
 public class PatchMetadataForm extends FormContainer {
 
@@ -76,6 +84,8 @@ public class PatchMetadataForm extends FormContainer {
     public TextFieldFormElement feSourceFileFilter;
     public FileFormElement feMidiFile;
     private SourceDirValidator sdv;
+    private CustomFormElement feEditDocumentation;
+    private String documentationText = "";
     
     public PatchMetadataForm() {
         init();
@@ -105,16 +115,33 @@ public class PatchMetadataForm extends FormContainer {
         feTags.setText(tags.filterPrefix(PatchMetadata.CATEGORY_TAG_PREFIX, false, false).toSortedString());
         feCategory.setText(categories.filterPrefix(PatchMetadata.CATEGORY_TAG_PREFIX, true, true).toSortedString());
 
+        
+        
         File midifile = null;
         File sourcefile = null;
         
         if (patch != null) {
+            Path docuPath = meta.getPath(PatchMetadata.TEXT_DOCUMENTATION_PATH_NAME);
+            
             Path midifilePath = meta.getPath(PatchMetadata.DEFAULT_MIDIFILE_PATH_NAME);
             Path sourcePath = meta.getPath(PatchMetadata.DEFAULT_SOURCE_PATH_NAME);
 
             try {
                 Directory dir = patch.openDirectory();
                 try {
+                    if (docuPath != null) {
+                        try {
+                            InputStream is = dir.getInputStream(docuPath.getPath());
+                            if (is != null) {
+                                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                                CSUtils.copy(is, os);
+                                this.documentationText = new String(os.toByteArray());  
+                            }
+                        } catch (IOException ex) {
+                            // ignore
+                        }
+                    }
+    
                     if (midifilePath != null) {
                         Entry entry = dir.getEntry(midifilePath.getPath());
                         if (entry != null) {
@@ -142,6 +169,10 @@ public class PatchMetadataForm extends FormContainer {
         feMidiFile.setFile(midifile);
         feSourceDir.setFile(sourcefile);
         
+    }
+    
+    public String getDocumentationText() {
+        return documentationText;
     }
     
     public void copyMetadataTo(PatchMetadata dst) {
@@ -197,6 +228,13 @@ public class PatchMetadataForm extends FormContainer {
         feCategory.getField().setToolTipText("1 to 20 characters");
         feCategory.getField().setColumns(16);
 
+        CSAction acEditDocu = new CSAction("Edit...")
+            .useInvokationTarget(this, "editDocumentation");
+        JButton btnEditDocu = new JButton(acEditDocu);
+        btnEditDocu.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        feEditDocumentation = new CustomFormElement(btnEditDocu);
+        feEditDocumentation.setLabel("Documentation");
+        
         SourceDirOrFileValidator dof =
             new SourceDirOrFileValidator("Patch must contain either midi file or source code.");
         
@@ -227,11 +265,25 @@ public class PatchMetadataForm extends FormContainer {
         form.add(feComment);
         form.add(feTags);
         form.add(feCategory);
+        form.add(feEditDocumentation);
         form.add(feSourceDir);
         form.add(feSourceFileFilter);
         form.add(feMidiFile);
         
         setForm(form);
+    }
+    
+    public void editDocumentation() {
+        TextEditorWizard wiz = new TextEditorWizard(true);
+        wiz.setText(documentationText);
+        wiz.showDialog(getContainer());
+        if (wiz.confirmed()) {
+            documentationText = wiz.getText();
+            if (documentationText == null) {
+                documentationText = "";
+            }
+        }
+        
     }
     
     private static class HexFileValidator extends AbstractFormElementValidator {
