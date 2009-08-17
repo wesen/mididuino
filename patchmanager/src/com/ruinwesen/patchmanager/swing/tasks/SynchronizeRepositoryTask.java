@@ -65,8 +65,7 @@ public class SynchronizeRepositoryTask extends SimpleSwingWorker {
             patchmanager.getPatchManager().syncRepository(
             		SwingPatchManager.adminMode ?
             				patchmanager.getUserAuthentication(false) : null);
-            patchmanager.getSearchOptionsControl().rebuildFilterUI(patchmanager.getIndex());
-            patchmanager.executeQuery();
+            patchmanager.indexUpdated();
         } catch (Exception ex) {
             if (log.isErrorEnabled()) {
             log.error("error while synchronizing", ex);

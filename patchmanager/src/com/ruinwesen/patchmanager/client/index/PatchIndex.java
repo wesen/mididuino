@@ -166,7 +166,7 @@ public class PatchIndex {
             List<IndexedPatchRecord> list = new ArrayList<IndexedPatchRecord>(files.size());
             
             if (deletedPatchIds != null && !deletedPatchIds.isEmpty()) {
-                
+                rebuildIndex();
                 synchronized (PATCH_LIST_LOCK) {
                     Iterator<IndexedPatchRecord> iter = patchList.iterator();
                     while (iter.hasNext()) {
@@ -174,8 +174,9 @@ public class PatchIndex {
                             iter.remove();
                         }
                     }
+                    rebuildIndex(null, files, new CollectionCollector<IndexedPatchRecord>(list));
                     this.patchList.addAll(list);
-                    writeIndex();          
+                    writeIndex();      
                 }      
             }
             else {
@@ -309,7 +310,9 @@ public class PatchIndex {
                 continue;
             }
             record.patchfileName = file.getName();
-            writeRecord(io, record);
+            if (io != null) {
+                writeRecord(io, record);
+            }
             if (collector != null) {
                 if (collector.collect(new IndexedPatchRecord(repositoryDir, record.patchfileName, record.meta)) == Collector.FINISHED) {
                     collector = null;
