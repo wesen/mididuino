@@ -108,6 +108,8 @@ public class SwingPatchManager {
     
     private static Log log = LogFactory.getLog(SwingPatchManager.class);
 
+	private static boolean adminMode = false;
+
     public static final String KEY_SIDEBAR_FILTER_VISIBLE
         = SwingPatchManager.class.getName()+".sidebar.filter.visible";
     public static final String KEY_SIDEBAR_PATCH_DETAILS_VISIBLE
@@ -273,22 +275,25 @@ public class SwingPatchManager {
             .useResourceKey("action.patch.send-to-device")
             .useInvokationTarget(this, "patchListViewSendSelected")
             .setAsEnabled(false);
-        acPatchListViewDeleteSelectedAction = 
-            new CSAction("Delete Patch")
-            .useResourceKey("action.patch.delete")
-            .useInvokationTarget(this, "patchListViewDeleteSelected")
-            .setAsEnabled(false);
-        acPatchListViewSelectedSaveMidiFileAction = 
-            new CSAction("Save Midifile...")
-            .useResourceKey("patchdetails.midifile.saveas")
-            .useInvokationTarget(this, "patchListViewSelectedSaveMidiFile")
-            .setAsEnabled(false);
-        acPatchListViewSelectedSaveSourceAction = 
-        new CSAction("Save Source...")
-        .useResourceKey("patchdetails.sourcecode.saveas")
-        .useInvokationTarget(this, "patchListViewSelectedSaveSource")
-        .setAsEnabled(false);
         
+        if (SwingPatchManager.adminMode) {
+        	acPatchListViewDeleteSelectedAction = 
+        		new CSAction("Delete Patch")
+        	.useResourceKey("action.patch.delete")
+        	.useInvokationTarget(this, "patchListViewDeleteSelected")
+        	.setAsEnabled(false);
+        	acPatchListViewSelectedSaveMidiFileAction = 
+        		new CSAction("Save Midifile...")
+        	.useResourceKey("patchdetails.midifile.saveas")
+        	.useInvokationTarget(this, "patchListViewSelectedSaveMidiFile")
+        	.setAsEnabled(false);
+        	acPatchListViewSelectedSaveSourceAction = 
+        		new CSAction("Save Source...")
+        	.useResourceKey("patchdetails.sourcecode.saveas")
+        	.useInvokationTarget(this, "patchListViewSelectedSaveSource")
+        	.setAsEnabled(false);
+        }
+
         JMenuBar jmenubar = new JMenuBar();
         JMenu menuFile = new JMenu(new CSAction("File", "menu.file"));
         menuFile.add(new CSAction("Send Patch...", "menu.send-patch").useInvokationTarget(this, "sendPatch"));
@@ -296,15 +301,17 @@ public class SwingPatchManager {
         jmenubar.add(menuFile);
         JMenu menuEdit = new JMenu(new CSAction("Edit","menu.edit")) ;
         // selected patch tasks
-        menuEdit.add(acPatchListViewSendSelectedAction);
-        menuEdit.add(acPatchListViewDeleteSelectedAction);
-        menuEdit.add(acPatchListViewSelectedSaveMidiFileAction);
-        menuEdit.add(acPatchListViewSelectedSaveSourceAction);
-        menuEdit.addSeparator(); // server tasks
-        menuEdit.add(new CSAction(this, "publishPatch"));
-        menuEdit.addSeparator(); // misc server tasks
-        if (debug.isDebugEnabled()) {
-            menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
+        if (SwingPatchManager.adminMode) {
+        	menuEdit.add(acPatchListViewSendSelectedAction);
+        	menuEdit.add(acPatchListViewDeleteSelectedAction);
+        	menuEdit.add(acPatchListViewSelectedSaveMidiFileAction);
+        	menuEdit.add(acPatchListViewSelectedSaveSourceAction);
+        	menuEdit.addSeparator(); // server tasks
+        	menuEdit.add(new CSAction(this, "publishPatch"));
+        	menuEdit.addSeparator(); // misc server tasks
+        	if (debug.isDebugEnabled()) {
+        		menuEdit.add(new CSAction(this, "getLatestNews").useResourceKey("action.check-news"));
+        	}
         }
         menuEdit.add(new CSAction(this, "syncRepository"));
         
@@ -893,6 +900,11 @@ public class SwingPatchManager {
      * @param args
      */
     public static void main(String[] args) throws Exception {
+    	if (args.length > 0) {
+    		if (args[0].equals("-admin")) {
+    			SwingPatchManager.adminMode = true;
+    		}
+    	}
         // create application on the event dispatch thread as required by swing
         SwingUtilities.invokeAndWait(new SwingPatchManagerStarter());
     }

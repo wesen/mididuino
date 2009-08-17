@@ -259,7 +259,7 @@ public class CreatePublishPatchWizard extends Wizard {
             cbAskSavePatchfile = new JCheckBox();
             cbAskSavePatchfile.setSelected(true);
             cbAskPublishPatchfile = new JCheckBox();
-            cbAskPublishPatchfile.setSelected(false);
+            cbAskPublishPatchfile.setSelected(true);
             cbAskSavePatchfile.setText("save the patch file locally.");
             cbAskPublishPatchfile.setText("publish the patch file.");
             form.add(new CustomFormElement(cbAskSavePatchfile));
