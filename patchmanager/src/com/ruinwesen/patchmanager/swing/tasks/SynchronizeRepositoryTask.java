@@ -28,6 +28,9 @@
  */
 package com.ruinwesen.patchmanager.swing.tasks;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import name.cs.csutils.concurrent.SimpleSwingWorker;
 
 import com.ruinwesen.patchmanager.swing.SwingPatchManager;
@@ -41,7 +44,8 @@ public class SynchronizeRepositoryTask extends SimpleSwingWorker {
     private static final long serialVersionUID = 6513521337985896762L;
     private SwingPatchManager patchmanager;
     private boolean trouble = false;
-
+    private static Log log = LogFactory.getLog(SynchronizeRepositoryTask.class);
+    
     public SynchronizeRepositoryTask(SwingPatchManager patchmanager) {
         this.patchmanager = patchmanager;
     }
@@ -54,12 +58,20 @@ public class SynchronizeRepositoryTask extends SimpleSwingWorker {
     @Override
     protected void process() {
         try {    
+            if (log.isDebugEnabled()) {
+                log.debug("Sending synchronize request");
+            }
+            
             patchmanager.getPatchManager().syncRepository(
             		SwingPatchManager.adminMode ?
             				patchmanager.getUserAuthentication(false) : null);
             patchmanager.getSearchOptionsControl().rebuildFilterUI(patchmanager.getIndex());
             patchmanager.executeQuery();
         } catch (Exception ex) {
+            if (log.isErrorEnabled()) {
+            log.error("error while synchronizing", ex);
+            }
+            
             synchronized (this) {
                 this.trouble = true;
             }
