@@ -94,14 +94,28 @@ public class ClientRepository {
     }
     
     private void __sync(DefaultPatchManagerClient client, Auth auth) throws ProtocolException, IOException, InterruptedException {
+        
+        Date lsd = getLastSyncDate();
+
+        if (log.isDebugEnabled()) {
+            log.debug("using last sync date:"+((lsd == null) ? null : CSUtils.dateToString(lsd)));
+        }
+        
         Response response = 
-            client.execute(new RequestGetPatchSourceList(getLastSyncDate(), auth)); 
+            client.execute(new RequestGetPatchSourceList(lsd, auth)); 
         if (!response.isOkStatus()) {
             throw new IOException(response.getMessage());
         }
 
         setLastSyncDate(CSUtils.now());
         List<PatchSource> list = response.getPatchSourceList();
+        
+
+        if (log.isDebugEnabled()) {
+           log.debug("received patch list containing "+
+                  list.size()
+                   +" patches");
+        }
         
         HttpClient hc = client.getHttpclient();
         
@@ -170,6 +184,9 @@ public class ClientRepository {
     }
     
     public void setLastSyncDate(Date value) {
+        if (log.isDebugEnabled()) {
+            log.debug("setting last sync date:"+CSUtils.dateToString(value));
+         }
         CSProperties p = readSettings();
         p.setDateProperty(LAST_SYNCED, value);
         synchronized (SETTINGS_LOCK) {
