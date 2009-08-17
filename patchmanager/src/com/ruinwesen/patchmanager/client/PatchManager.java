@@ -53,6 +53,7 @@ import com.ruinwesen.patchmanager.client.protocol.ClientProtocol1;
 import com.ruinwesen.patchmanager.client.protocol.DefaultPatchManagerClient;
 import com.ruinwesen.patchmanager.client.protocol.ProtocolException;
 import com.ruinwesen.patchmanager.client.repository.ClientRepository;
+import com.ruinwesen.patchmanager.client.repository.PatchDownloadCallback;
 
 public class PatchManager {
 
@@ -83,8 +84,8 @@ public class PatchManager {
         return patchindex;
     }
     
-    public void syncRepository(Auth auth) throws ProtocolException, IOException, InterruptedException {
-        repository.sync(managerClient, auth); // updates patch-index
+    public void syncRepository(Auth auth, PatchDownloadCallback cb) throws ProtocolException, IOException, InterruptedException {
+        repository.sync(managerClient, auth, cb); // updates patch-index
     }
     
     public DefaultPatchManagerClient getPatchManagerClient() {
