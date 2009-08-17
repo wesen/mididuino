@@ -31,6 +31,7 @@ package com.ruinwesen.patchmanager.swing.wizards;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -164,13 +165,25 @@ public class CreatePublishPatchWizard extends Wizard {
         File tmpPatchFile = File.createTempFile("patch-upload", ".tmp");
         tmpPatchFile.deleteOnExit();
         try {
-            buildPatchFile(meta, tmpPatchFile);
+            buildPatchFile(meta, patchMetadataForm.getDocumentationText(), tmpPatchFile);
             InputStream is = new BufferedInputStream(new FileInputStream(tmpPatchFile));
             try {
                 Request request = new RequestStorePatch(auth, meta, is);
                 Response response = patchmanager.getPatchManagerClient().execute(request);
+                
+                if (log.isDebugEnabled()) {
+                    log.debug("upload patch response: "+response);
+                }
+                
                 if (!response.isOkStatus()) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("upload patch failed");
+                    }
                     throw new Exception("error: "+response.getMessage());
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("upload patch ok");
+                    }
                 }
                 patchmanager.syncRepository();
             } finally {
@@ -198,10 +211,11 @@ public class CreatePublishPatchWizard extends Wizard {
         
         PatchMetadata meta = new DefaultPatchMetadata();
         patchMetadataForm.copyMetadataTo(meta);
+        String docu = patchMetadataForm.getDocumentationText();
         meta.setName(file.getName());
         
         try {
-            buildPatchFile(meta, file);
+            buildPatchFile(meta, docu, file);
             return true;
         } catch (Exception ex) {
             if(log.isErrorEnabled()) {
@@ -213,7 +227,7 @@ public class CreatePublishPatchWizard extends Wizard {
         }
     }
     
-    protected void buildPatchFile(PatchMetadata meta, File dst) throws Exception {
+    protected void buildPatchFile(PatchMetadata meta, String docu, File dst) throws Exception {
         
         File sourceCodeFile = patchMetadataForm.feSourceDir.getFile();
         File mididataFile = patchMetadataForm.feMidiFile.getFile();
@@ -232,6 +246,11 @@ public class CreatePublishPatchWizard extends Wizard {
         if (sourceCodeFile != null) {
             jarbuilder.add("source", new FSDirectory(sourceCodeFile, sourceDirFilter));
             paths.add(new Path(PatchMetadata.DEFAULT_SOURCE_PATH_NAME, "source"));
+        }
+        if (docu != null && !docu.trim().isEmpty()) {
+            String path = "documentation.txt";
+            jarbuilder.add(path, new ByteArrayInputStream(docu.getBytes()));
+            paths.add(new Path(PatchMetadata.TEXT_DOCUMENTATION_PATH_NAME, path));
         }
         meta.setPaths(paths);
         jarbuilder.add(PatchMetadata.FILENAME, PatchMetadataUtils.createXMLInputStream(meta));
