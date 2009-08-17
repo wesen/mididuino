@@ -41,7 +41,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.lf5.viewer.LogFactor5Dialog;
 
 public final class PatchMetadataIDInfo {
 
