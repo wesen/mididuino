@@ -1,6 +1,5 @@
 package com.ruinwesen.patchmanager.swing.forms;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
