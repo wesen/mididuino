@@ -30,6 +30,9 @@ package com.ruinwesen.patchmanager.swing.tasks;
 
 import java.io.File;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.Request;
@@ -42,6 +45,8 @@ import name.cs.csutils.concurrent.SimpleSwingWorker;
 
 public class DeletePatchTask extends SimpleSwingWorker {
 
+    private static Log log = LogFactory.getLog(DeletePatchTask.class);
+    
     /**
      * 
      */
@@ -77,6 +82,9 @@ public class DeletePatchTask extends SimpleSwingWorker {
         Response response;
         try {
             response = patchmanager.getPatchManagerClient().execute(request);
+            if (log.isDebugEnabled()) {
+                log.debug("Delete-Patch server response: "+response);
+            }
             if (response.isOkStatus()) {
                 patchmanager.setStatus("Patch deleted.");
                 File file = patch.getLocalFile();
@@ -84,6 +92,7 @@ public class DeletePatchTask extends SimpleSwingWorker {
                 if (parent != null && parent.equals(patchmanager.getIndex().getRepositoryDir())) {
                     file.delete();
                 }
+                patchmanager.regenerateIndex();
             } else {
                 cancel();
                 throw new Exception("delete patch failed: "+response.getMessage());
@@ -96,10 +105,12 @@ public class DeletePatchTask extends SimpleSwingWorker {
     
     @Override
     protected void finish() {
+        patchmanager.setStatus("Patch Deleted");
     }
 
     @Override
     protected void cleanup() {
+        patchmanager.setStatus("");
         patchmanager.regenerateIndex();
 
         Throwable t = getException();
