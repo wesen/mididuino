@@ -6,8 +6,8 @@
 
 void MergerSysexListener::end() {
   MidiUart.sendCommandByte(0xF0);
-  MidiUart.puts(MidiSysex.data, MidiSysex.recordLen);
-  MidiUart.sendCommandByte(0xF7);
+  MidiUart.puts(MidiSysex2.data, MidiSysex2.recordLen);
+  MidiUart.putc(0xF7);
 }
 
 void Merger::setMergeMask(uint8_t _mask) {
