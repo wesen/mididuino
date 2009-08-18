@@ -247,7 +247,7 @@ public class CreatePublishPatchWizard extends Wizard {
             jarbuilder.add("source", new FSDirectory(sourceCodeFile, sourceDirFilter));
             paths.add(new Path(PatchMetadata.DEFAULT_SOURCE_PATH_NAME, "source"));
         }
-        if (docu != null && !docu.trim().isEmpty()) {
+        if (docu != null && docu.trim().length()!=0) {
             String path = "documentation.txt";
             jarbuilder.add(path, new ByteArrayInputStream(docu.getBytes()));
             paths.add(new Path(PatchMetadata.TEXT_DOCUMENTATION_PATH_NAME, path));
