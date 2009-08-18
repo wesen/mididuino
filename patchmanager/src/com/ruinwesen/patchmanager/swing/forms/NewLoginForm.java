@@ -29,7 +29,6 @@
 package com.ruinwesen.patchmanager.swing.forms;
 
 import java.awt.Component;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -43,6 +42,7 @@ import name.cs.csutils.CSAction;
 import name.cs.csutils.SwingActionData;
 
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.jdesktop.layout.GroupLayout;
 
 import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.ClientProtocol1;
@@ -124,69 +124,69 @@ public class NewLoginForm extends Form {
         statusLabel = new JLabel("");
         statusLabel.setVisible(false);
 
-        ly.setAutoCreateGaps(true);
-        ly.setAutoCreateContainerGaps(true);
+        ly.setAutocreateGaps(true);
+        ly.setAutocreateContainerGaps(true);
         
         ly.setHorizontalGroup(
                 ly.createSequentialGroup()
-                .addGroup(ly.createParallelGroup()
-                        .addComponent(lblUsername)
-                        .addComponent(lblPassword)
-                        .addComponent(lblPasswordRepeated)
-                        .addComponent(lblUsermail)
-                        .addComponent(lblAdminUsername)
-                        .addComponent(lblAdminPassword)
+                .add(ly.createParallelGroup()
+                        .add(lblUsername)
+                        .add(lblPassword)
+                        .add(lblPasswordRepeated)
+                        .add(lblUsermail)
+                        .add(lblAdminUsername)
+                        .add(lblAdminPassword)
                 )
-                .addGroup(ly.createParallelGroup()
-                        .addComponent(tfUsername)
-                        .addComponent(tfPassword)
-                        .addComponent(tfPasswordRepeated)
-                        .addComponent(tfUsermail)
-                        .addComponent(tfAdminUsername)
-                        .addComponent(tfAdminPassword)
+                .add(ly.createParallelGroup()
+                        .add(tfUsername)
+                        .add(tfPassword)
+                        .add(tfPasswordRepeated)
+                        .add(tfUsermail)
+                        .add(tfAdminUsername)
+                        .add(tfAdminPassword)
                         
-                        .addGroup(GroupLayout.Alignment.LEADING, ly.createSequentialGroup()
-                                .addComponent(statusLabel)
+                        .add(GroupLayout.LEADING, ly.createSequentialGroup()
+                                .add(statusLabel)
                         )
-                        .addGroup(GroupLayout.Alignment.TRAILING, ly.createSequentialGroup()
-                                .addComponent(btnCancel)
-                                .addComponent(btnOk)   
+                        .add(GroupLayout.TRAILING, ly.createSequentialGroup()
+                                .add(btnCancel)
+                                .add(btnOk)   
                         )
                 )
         );
         
         ly.setVerticalGroup(
                 ly.createSequentialGroup()
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblUsername)
-                        .addComponent(tfUsername)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblUsername)
+                        .add(tfUsername)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblPassword)
-                        .addComponent(tfPassword)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblPassword)
+                        .add(tfPassword)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblPasswordRepeated)
-                        .addComponent(tfPasswordRepeated)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblPasswordRepeated)
+                        .add(tfPasswordRepeated)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblUsermail)
-                        .addComponent(tfUsermail)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblUsermail)
+                        .add(tfUsermail)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblAdminUsername)
-                        .addComponent(tfAdminUsername)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblAdminUsername)
+                        .add(tfAdminUsername)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblAdminPassword)
-                        .addComponent(tfAdminPassword)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblAdminPassword)
+                        .add(tfAdminPassword)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(statusLabel)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(statusLabel)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnCancel)
-                        .addComponent(btnOk)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(btnCancel)
+                        .add(btnOk)
                 )
         );        
 
@@ -225,7 +225,7 @@ public class NewLoginForm extends Form {
         ly.setHonorsVisibility(lblPassword, false);
         ly.setHonorsVisibility(lblPasswordRepeated, false);
         ly.setHonorsVisibility(lblUsername, false);
-        ly.linkSize(SwingConstants.HORIZONTAL, btnCancel, btnOk);
+        ly.linkSize(new Component[]{btnCancel, btnOk}, SwingConstants.HORIZONTAL);
     }
 
     public void setExtraInputControlsVisible(boolean value) {
@@ -256,9 +256,9 @@ public class NewLoginForm extends Form {
         String username = normalize(tfUsername.getText());
         String password = normalize(new String(tfPassword.getPassword()));
         String usermail = normalize(tfUsermail.getText());
-        if (username!=null&&username.isEmpty()) username = null;
-        if (password!=null&&password.isEmpty()) password = null;
-        if (usermail!=null&&usermail.isEmpty()) usermail = null;
+        if (username!=null&&username.length()==0) username = null;
+        if (password!=null&&password.length()==0) password = null;
+        if (usermail!=null&&usermail.length()==0) usermail = null;
         return new Auth(username,password,usermail);
     }
     

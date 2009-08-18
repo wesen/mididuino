@@ -30,7 +30,6 @@ package com.ruinwesen.patchmanager.swing.forms;
 
 import java.awt.EventQueue;
 import java.awt.Component;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -46,6 +45,8 @@ import name.cs.csutils.SwingActionData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdesktop.layout.GroupLayout;
+
 import com.ruinwesen.patchmanager.client.protocol.Auth;
 import com.ruinwesen.patchmanager.client.protocol.PatchManagerClient;
 import com.ruinwesen.patchmanager.client.protocol.Request;
@@ -119,68 +120,67 @@ public class BugreportForm extends Form {
         JLabel lblReport = new JLabel("Report");
         JLabel lblUserAllowsContact = new JLabel("Allow Contact");
         
-        ly.setAutoCreateGaps(true);
-        ly.setAutoCreateContainerGaps(true);
+        ly.setAutocreateGaps(true);
+        ly.setAutocreateContainerGaps(true);
         
         ly.setHorizontalGroup(
                 ly.createSequentialGroup()
-                .addGroup(
+                .add(
                         ly.createParallelGroup()
-                        .addComponent(lblUsername)
-                        .addComponent(lblUsermail)
-                        .addComponent(lblUserAllowsContact)
-                        .addComponent(lblUsernote)
-                        .addComponent(lblReport)
+                        .add(lblUsername)
+                        .add(lblUsermail)
+                        .add(lblUserAllowsContact)
+                        .add(lblUsernote)
+                        .add(lblReport)
                 )
-                .addGroup(
+                .add(
                         ly.createParallelGroup()
-                        .addComponent(tfUsername)
-                        .addComponent(tfUsermail)
-                        .addComponent(cbUserAllowsContact)
-                        .addComponent(scrollUsernote)
-                        .addComponent(scrollReport)
-                        .addGroup(GroupLayout.Alignment.TRAILING, ly.createSequentialGroup()
-                                .addComponent(btnCancel)
-                                .addComponent(btnSend)
+                        .add(tfUsername)
+                        .add(tfUsermail)
+                        .add(cbUserAllowsContact)
+                        .add(scrollUsernote)
+                        .add(scrollReport)
+                        .add(GroupLayout.TRAILING, ly.createSequentialGroup()
+                                .add(btnCancel)
+                                .add(btnSend)
                         )
                 )
         );
 
         ly.setVerticalGroup(
                 ly.createSequentialGroup()
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblUsername)
-                        .addComponent(tfUsername)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblUsername)
+                        .add(tfUsername)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblUsermail)
-                        .addComponent(tfUsermail)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblUsermail)
+                        .add(tfUsermail)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblUserAllowsContact)
-                        .addComponent(cbUserAllowsContact)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblUserAllowsContact)
+                        .add(cbUserAllowsContact)
                 )
-                .addGroup(ly.createParallelGroup()
-                        .addComponent(lblUsernote)
-                        .addComponent(scrollUsernote)
+                .add(ly.createParallelGroup()
+                        .add(lblUsernote)
+                        .add(scrollUsernote)
                 )
-                .addGroup(ly.createParallelGroup()
-                        .addComponent(lblReport)
-                        .addComponent(scrollReport)
+                .add(ly.createParallelGroup()
+                        .add(lblReport)
+                        .add(scrollReport)
                 )
-                .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnCancel)
-                        .addComponent(btnSend)
+                .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(btnCancel)
+                        .add(btnSend)
                 )
         );
         
-        ly.linkSize(SwingConstants.HORIZONTAL, btnCancel, btnSend);
+        ly.linkSize(new Component[]{btnCancel, btnSend},SwingConstants.HORIZONTAL);
     }
 
     @SwingActionData("Send")
     public void btnSendClick() {
         new Thread(new Runnable() {
-            @Override
             public void run() {
                 System.out.println("THREAD");
                 try {
