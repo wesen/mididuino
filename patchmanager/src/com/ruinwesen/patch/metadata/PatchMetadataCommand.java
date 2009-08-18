@@ -92,7 +92,7 @@ public class PatchMetadataCommand {
     }
     
     private static Path parsePath(String str) {
-        if (str == null || str.isEmpty()) {
+        if (str == null || str.length()==0) {
             return null;
         }
         int idx = str.indexOf(',');
@@ -100,7 +100,7 @@ public class PatchMetadataCommand {
             throw new IllegalArgumentException(str);
         }
         String name = str.substring(0, idx);
-        if (name.isEmpty()) {
+        if (name.length()==0) {
             throw new IllegalArgumentException(str);
         }
         String value = str.substring(idx+1);

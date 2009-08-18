@@ -131,7 +131,6 @@ public class Tagset extends AbstractCollection<Tag> implements Comparator<Tag> {
         return set.size();
     }
 
-    @Override
     public int compare(Tag a, Tag b) {
         return a.normalizedValue().compareTo(b.normalizedValue());
     }
@@ -163,7 +162,7 @@ public class Tagset extends AbstractCollection<Tag> implements Comparator<Tag> {
             if (tag.normalizedValue().startsWith(prefix) == positive) {
                 if (positive && removePrefix) {
                     String str = tag.normalizedValue().substring(prefix.length());
-                    if (!str.isEmpty())
+                    if (str.length()!=0)
                         set.add(str);
                 } else {
                     set.add(tag);
@@ -176,7 +175,7 @@ public class Tagset extends AbstractCollection<Tag> implements Comparator<Tag> {
     public static Tagset parseTags(String tags) {
         Tagset set = new Tagset();
         for (String tag: tags.split("[\\n\\r\\s,]+")) {
-            if (!tag.isEmpty()) {
+            if (tag.length()!=0) {
                 set.add(tag);
             }
         }
@@ -189,7 +188,7 @@ public class Tagset extends AbstractCollection<Tag> implements Comparator<Tag> {
         return CSUtils.join(" ", list.iterator());
     }
 
-    public void addAll(Collection<? extends String> c) {
+    public void addAllStrings(Collection<? extends String> c) {
         for (String str: c)
             add(str);
     }

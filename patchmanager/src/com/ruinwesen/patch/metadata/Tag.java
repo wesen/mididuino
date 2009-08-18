@@ -112,7 +112,6 @@ public final class Tag implements Comparable<Tag>, Serializable {
      * specified tag lexicographically. 
      * @see String#compareTo(String)
      */
-    @Override
     public int compareTo(Tag o) {
         return o == this ? 0 : normalizedValue().compareTo(o.normalizedValue());
     }

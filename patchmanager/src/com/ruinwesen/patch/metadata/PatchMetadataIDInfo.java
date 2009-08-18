@@ -74,7 +74,6 @@ public final class PatchMetadataIDInfo {
             return o!= null && getClass() == o.getClass()
             && ((NamedId<?>)o).value.equals(value);
         }
-        @Override
         public int compareTo(K o) {
             return value.compareTo(o.value);
         }
@@ -167,7 +166,7 @@ public final class PatchMetadataIDInfo {
                 line = line.substring(0, comment_index);
             }
             line = line.trim();
-            if (!line.isEmpty()) {
+            if (line.length()!=0) {
                 list.add(line);
             }
         }
@@ -193,7 +192,7 @@ public final class PatchMetadataIDInfo {
     }
 
     private static final <K extends NamedId<K>> K getDefinedId(Collection<K> c, String name) {
-        if (name == null || name.isEmpty()) {
+        if (name == null || name.length()==0) {
             throw new IllegalArgumentException("name:"+name);
         }
         for (K k: c) {

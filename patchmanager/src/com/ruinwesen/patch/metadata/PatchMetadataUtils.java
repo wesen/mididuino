@@ -190,7 +190,7 @@ public final class PatchMetadataUtils {
         elemRoot.appendChild(createTextElement(doc, "environment-id", nullToEmptyString(metadata.getEnvironmentId())));
         elemRoot.appendChild(createTextElement(doc, "device-id", nullToEmptyString(metadata.getDeviceId())));
         String patchId = metadata.getPatchId();
-        if (patchId != null && !patchId.isEmpty()) {
+        if (patchId != null && patchId.length()!=0) {
             elemRoot.appendChild(createTextElement(doc, "patch-id", patchId));
         }
         

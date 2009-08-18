@@ -66,81 +66,81 @@ public class DefaultPatchMetadata implements PatchMetadata {
         return new DefaultPatchMetadata(this);
     }
     
-    @Override
+
     public DeviceId getDeviceId() {
         return deviceId;
     }
     
-    @Override
+
     public EnvironmentId getEnvironmentId() {
         return environmentId;
     }
     
-    @Override
+
     public String getAuthor() {
         return author;
     }
 
-    @Override
+
     public String getComment() {
         return comment;
     }
 
-    @Override
+
     public String getName() {
         return name;
     }
 
-    @Override
+
     public Path getPath(String name) {
         return paths.get(name);
     }
 
-    @Override
+
     public Map<String, Path> getPaths() {
         return Collections.unmodifiableMap(paths);
     }
 
-    @Override
+
     public String getTitle() {
         return title;
     }
 
-    @Override
+
     public String getVersion() {
         return version;
     }
 
-    @Override
+
     public void removePath(String name) {
         paths.remove(name);
     }
 
-    @Override
+
     public void setAuthor(String value) {
         this.author = value;
     }
 
-    @Override
+
     public void setComment(String value) {
         this.comment = value;
     }
 
-    @Override
+
     public void setName(String value) {
         this.name = value;
     }
 
-    @Override
+
     public void setDeviceId(DeviceId value) {
         this.deviceId = value;
     }
     
-    @Override
+
     public void setEnvironmentId(EnvironmentId value) {
         this.environmentId = value;
     }
-    @Override
+
     public void setPath(String name, Path value) {
         if (value == null) {
             paths.remove(name);
@@ -149,65 +149,65 @@ public class DefaultPatchMetadata implements PatchMetadata {
         }
     }
 
-    @Override
+
     public void setTitle(String value) {
         this.title = value;
     }
 
-    @Override
+
     public void setVersion(String value) {
         // no operation!!!
     }
 
-    @Override
+
     public void setAll(PatchMetadata src) {
         PatchMetadataUtils.setAll(this,src);
     }
 
-    @Override
+
     public void setPaths(Map<String, Path> paths) {
         this.paths.clear();
         this.paths.putAll(paths);
     }
 
-    @Override
+
     public void addPath(Path path) {
         setPath(path.getName(), path);
     }
 
-    @Override
+
     public Tagset getTags() {
         return new Tagset(tags);
     }
 
-    @Override
+
     public void setTags(Tagset set) {
         tags = new Tagset(set);
     }
 
-    @Override
+
     public void addTag(Tag tag) {
         tags.add(tag);
     }
 
-    @Override
+
     public void addTag(String tagname) {
         tags.add(tagname);
     }
 
-    @Override
+
     public String getLastModifiedDateString() {
         return lastModifiedDate == null ?
                 CSUtils.dateToString(CSUtils.now())
                 : CSUtils.dateToString(lastModifiedDate);
     }
 
-    @Override
+
     public Date getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    @Override
+
     public void setLastModifiedDate(Date d) {
         this.lastModifiedDate = d;
     }
@@ -217,17 +217,17 @@ public class DefaultPatchMetadata implements PatchMetadata {
         return PatchMetadataUtils.toString(this);
     }
 
-    @Override
+
     public void setPaths(Collection<Path> paths) {
         PatchMetadataUtils.setPaths(this, paths);
     }
 
-    @Override
+
     public String getPatchId() {
         return patchId;
     }
 
-    @Override
+
     public void setPatchId(String patchId) {
         this.patchId = patchId;
     }

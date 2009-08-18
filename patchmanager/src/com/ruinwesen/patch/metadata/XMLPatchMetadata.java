@@ -84,7 +84,7 @@ public class XMLPatchMetadata implements PatchMetadata {
     
     
     private static class NSContext implements NamespaceContext {
-        @Override
+        
         public String getNamespaceURI(String prefix) {
             if ( "pm".equals(prefix)) {
                 return NS_PATCH_METDATA;
@@ -92,7 +92,7 @@ public class XMLPatchMetadata implements PatchMetadata {
             return XMLConstants.NULL_NS_URI;
         }
 
-        @Override
+        
         public String getPrefix(String namespaceURI) {
             if (namespaceURI.equals(NS_PATCH_METDATA)) {
                 return "pm";
@@ -100,7 +100,7 @@ public class XMLPatchMetadata implements PatchMetadata {
             return null;
         }
 
-        @Override
+        
         public Iterator<String> getPrefixes(String namespaceURI) {
             List<String> list = new LinkedList<String>();
             if (namespaceURI.equals(NS_PATCH_METDATA)) {
@@ -184,60 +184,60 @@ public class XMLPatchMetadata implements PatchMetadata {
         }
     }
     
-    @Override
+    
     public String getAuthor() {
         return getTextContent(xpAuthor,"");
     }
 
-    @Override
+    
     public String getComment() {
         return getTextContent(xpComment,"");
     }
 
-    @Override
+    
     public String getName() {
         return getTextContent(xpName,"");
     }
 
-    @Override
+    
     public String getTitle() {
         return getTextContent(xpTitle,"");
     }
 
-    @Override
+    
     public String getVersion() {
         return doc.getDocumentElement().getAttribute("version");
     }
 
-    @Override
+    
     public DeviceId getDeviceId() {
         String str = getTextContent(xpDeviceId,null);
-        if (str == null || str.isEmpty()) {
+        if (str == null || str.length()==0) {
             return null;
         }
         return PatchMetadataIDInfo.getDeviceId(str);
     }
 
-    @Override
+    
     public EnvironmentId getEnvironmentId() {
         String str = getTextContent(xpEnvironmentId,null);
-        if (str == null || str.isEmpty()) {
+        if (str == null || str.length()==0) {
             return null;
         }
         return PatchMetadataIDInfo.getEnvironmentId(str);
     }
 
-    @Override
+    
     public void setAuthor(String value) {
         setNode(xpAuthor, "author", value);
     }
 
-    @Override
+    
     public void setComment(String value) {
         setNode(xpComment, "comment", value);
     }
 
-    @Override
+    
     public void setDeviceId(DeviceId value) {
         if (value == null)
             deleteNode(xpDeviceId);
@@ -245,7 +245,7 @@ public class XMLPatchMetadata implements PatchMetadata {
             setNode(xpDeviceId, "device-id", value.value());
     }
 
-    @Override
+    
     public void setEnvironmentId(EnvironmentId value) {
         if (value == null)
             deleteNode(xpEnvironmentId);
@@ -285,17 +285,17 @@ public class XMLPatchMetadata implements PatchMetadata {
         }
     }
 
-    @Override
+    
     public void setName(String value) {
         setNode(xpName, "name", value);
     }
 
-    @Override
+    
     public void setTitle(String value) {
         setNode(xpTitle, "title", value);
     }
 
-    @Override
+    
     public void setVersion(String value) {
         if (value == null) {
             return;
@@ -303,7 +303,7 @@ public class XMLPatchMetadata implements PatchMetadata {
         doc.getDocumentElement().setAttribute("version", value);
     }
 
-    @Override
+    
     public Map<String, Path> getPaths() {
         NodeList nodelist;
         try {
@@ -326,17 +326,17 @@ public class XMLPatchMetadata implements PatchMetadata {
         return Collections.unmodifiableMap(map);
     }
 
-    @Override
+    
     public Path getPath(String name) {
         return getPaths().get(name);
     }
 
-    @Override
+    
     public void removePath(String name) {
         setPath(name, null);
     }
 
-    @Override
+    
     public void setPath(String name, Path value) {
         HashMap<String, Path> map = new HashMap<String, Path>(getPaths());
         if (value == null) {
@@ -347,7 +347,7 @@ public class XMLPatchMetadata implements PatchMetadata {
         setPaths(map);
     }
 
-    @Override
+    
     public void setPaths(Map<String, Path> pathsArg) {
         // use a copy we can modify
         HashMap<String, Path> paths = new HashMap<String, Path>(pathsArg);
@@ -398,31 +398,29 @@ public class XMLPatchMetadata implements PatchMetadata {
             elemPathList.appendChild(pathElement);
         }
     }
-    @Override
     public void setAll(PatchMetadata src) {
         PatchMetadataUtils.setAll(this,src);
     }
 
-    @Override
     public void addPath(Path path) {
         setPath(path.getName(), path);
     }
 
-    @Override
+    
     public void addTag(Tag tag) {
         Tagset t = getTags();
         t.add(tag);
         setTags(t);
     }
 
-    @Override
+    
     public void addTag(String tagname) {
         Tagset t = getTags();
         t.add(tagname);
         setTags(t);
     }
     
-    @Override
+    
     public Tagset getTags() {
         String str = getTextContent(xpTags,null);
         if (str == null) {
@@ -432,17 +430,17 @@ public class XMLPatchMetadata implements PatchMetadata {
         }
     }
 
-    @Override
+    
     public void setTags(Tagset set) {
         setNode(xpTags, "tags", set.toString());
     }
 
-    @Override
+    
     public String getLastModifiedDateString() {
         return CSUtils.dateToString(getLastModifiedDate());
     }
 
-    @Override
+    
     public Date getLastModifiedDate() {
         String str = getTextContent(xpLastModifiedDate,null);
         if (str == null) {
@@ -455,7 +453,7 @@ public class XMLPatchMetadata implements PatchMetadata {
         return date;
     }
 
-    @Override
+    
     public void setLastModifiedDate(Date d) {
         if (d == null) {
             d = CSUtils.now();
@@ -463,28 +461,28 @@ public class XMLPatchMetadata implements PatchMetadata {
         setNode(xpLastModifiedDate, "last-modified-date", CSUtils.dateToString(d));
     }
     
-    @Override
+    
     public String toString() {
         return PatchMetadataUtils.toString(this);
     }
 
-    @Override
+    
     public void setPaths(Collection<Path> paths) {
         PatchMetadataUtils.setPaths(this, paths);
     }
 
-    @Override
+    
     public String getPatchId() {
         String id = getTextContent(xpPatchId, null);
-        if (id != null && id.isEmpty()) {
+        if (id != null && id.length()==0) {
             id = null;
         }
         return id ;
     }
 
-    @Override
+    
     public void setPatchId(String patchId) {
-        if (patchId != null && patchId.isEmpty()) {
+        if (patchId != null && patchId.length()==0) {
             patchId = null;
         }
         if (patchId == null) {
