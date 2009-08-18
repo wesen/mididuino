@@ -34,7 +34,6 @@ public abstract class StringValidator extends AbstractFormElementValidator {
         super(errorMessage);
     }
 
-    @Override
     public boolean isValid(FormElement elem) {
         Object value = elem.getValue();
         if (value instanceof String) {

@@ -30,11 +30,11 @@ package com.ruinwesen.patchmanager.swing.form;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Arrays;
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.event.EventListenerList;
+
+import name.cs.csutils.CSUtils;
 
 public abstract class FormElement {
 
@@ -143,7 +143,7 @@ public abstract class FormElement {
         }
         return length == components.length 
                 ? components 
-                : Arrays.copyOf(components, length);        
+                : CSUtils.arrayCopyOf(components, length);        
     }
     
     public JComponent[] getComponents() {

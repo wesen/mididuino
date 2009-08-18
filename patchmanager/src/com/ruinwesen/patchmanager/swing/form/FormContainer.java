@@ -29,18 +29,19 @@
 package com.ruinwesen.patchmanager.swing.form;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Group;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
+
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.GroupLayout.ParallelGroup;
+import org.jdesktop.layout.GroupLayout.SequentialGroup;
 
 import name.cs.csutils.IconLoader;
 
@@ -51,9 +52,17 @@ public class FormContainer implements FormElementListener {
     private Form form;
     private JPanel panel;
     private List<JLabel> warningButtons = new ArrayList<JLabel>(20);
+    private boolean validationHintsEnabled = true;
     
     protected FormContainer() {
         super();
+    }
+
+    public void setValidationHintsEnabled(boolean value) {
+        if (value != validationHintsEnabled) {
+            this.validationHintsEnabled = value;
+            updateValidityIcons();
+        }
     }
     
     public FormContainer(Form form) {
@@ -80,16 +89,16 @@ public class FormContainer implements FormElementListener {
         return panel;
     }
 
-    private GroupLayout.Alignment horizontalAlignment(Component c) {
+    private int horizontalAlignment(Component c) {
         float a = c.getAlignmentX();
         if (a == Component.LEFT_ALIGNMENT) {
-            return GroupLayout.Alignment.LEADING;
+            return GroupLayout.LEADING;
         } else if (a ==  Component.RIGHT_ALIGNMENT) {
-            return GroupLayout.Alignment.TRAILING;
+            return GroupLayout.TRAILING;
         } else if (a == Component.CENTER_ALIGNMENT) {
-            return null;//GroupLayout.Alignment.CENTER;
+            return GroupLayout.CENTER;
         } else {
-            return null;
+            return GroupLayout.CENTER;
         }
     }
     
@@ -101,11 +110,11 @@ public class FormContainer implements FormElementListener {
         
         panel = new JPanel();
         GroupLayout ly = new GroupLayout(panel);
-        ly.setAutoCreateGaps(true);
+        ly.setAutocreateGaps(true);
         panel.setLayout(ly);
         
         {   // horizontal
-            Group hgroup = ly.createSequentialGroup();
+            SequentialGroup hgroup = ly.createSequentialGroup();
 
             // label column
             {
@@ -115,12 +124,12 @@ public class FormContainer implements FormElementListener {
                 for (FormElement elem: form) {
                     JComponent[] components = elem.getComponents();
                     if (0<components.length && components[0] == elem.getLabel()) {
-                        column.addComponent(components[0]);
+                        column.add(components[0]);
                         rowcount++;
                     }
                 }
                 if (rowcount > 0) {
-                    hgroup.addGroup(column);
+                    hgroup.add(column);
                 }
             }
             
@@ -132,11 +141,11 @@ public class FormContainer implements FormElementListener {
                 for (FormElement elem: form) {
                     JComponent[] components = elem.getComponents();
                     if (components.length == 1  && components[0] == elem.getMainComponent()) {
-                        GroupLayout.Alignment al = horizontalAlignment(components[0]);
-                        if (al != null)
-                            column.addComponent(components[0], al);
+                        int al = horizontalAlignment(components[0]);
+                        if (al != GroupLayout.CENTER)
+                            column.add(al, components[0]);
                         else
-                            column.addComponent(components[0]);
+                            column.add(components[0]);
                     } else {
                         SequentialGroup compact = ly.createSequentialGroup();
                         
@@ -145,17 +154,17 @@ public class FormContainer implements FormElementListener {
                                // System.out.println("ignore: "+((JLabel)components[i]).getText());
                                 continue; // ignore label
                             } else {
-                                compact.addComponent(components[i]);
+                                compact.add(components[i]);
                             } 
                         }
                         
-                        column.addGroup(compact);
+                        column.add(compact);
                     }
                     rowcount++;
                 }
                 
                 if (rowcount > 0) {
-                    hgroup.addGroup(column);
+                    hgroup.add(column);
                 } 
             }
             
@@ -163,7 +172,7 @@ public class FormContainer implements FormElementListener {
 
             {
                 int rowcount = 0;
-                Group column = ly.createParallelGroup();
+                ParallelGroup column = ly.createParallelGroup();
                 
                 int index = 0;
                 for (FormElement elem: form) {
@@ -175,14 +184,14 @@ public class FormContainer implements FormElementListener {
                         lbl.setVerticalTextPosition(SwingConstants.CENTER);
                         lbl.putClientProperty(FORMELEMENT_INDEX, index++);
                         warningButtons.add(lbl);
-                        column.addComponent(lbl, 16, 16, 16);
+                        column.add(lbl, 16, 16, 16);
                         rowcount++;
                     }
                 }
                 
                 index++;
                 if (rowcount > 0) {
-                    hgroup.addGroup(column);
+                    hgroup.add(column);
                 } 
             }
             
@@ -192,31 +201,31 @@ public class FormContainer implements FormElementListener {
         }
         
         {   // vertical
-            Group vgroup = ly.createSequentialGroup();
+            SequentialGroup vgroup = ly.createSequentialGroup();
             
             int index = 0;
             for (FormElement elem: form) {
-                ParallelGroup line = ly.createParallelGroup(GroupLayout.Alignment.BASELINE);
+                ParallelGroup line = ly.createParallelGroup(GroupLayout.BASELINE);
                 
                 JComponent[] comp = elem.getComponents();
                 for (int i=0;i<comp.length;i++) {
                     /*if (i == 0 && comp[i] instanceof JLabel) {
-                        line.addComponent(comp[i], GroupLayout.Alignment.LEADING);
+                        line.add(comp[i], GroupLayout.Alignment.LEADING);
                     } else if (i==1) {
-                        line.addComponent(comp[i], GroupLayout.Alignment.CENTER);
+                        line.add(comp[i], GroupLayout.Alignment.CENTER);
                     } else if (i==comp.length-1 && comp[i] instanceof JButton) {
-                        line.addComponent(comp[i], GroupLayout.Alignment.TRAILING);
+                        line.add(comp[i], GroupLayout.Alignment.TRAILING);
                     } else {
-                        line.addComponent(comp[i]);
+                        line.add(comp[i]);
                     }*/
-                    line.addComponent(comp[i]);
+                    line.add(comp[i]);
                 }
                 
                 if (index<warningButtons.size() && warningButtons.get(index)!=null) {
-                    line.addComponent(warningButtons.get(index), GroupLayout.Alignment.CENTER);
+                    line.add(GroupLayout.CENTER, warningButtons.get(index));
                 }
                 
-                vgroup.addGroup(line);
+                vgroup.add(line);
                 index++;
             }
             
@@ -226,7 +235,6 @@ public class FormContainer implements FormElementListener {
         updateValidityIcons();
     }
 
-    @Override
     public void formelementValueChanged(FormElementEvent evt) {
         // no op
     }
@@ -239,7 +247,6 @@ public class FormContainer implements FormElementListener {
         }
     }
 
-    @Override
     public void formelementValueValidityChanged(FormElementEvent evt) {
         int index = form.indexOf(evt.getFormElement());
         updateValidity(index, evt.getFormElement());
@@ -249,9 +256,14 @@ public class FormContainer implements FormElementListener {
         if (index>=0 && index<warningButtons.size()) {
             JLabel btn = warningButtons.get(index);
             if (btn != null) {
-                btn.setVisible(!elem.checkIsValid());
+                btn.setVisible(validationHintsEnabled && !elem.checkIsValid());
             }
         }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        return;
     }
     
 }

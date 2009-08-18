@@ -36,7 +36,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -47,6 +46,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+
+import org.jdesktop.layout.GroupLayout;
 
 import name.cs.csutils.CSAction;
 import name.cs.csutils.CSEventAdapter;
@@ -81,11 +82,12 @@ public class Wizard implements ActionListener, FormElementListener {
     private boolean confirmOnCancel;
     private boolean modalDialog = true;
     private JSeparator ehintSeparator;
+    
     public Wizard() {
         super();
         init();
     }
-
+    
     public void setHintVisible(boolean value) {
         labelErrorHint.setVisible(value);
         ehintSeparator.setVisible(value);
@@ -245,36 +247,36 @@ public class Wizard implements ActionListener, FormElementListener {
         GroupLayout ly = new GroupLayout(container);        
         container.setLayout(ly);
         
-        ly.setAutoCreateContainerGaps(true);
-        ly.setAutoCreateGaps(true);
+        ly.setAutocreateContainerGaps(true);
+        ly.setAutocreateGaps(true);
         
         ly.setHorizontalGroup(ly.createParallelGroup()
-                        .addComponent(formContainer)       
-                        .addComponent(ehintSeparator)   
-                        .addComponent(labelErrorHint)   
-                        .addComponent(buttonSeparator)   
-                        .addGroup(GroupLayout.Alignment.TRAILING, ly.createSequentialGroup()
-                                .addComponent(btnNext)
-                                .addComponent(btnFinish)
-                                .addComponent(btnCancel)
+                        .add(formContainer)       
+                        .add(ehintSeparator)   
+                        .add(labelErrorHint)   
+                        .add(buttonSeparator)   
+                        .add(GroupLayout.TRAILING, ly.createSequentialGroup()
+                                .add(btnNext)
+                                .add(btnFinish)
+                                .add(btnCancel)
                         )
         );
         
         ly.setVerticalGroup(ly.createSequentialGroup()
-                        .addComponent(formContainer)   
-                        .addComponent(ehintSeparator, GroupLayout.PREFERRED_SIZE
+                        .add(formContainer)   
+                        .add(ehintSeparator, GroupLayout.PREFERRED_SIZE
                                 ,GroupLayout.PREFERRED_SIZE,GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labelErrorHint)   
-                        .addComponent(buttonSeparator, GroupLayout.PREFERRED_SIZE
+                        .add(labelErrorHint)   
+                        .add(buttonSeparator, GroupLayout.PREFERRED_SIZE
                                         ,GroupLayout.PREFERRED_SIZE,GroupLayout.PREFERRED_SIZE)
-                        .addGroup(ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnNext)
-                                .addComponent(btnFinish)
-                                .addComponent(btnCancel)
+                        .add(ly.createParallelGroup(GroupLayout.BASELINE)
+                                .add(btnNext)
+                                .add(btnFinish)
+                                .add(btnCancel)
                         )  
         );
         
-        ly.linkSize(btnNext, btnFinish, btnCancel);
+        ly.linkSize(new Component[]{btnNext, btnFinish, btnCancel});
     }
     
     public void show(String name) {
@@ -288,7 +290,6 @@ public class Wizard implements ActionListener, FormElementListener {
         setCurrentForm(null);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         if (AC_NEXT.equals(e.getActionCommand())) {
             action_next();
@@ -349,13 +350,11 @@ public class Wizard implements ActionListener, FormElementListener {
         }
     }
 
-    @Override
     public void formelementValueChanged(FormElementEvent evt) {
         // TODO Auto-generated method stub
         
     }
 
-    @Override
     public void formelementValueValidityChanged(FormElementEvent evt) {
         updateOptions();
         labelErrorHint.revalidate();

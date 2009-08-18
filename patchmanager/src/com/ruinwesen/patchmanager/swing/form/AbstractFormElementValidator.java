@@ -40,7 +40,6 @@ public abstract class AbstractFormElementValidator implements FormElementValidat
         return errorMessage;
     }
 
-    @Override
     public void validate(FormElement elem) throws ValidationError {
         if (!isValid(elem)) {
             throw new ValidationError(elem, errorMessage);

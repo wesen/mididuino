@@ -80,7 +80,6 @@ public class FileFormElement extends TextFieldFormElement
         btnSelectFile.setEnabled(enabled);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         if (AC_SELECT_FILE.equals(e.getActionCommand())) {
             selectFile();
@@ -104,7 +103,7 @@ public class FileFormElement extends TextFieldFormElement
     */
     public File getFile() {
         String text = super.getText();
-        return text == null || text.trim().isEmpty() ? null : new File(text);
+        return text == null || text.trim().length()==0 ? null : new File(text);
     }
     
     public void setFile(File file) {

@@ -81,7 +81,6 @@ public class ComboBoxFormElement extends FormElement implements ItemListener,
         field.setSelectedItem(value);
     }
 
-    @Override
     public void itemStateChanged(ItemEvent e) {
         Object newValue = getValue();
         if ((oldValue == null && oldValue != newValue) || !oldValue.equals(newValue)) {
@@ -90,7 +89,6 @@ public class ComboBoxFormElement extends FormElement implements ItemListener,
         }
     }
 
-    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (COMBOBOX_MODEL_PROPERTY.equals(evt.getPropertyName())) {
             Object newValue = getValue();

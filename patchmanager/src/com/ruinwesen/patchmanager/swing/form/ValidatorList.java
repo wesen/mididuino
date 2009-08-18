@@ -54,7 +54,6 @@ public class ValidatorList implements FormElementValidator {
         list.add(validator);
     }
     
-    @Override
     public boolean isValid(FormElement elem) {
         for (FormElementValidator validator: list) {
             if (!validator.isValid(elem)) {
@@ -64,7 +63,6 @@ public class ValidatorList implements FormElementValidator {
         return true;
     }
 
-    @Override
     public void validate(FormElement elem) throws ValidationError {
         if (message != null) {
             if (!isValid(elem)) {
