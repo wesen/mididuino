@@ -324,12 +324,10 @@ public class RWMidiSend extends MidiSend {
             this.terminated = v;
         }
         
-        @Override
         public synchronized Throwable getError() {
             return error;
         }
 
-        @Override
         public void cancel() {
             Process p = getProcess();
             if (p != null) {
@@ -370,7 +368,7 @@ public class RWMidiSend extends MidiSend {
                 }
                 if (isErrorStatus(presult.status)) {
                     String err = stderrBuffer.getBuffer();
-                    if (!err.trim().isEmpty()) {
+                    if (err.trim().length()!=0) {
                         err = " "+err;
                     }
                     throw new MidiSendException(
@@ -399,7 +397,6 @@ public class RWMidiSend extends MidiSend {
             }
         }
 
-        @Override
         public void waitFor(long timeout) throws InterruptedException {
             if (isTerminated()) {
                 return;
@@ -535,7 +532,6 @@ public class RWMidiSend extends MidiSend {
         /**
          * {@inheritDoc}
          */
-        @Override
         public String getName() {
             return name;
         }
@@ -543,7 +539,6 @@ public class RWMidiSend extends MidiSend {
         /**
          * {@inheritDoc}
          */
-        @Override
         public boolean isInput() {
             return input;
         }
@@ -551,7 +546,6 @@ public class RWMidiSend extends MidiSend {
         /**
          * {@inheritDoc}
          */
-        @Override
         public boolean isOutput() {
             return !input;
         }
