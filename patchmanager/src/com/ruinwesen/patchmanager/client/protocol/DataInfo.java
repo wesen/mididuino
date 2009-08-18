@@ -33,8 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-
 import name.cs.csutils.CSUtils;
 
 import org.apache.commons.codec.binary.Base64;
