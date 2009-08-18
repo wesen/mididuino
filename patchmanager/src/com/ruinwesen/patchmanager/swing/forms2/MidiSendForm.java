@@ -67,6 +67,7 @@ import com.ruinwesen.patchmanager.swing.form.ComboBoxFormElement;
 import com.ruinwesen.patchmanager.swing.form.CustomFormElement;
 import com.ruinwesen.patchmanager.swing.form.FileFormElement;
 import com.ruinwesen.patchmanager.swing.form.Form;
+import com.ruinwesen.patchmanager.swing.form.FormContainer;
 import com.ruinwesen.patchmanager.swing.form.FormElement;
 
 public class MidiSendForm extends Form {
@@ -81,6 +82,7 @@ public class MidiSendForm extends Form {
     private String preferredInputDeviceName;
     private String preferredOutputDeviceName;
     private boolean firstRefresh = true;
+    private FormContainer container;
     
     public MidiSendForm() {
         this(new RWMidiSend());
@@ -129,6 +131,10 @@ public class MidiSendForm extends Form {
         
         refreshDeviceList();
     }
+    
+    public void setFormContainer(FormContainer container) {
+        this.container = container;
+    }
 
     private class DeviceRefresher extends SimpleSwingWorker {
 
@@ -169,6 +175,8 @@ public class MidiSendForm extends Form {
                     selectOutputDeviceByName(preferredOutputDeviceName);
                 }
             }
+            if (container != null)
+            container.setValidationHintsEnabled(true);
         }
         
     }
@@ -292,7 +300,6 @@ public class MidiSendForm extends Form {
             super(errorMessage);
         }
 
-        @Override
         public boolean isValid(FormElement elem) {
             return elem.getValue() != null;
         }
@@ -345,7 +352,6 @@ public class MidiSendForm extends Form {
             return checkResult;
         }
         
-        @Override
         public boolean isValid(FormElement elem) {
             File file = ((FileFormElement)elem).getFile();
             return checkHexFile(file);
