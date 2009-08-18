@@ -90,7 +90,6 @@ public class SynchronizeRepositoryTask extends SimpleSwingWorker implements Patc
         }
     }
 
-    @Override
     public void patchDownloaded(String message) {
         patchmanager.setStatus(message);
     }

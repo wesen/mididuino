@@ -27,7 +27,7 @@ public class BugReportBuilder {
         return sb.toString();
     }
     
-    public void appendSystemInfo() {
+    public BugReportBuilder appendSystemInfo() {
         appendSystemProperty(SystemProperties.JAVA_VERSION);
         appendSystemProperty(SystemProperties.JAVA_VENDOR);
         appendSystemProperty(SystemProperties.JAVA_VENDOR_URL);
@@ -52,10 +52,8 @@ public class BugReportBuilder {
         appendSystemProperty(SystemProperties.OS_VERSION);
         appendSystemProperty(SystemProperties.FILE_SEPARATOR);
         appendSystemProperty(SystemProperties.PATH_SEPARATOR);
-        appendSystemProperty(SystemProperties.LINE_SEPARATOR);
-        appendSystemProperty(SystemProperties.USER_NAME);
         appendSystemProperty(SystemProperties.USER_HOME);
-        appendSystemProperty(SystemProperties.USER_DIR);
+        return this;
     }
 
     private void appendSystemProperty(final String property) {
