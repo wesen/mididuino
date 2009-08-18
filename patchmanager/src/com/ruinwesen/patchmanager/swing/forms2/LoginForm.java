@@ -95,7 +95,6 @@ public class LoginForm extends FormContainer {
         public PasswordRepeatedValidator(String errorMessage) {
             super(errorMessage);
         }
-        @Override
         public boolean isValid(FormElement elem) {
             return tfPassword.getText().equals(tfPasswordRepeated.getText());
         }
