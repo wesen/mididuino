@@ -57,7 +57,9 @@ public class MidiSendWizard extends Wizard {
     public MidiSendWizard() {
         super();
         midisendForm = new MidiSendForm();
-        add(new FormContainer(midisendForm));
+        FormContainer ms = new FormContainer(midisendForm);
+        ms.setValidationHintsEnabled(false);
+        add(ms);
         acFinish.useName("Send");
         setResizable(false);
         setTitle("midi-send");
