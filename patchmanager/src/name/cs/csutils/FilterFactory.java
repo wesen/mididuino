@@ -73,6 +73,10 @@ public class FilterFactory {
     public static <K> Filter<K> isNotNull() {
         return negate(FilterFactory.<K>isNull());
     }
+    
+    public static <A,B> Filter<A> map(Filter<B> filter, Mapping<A, B> mapping) {
+        return new MappingFilter<A, B>(filter, mapping);
+    }
 
     public static <K> Filter<K> and(Filter<K> a, Filter<K> b) {
         return new LogicOp<K>(LogicOp.AND, a, b);
@@ -112,10 +116,21 @@ public class FilterFactory {
     }
 
     private static final class TestNull implements Filter<Object> {
-        @Override
         public boolean test(Object item) {
             return item==null;
         }        
+    }
+
+    private static final class MappingFilter<A,B> implements Filter<A> {
+        private Filter<B> filter;
+        private Mapping<A, B> mapping;
+        public MappingFilter(Filter<B> filter, Mapping<A, B> mapping) {
+            this.filter = filter;
+            this.mapping = mapping;
+        }
+        public boolean test(A item) {
+            return filter.test(mapping.map(item));
+        }
     }
 
     private static final class MapFromFileFilter implements Filter<File> {
@@ -123,7 +138,6 @@ public class FilterFactory {
         public MapFromFileFilter(FileFilter filter) {
             this.filter = filter;
         }
-        @Override
         public boolean test(File item) {
             return filter.accept(item);
         }
@@ -134,7 +148,6 @@ public class FilterFactory {
         public MapToFileFilter(Filter<File> filter) {
             this.filter = filter;
         }
-        @Override
         public boolean accept(File pathname) {
             return filter.test(pathname);
         }
@@ -167,7 +180,6 @@ public class FilterFactory {
             this.op = op;
         }
 
-        @Override
         public boolean test(K item) {
             switch (op) {
             // note this is not actually the logic and operation because
@@ -190,7 +202,6 @@ public class FilterFactory {
         public NegateFilter(Filter<K> filter) {
             super(filter);
         }
-        @Override
         public boolean test(K item) {
             return !filter.test(item);
         }    
@@ -201,7 +212,6 @@ public class FilterFactory {
         public HasSuffix(String suffix) {
             this.suffix = suffix;
         }
-        @Override
         public boolean test(String item) {
             return item.endsWith(suffix);
         }        
@@ -212,7 +222,6 @@ public class FilterFactory {
         public HasPrefix(String prefix) {
             this.prefix = prefix;
         }
-        @Override
         public boolean test(String item) {
             return item.startsWith(prefix);
         }        

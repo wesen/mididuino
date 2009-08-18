@@ -51,7 +51,6 @@ public class StateRememberingCollector<C> implements Collector<C> {
         return state.get();
     }
     
-    @Override
     public int collect(C item) {
         if (state.get() == FINISHED) {
             return FINISHED;

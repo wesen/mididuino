@@ -41,7 +41,6 @@ public class MaxCountCollector<T> implements Collector<T> {
         this.collector = collector;
     }
 
-    @Override
     public int collect(T item) {
         if (count.get()>=maxcount || count.incrementAndGet()>=maxcount) {
             return FINISHED;

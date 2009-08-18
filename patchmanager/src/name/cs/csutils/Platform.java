@@ -109,8 +109,8 @@ public class Platform
             // desktop
             String gnomeEnvValue = System.getenv(GNOME_ENV_VAR);
             String kdeEnvValue   = System.getenv(KDE_ENV_VAR);
-            isGnomeEnvVarSet = gnomeEnvValue != null && !gnomeEnvValue.trim().isEmpty();
-            isKDEEnvVarSet = kdeEnvValue != null && !kdeEnvValue.trim().isEmpty();
+            isGnomeEnvVarSet = gnomeEnvValue != null && gnomeEnvValue.trim().length()!=0;
+            isKDEEnvVarSet = kdeEnvValue != null && kdeEnvValue.trim().length()!=0;
         } else {
             isGnomeEnvVarSet = false;
             isKDEEnvVarSet = false;

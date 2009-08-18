@@ -121,12 +121,10 @@ public class InvokationTarget implements ActionListener, Runnable {
         }
     }
     
-    @Override
     public void actionPerformed(ActionEvent e) {
         invokeQuiet();
     }
 
-    @Override
     public void run() {
         invokeQuiet();
     }

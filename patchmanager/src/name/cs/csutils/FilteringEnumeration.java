@@ -58,12 +58,10 @@ public class FilteringEnumeration<E> implements Enumeration<E> {
         }
     }
     
-    @Override
     public boolean hasMoreElements() {
         return next != null;
     }
 
-    @Override
     public E nextElement() {
         if (!hasMoreElements()) {
             throw new NoSuchElementException();

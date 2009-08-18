@@ -36,7 +36,6 @@ public abstract class ChildCollector<P, C> implements Collector<P> {
         this.collector = new  StateRememberingCollector<C>(collector);
     }
 
-    @Override
     public int collect(P item) {
         if (collector.state() == FINISHED)
             return FINISHED;

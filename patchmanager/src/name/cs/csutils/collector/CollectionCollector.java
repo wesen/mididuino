@@ -38,7 +38,6 @@ public class CollectionCollector<C> implements Collector<C> {
         this.collection = collection;
     }
 
-    @Override
     public int collect(C item) {
         if (collection.add(item)) {
             return ACCEPTED_MORE;

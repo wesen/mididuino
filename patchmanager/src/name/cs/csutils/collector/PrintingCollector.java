@@ -42,7 +42,6 @@ public class PrintingCollector<T> implements Collector<T> {
         this.out = out;
     }
 
-    @Override
     public int collect(T item) {
         out.println(item);
         return ACCEPTED_MORE;

@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
@@ -68,6 +69,28 @@ public final class CSUtils {
 
     private CSUtils() {
         super();
+    }
+
+    public static byte[] arrayCopyOf(byte[] original, int newLength) {
+        byte[] copy = new byte[newLength];
+        System.arraycopy(original, 0, copy, 0,
+                         Math.min(original.length, newLength));
+        return copy;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> T[] arrayCopyOf(T[] original, int newLength) {
+        return (T[]) arrayCopyOf(original, newLength, original.getClass());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T,U> T[] arrayCopyOf(U[] original, int newLength, Class<? extends T[]> newType) {
+        T[] copy = ((Object)newType == (Object)Object[].class)
+            ? (T[]) new Object[newLength]
+            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
+        System.arraycopy(original, 0, copy, 0,
+                         Math.min(original.length, newLength));
+        return copy;
     }
     
     public static final boolean equals(Object a, Object b) {

@@ -40,6 +40,8 @@ import name.cs.csutils.i18n.I18N;
 
 public class CSAction extends AbstractAction {
 
+    public static final String SELECTED_KEY = "actionConstants.selected";
+
     /**
      * 
      */
@@ -162,7 +164,6 @@ public class CSAction extends AbstractAction {
         return Boolean.FALSE.equals(getValue(SELECTED_KEY));
     }
     
-    @Override
     public void actionPerformed(final ActionEvent e) {
         if (Boolean.TRUE.equals(getValue(INVOKE_LATER_KEY))) {
             SwingUtilities.invokeLater(new Runnable() {

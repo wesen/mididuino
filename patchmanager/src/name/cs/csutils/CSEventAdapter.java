@@ -45,15 +45,15 @@ public class CSEventAdapter extends MouseInputAdapter
     implements ComponentListener, ContainerListener, PopupMenuListener,
         WindowListener, DocumentListener {
 
-    @Override
+
     public void changedUpdate(DocumentEvent e) {
         documentChanged(e);
     }
-    @Override
+
     public void insertUpdate(DocumentEvent e) {
         documentChanged(e);
     }
-    @Override
+
     public void removeUpdate(DocumentEvent e) {
         documentChanged(e);
     }
@@ -62,82 +62,82 @@ public class CSEventAdapter extends MouseInputAdapter
         // no op
     }
     
-    @Override
+
     public void componentHidden(ComponentEvent e) {
         // no op
     }
 
-    @Override
+
     public void componentMoved(ComponentEvent e) {
         // no op
     }
 
-    @Override
+
     public void componentResized(ComponentEvent e) {
         // no op
     }
 
-    @Override
+
     public void componentShown(ComponentEvent e) {
         // no op
     }
 
-    @Override
+
     public void componentAdded(ContainerEvent e) {
         // no op
     }
 
-    @Override
+
     public void componentRemoved(ContainerEvent e) {
         // no op
     }
 
-    @Override
+
     public void popupMenuCanceled(PopupMenuEvent e) {
         // no op
     }
 
-    @Override
+
     public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
         // no op
     }
 
-    @Override
+
     public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
         // no op
     }
 
-    @Override
+
     public void windowActivated(WindowEvent e) {
         // no op
     }
 
-    @Override
+
     public void windowClosed(WindowEvent e) {
         // no op
     }
 
-    @Override
+
     public void windowClosing(WindowEvent e) {
         // no op
     }
 
-    @Override
+
     public void windowDeactivated(WindowEvent e) {
         // no op   
     }
 
-    @Override
+
     public void windowDeiconified(WindowEvent e) {
         // no op
     }
 
-    @Override
+
     public void windowIconified(WindowEvent e) {
         // no op        
     }
 
-    @Override
+
     public void windowOpened(WindowEvent e) {
         // no op
     }

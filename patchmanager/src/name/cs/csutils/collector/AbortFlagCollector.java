@@ -46,7 +46,6 @@ public class AbortFlagCollector<T> implements Collector<T> {
         return flag;
     }
     
-    @Override
     public int collect(T item) {
         if (flag.isset()) return FINISHED;
         return collector.collect(item);

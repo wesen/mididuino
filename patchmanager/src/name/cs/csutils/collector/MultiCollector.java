@@ -41,7 +41,6 @@ public class MultiCollector<T> implements Collector<T> {
         this.b = b;
     }
 
-    @Override
     public int collect(T item) {
         int code_a = a.collect(item);
         int code_b = b.collect(item);

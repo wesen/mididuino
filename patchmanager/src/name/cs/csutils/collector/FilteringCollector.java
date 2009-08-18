@@ -28,35 +28,22 @@
  */
 package name.cs.csutils.collector;
 
-public class BlockingCollector<T> implements Collector<T> {
+import name.cs.csutils.Filter;;
 
+public final class FilteringCollector<T> implements Collector<T> {
+
+    private Filter<T> filter;
     private Collector<T> collector;
-    private long blockUpdateDelay;
-
-    public BlockingCollector(Collector<T> collector) {
-        this(collector, 500);
-    }
-
-    public BlockingCollector(Collector<T> collector, long blockUpdateDelay) {
+    
+    public FilteringCollector(Filter<T> filter, Collector<T> collector) {
+        this.filter = filter;
         this.collector = collector;
-        this.blockUpdateDelay = blockUpdateDelay;
     }
-
+    
     public int collect(T item) {
-        try {
-            mayBlock();
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-        return collector.collect(item);
-    }
-    
-    protected boolean mayBlock() throws InterruptedException {
-        return false;
-    }
-    
-    protected synchronized void doBlock() throws InterruptedException {
-        wait(blockUpdateDelay);
+        return filter.test(item)
+        ? collector.collect(item)
+        : Collector.IGNORED_MORE;
     }
     
 }

@@ -194,7 +194,6 @@ public class SimpleSwingWorker implements Runnable, Serializable {
             this.t = t;
             this.type = type;
         }
-        @Override
         public void run() {
             switch (type) {
             case SETUP: { t.setup(); break; }

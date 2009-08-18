@@ -75,7 +75,7 @@ public final class FileFilterFactory {
         FileFilter excludeFilter = NONE;
         FileFilter includeFilter = NONE;
         for (String fstr: filterString.split(",")) {
-            if (fstr.isEmpty()) {
+            if (fstr.length()==0) {
                 continue;
             }
             if (fstr.charAt(0)=='-') {
@@ -218,7 +218,7 @@ public final class FileFilterFactory {
          * 
          */
         private static final long serialVersionUID = 5843798416264775275L;
-        @Override
+ 
         public boolean accept(File pathname) {
             return pathname.isDirectory();
         }
@@ -233,7 +233,7 @@ public final class FileFilterFactory {
          * 
          */
         private static final long serialVersionUID = -1065456507027087969L;
-        @Override
+
         public boolean accept(File pathname) {
             return pathname.isFile();
         }
@@ -252,7 +252,6 @@ public final class FileFilterFactory {
         public InverseFilter(FileFilter filter) {
             this.filter = filter;
         }
-        @Override
         public boolean accept(File pathname) {
             return !filter.accept(pathname);
         }
@@ -272,7 +271,6 @@ public final class FileFilterFactory {
         public ConstFilter(boolean accept) {
             this.accept = accept;
         }
-        @Override
         public boolean accept(File pathname) {
             return accept;
         }
@@ -293,7 +291,6 @@ public final class FileFilterFactory {
             this.name = name;
             this.ignoreCase = ignoreCase;
         }
-        @Override
         public boolean accept(File pathname) {
             if (ignoreCase)
                 return pathname.getName().equalsIgnoreCase(name);
@@ -318,7 +315,6 @@ public final class FileFilterFactory {
                     ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
             this.filter = filter;
         }
-        @Override
         public boolean accept(File pathname) {
             return pattern.matcher(pathname.getName()).matches();
         }
@@ -338,7 +334,6 @@ public final class FileFilterFactory {
             this.suffix = ignoreCase ? suffix.toLowerCase() : suffix;
             this.ignoreCase = ignoreCase;
         }
-        @Override
         public boolean accept(File pathname) {
             if (ignoreCase) {
                 return  pathname.getName().toLowerCase().endsWith(suffix);
@@ -362,7 +357,6 @@ public final class FileFilterFactory {
             this.prefix = ignoreCase ? prefix.toLowerCase() : prefix;
             this.ignoreCase = ignoreCase;
         }
-        @Override
         public boolean accept(File pathname) {
             if (ignoreCase) {
                 return  pathname.getName().toLowerCase().startsWith(prefix);
@@ -388,7 +382,6 @@ public final class FileFilterFactory {
             this.b = b;
         }
         
-        @Override
         public boolean accept(File pathname) {
             return a.accept(pathname) || b.accept(pathname); 
         }
@@ -412,7 +405,6 @@ public final class FileFilterFactory {
             this.b = b;
         }
         
-        @Override
         public boolean accept(File pathname) {
             return a.accept(pathname) && b.accept(pathname); 
         }
