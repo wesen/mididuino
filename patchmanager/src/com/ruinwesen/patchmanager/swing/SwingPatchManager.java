@@ -245,11 +245,12 @@ public class SwingPatchManager {
 	    }
 		CSUtils.storeProperties(appProperties, applicationPropertiesFile);
 	}
-
+	
 	private void init() {
 		loadVersionInfo();
-
-
+		// log java version and other properties
+		log.info(new BugReportBuilder().appendSystemInfo().toString());
+		
 		// load translations+keybindings,...
 		try {
 			I18N.getSharedInstance().setResourceBundleName("resources/lang/MessageBundle");
@@ -693,7 +694,6 @@ public class SwingPatchManager {
 			patchmanager.getIndex().readIndex(this);
 		}
 
-		@Override
 		public int collect(IndexedPatch item) {
 			synchronized (this) {
 				if (counter == CANCELED) {
@@ -863,14 +863,12 @@ public class SwingPatchManager {
 			}
 		}
 
-		@Override
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == SwingPatchManager.this.searchOptionsControl) {
 				executeQuery();
 			} 
 		}
 
-		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			IndexedPatch patch = (IndexedPatch) patchListView.getSelectedValue();
 			patchDetailsView.setPatch(patch);

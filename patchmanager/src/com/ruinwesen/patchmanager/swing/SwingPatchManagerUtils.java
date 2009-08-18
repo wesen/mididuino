@@ -137,12 +137,10 @@ public final class SwingPatchManagerUtils {
             }
         }
 
-        @Override
         public boolean hasMoreElements() {
             return next != null;
         }
 
-        @Override
         public Entry nextElement() {
             if (!hasMoreElements()) {
                 throw new NoSuchElementException();
