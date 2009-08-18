@@ -72,17 +72,14 @@ public class PatchListModel<K extends Patch> extends AbstractListModel implement
         }
     }
 
-    @Override
     public synchronized Object getElementAt(int index) {
         return elements.get(index);
     }
 
-    @Override
     public synchronized int getSize() {
         return elements.size();
     }
 
-    @Override
     public int collect(K item) {
         add(item);
         return Collector.ACCEPTED_MORE;

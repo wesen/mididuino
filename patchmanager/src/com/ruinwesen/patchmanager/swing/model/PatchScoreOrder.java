@@ -33,7 +33,6 @@ import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 import java.util.Comparator;
 
 public class PatchScoreOrder implements Comparator<IndexedPatch> {
-    @Override
     public int compare(IndexedPatch a, IndexedPatch b) {
         return (int)Math.signum(a.score()-b.score());
     }

@@ -42,7 +42,6 @@ public class PatchCollector implements Collector<IndexedPatch> {
         this.minScore = minScore;
     }
     
-    @Override
     public int collect(IndexedPatch item) {
         if (item.score()<minScore) {
             return Collector.IGNORED_MORE;

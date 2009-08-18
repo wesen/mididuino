@@ -40,7 +40,6 @@ public final class JoinedOrder<K> implements Comparator<K> {
         this.cb = cb;
     }
 
-    @Override
     public int compare(K a, K b) {
         int cmp = ca.compare(a, b);
         if (cmp == 0) {

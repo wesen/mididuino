@@ -34,7 +34,6 @@ import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 
 public class DateOrder implements Comparator<IndexedPatch> {
 
-    @Override
     public int compare(IndexedPatch a, IndexedPatch b) {
         return a.getMetadata().getLastModifiedDate()
         .compareTo(b.getMetadata().getLastModifiedDate());

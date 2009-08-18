@@ -34,7 +34,6 @@ import com.ruinwesen.patchmanager.client.index.IndexedPatch;
 
 public class PatchTitleOrder implements Comparator<IndexedPatch> {
 
-    @Override
     public int compare(IndexedPatch a, IndexedPatch b) {
         return compareStringConsiderNullValue(a.getMetadata().getTitle(), 
                 b.getMetadata().getTitle());
