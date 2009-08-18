@@ -51,15 +51,12 @@ public class FSDirectory extends Directory {
             this.root = root;
             this.file = file;
         }
-        @Override
         public boolean isDirectory() {
             return file.isDirectory();
         }
-        @Override
         public boolean isFile() {
             return file.isFile();
         }
-        @Override
         public String getName() {
             if (name == null) {
                 LinkedList<String> names = new LinkedList<String>();
@@ -75,7 +72,6 @@ public class FSDirectory extends Directory {
             }
             return name;
         }
-        @Override
         public File getLocalFile() {
             return file;
         }
@@ -86,7 +82,6 @@ public class FSDirectory extends Directory {
     public static final FileFilter DEFAULT_FILTER = new DefaultIncludeFilter();
     
     private static final class DefaultIncludeFilter implements FileFilter {
-        @Override
         public boolean accept(File file) {
             if ((!file.exists())|| file.isHidden()) {
                 return false;
@@ -160,12 +155,10 @@ public class FSDirectory extends Directory {
             }
         }
 
-        @Override
         public boolean hasMoreElements() {
             return next != null;
         }
 
-        @Override
         public FSEntry nextElement() {
             if (!hasMoreElements()) {
                 throw new NoSuchElementException();

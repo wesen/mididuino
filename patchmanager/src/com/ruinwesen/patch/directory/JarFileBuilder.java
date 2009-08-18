@@ -55,7 +55,7 @@ public class JarFileBuilder {
             this.item = item;
         }
         public boolean add(String path, E item) {
-            if (path.isEmpty() || path.equals("/")) {
+            if (path.length()==0 || path.equals("/")) {
                 return false;
             }
             
@@ -104,7 +104,7 @@ public class JarFileBuilder {
                 }
             }
             // create new node
-            Node<E> n = new Node<E>(path+(path.isEmpty()?"":"/")+pathComponent, pathComponent, null);
+            Node<E> n = new Node<E>(path+(path.length()==0?"":"/")+pathComponent, pathComponent, null);
             iter.add(n); // insert child
             return n;
         }
@@ -147,7 +147,7 @@ public class JarFileBuilder {
         if (pathPrefix.startsWith("/")) {
             pathPrefix = pathPrefix.substring(1);
         }
-        if ((!pathPrefix.isEmpty()) && (!pathPrefix.endsWith("/"))) {
+        if ((pathPrefix.length()!=0) && (!pathPrefix.endsWith("/"))) {
             pathPrefix = pathPrefix+"/";
         }
         

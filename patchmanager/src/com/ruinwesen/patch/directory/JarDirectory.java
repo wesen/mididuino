@@ -45,20 +45,16 @@ public class JarDirectory extends Directory {
             if (zipentry == null) throw new NullPointerException();
             this.zipentry = zipentry;
         }
-        @Override
         public boolean isDirectory() {
             return zipentry.isDirectory();
         }
-        @Override
         public boolean isFile() {
             return !isDirectory();
         }
-        @Override
         public String getName() {
             String name = zipentry.getName();
             return name;
         }
-        @Override
         public File getLocalFile() {
             return null;
         }
@@ -139,11 +135,9 @@ public class JarDirectory extends Directory {
                 }
             }
         }
-        @Override
         public boolean hasMoreElements() {
             return next != null;
         }
-        @Override
         public Entry nextElement() {
             if (!hasMoreElements()) {
                 throw new NoSuchElementException();
