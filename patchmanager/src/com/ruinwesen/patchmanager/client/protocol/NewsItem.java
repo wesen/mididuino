@@ -65,7 +65,6 @@ public class NewsItem implements Comparable<NewsItem> {
         return "NewsItem[date="+date+",title='"+title+"',message='"+message+"']";
     }
 
-    @Override
     public int compareTo(NewsItem b) {
         int cmp = -date.compareTo(b.date);
         if (cmp == 0) {

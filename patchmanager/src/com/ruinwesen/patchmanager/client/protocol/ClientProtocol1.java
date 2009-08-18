@@ -315,9 +315,9 @@ public class ClientProtocol1 extends Protocol {
         meta.setName(getField(obj, "name", ""));
         meta.setComment(getField(obj, "comment", ""));
         String id = getField(obj, "device-id", "");
-        meta.setDeviceId(id.isEmpty() ? null : PatchMetadataIDInfo.getDeviceId(id));
+        meta.setDeviceId(id.length()==0 ? null : PatchMetadataIDInfo.getDeviceId(id));
         id = getField(obj, "environment-id", "");
-        meta.setEnvironmentId(id.isEmpty()?null:PatchMetadataIDInfo.getEnvironmentId(id));        
+        meta.setEnvironmentId(id.length()==0?null:PatchMetadataIDInfo.getEnvironmentId(id));        
         
         try {
             Date date =CSUtils.parseDate(getField(obj, "last-modified-date", ""));

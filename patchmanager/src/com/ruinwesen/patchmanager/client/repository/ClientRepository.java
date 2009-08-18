@@ -172,7 +172,7 @@ public class ClientRepository {
             taskList.add(dlTask);
         }
         executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.HOURS);
+        executorService.awaitTermination(60*60, TimeUnit.SECONDS);
         
         List<File> fileList = new ArrayList<File>(taskList.size());
         for (PatchDownloadTask dltask: taskList) {
@@ -197,7 +197,6 @@ public class ClientRepository {
             this.call = call;
         }
 
-        @Override
         public File call() throws Exception {
             File result = call.call();
             cb.patchDownloaded(message);

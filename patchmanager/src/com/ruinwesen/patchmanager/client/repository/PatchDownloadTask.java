@@ -39,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.ruinwesen.patch.DefaultPatch;
 import com.ruinwesen.patch.Patch;
+import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.metadata.PatchMetadata;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 
@@ -64,7 +65,6 @@ public class PatchDownloadTask implements Callable<File> {
         return dst;
     }
     
-    @Override
     public File call() throws Exception {
         // get the (temporary) file
         File tmpFile = getTask.call(); 
@@ -91,12 +91,7 @@ public class PatchDownloadTask implements Callable<File> {
      */
     private void repack(File tmpFile) throws Exception {
         Patch patch = new DefaultPatch(tmpFile);        
-        PatchMetadata meta;
-        try {
-        meta = patch.getMetadata();
-        } catch (Exception ex) {
-            throw new IOException("could not extract patch metadata (patch-id:'"+patchId+"')", ex);
-        }
+        PatchMetadata meta = patch.getMetadata(); //  may throw exception
         meta.setPatchId(patchId);
         SwingPatchManagerUtils.updateMetadata(patch, meta);
         CSUtils.copy(patch.getLocalFile(), dst, true);

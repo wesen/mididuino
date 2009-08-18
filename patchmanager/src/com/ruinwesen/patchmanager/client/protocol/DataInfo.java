@@ -35,6 +35,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import name.cs.csutils.CSUtils;
+
 import org.apache.commons.codec.binary.Base64;
 
 public class DataInfo {
@@ -74,7 +76,7 @@ public class DataInfo {
     }
     
     public byte[] getMD5Digest() {
-        return Arrays.copyOf(md5digest, md5digest.length);
+        return CSUtils.arrayCopyOf(md5digest, md5digest.length);
     }
     
 }

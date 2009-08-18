@@ -56,7 +56,7 @@ public class HTTPGetTask implements Callable<File> {
         this.dst = dst;
     }
 
-    @Override
+
     public File call() throws IOException, InterruptedException {
         HttpResponse httpresponse = httpclient.execute(httpget);
         HttpEntity httpentity = httpresponse.getEntity();
@@ -70,7 +70,7 @@ public class HTTPGetTask implements Callable<File> {
         }
         
         if (httpentity == null) {
-            throw new IOException(new Exception("no content in response: "+httpresponse.getStatusLine()));
+            throw new IOException("no content in response: "+httpresponse.getStatusLine());
         }
 
         try {
