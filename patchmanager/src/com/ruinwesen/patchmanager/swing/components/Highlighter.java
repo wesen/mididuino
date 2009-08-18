@@ -62,14 +62,14 @@ public class Highlighter implements Serializable {
     }
     
     private List<String> createTokenList() {
-        if (words.isEmpty()) {
+        if (words.length()==0) {
             return Collections.emptyList();
         }
         // set ensures that list contains no duplicates
         Set<String> keySet = new HashSet<String>();
         for (String key: words.split("[\\s]+")) {
             key = norm(key);
-            if (!key.isEmpty()) {
+            if (key.length()!=0) {
                 keySet.add(key);
             }
         }
@@ -81,7 +81,7 @@ public class Highlighter implements Serializable {
     }
 
     public String highlight(String text, String hlPrefix, String hlSuffix) {
-        if (text.trim().isEmpty() || tokenList.isEmpty()) {
+        if (text.trim().length()==0 || tokenList.isEmpty()) {
             return text;
         }
         

@@ -36,7 +36,7 @@ import java.awt.Rectangle;
 import java.text.DateFormat;
 import java.util.Date;
 
-import javax.swing.GroupLayout;
+import org.jdesktop.layout.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -46,7 +46,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
-import javax.swing.SwingConstants;
 import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
 
@@ -95,7 +94,6 @@ public class PatchDetailsView {
          */
         private static final long serialVersionUID = -7088442654053116936L;
 
-        @Override
         public Dimension getPreferredScrollableViewportSize() {
             Dimension size = getPreferredSize();
             Component c = getParent();
@@ -109,13 +107,11 @@ public class PatchDetailsView {
             return size;
         }
 
-        @Override
         public int getScrollableBlockIncrement(Rectangle visibleRect,
                 int orientation, int direction) {
             return 10;
         }
 
-        @Override
         public boolean getScrollableTracksViewportHeight() {
             if (getParent() instanceof JViewport) {
                 return (((JViewport)getParent()).getHeight() > getPreferredSize().height);
@@ -123,7 +119,6 @@ public class PatchDetailsView {
             return false;
         }
 
-        @Override
         public boolean getScrollableTracksViewportWidth() {
             // the viewport should always match the panels width
             if (getParent() instanceof JViewport) {
@@ -132,7 +127,6 @@ public class PatchDetailsView {
             return false;
         }
 
-        @Override
         public int getScrollableUnitIncrement(Rectangle visibleRect,
                 int orientation, int direction) {
             return 10;
@@ -197,87 +191,87 @@ public class PatchDetailsView {
         JLabel lblMidiFileSaveAsLabel = new JLabel("Midi File:");
         JLabel lblSourceSaveAsLabel = new JLabel("Source:");
         
-        ly.setAutoCreateContainerGaps(true);
-        ly.setAutoCreateGaps(true);
+        ly.setAutocreateContainerGaps(true);
+        ly.setAutocreateGaps(true);
         
         ly.setHorizontalGroup(ly.createSequentialGroup()
-                .addGroup(ly.createParallelGroup()
-                        .addComponent(lblTitle)
-                        .addGroup(ly.createSequentialGroup()
-                                .addComponent(lblAuthor)
-                                .addComponent(lblDate)
+                .add(ly.createParallelGroup()
+                        .add(lblTitle)
+                        .add(ly.createSequentialGroup()
+                                .add(lblAuthor)
+                                .add(lblDate)
                         )
-                        .addGroup(ly.createSequentialGroup()
-                                .addGroup(ly.createParallelGroup()
-                                        .addComponent(lblDeviceIdLabel)
-                                        .addComponent(lblEnvironmentIdLabel)
+                        .add(ly.createSequentialGroup()
+                                .add(ly.createParallelGroup()
+                                        .add(lblDeviceIdLabel)
+                                        .add(lblEnvironmentIdLabel)
                                 )
-                                .addGroup(
+                                .add(
                                         ly.createParallelGroup()
-                                        .addComponent(lblDeviceId)
-                                        .addComponent(lblEnvironmentId)
+                                        .add(lblDeviceId)
+                                        .add(lblEnvironmentId)
                                 )
                         )
-                        .addComponent(taComment)
-                        .addGroup(ly.createSequentialGroup()
-                                .addComponent(lblTagsLabel)
-                                .addComponent(taTags)
+                        .add(taComment)
+                        .add(ly.createSequentialGroup()
+                                .add(lblTagsLabel)
+                                .add(taTags)
                         )
-                        .addGroup(ly.createSequentialGroup()
-                                .addGroup(ly.createParallelGroup()
-                                        .addComponent(lblReadDocuLabel)
-                                        .addComponent(lblSourceSaveAsLabel)
-                                        .addComponent(lblMidiFileSaveAsLabel)
+                        .add(ly.createSequentialGroup()
+                                .add(ly.createParallelGroup()
+                                        .add(lblReadDocuLabel)
+                                        .add(lblSourceSaveAsLabel)
+                                        .add(lblMidiFileSaveAsLabel)
                                 )
-                                .addGroup(
-                                        ly.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                        .addComponent(btnReadDocumentation)
-                                        .addComponent(btnSaveSourceAs, GroupLayout.Alignment.TRAILING)
-                                        .addComponent(btnSaveMidiFileAs, GroupLayout.Alignment.TRAILING)
+                                .add(
+                                        ly.createParallelGroup(GroupLayout.TRAILING)
+                                        .add(btnReadDocumentation)
+                                        .add(GroupLayout.TRAILING, btnSaveSourceAs)
+                                        .add(GroupLayout.TRAILING, btnSaveMidiFileAs)
                                 )
                         )
                 )
         );
         
         ly.setVerticalGroup(ly.createSequentialGroup()
-                .addComponent(lblTitle)
-                .addGroup(
-                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblAuthor)
-                        .addComponent(lblDate)
+                .add(lblTitle)
+                .add(
+                        ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblAuthor)
+                        .add(lblDate)
                 )
-                .addComponent(taComment)
-                .addGroup(
-                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblTagsLabel)
-                        .addComponent(taTags, GroupLayout.DEFAULT_SIZE, 
+                .add(taComment)
+                .add(
+                        ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblTagsLabel)
+                        .add(taTags, GroupLayout.DEFAULT_SIZE, 
                                 GroupLayout.PREFERRED_SIZE,
                                 GroupLayout.PREFERRED_SIZE)
                 )
-                .addGroup(
-                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblDeviceIdLabel)
-                        .addComponent(lblDeviceId)
+                .add(
+                        ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblDeviceIdLabel)
+                        .add(lblDeviceId)
                 )
-                .addGroup(
-                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblEnvironmentIdLabel)
-                        .addComponent(lblEnvironmentId)
+                .add(
+                        ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblEnvironmentIdLabel)
+                        .add(lblEnvironmentId)
                 )
-                .addGroup(
-                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblReadDocuLabel)
-                        .addComponent(btnReadDocumentation)
+                .add(
+                        ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblReadDocuLabel)
+                        .add(btnReadDocumentation)
                 )
-                .addGroup(
-                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblSourceSaveAsLabel)
-                        .addComponent(btnSaveSourceAs)
+                .add(
+                        ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblSourceSaveAsLabel)
+                        .add(btnSaveSourceAs)
                 )
-                .addGroup(
-                        ly.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblMidiFileSaveAsLabel)
-                        .addComponent(btnSaveMidiFileAs)
+                .add(
+                        ly.createParallelGroup(GroupLayout.BASELINE)
+                        .add(lblMidiFileSaveAsLabel)
+                        .add(btnSaveMidiFileAs)
                 )
         );
         
@@ -287,14 +281,16 @@ public class PatchDetailsView {
         }
         
         updateUI();
-        ly.linkSize(SwingConstants.HORIZONTAL,
-                lblDeviceIdLabel, 
+        ly.linkSize(
+                new Component[]{lblDeviceIdLabel, 
                 lblEnvironmentIdLabel,
                 lblSourceSaveAsLabel,
-                lblMidiFileSaveAsLabel);
-        ly.linkSize(SwingConstants.HORIZONTAL,
-                btnSaveMidiFileAs, btnSaveSourceAs,
-                btnReadDocumentation);
+                lblMidiFileSaveAsLabel},
+                GroupLayout.HORIZONTAL);
+        ly.linkSize(
+                new Component[]{btnSaveMidiFileAs, btnSaveSourceAs,
+                btnReadDocumentation},
+                GroupLayout.HORIZONTAL);
     }
     
     public void readDocumentation() {
@@ -402,7 +398,7 @@ public class PatchDetailsView {
             return;
         } 
         String str = String.valueOf(value).trim();
-        if (str.isEmpty()) {
+        if (str.length()==0) {
             lbl.setText("-");
         } else {
             lbl.setText(str);

@@ -128,7 +128,6 @@ public class TextPopup implements PopupMenuListener {
         }
     }
 
-    @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
         if (isTextComponentSelected()) {
             // note: we test for the selected text because
@@ -136,7 +135,7 @@ public class TextPopup implements PopupMenuListener {
             // meaning it can be outside the range of the text
             boolean hasSelectedText = currentComponent.getSelectionEnd()
                 > currentComponent.getSelectionStart()
-              && !currentComponent.getSelectedText().isEmpty();
+              && currentComponent.getSelectedText().length()!=0;
 
             mnCut.setEnabled(
                     currentComponent.isEnabled() &&
@@ -155,12 +154,10 @@ public class TextPopup implements PopupMenuListener {
         }
     }
     
-    @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
         // no op
     }
 
-    @Override
     public void popupMenuCanceled(PopupMenuEvent e) {
         // no op
     }

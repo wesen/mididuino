@@ -96,7 +96,6 @@ public class SearchPanel  {
             timer.stop();
         }
 
-        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == timer 
                     && timer.isRunning()
@@ -106,17 +105,14 @@ public class SearchPanel  {
             }
         }
 
-        @Override
         public void changedUpdate(DocumentEvent e) {
             // no op
         }
 
-        @Override
         public void insertUpdate(DocumentEvent e) {
             notifyQueryChanged();
         }
 
-        @Override
         public void removeUpdate(DocumentEvent e) {
             notifyQueryChanged();
         }

@@ -32,10 +32,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.LinearGradientPaint;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -115,6 +115,7 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
         super.setText("");
         STRING_TAGS = I18N.translate("translation.tags", "Tags");
         STRING_CATEGORY = I18N.translate("translation.category", "Category");
+
     }
 
     /**
@@ -203,12 +204,12 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
                 this.titleAddOn += metadata.getAuthor().trim();
             }
             if (metadata.getLastModifiedDate() != null) {
-                if (!titleAddOn.isEmpty()) {
+                if (titleAddOn.length()!=0) {
                     this.titleAddOn += ", "; 
                 }
                 this.titleAddOn += dateToString(metadata.getLastModifiedDate());
             }
-            if (!titleAddOn.isEmpty()) {
+            if (titleAddOn.length()!=0) {
                 titleAddOn = " - "+titleAddOn;
             }
             
@@ -271,6 +272,18 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
     
     final Color lightgray = new Color(0xeeeeee);
     
+    private Paint cachedGradientPaint;
+    private int cachedGradientPaintWidth;
+    private Paint getGradientPaint(int w, Color bg, Color bg2) {
+        if (cachedGradientPaint != null && w == cachedGradientPaintWidth) {
+            return cachedGradientPaint;
+        }
+        cachedGradientPaint = 
+            new GradientPaint(0, 0, bg, w, 0, bg2, false);
+        cachedGradientPaintWidth = w;
+        return cachedGradientPaint;
+    }
+    
     @Override
     protected void paintComponent(Graphics g) {
         // width and height of this component for further computations
@@ -295,12 +308,9 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
             // draw gradient
             if (g2 != null) {
                 // the gradient is very 
-                Paint gradientPaint = new LinearGradientPaint(
-                        0, 0, w, 0, new float[] {0f,1f}, 
-                        new Color[] {bg, bg2});
                 Paint oldPaint = g2.getPaint();
                 try {
-                    g2.setPaint(gradientPaint);
+                    g2.setPaint(getGradientPaint(w, bg, bg2));
                     g.fillRect(0, 0, w, h);
                 } finally {
                     g2.setPaint(oldPaint);
@@ -355,7 +365,7 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
         // line 1:  BoldTitle
         g.setFont(boldFont);
         g.setColor(paler);
-        if (title.isEmpty()) title = " ";
+        if (title.length()==0) title = " ";
         String ltitle = layout(boldFontMetrics, title, Math.max(1,iw-wdate), lineHeight);
         x = paintTextR.x+insets.left;
         y = paintTextR.y+boldFontMetrics.getAscent()+boldFontMetrics.getLeading()+insets.top;
@@ -453,8 +463,8 @@ public class PatchListCellRenderer extends DefaultListCellRenderer {
     
     private void ensureCapacity(int count) {
         if (highlighted.length<count) {
-            highlighted = Arrays.copyOf(highlighted, count+10);
-            normal = Arrays.copyOf(normal, count+10);
+            highlighted = CSUtils.arrayCopyOf(highlighted, count+10);
+            normal = CSUtils.arrayCopyOf(normal, count+10);
         }
     }
     

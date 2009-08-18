@@ -97,12 +97,15 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
     private String SearchOptionByTitle;
     private String SearchOptionByAuthor;
 
+    
+    private static final Color NICE_BACKGROUND =new Color(0xDEE4EA); 
+    
     public SearchOptionsControl() {
         container = new ScrollablePanel();
         container.setLayout(new FilterBoxLayout());
         container.setBorder(BorderFactory.createEmptyBorder(3,6,3,6));
         container.setOpaque(true);
-        container.setBackground(new Color(0xDEE4EA));
+        container.setBackground(NICE_BACKGROUND);
 
         SearchOptionByRelevance = I18N.translate("search.order.by-relevance", "Relevance");
         SearchOptionByDateAdded = I18N.translate("search.order.by-date-added", "Date Added");
@@ -142,7 +145,6 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
          */
         private static final long serialVersionUID = -179591354285360683L;
 
-        @Override
         public Dimension getPreferredScrollableViewportSize() {
             Dimension size = getPreferredSize();
             Component c = getParent();
@@ -156,13 +158,11 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             return size;
         }
 
-        @Override
         public int getScrollableBlockIncrement(Rectangle visibleRect,
                 int orientation, int direction) {
             return 10;
         }
 
-        @Override
         public boolean getScrollableTracksViewportHeight() {
             if (getParent() instanceof JViewport) {
                 return (((JViewport)getParent()).getHeight() > getPreferredSize().height);
@@ -170,7 +170,6 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             return false;
         }
 
-        @Override
         public boolean getScrollableTracksViewportWidth() {
             // the viewport should always match the panels width
             if (getParent() instanceof JViewport) {
@@ -179,7 +178,6 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             return false;
         }
 
-        @Override
         public int getScrollableUnitIncrement(Rectangle visibleRect,
                 int orientation, int direction) {
             return 10;
@@ -265,12 +263,12 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
         EventUtils.fireChangeEvent(eventListenerList, this);
     }
 
-    @Override
+
     public void actionPerformed(ActionEvent e) {
         fireChangeEvent();
     }
 
-    @Override
+
     public void itemStateChanged(ItemEvent e) {
         fireChangeEvent();
     }
@@ -422,7 +420,7 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
      */
     private static class FilterDataCollector implements Collector<IndexedPatch> {
         private Set<Object> filterset = new HashSet<Object>();
-        @Override
+
         public final int collect(IndexedPatch item) {
             PatchMetadata meta = item.getMetadata();
             // collect category tags
@@ -470,7 +468,6 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
         public String label() {
             return component.getText();
         }
-        @Override
         public int compareTo(Filter b) {
             return label().compareTo(b.label());
         }
@@ -478,6 +475,7 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             JCheckBox c = new JCheckBox(label);
             c.setSelected(true);
             c.setBorderPainted(false);
+            c.setBackground(NICE_BACKGROUND);
             return c;
         }
         
@@ -490,7 +488,7 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
         private Dimension preferredSize;
         private Dimension maximumSize;
         
-        @Override
+    
         public void layoutContainer(Container parent) {
             int parentwidth = parent.getWidth();
             Insets is = parent.getInsets();
@@ -519,7 +517,7 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             }
         }
 
-        @Override
+    
         public void invalidateLayout(Container target) {
             preferredSize = null;
             maximumSize = null;
@@ -563,7 +561,7 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             return preferredSize;
         }
         
-        @Override
+    
         public Dimension preferredLayoutSize(Container parent) {
             if (this.preferredSize == null) {
                 this.preferredSize = computePreferredLayoutSize(parent, false);
@@ -571,12 +569,12 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             return new Dimension(preferredSize);
         }
 
-        @Override
+    
         public Dimension minimumLayoutSize(Container parent) {
             return preferredLayoutSize(parent);
         }
 
-        @Override
+    
         public Dimension maximumLayoutSize(Container parent) {
             if (maximumSize == null) {
                 Dimension dim = this.preferredLayoutSize(parent);
@@ -587,27 +585,27 @@ public class SearchOptionsControl implements ActionListener, ItemListener {
             }
         }
 
-        @Override
+    
         public void addLayoutComponent(String name, Component comp) {
             // no op
         }
 
-        @Override
+    
         public void addLayoutComponent(Component comp, Object constraints) {
             // no op
         }
 
-        @Override
+    
         public float getLayoutAlignmentX(Container target) {
             return 0;
         }
 
-        @Override
+    
         public float getLayoutAlignmentY(Container target) {
             return 0;
         }
 
-        @Override
+    
         public void removeLayoutComponent(Component comp) {
             // no op
         }
