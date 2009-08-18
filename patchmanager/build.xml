@@ -220,7 +220,7 @@
   </target>
 
   <target name="release" depends="dist,osx-dist,win-dist">
-    <zip destfile="patchmanager-win.zip" basedir="dist" includes="* */*"/>
+    <zip destfile="patchmanager-win.zip" basedir="dist" includes="**/*"/>
     <zip destfile="patchmanager-macosx.zip" basedir="${osxdist}" includes="**/*" excludes="PatchManagerAdmin.app PatchManagerAdmin.app/**"/>
     <zip destfile="patchmanager-linux.zip" basedir="dist" includes="**/*" excludes="*.exe"/>
   </target>
