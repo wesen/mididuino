@@ -292,7 +292,6 @@ public class PatchMetadataForm extends FormContainer {
             super(errorMessage);
         }
 
-        @Override
         public boolean isValid(FormElement elem) {
             File file = ((FileFormElement)elem).getFile();
             return file == null
@@ -318,7 +317,6 @@ public class PatchMetadataForm extends FormContainer {
             super(errorMessage);
         }
 
-        @Override
         public boolean isValid(FormElement elem) {
             File file = ((FileFormElement)elem).getFile();
             return file == null
@@ -332,7 +330,6 @@ public class PatchMetadataForm extends FormContainer {
             super(errorMessage);
         }
 
-        @Override
         public boolean isValid(FormElement elem) {
             if (feSourceDir == null || feMidiFile == null) {
                 return false;
