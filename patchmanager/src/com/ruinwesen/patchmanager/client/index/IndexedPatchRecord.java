@@ -52,7 +52,6 @@ class IndexedPatchRecord extends PatchRecord implements IndexedPatch {
         this.indexDir = indexDir;
     }
     
-    @Override
     public Directory openDirectory() throws PatchDataException {
         if (indexDir == null) {
             throw new PatchDataException("index directory undefined");
@@ -71,12 +70,10 @@ class IndexedPatchRecord extends PatchRecord implements IndexedPatch {
         }
     }
 
-    @Override
     public File getLocalFile() {
         return new File(indexDir, patchfileName);
     }
     
-    @Override
     public PatchMetadata getMetadata() {
         return meta;
     }
@@ -95,7 +92,6 @@ class IndexedPatchRecord extends PatchRecord implements IndexedPatch {
         return "IndexedPatch[patch="+patchfileName+"]";
     }
 
-    @Override
     public String internalId() {
         return patchfileName;
     }

@@ -135,7 +135,7 @@ public class RecordIO {
         try {
             return Integer.parseInt(readString());
         } catch (NumberFormatException ex) {
-            throw new IOException("corrupted index", ex);
+            throw new IOException("corrupted index");
         }
     }
 
@@ -143,7 +143,7 @@ public class RecordIO {
         try {
             return Long.parseLong(readString());
         } catch (NumberFormatException ex) {
-            throw new IOException("corrupted index", ex);
+            throw new IOException("corrupted index");
         }
     }
 
@@ -172,7 +172,7 @@ public class RecordIO {
         try {
             return dateFormat.parse(readString());
         } catch (ParseException ex) {
-            throw new IOException("corrupted index", ex);
+            throw new IOException("corrupted index");
         }
     }
     

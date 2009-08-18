@@ -44,22 +44,18 @@ public class ScoredPatch implements IndexedPatch {
         this.score = score;
     }
     
-    @Override
     public float score() {
         return score;
     }
 
-    @Override
     public PatchMetadata getMetadata() {
         return delegate.getMetadata();
     }
 
-    @Override
     public Directory openDirectory() throws PatchDataException {
         return delegate.openDirectory();
     }
 
-    @Override
     public String internalId() {
         return delegate.internalId();
     }
@@ -74,7 +70,6 @@ public class ScoredPatch implements IndexedPatch {
         return IndexedPatchRecord.compareEquals(this, o);
     }
 
-    @Override
     public File getLocalFile() {
         return delegate.getLocalFile();
     }

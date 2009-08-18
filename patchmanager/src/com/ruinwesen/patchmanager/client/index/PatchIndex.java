@@ -282,13 +282,13 @@ public class PatchIndex {
         meta.setAuthor(io.readString());
         meta.setComment(io.readString());
         String l = io.readString();
-        meta.setDeviceId(l.isEmpty() ? null : PatchMetadataIDInfo.getDeviceId(l));
+        meta.setDeviceId(l.length()==0 ? null : PatchMetadataIDInfo.getDeviceId(l));
         l = io.readString();
-        meta.setEnvironmentId(l.isEmpty() ? null:PatchMetadataIDInfo.getEnvironmentId(l));
+        meta.setEnvironmentId(l.length()==0 ? null:PatchMetadataIDInfo.getEnvironmentId(l));
         try {
         meta.setLastModifiedDate(CSUtils.parseDate(io.readString()));
         } catch (NumberFormatException ex) {
-            throw new IOException("index corrupted", ex);
+            throw new IOException("index corrupted");
         }
         meta.setName(io.readString());
         meta.setPatchId(io.readString());

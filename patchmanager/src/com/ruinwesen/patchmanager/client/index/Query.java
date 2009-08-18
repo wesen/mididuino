@@ -65,10 +65,10 @@ public class Query implements ScoreBuilder<Patch> {
         this.minScore = minScore;
         this.sinceDate = sinceDate;
         
-        if (queryString != null && !queryString.trim().isEmpty()) {
+        if (queryString != null && queryString.trim().length()!=0) {
         Set<String> tokenList = new HashSet<String>();
             for (String str: queryString.split("[\\s]+")) {
-                if (!str.isEmpty()) {
+                if (str.length()!=0) {
                     tokenList.add(str);
                 }
             }
@@ -110,7 +110,7 @@ public class Query implements ScoreBuilder<Patch> {
         this.forbiddenTags = value;
     }
     
-    @Override
+
     public float score(Patch item) {
         PatchMetadata meta;
         try { 
