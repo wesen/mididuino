@@ -29,7 +29,6 @@
 package com.ruinwesen.patchmanager.client.repository;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import name.cs.csutils.CSUtils;
@@ -39,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.ruinwesen.patch.DefaultPatch;
 import com.ruinwesen.patch.Patch;
-import com.ruinwesen.patch.PatchDataException;
 import com.ruinwesen.patch.metadata.PatchMetadata;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 
