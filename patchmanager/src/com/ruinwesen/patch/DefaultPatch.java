@@ -73,7 +73,7 @@ public class DefaultPatch extends AbstractPatch {
             try {
             return new JarDirectory(file);
             } catch (ZipException ex) {
-                throw new IOException("could not open file:"+file.getAbsolutePath(), ex);
+                throw new PatchDataException("could not open file:"+file.getAbsolutePath(), ex);
             }
         } else if (file.isDirectory()) {
             return new FSDirectory(file);
@@ -90,7 +90,6 @@ public class DefaultPatch extends AbstractPatch {
         return getClass().getSimpleName()+"[file='"+file.getAbsolutePath()+"']";
     }
 
-    @Override
     public File getLocalFile() {
         return file;
     }
