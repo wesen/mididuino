@@ -439,7 +439,7 @@ public class RWMidiSend extends MidiSend {
                     true);
             
 
-            CSUtils.ProcessResult presult = CSUtils.waitFor(process,100000, 100);
+            CSUtils.ProcessResult presult = CSUtils.waitFor(process, 100000, 100);
             interrupted = presult.interrupted;
             if (presult.timeout) {
                 throw new MidiSendException(

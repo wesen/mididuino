@@ -51,6 +51,8 @@ import javax.swing.ListModel;
 
 import name.cs.csutils.CSAction;
 import name.cs.csutils.CSUtils;
+import name.cs.csutils.Platform;
+import name.cs.csutils.Platform.OS;
 import name.cs.csutils.concurrent.SimpleSwingWorker;
 
 import com.ruinwesen.midisend.MidiDevice;
@@ -154,6 +156,17 @@ public class MidiSendForm extends Form {
             } catch (MidiSendException ex) {
                 ex.printStackTrace();
             }
+            
+            if (Platform.isFlavor(OS.MacOSFlavor)) {
+            	try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            
+            }
+            
             try {
                 outputList = midisend.getOutputDeviceList();
             } catch (MidiSendException ex) {
