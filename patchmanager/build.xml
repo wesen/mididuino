@@ -202,6 +202,10 @@ Following targets are available:
     </exec>
     <exec executable="chmod"> 
       <arg value="+x" />
+      <arg value="${basedir}/${osxdist}/PatchManagerJava5.app/Contents/Resources/Java/midi-send/mac/midi-send"/>
+    </exec>
+    <exec executable="chmod"> 
+      <arg value="+x" />
       <arg value="${basedir}/${osxdist}/PatchManagerAdmin.app/Contents/Resources/Java/midi-send/mac/midi-send"/>
     </exec>
     
@@ -224,6 +228,18 @@ Following targets are available:
     </jarbundler>
     <jarbundler dir="${osxdist}"
 		icon="osx-artwork/firmwareflash.icns"
+		name="PatchManagerJava5"
+		mainclass="com.ruinwesen.patchmanager.swing.SwingPatchManager"
+		jvmversion="1.5*"
+		workingdirectory="$APP_PACKAGE/Contents/Resources/Java">
+      <jarfilelist dir="${dist.dir}" files="patchmanager.jar"/>
+      <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
+      <javafileset dir="${dist.dir}">
+	<include name="**/*"/>
+      </javafileset>
+    </jarbundler>
+    <jarbundler dir="${osxdist}"
+		icon="osx-artwork/firmwareflash.icns"
 		name="PatchManagerAdmin"
 		mainclass="com.ruinwesen.patchmanager.swing.SwingPatchManager"
 		jvmversion="1.6*"
@@ -235,12 +251,6 @@ Following targets are available:
 	<include name="**/*"/>
       </javafileset>
     </jarbundler>
-  </target>
-
-  <target name="release" depends="dist,osx-dist,win-dist">
-    <zip destfile="patchmanager-win.zip" basedir="dist" includes="**/*"/>
-    <zip destfile="patchmanager-macosx.zip" basedir="${osxdist}" includes="**/*" excludes="PatchManagerAdmin.app PatchManagerAdmin.app/**"/>
-    <zip destfile="patchmanager-linux.zip" basedir="dist" includes="**/*" excludes="*.exe"/>
   </target>
 
   <target name="clean-osx-dist">
