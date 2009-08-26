@@ -5,10 +5,16 @@
 
 #include <inttypes.h>
 
-typedef struct machine_name_s {
+typedef struct mnm_machine_name_s {
   char name[11];
   uint8_t id;
-} machine_name_t;
+} mnm_machine_name_t;
+
+typedef struct md_machine_name_s {
+  char name[7];
+  uint8_t id;
+} md_machine_name_t;
+
 
 typedef struct model_param_name_s {
   char name[4];
