@@ -1,15 +1,18 @@
 #include <MD.h>
 #include <MidiTools.h>
 #include <MDRecorder.h>
+#include <Merger.h>
+#include <MidiClockPage.h>
+#include <SDCard.h>
 
 class ConfigPage_1 : 
 public EncoderPage {
 public:
-  RangeEncoder trackEncoder;
+  MDMelodicTrackFlashEncoder trackEncoder;
   uint8_t track;
 
   ConfigPage_1() :
-  trackEncoder(0, 15, "TRK")
+  trackEncoder("TRK")
   {
     track = 255;
     encoders[0] = &trackEncoder;
@@ -18,16 +21,6 @@ public:
   virtual void loop() {
     if (trackEncoder.hasChanged()) {
       track = trackEncoder.getValue();
-      GUI.setLine(GUI.LINE2);
-      GUI.clearFlash();
-      GUI.flash_put_value(0, track);
-      if (MD.isMelodicTrack(track)) {
-        GUI.flash_p_string_at_fill(8, MD.getMachineName(MD.kit.machines[track].model));
-      } 
-      else {
-        track = 255;
-        GUI.flash_p_string_at_fill(8, PSTR("XXX"));
-      }
     }
   }
 };
@@ -111,11 +104,23 @@ MDNotesSketch sketch;
 
 void setup() {
   sketch.setup();
-  MidiClock.mode = MidiClock.EXTERNAL;
-  MidiClock.transmit = false;
-  MidiClock.start();
   GUI.setSketch(&sketch);
   MDRecorder.setup();
+  
+  if (SDCard.init() != 0) {
+    GUI.flash_strings_fill("SDCARD ERROR", "");
+    GUI.display();
+    delay(800);
+    MidiClock.mode = MidiClock.EXTERNAL_MIDI;
+    MidiClock.transmit = true;
+    MidiClock.start();
+  } else {
+    midiClockPage.setup();
+    if (BUTTON_DOWN(Buttons.BUTTON1)) {
+      GUI.pushPage(&midiClockPage);
+    }
+  }
+  
 }
 
 void loop() {
