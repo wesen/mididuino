@@ -416,6 +416,7 @@ public class Library implements MessageConsumer{
       extraSpots = 3;   // an extra spot for utility folder as include
     }
     String[] libDirs = libManager.getFolderPaths();
+	 
     String[] compileCommandC = new String[baseCompileCommandC.length + libDirs.length + extraSpots];
     String[] compileCommandCPP = new String[baseCompileCommandCPP.length + libDirs.length + extraSpots];
     System.arraycopy(baseCompileCommandC, 0, compileCommandC, 0, baseCompileCommandC.length);
@@ -431,7 +432,7 @@ public class Library implements MessageConsumer{
       compileCommandCPP[compileCommandCPP.length - 3] = "-I" + utilityFolder.getPath();
     }
 
-    File[] sourcesC = getCSourceFiles();
+	  File[] sourcesC = getCSourceFiles();
     File[] sourcesCPP = getCPPSourceFiles();
 
     // execute the compiler, and create threads to deal
@@ -457,7 +458,32 @@ public class Library implements MessageConsumer{
         compileCommandC[compileCommandC.length - 2] = sourcesC[i].getPath();
         compileCommandC[compileCommandC.length - 1] = "-o" + pathSansExtension + ".o";
         
-        process = Runtime.getRuntime().exec(compileCommandC);
+		  String command = "";
+		  for (int j = 0; j < compileCommandC.length; j++) {
+			  command += compileCommandC[j] + " ";
+		  }
+		  System.out.println("library C command: " + command);
+		  
+		  
+		  java.util.List baseCommandCompilerC = new ArrayList(Arrays.asList(compileCommandC));
+		  String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+		  if (additionalFlagString != null && !additionalFlagString.equals("")) {
+			  String additionalFlags[] = additionalFlagString.split(" ");
+			  if (additionalFlags.length > 0) {
+				  baseCommandCompilerC.addAll(Arrays.asList(additionalFlags));
+			  }
+		  }
+		  
+		
+		  String compileCommandC2[] = (String[])baseCommandCompilerC.toArray(new String[] {});
+		   
+		  command = "";
+		  for (int j = 0; j < compileCommandC2.length; j++) {
+			  command += compileCommandC2[j] + " ";
+		  }
+		  System.out.println("library C command2: " + command);
+		  
+        process = Runtime.getRuntime().exec(compileCommandC2);
         new MessageSiphon(process.getInputStream(), this);
         new MessageSiphon(process.getErrorStream(), this);
 
@@ -492,7 +518,20 @@ public class Library implements MessageConsumer{
         compileCommandCPP[compileCommandCPP.length - 2] = sourcesCPP[i].getPath();
         compileCommandCPP[compileCommandCPP.length - 1] = "-o" + pathSansExtension + ".o";
         
-        process = Runtime.getRuntime().exec(compileCommandCPP);
+		  java.util.List baseCommandCompilerCPP = new ArrayList(Arrays.asList(compileCommandCPP));
+		  String additionalFlagString = Preferences.get("boards." + Preferences.get("board") + ".build.flags");
+		  if (additionalFlagString != null && !additionalFlagString.equals("")) {
+			  String additionalFlags[] = additionalFlagString.split(" ");
+			  if (additionalFlags.length > 0) {
+				  baseCommandCompilerCPP.addAll(Arrays.asList(additionalFlags));
+			  }
+		  }
+		  
+		  
+		  String compileCommandCPP2[] = (String[])baseCommandCompilerCPP.toArray(new String[] {});
+		  
+		  
+        process = Runtime.getRuntime().exec(compileCommandCPP2);
         new MessageSiphon(process.getInputStream(), this);
         new MessageSiphon(process.getErrorStream(), this);
 
