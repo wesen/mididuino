@@ -155,6 +155,8 @@ class GuiClass {
 
 extern GuiClass GUI;
 
+char hex2c(uint8_t hex);
+
 #include "Encoders.hh"
 #include "Pages.hh"
 #include "Sketch.hh"

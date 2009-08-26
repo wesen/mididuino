@@ -126,3 +126,13 @@ void NotePitchEncoder::displayAt(int i) {
   getNotePitch(getValue(), name);
   GUI.put_string_at(i * 4, name);
 }
+
+void MidiTrackEncoder::displayAt(int i) {
+  GUI.put_value(i, getValue() + 1);
+}
+
+void AutoNameCCEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
+  CCEncoder::initCCEncoder(_channel, _cc);
+  setCCName();
+  GUI.redisplay();
+}

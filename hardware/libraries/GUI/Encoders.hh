@@ -120,6 +120,13 @@ public:
   }
 };
 
+class MidiTrackEncoder : public RangeEncoder {
+public:
+  MidiTrackEncoder(char *_name = NULL, uint8_t init = 0) : RangeEncoder(15, 0, _name, init) {
+  }
+
+  virtual void displayAt(int i);
+};
 
 class CCEncoder : public RangeEncoder {
  public:
@@ -142,6 +149,31 @@ class CCEncoder : public RangeEncoder {
     initCCEncoder(_channel, _cc);
     handler = CCEncoderHandle;
   }
+};
+
+char hex2c(uint8_t hex);
+
+
+class AutoNameCCEncoder : public CCEncoder {
+public:
+  AutoNameCCEncoder(uint8_t _cc = 0, uint8_t _channel = 0, const char *_name = NULL, int init = 0) :
+    CCEncoder(_cc, _channel, _name, init) {
+    if (_name == NULL) {
+      setCCName();
+    }
+  }
+
+  void setCCName() {
+    char name[4];
+    name[0] = hex2c(getChannel());
+    uint8_t cc = getCC();
+    name[1] = hex2c(cc >> 4);
+    name[2] = hex2c(cc & 0xF);
+    name[3] = '\0';
+    setName(name);
+  }
+
+  virtual void initCCEncoder(uint8_t _channel, uint8_t _cc);
 };
 
 class TempoEncoder : public RangeEncoder {
