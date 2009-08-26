@@ -27,6 +27,8 @@ class MidiClockPage : public EncoderPage {
   }
 };
 
+void initClockPage();
+
 extern MidiClockPage midiClockPage;
 
 #endif /* MIDICLOCKPAGE_H__ */

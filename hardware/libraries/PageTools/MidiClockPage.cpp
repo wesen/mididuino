@@ -164,3 +164,19 @@ void MidiClockPage::loop() {
 }
 
 MidiClockPage midiClockPage;
+
+void initClockPage() {
+  if (SDCard.init() != 0) {
+    GUI.flash_strings_fill("SDCARD ERROR", "");
+    GUI.display();
+    delay(800);
+    MidiClock.mode = MidiClock.EXTERNAL_MIDI;
+    MidiClock.transmit = true;
+    MidiClock.start();
+  } else {
+    midiClockPage.setup();
+    if (BUTTON_DOWN(Buttons.BUTTON1)) {
+      GUI.pushPage(&midiClockPage);
+    }
+  }
+}
