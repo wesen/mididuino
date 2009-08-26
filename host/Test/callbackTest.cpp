@@ -53,9 +53,9 @@ public:
 };
 
 struct CallbackFixture {
-  CallbackVector<Foobar, void(Foobar::*)(), 4>                   callbackNoneList;
-  CallbackVector1<Foobar, void(Foobar::*)(int), 4, int>           callbackIntList;
-  CallbackVector2<Foobar, void(Foobar::*)(int, int), 4, int, int> callbackInt2List;
+  CallbackVector<Foobar, 4>                   callbackNoneList;
+  CallbackVector1<Foobar, 4, int>           callbackIntList;
+  CallbackVector2<Foobar, 4, int, int> callbackInt2List;
   Foobar foobar;
 };
 

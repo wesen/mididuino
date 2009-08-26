@@ -34,11 +34,12 @@ void handleIncomingMidi();
 extern "C" {
 #endif
 #include <inttypes.h>
-#include "helpers.h"
-
 #ifdef __cplusplus
 }
 #endif
+
+#include "helpers.h"
+
 
 #include "WMath.h"
 
