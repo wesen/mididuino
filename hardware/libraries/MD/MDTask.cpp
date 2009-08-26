@@ -89,3 +89,9 @@ void MDTaskClass::onKitMessageCallback() {
 
 MDTaskClass MDTask(3000);
 
+void initMDTask() {
+  MDTask.setup();
+  MDTask.autoLoadKit = true;
+  MDTask.reloadGlobal = true;
+  GUI.addTask(&MDTask);
+}

@@ -12,7 +12,7 @@ const char *MDLFONames[8] = {
   "MIX"
 };
 
-machine_name_t machine_names[] PROGMEM = {
+md_machine_name_t machine_names[] PROGMEM = {
   { "GND---", 0},
   { "GND-SN", 1},
   { "GND-NS", 2},

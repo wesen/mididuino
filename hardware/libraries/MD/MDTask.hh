@@ -76,5 +76,7 @@ public:
   virtual void destroy();
 };
 
+void initMDTask();
+
 extern MDTaskClass MDTask;
 #endif /* MD_TASK_H__ */
