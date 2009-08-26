@@ -56,4 +56,6 @@ class MDBreakdown : public ClockCallback {
   void doSupatrigga();
 };
 
+extern MDBreakdown mdBreakdown;
+
 #endif /* MDBREAKDOWN_H__ */

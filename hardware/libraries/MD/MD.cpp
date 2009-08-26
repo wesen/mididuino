@@ -174,26 +174,30 @@ void MDLFOEncoder::displayAt(int i) {
   }
 }
 
+static const uint8_t flashOffset[4] = {
+  4, 8, 0, 0
+};
+
 void MDTrackFlashEncoder::displayAt(int i) {
-  uint8_t track = getValue();
-  GUI.put_value(i, getValue()+1);
-  redisplay = false;
   GUI.setLine(GUI.LINE2);
-  GUI.flash_put_value(0, track + 1);
-  GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
+  uint8_t track = getValue();
+  GUI.put_value(i, track + 1);
+  redisplay = false;
+  GUI.flash_put_value(i, track + 1);
+  GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
 }
 
 void MDMelodicTrackFlashEncoder::displayAt(int i) {
-    uint8_t track = getValue();
-    GUI.put_value(i, getValue()+1);
-    redisplay = false;
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_put_value(0, track + 1);
-    if (MD.isMelodicTrack(track)) {
-      GUI.flash_p_string_at_fill(4, MD.getMachineName(MD.kit.machines[track].model));
-    } else {
-      GUI.flash_p_string_at_fill(4, PSTR("XXX"));
-    }
+  uint8_t track = getValue();
+  GUI.setLine(GUI.LINE2);
+  GUI.put_value(i, track + 1);
+  redisplay = false;
+  GUI.flash_put_value(i, track + 1);
+  if (MD.isMelodicTrack(track)) {
+    GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+  } else {
+    GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
+  }
 }
 
 #endif
