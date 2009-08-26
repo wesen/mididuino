@@ -12,7 +12,7 @@ uint8_t monomachine_sysex_hdr[5] = {
   0x00 /* base channel padding */
 };
 
-machine_name_t mnm_machine_names[] PROGMEM = {
+mnm_machine_name_t mnm_machine_names[] PROGMEM = {
   { "GND-GND", 0 },
   { "GND-SIN", 1 },
   { "GND-NOIS", 2 },
