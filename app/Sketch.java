@@ -1505,10 +1505,8 @@ public class Sketch {
         
         for (int j = 0; j < headerFiles.length; j++)
           for (int k = 0; k < imports.length; k++)
-            if (headerFiles[j].getName().equals(imports[k]) &&
-              !importedLibraries.contains(library)) {
-              importedLibraries.add(library);
-              //System.out.println("Adding library " + library.getName());
+			  if (headerFiles[j].getName().equals(imports[k])) {
+				libraryManager.addLibrary(importedLibraries, library);
             }
       }
     } catch (IOException e) {

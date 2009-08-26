@@ -282,6 +282,27 @@ public class Library implements MessageConsumer{
     };
     return libFolder.listFiles(onlyHFiles);
   }
+	
+	public String[] getDepends() {
+		java.util.List lines = new ArrayList();
+		File dependFile = new File(libFolder, ".depends");
+		if (dependFile.exists()) {
+			try {
+				FileReader fileReader = new FileReader(dependFile);
+				BufferedReader bufferedReader = new BufferedReader(fileReader);
+				String line = null;
+				while ((line = bufferedReader.readLine()) != null) {
+					line = line.trim();
+					if (!line.equals("")) {
+						lines.add(line);
+					}
+				}
+				bufferedReader.close();
+			} catch (Exception e) {
+			}
+		}
+        return (String [])lines.toArray(new String[lines.size()]);		
+	}
 
   /*
    * List of library's C source files for compiling
