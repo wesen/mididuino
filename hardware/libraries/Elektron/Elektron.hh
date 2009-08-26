@@ -47,9 +47,13 @@ public:
     maxLen = _maxLen;
     ptr = data;
   }
-  
-  virtual bool pack(uint8_t inb) = 0;
-  virtual uint16_t finish() = 0;
+ 
+  virtual bool pack(uint8_t inb) {
+    return false;
+  }
+  virtual uint16_t finish() {
+    return 0;
+  }
 #ifdef HOST_MIDIDUINO
   virtual ~DataEncoder() { };
 #endif
