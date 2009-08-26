@@ -345,29 +345,42 @@ void MNMEncoder::loadFromKit() {
 
 void MNMEncoder::initMNMEncoder(uint8_t _track, uint8_t _param,
 				char *_name, uint8_t init) {
-    track = _track;
-    param = _param;
-    if (_name == NULL) {
-      if (MNM.loadedKit) {
-	PGM_P name= NULL;
-	name = MNM.getModelParamName(MNM.kit.machines[track].model, param);
-	if (name != NULL) {
-	  char myName[4];
-	  m_strncpy_p(myName, name, 4);
-	  setName(myName);
-	  GUI.redisplay();
-	} else {
-	  setName("XXX");
-	  GUI.redisplay();
-	}
+  track = _track;
+  param = _param;
+  if (_name == NULL) {
+    if (MNM.loadedKit) {
+      PGM_P name= NULL;
+      name = MNM.getModelParamName(MNM.kit.machines[track].model, param);
+      if (name != NULL) {
+	char myName[4];
+	m_strncpy_p(myName, name, 4);
+	setName(myName);
+	GUI.redisplay();
+      } else {
+	setName("XXX");
+	GUI.redisplay();
       }
-    } else {
-      setName(_name);
-      GUI.redisplay();
     }
-      
-    setValue(init);
+  } else {
+    setName(_name);
+    GUI.redisplay();
   }
+      
+  setValue(init);
+}
+
+static const uint8_t flashOffset[4] = {
+  4, 8, 0, 0
+};
+
+void MNMTrackFlashEncoder::displayAt(int i) {
+  uint8_t track = getValue() + 1;
+  GUI.setLine(GUI.LINE2);
+  GUI.put_value(i, track + 1);
+  redisplay = false;
+  GUI.flash_put_value(i, track + 1);
+  GUI.flash_p_string_at_fill(flashOffset[i], MNM.getMachineName(MNM.kit.machines[track].model));
+}
 
 #endif /* HOST_MIDIDUINO */
 
