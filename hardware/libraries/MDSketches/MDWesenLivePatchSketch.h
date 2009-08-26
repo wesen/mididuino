@@ -23,6 +23,11 @@ public:
 
   uint8_t ramP1Track;
 
+  void getName(char *n1, char *n2) {
+    m_strncpy_p(n1, PSTR("MD  "), 5);
+    m_strncpy_p(n2, PSTR("LIV "), 5);
+  }
+
   void setupPages() {
     flfEncoder.initMDFXEncoder(MD_ECHO_FLTF, MD_FX_ECHO, "FLF", 0);
     flwEncoder.initMDFXEncoder(MD_ECHO_FLTW, MD_FX_ECHO, "FLW", 127);
@@ -56,18 +61,16 @@ public:
   virtual void setup() {
     setupPages();
     
-    MDTask.setup();
-    MDTask.autoLoadKit = true;
-    MDTask.reloadGlobal = true;
     MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDWesenLivePatchSketch::onKitChanged);
-    GUI.addTask(&MDTask);
 
     for (int i = 0; i < 4; i++) {
       ccHandler.addEncoder((CCEncoder *)page4.encoders[i]);
     }
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
+  }
 
+  virtual void show() {
     setPage(&page);
   }
 
@@ -105,6 +108,24 @@ public:
     return true;
   }
 
+  virtual void doExtra(bool pressed) {
+    if (pressed) {
+      mdBreakdown.startSupatrigga();
+    } else {
+      mdBreakdown.stopSupatrigga();
+    }
+  }
+
+  virtual Page *getPage(uint8_t i) {
+    if (i == 1) {
+      return &page;
+    } else if (i == 2) {
+      return &breakPage;
+    } else {
+      return NULL;
+    }
+  }
+  
   void onKitChanged() {
     for (int i = 0; i < 16; i++) {
       if (MD.kit.machines[i].model == RAM_P1_MODEL) {

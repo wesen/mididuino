@@ -20,8 +20,8 @@ public:
   
   ConfigPage_1(MDArpeggiatorClass *_arp) :
     trackEncoder("TRK"),
-    speedEncoder(1, 16, "SPD"),
-    octavesEncoder(0, 5, "OCT"),
+      speedEncoder(1, 16, "SPD"),
+      octavesEncoder(0, 5, "OCT"),
       lenEncoder(0, 16, "LEN"),
       arpeggiator(_arp)
   {
@@ -110,15 +110,18 @@ class ConfigPage_2 : public EncoderPage {
  ArpeggiatorSketch() : configPage_1(&arpeggiator), configPage_2(&arpeggiator) {
   }
 
-  void setup() {
-    MDTask.setup();
-    MDTask.autoLoadKit = true;
-    MDTask.reloadGlobal = true;
-    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&ArpeggiatorSketch::onKitChanged);
-    GUI.addTask(&MDTask);
-    
-    arpeggiator.setup();
+  void getName(char *n1, char *n2) {
+    m_strncpy_p(n1, PSTR("MD  "), 5);
+    m_strncpy_p(n2, PSTR("ARP "), 5);
+  }
 
+
+  void setup() {
+    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&ArpeggiatorSketch::onKitChanged);
+    arpeggiator.setup();
+  }
+
+  virtual void show() {
     setPage(&configPage_1);
   }
 
