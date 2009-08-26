@@ -20,7 +20,13 @@ GuiClass::GuiClass() {
 }
 
 void GuiClass::setSketch(Sketch *_sketch) {
+  if (sketch !=NULL) {
+    sketch->hide();
+  }
   sketch = _sketch;
+  if (sketch !=NULL) {
+    sketch->show();
+  }
 }  
 
 void GuiClass::setPage(Page *page) {
@@ -71,21 +77,24 @@ void GuiClass::loop() {
   while (!EventRB.isEmpty()) {
     gui_event_t event;
     EventRB.getp(&event);
+    for (int i = 0; i < eventHandlers.size; i++) {
+      if (eventHandlers.arr[i] != NULL) {
+	bool ret = eventHandlers.arr[i](&event);
+	if (ret) {
+	  goto next;
+	}
+      }
+    }
+
     if (sketch != NULL) {
       bool ret = sketch->handleTopEvent(&event);
       if (ret)
 	continue;
     }
 
-    for (int i = 0; i < eventHandlers.size; i++) {
-      if (eventHandlers.arr[i] != NULL) {
-	bool ret = eventHandlers.arr[i](&event);
-	if (ret)
-	  break;
-      }
-    }
   }
-  
+
+ next:
   if (sketch != NULL) {
     Page *page = sketch->currentPage();
     if (page != NULL) {
