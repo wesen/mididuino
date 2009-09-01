@@ -9,12 +9,22 @@ public:
 
   char *name;
   bool muted;
+  bool monster;
 
   Sketch(char *_name = NULL) {
     name = _name;
     muted = false;
+    monster = false;
   }
 
+  virtual void setupMonster(bool _monster) {
+    monster = _monster;
+    if (monster) {
+      muted = true;
+    }
+    setup();
+  }
+  
   virtual void setup() {
   }
 

@@ -32,7 +32,18 @@ public:
   
   void setup() {
     Midi.addOnControlChangeCallback(this, (void(MidiCallback::*)(uint8_t*))&MelodyHelperSketch::onCCCallback);
+    if (!monster) {
+      MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MelodyHelperSketch::onKitChanged);
+    }
   }
+
+  void onKitChanged() {
+    GUI.setLine(GUI.LINE1);
+    GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+    GUI.setLine(GUI.LINE2);
+    GUI.flash_string_fill(MD.kit.name);
+  }  
+  
   
   virtual void onCCCallback(uint8_t *msg) {
     if (muted)
@@ -47,22 +58,42 @@ public:
       uint8_t pitch = MD.trackGetCCPitch(track, msg[2], &offset);
 
       GUI.setLine(GUI.LINE1);
-      GUI.put_value_at(13, track);
+      if (monster) {
+	GUI.flash_p_string_at_fill(0, PSTR("TRACK:"));
+	GUI.flash_put_value_at(7, track + 1);
 
-      GUI.setLine(GUI.LINE2);
-      GUI.put_p_string_at(0, MD.getMachineName(MD.kit.machines[track].model));
+	GUI.setLine(GUI.LINE2);
+	GUI.flash_p_string_at(0, MD.getMachineName(MD.kit.machines[track].model));
+      } else {
+	GUI.put_p_string_at_fill(0, PSTR("TRACK:"));
+	GUI.put_value_at(7, track + 1);
+
+	GUI.setLine(GUI.LINE2);
+	GUI.put_p_string_at(0, MD.getMachineName(MD.kit.machines[track].model));
+      }
 
       if (pitch == 128) {
-        GUI.put_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
-      } 
-      else {
+	if (monster) {
+	  GUI.flash_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
+	} else {
+	  GUI.put_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
+	}
+      } else {
         uint8_t note = pitch % 12;
         uint8_t octave = pitch / 12;
-        GUI.put_string_at_fill(NOTE_OFFSET, melodyHelperNoteNames[note]);
-        GUI.lines[GUI.curLine].data[NOTE_OFFSET + 1] = octave + '0';
-        for (uint8_t i = 0; i < offset; i += 2) {
-          GUI.lines[GUI.curLine].data[NOTE_OFFSET + 2 + (i >> 1)] = '+';
-        }
+	if (monster) {
+	  GUI.flash_string_at_fill(NOTE_OFFSET, melodyHelperNoteNames[note]);
+	  GUI.lines[GUI.curLine].flash[NOTE_OFFSET + 1] = octave + '0';
+	  for (uint8_t i = 0; i < offset; i += 2) {
+	    GUI.lines[GUI.curLine].flash[NOTE_OFFSET + 2 + (i >> 1)] = '+';
+	  }
+	} else {
+	  GUI.put_string_at_fill(NOTE_OFFSET, melodyHelperNoteNames[note]);
+	  GUI.lines[GUI.curLine].data[NOTE_OFFSET + 1] = octave + '0';
+	  for (uint8_t i = 0; i < offset; i += 2) {
+	    GUI.lines[GUI.curLine].data[NOTE_OFFSET + 2 + (i >> 1)] = '+';
+	  }
+	}
       }
     }
   }
