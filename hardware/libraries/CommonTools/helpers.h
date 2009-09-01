@@ -77,6 +77,7 @@ extern "C" {
 #endif
 
 #ifdef AVR
+  #include <avr/interrupt.h>
 #define USE_LOCK()   uint8_t _irqlock_tmp
 #define SET_LOCK()   _irqlock_tmp = SREG; cli()
 #define CLEAR_LOCK() SREG = _irqlock_tmp

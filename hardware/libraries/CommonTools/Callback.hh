@@ -2,7 +2,6 @@
 #define CALLBACK_H__
 
 #include <inttypes.h>
-#include <avr/interrupt.h>
 #include "helpers.h"
 
 template <class C, int N, typename M = void(C::*)()> class CallbackVector {
