@@ -10,7 +10,7 @@
 class ClockCallback {
 };
 
-typedef void (ClockCallback::*midi_clock_callback_ptr_t)();
+typedef void (ClockCallback::*midi_clock_callback_ptr_t)(uint32_t count);
 
 class MidiClockClass {
  public:
@@ -76,9 +76,9 @@ class MidiClockClass {
   
   MidiClockClass();
 
-  CallbackVector<ClockCallback,8> on96Callbacks;
-  CallbackVector<ClockCallback,8> on32Callbacks;
-  CallbackVector<ClockCallback,8> on16Callbacks;
+  CallbackVector1<ClockCallback,8, uint32_t> on96Callbacks;
+  CallbackVector1<ClockCallback,8, uint32_t> on32Callbacks;
+  CallbackVector1<ClockCallback,8, uint32_t> on16Callbacks;
 
   void addOn96Callback(ClockCallback *obj, midi_clock_callback_ptr_t func) {
     on96Callbacks.add(obj, func);

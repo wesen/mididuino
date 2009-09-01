@@ -15,7 +15,7 @@ class AutoEncoderPage : public EncoderPage, public ClockCallback {
   EncoderType realEncoders[4];
   RecordingEncoder<64> recEncoders[4];
 
-  void on32Callback();
+  void on32Callback(uint32_t counter);
   void startRecording();
   void stopRecording();
   void clearRecording();
@@ -28,9 +28,9 @@ class AutoEncoderPage : public EncoderPage, public ClockCallback {
 };
 
 template <typename EncoderType>
-void AutoEncoderPage<EncoderType>::on32Callback() {
+void AutoEncoderPage<EncoderType>::on32Callback(uint32_t counter) {
   for (int i = 0; i < 4; i++) {
-    recEncoders[i].playback(MidiClock.div32th_counter);
+    recEncoders[i].playback(counter & 0xFF);
   }
 }
 

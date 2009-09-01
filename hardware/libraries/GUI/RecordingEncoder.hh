@@ -27,7 +27,7 @@ public:
   void startRecording();
   void stopRecording();
   void clearRecording();
-  void playback(int pos);
+  void playback(uint8_t pos);
 
   virtual char *getName() {
     return realEnc->getName();
@@ -103,7 +103,7 @@ int RecordingEncoder<N>::update(encoder_t *enc) {
 }  
 
 template <int N>
-void RecordingEncoder<N>::playback(int pos) {
+void RecordingEncoder<N>::playback(uint8_t pos) {
   if (!playing)
     return;
 

@@ -244,15 +244,38 @@ void MidiClockClass::handleClock() {
 /* in interrupt on timer */
 void MidiClockClass::handleTimerInt()  {
   //  setLed2();
+
+  static bool inIRQ = false;
+
   //  sei();
   if (counter == 0) {
+    counter = interval;
+
+#ifndef HOST_MIDIDUINO
+    sei();
+#endif
+
+    if (inIRQ) {
+      setLed2();
+      return;
+    } else {
+      clearLed2();
+      inIRQ = true;
+    }
+  
     uint8_t _mod6_counter = mod6_counter;
     
     if (mod6_counter == 5) {
       div16th_counter++;
       div32th_counter++;
     }
-    
+
+    if (div16th_counter % 4 == 0) {
+      setLed();
+    } else {
+      clearLed();
+    }
+
     if (mod6_counter == 2) {
       div32th_counter++;
     }
@@ -271,9 +294,6 @@ void MidiClockClass::handleTimerInt()  {
       }
     }
 
-
-    counter = interval;
-
     if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
       if ((div96th_counter < indiv96th_counter) ||
 	  (div96th_counter > (indiv96th_counter + 1))) {
@@ -284,23 +304,15 @@ void MidiClockClass::handleTimerInt()  {
       }
     }
 
-    //    clearLed2();
-
+    inIRQ = false;
+    
     static bool inCallback = false;
     if (inCallback) {
-      //      setLed();
-      //      inCallback = false;
       return;
     } else {
-      //      clearLed();
       inCallback = true;
     }
-
-#ifndef HOST_MIDIDUINO
-    sei();
-#endif
-
-    on96Callbacks.call();
+    //    on96Callbacks.call();
 
 #ifdef DEBUG_MIDI_CLOCK
     GUI.setLine(GUI.LINE1);
@@ -314,30 +326,17 @@ void MidiClockClass::handleTimerInt()  {
       
     
     if (_mod6_counter == 0) {
-      on16Callbacks.call();
-      on32Callbacks.call();
+      on16Callbacks.call(div16th_counter);
+      on32Callbacks.call(div32th_counter);
     }
     if (_mod6_counter == 3) {
-      on32Callbacks.call();
-    }
-
-    if (div16th_counter % 4 == 0) {
-      setLed();
-    } else {
-      clearLed();
-    }
-    
-    if ((MidiClock.mode == MidiClock.EXTERNAL ||
-	 MidiClock.mode == MidiClock.EXTERNAL_UART2)) {
-      MidiClock.updateClockInterval();
+      on32Callbacks.call(div32th_counter);
     }
 
     inCallback = false;
   } else {
     counter--;
   }
-
-  //  clearLed2();
 }
     
 MidiClockClass MidiClock;
