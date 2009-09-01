@@ -86,6 +86,7 @@ public:
   virtual void display();
   virtual bool handleEvent(gui_event_t *event);
 
+  virtual bool handlePopEvent(gui_event_t *event);
   virtual bool handleGlobalEvent(gui_event_t *event);
 };
 

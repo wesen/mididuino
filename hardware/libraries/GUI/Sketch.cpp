@@ -49,19 +49,26 @@ bool SketchSwitchPage::handleEvent(gui_event_t *event) {
       }
     }
   }
+
   return false;
 }
 
-
-bool SketchSwitchPage::handleGlobalEvent(gui_event_t *event) {
+bool SketchSwitchPage::handlePopEvent(gui_event_t *event) {
   if (EVENT_RELEASED(event, Buttons.BUTTON3) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
     if (tmpPage != NULL) {
       GUI.popPage(tmpPage);
       tmpPage = NULL;
       return true;
     }
+  } else {
+    return false;
   }
   
+}
+
+bool SketchSwitchPage::handleGlobalEvent(gui_event_t *event) {
+  if (handlePopEvent(event))
+    return true;
   
   bool allButtonsDown = true;
   bool aButtonPressed = false;
