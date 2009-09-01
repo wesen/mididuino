@@ -27,6 +27,8 @@ void GuiClass::setSketch(Sketch *_sketch) {
   if (sketch !=NULL) {
     sketch->show();
   }
+  if (currentPage() != NULL)
+    currentPage()->redisplayPage();
 }  
 
 void GuiClass::setPage(Page *page) {

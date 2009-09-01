@@ -52,6 +52,7 @@ bool SketchSwitchPage::handleEvent(gui_event_t *event) {
   return false;
 }
 
+
 bool SketchSwitchPage::handleGlobalEvent(gui_event_t *event) {
   if (EVENT_RELEASED(event, Buttons.BUTTON3) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
     if (tmpPage != NULL) {
@@ -73,10 +74,10 @@ bool SketchSwitchPage::handleGlobalEvent(gui_event_t *event) {
     }
   }
   if (allButtonsDown && aButtonPressed) {
-    GUI.pushPage(this);
+    GUI.setSketch(&_defaultSketch);
+    GUI.setPage(this);
     return true;
   } else {
     return false;
   }
 }
-
