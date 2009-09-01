@@ -94,3 +94,9 @@ void MNMTaskClass::onKitMessageCallback() {
 
 MNMTaskClass MNMTask(3000);
 
+void initMNMTask() {
+  MNMTask.setup();
+  MNMTask.autoLoadKit = true;
+  MNMTask.reloadGlobal = true;
+  GUI.addTask(&MNMTask);
+}

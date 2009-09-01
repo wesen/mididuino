@@ -82,6 +82,8 @@ public:
   virtual void destroy();
 };
 
+void initMNMTask();
+
 extern MNMTaskClass MNMTask;
 
 #endif /* MNM_TASK_H__ */

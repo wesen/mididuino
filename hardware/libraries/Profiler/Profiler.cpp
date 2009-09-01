@@ -60,4 +60,3 @@ ISR(TIMER0_OVF_vect) {
   }
   TCNT0 = profileCnt0;
 }
-
