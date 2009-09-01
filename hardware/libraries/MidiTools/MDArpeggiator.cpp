@@ -36,7 +36,7 @@ void MDArpeggiatorClass::playNext(uint32_t _my16thpos, bool recording) {
     
   if (arpLen == 0 || (arpTimes != 0 && arpCount >= arpTimes))
     return;
-      
+
   if (arpRetrig == RETRIG_BEAT && (_my16thpos % retrigSpeed) == 0)
     retrigger();
   if (++speedCounter >= arpSpeed) {
@@ -45,13 +45,13 @@ void MDArpeggiatorClass::playNext(uint32_t _my16thpos, bool recording) {
       uint8_t i = random(numNotes);
       if (recording && (pos < recordLength)) {
 	recordNote(pos, arpTrack, orderedNotes[i] + random(arpOctaves) * 12, orderedVelocities[i]);
-      } else if (!recording) {
+      } else if (!recording && !muted) {
 	MD.sendNoteOn(arpTrack, orderedNotes[i] + random(arpOctaves) * 12, orderedVelocities[i]);
       }
     } else {
       if (recording && (pos < recordLength)) {
 	recordNote(pos, arpTrack, arpNotes[arpStep] + 12 * arpOctaveCount, arpVelocities[arpStep]);
-      } else if (!recording) {
+      } else if (!recording && !muted) {
 	MD.sendNoteOn(arpTrack, arpNotes[arpStep] + 12 * arpOctaveCount, arpVelocities[arpStep]);
       }
       if (++arpStep == arpLen) {

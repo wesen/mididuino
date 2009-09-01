@@ -42,6 +42,7 @@ ArpeggiatorClass::ArpeggiatorClass() {
   retrigSpeed = 1;
   arpOctaves = 0;
   arpOctaveCount = 0;
+  muted = false;
 
   for (int i = 0; i < NUM_NOTES; i++) {
     orderedNotes[i] = 128;

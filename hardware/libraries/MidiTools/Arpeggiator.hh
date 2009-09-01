@@ -56,6 +56,8 @@ public:
   uint8_t arpOctaveCount;
   uint8_t retrigSpeed;
 
+  bool muted;
+
   arp_style_t arpStyle;
   arp_retrig_type_t arpRetrig;
 
