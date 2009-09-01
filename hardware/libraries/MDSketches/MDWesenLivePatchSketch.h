@@ -146,9 +146,6 @@ public:
       ((MDEncoder *)page4.encoders[i])->loadFromKit();
     }
   }  
-
-  virtual void loop() {
-  }    
 };
 
 #endif /* MDWesenLivePatchSketch_H__ */
