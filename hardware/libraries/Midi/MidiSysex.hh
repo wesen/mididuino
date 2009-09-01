@@ -42,10 +42,10 @@ class MidiSysexClass {
   uint8_t recvIds[3];
   bool sysexLongId;
 
+ public:
   void startRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
   void stopRecord();
   
- public:
   void resetRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
   bool recordByte(uint8_t c);
 

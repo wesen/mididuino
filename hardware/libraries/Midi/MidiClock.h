@@ -3,6 +3,7 @@
 
 #include "WProgram.h"
 #include <inttypes.h>
+#include "Callback.hh"
 #include "Vector.hh"
 #include "midi-common.hh"
 

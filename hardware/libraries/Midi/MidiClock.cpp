@@ -198,8 +198,8 @@ void MidiClockClass::handleClock() {
 
   static uint16_t last_phase_add;
 #ifdef DEBUG_MIDI_CLOCK
-  //  GUI.setLine(GUI.LINE1);
-  //  GUI.put_value16(1, last_phase_add);
+  GUI.setLine(GUI.LINE1);
+  GUI.put_value16(1, last_phase_add);
 #endif
   
   if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
@@ -243,9 +243,9 @@ void MidiClockClass::handleClock() {
 
 /* in interrupt on timer */
 void MidiClockClass::handleTimerInt()  {
+  //  setLed2();
   //  sei();
   if (counter == 0) {
-    //    setLed2();
     uint8_t _mod6_counter = mod6_counter;
     
     if (mod6_counter == 5) {
