@@ -6,6 +6,8 @@
 MDWesenLivePatchSketch sketch;
 
 void setup() {
+  initMDTask();
+  
 //  enableProfiling();
   sketch.setup();
   GUI.setSketch(&sketch);

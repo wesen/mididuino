@@ -1,15 +1,11 @@
+#include <AutoMidiController.h>
 #include <MidiClockPage.h>
-#include <MNMWesenLivePatchSketch.h>
 
-MNMWesenLivePatchSketch sketch;
+AutoMidiControllerSketch sketch;
 
 void setup() {
-  //  enableProfiling();
-  initMNMTask();
-  
   sketch.setup();
   GUI.setSketch(&sketch);
-  
   initClockPage();
 }
 
