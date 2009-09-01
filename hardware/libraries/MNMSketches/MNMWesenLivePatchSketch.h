@@ -41,7 +41,6 @@ public:
   }
 
   virtual void destroy() {
-    MidiClock.stop();
   }
 
   virtual bool handleEvent(gui_event_t *event) {
@@ -98,6 +97,33 @@ public:
       }
     }
   }
+
+  void getName(char *n1, char *n2) {
+    m_strncpy_p(n1, PSTR("MNM "), 5);
+    m_strncpy_p(n2, PSTR("LIV "), 5);
+  }
+
+  virtual void show() {
+    if (currentPage() == NULL)
+      setPage(&autoMNMPages[0]);
+  }
+
+  virtual void mute(bool pressed) {
+  }
+
+  virtual void doExtra(bool pressed) {
+  }
+
+  virtual Page *getPage(uint8_t i) {
+    if (i < 2) {
+      return &autoMNMPages[i];
+    } else if (i < 4) {
+      return &magicSwitchPages[i - 2];
+    } else {
+      return NULL;
+    }
+  }
+  
 };
 
 #endif /* MNMWesenLivePatchSkech_H__ */
