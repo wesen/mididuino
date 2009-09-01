@@ -35,6 +35,9 @@ public:
   }
   
   virtual void onCCCallback(uint8_t *msg) {
+    if (muted)
+      return;
+    
     uint8_t channel = MIDI_VOICE_CHANNEL(msg[0]);
     uint8_t track, param;
     MD.parseCC(channel, msg[1], &track, &param);
@@ -70,6 +73,11 @@ public:
   }
 
   virtual void show() {
+    muted = false;
+  }
+
+  virtual void hide() {
+    muted = true;
   }
 
   virtual void mute(bool pressed) {
