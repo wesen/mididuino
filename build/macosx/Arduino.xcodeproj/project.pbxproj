@@ -36,6 +36,18 @@
 			name = Setup;
 			productName = Arduino;
 		};
+		6400A0E6104D8D720040E836 /* Distribute copy */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6400A0EA104D8D720040E836 /* Build configuration list for PBXAggregateTarget "Distribute copy" */;
+			buildPhases = (
+				6400A0E9104D8D720040E836 /* ShellScript */,
+			);
+			dependencies = (
+				6400A0ED104D8D800040E836 /* PBXTargetDependency */,
+			);
+			name = "Distribute copy";
+			productName = Distribute;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXApplicationTarget section */
@@ -439,6 +451,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 33AF61680965C4C600B514A9;
 			remoteInfo = App;
+		};
+		6400A0EC104D8D800040E836 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 33FFFD3F0965B1E40016AC38 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 649DACC71015E9B400170088 /* App copy */;
+			remoteInfo = "App copy";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -937,6 +956,7 @@
 				33AF61680965C4C600B514A9 /* App */,
 				33269DE20D6E7A67006BB2E3 /* Distribute */,
 				649DACC71015E9B400170088 /* App copy */,
+				6400A0E6104D8D720040E836 /* Distribute copy */,
 			);
 		};
 /* End PBXProject section */
@@ -1024,6 +1044,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "unzip -od $BUILT_PRODUCTS_DIR ../shared/reference.zip\n";
+		};
+		6400A0E9104D8D720040E836 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd $BUILT_PRODUCTS_DIR/../../\n\nREVISION=`head -1 ../../todo.txt | cut -c 1-4`\nSHORT_REVISION=`head -1 ../../todo.txt | cut -c 3-4`\nVERSIONED=`cat ../../app/Base.java | grep $REVISION`\n\nif [ -z \"$VERSIONED\" ]\nthen\n  echo Fix the revision number in Base.java\n  exit\nfi\n\nrm -rf arduino\nrm -rf mididuino-*\n\nmv $BUILT_PRODUCTS_DIR arduino\n\nfind arduino -name \"*~\" -exec rm -f {} ';'\n# need to leave ds store stuff cuz one of those is important\n#find arduino -name \".DS_Store\" -exec rm -f {} ';'\nfind arduino -name \"._*\" -exec rm -f {} ';'\nfind arduino -name \"Thumbs.db\" -exec rm -f {} ';'\n\n# clean out the cvs entries\nfind arduino -name \"CVS\" -exec rm -rf {} ';' 2> /dev/null\nfind arduino -name \".cvsignore\" -exec rm -rf {} ';'\n\n# clean out the svn entries\nfind arduino -name \".svn\" -exec rm -rf {} ';' 2> /dev/null\n\n#mv arduino/Arduino.app/Contents/MacOS/Arduino \"arduino/MidiDuino.app/Contents/MacOS/Arduino $SHORT_REVISION\"\nmv arduino/Arduino.app \"arduino/MidiDuino $SHORT_REVISION.app\"\nmv arduino mididuino-$REVISION\nzip -r mididuino-$REVISION-mac.zip mididuino-$REVISION\n";
 		};
 		648417E40F714F48006A7398 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1215,6 +1248,11 @@
 			target = 33AF61680965C4C600B514A9 /* App */;
 			targetProxy = 33269DF70D6E7AD4006BB2E3 /* PBXContainerItemProxy */;
 		};
+		6400A0ED104D8D800040E836 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 649DACC71015E9B400170088 /* App copy */;
+			targetProxy = 6400A0EC104D8D800040E836 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -1276,6 +1314,13 @@
 			};
 			name = work;
 		};
+		6400A0EB104D8D720040E836 /* work */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = Distribute;
+			};
+			name = work;
+		};
 		649DAD2D1015E9B400170088 /* work */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1332,6 +1377,14 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				33FFFE200965BC300016AC38 /* work */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = work;
+		};
+		6400A0EA104D8D720040E836 /* Build configuration list for PBXAggregateTarget "Distribute copy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6400A0EB104D8D720040E836 /* work */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = work;
