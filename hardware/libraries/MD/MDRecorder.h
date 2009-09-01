@@ -33,6 +33,8 @@ class MDRecorderClass : public MidiCallback, public ClockCallback {
   uint8_t playbackBoundary;
   bool playing;
   md_playback_phase_t md_playback_phase;
+
+  bool muted;
   
   void setup();
   

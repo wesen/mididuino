@@ -3,8 +3,6 @@
 #include "helpers.h"
 #include "MDRecorder.h"
 
-void _MDRecorder_on16Callback();
-
 MDRecorderClass::MDRecorderClass() {
   recording = false;
   playing = false;
@@ -12,6 +10,7 @@ MDRecorderClass::MDRecorderClass() {
   playPtr = NULL;
   looping = true;
   md_playback_phase = MD_PLAYBACK_NONE;
+  muted = false;
 }
 
 void MDRecorderClass::setup() {
@@ -149,17 +148,19 @@ void MDRecorderClass::on16Callback() {
 
   if (playing) {
     while ((playPtr != NULL) && (playPtr->obj.step <= play16th_counter)) {
-      if (playPtr->obj.channel & 0x80) {
-	if (md_playback_phase == MD_PLAYBACK_NONE) {
-	  MidiUart.sendCC(playPtr->obj.channel & 0xF, playPtr->obj.pitch, playPtr->obj.value);
-	} else if (md_playback_phase == MD_PLAYBACK_CCS) {
-	  MidiUart.sendCC(playPtr->obj.channel & 0xF, playPtr->obj.pitch, playPtr->obj.value - 5);
-	  delayMicroseconds(100);
-	  MidiUart.sendCC(playPtr->obj.channel & 0xF, playPtr->obj.pitch, playPtr->obj.value);
-	}
-      } else {
-	if (md_playback_phase != MD_PLAYBACK_CCS) {
-	  MidiUart.sendNoteOn(playPtr->obj.channel, playPtr->obj.pitch, playPtr->obj.value);
+      if (!muted) {
+	if (playPtr->obj.channel & 0x80) {
+	  if (md_playback_phase == MD_PLAYBACK_NONE) {
+	    MidiUart.sendCC(playPtr->obj.channel & 0xF, playPtr->obj.pitch, playPtr->obj.value);
+	  } else if (md_playback_phase == MD_PLAYBACK_CCS) {
+	    MidiUart.sendCC(playPtr->obj.channel & 0xF, playPtr->obj.pitch, playPtr->obj.value - 5);
+	    delayMicroseconds(100);
+	    MidiUart.sendCC(playPtr->obj.channel & 0xF, playPtr->obj.pitch, playPtr->obj.value);
+	  }
+	} else {
+	  if (md_playback_phase != MD_PLAYBACK_CCS) {
+	    MidiUart.sendNoteOn(playPtr->obj.channel, playPtr->obj.pitch, playPtr->obj.value);
+	  }
 	}
       }
       playPtr = playPtr->next;
