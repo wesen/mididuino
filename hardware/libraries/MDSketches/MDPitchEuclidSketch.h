@@ -31,9 +31,12 @@ public:
   uint8_t octaves;
   uint8_t basePitch;
 
+  bool muted;
+
   PitchEuclid() : track(3, 8, 0) {
     currentScale = scales[0];
     octaves = 0;
+    muted = false;
 
     pitches_len = 0;
     pitches_idx = 0;
@@ -56,7 +59,8 @@ public:
     if (track.isHit(MidiClock.div16th_counter)) {
       uint8_t pitch = basePitch + pitches[pitches_idx];
       if (pitch <= 127) {
-        MD.sendNoteOn(mdTrack, pitch, 100);
+	if (!muted)
+	  MD.sendNoteOn(mdTrack, pitch, 100);
       }
       pitches_idx = (pitches_idx + 1) % pitches_len;
     }
@@ -143,7 +147,7 @@ public:
   }
 
     void getName(char *n1, char *n2) {
-    m_strncpy_p(n1, PSTR("EUC  "), 5);
+    m_strncpy_p(n1, PSTR("EUC "), 5);
     m_strncpy_p(n2, PSTR("LID "), 5);
   }
 
@@ -157,7 +161,35 @@ public:
   }
 
   virtual void show() {
-    setPage(&page1);
+    if (currentPage() == NULL)
+      setPage(&page1);
+  }
+
+  virtual void doExtra(bool pressed) {
+    if (pressed) {
+      pitchEuclid.randomizePitches();
+    }
+  }
+
+  virtual void mute(bool pressed) {
+    if (pressed) {
+      pitchEuclid.muted = !pitchEuclid.muted;
+      if (pitchEuclid.muted) {
+	GUI.flash_strings_fill("EUCLID", "MUTED");
+      } else {
+	GUI.flash_strings_fill("EUCLID", "UNMUTED");
+      }
+    }
+  }
+
+  virtual Page *getPage(uint8_t i) {
+    if (i == 0) {
+      return &page1;
+    } else if (i == 1) {
+      return &page2;
+    } else {
+      return NULL;
+    }
   }
 
   bool handleEvent(gui_event_t *event) {

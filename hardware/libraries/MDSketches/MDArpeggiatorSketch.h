@@ -122,12 +122,29 @@ class ConfigPage_2 : public EncoderPage {
   }
 
   virtual void show() {
-    setPage(&configPage_1);
+    if (currentPage() == NULL)
+      setPage(&configPage_1);
   }
 
-  void destroy() {
-    GUI.removeTask(&MDTask);
-    MDTask.destroy();
+  virtual void mute(bool pressed) {
+    if (pressed) {
+      arpeggiator.muted = !arpeggiator.muted;
+      if (arpeggiator.muted) {
+	GUI.flash_strings_fill("ARP", "MUTED");
+      } else {
+	GUI.flash_strings_fill("ARP", "UNMUTED");
+      }
+    }
+  }
+  
+  virtual Page *getPage(uint8_t i) {
+    if (i == 0) {
+      return &configPage_1;
+    } else if (i == 1) {
+      return &configPage_2;
+    } else {
+      return NULL;
+    }
   }
 
   bool handleEvent(gui_event_t *event) {

@@ -71,13 +71,11 @@ public:
   }
 
   virtual void show() {
-    setPage(&page);
+    if (currentPage() == NULL)
+      setPage(&page);
   }
 
-  virtual void destroy() {
-    MidiClock.stop();
-    GUI.removeTask(&MDTask);
-    MDTask.destroy();
+  virtual void mute(bool pressed) {
   }
 
   virtual bool handleEvent(gui_event_t *event) {
@@ -117,9 +115,9 @@ public:
   }
 
   virtual Page *getPage(uint8_t i) {
-    if (i == 1) {
+    if (i == 0) {
       return &page;
-    } else if (i == 2) {
+    } else if (i == 1) {
       return &breakPage;
     } else {
       return NULL;
