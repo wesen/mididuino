@@ -14,9 +14,9 @@ SketchSwitchPage sketchSwitchPage(NULL, &sketch, &sketch2, &sketch3, &sketch4);
 void setup() {
   initMDTask();
   
-  sketch.setup();
-  sketch2.setup();
-  sketch3.setup();
+  sketch.setupMonster(true);
+  sketch2.setupMonster(true);
+  sketch3.setupMonster(true);
   sketch4.setupMonster(true);
   GUI.setSketch(&_defaultSketch);
   GUI.setPage(&sketchSwitchPage);

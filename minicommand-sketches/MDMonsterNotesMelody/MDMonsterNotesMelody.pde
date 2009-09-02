@@ -1,12 +1,14 @@
-#include <MDArpeggiatorSketch.h>
+#include <MDNotesRecordSketch.h>
 #include <MDWesenLivePatchSketch.h>
 #include <MDPitchEuclidSketch.h>
+#include <MelodyHelperSketch.h>
 #include <MidiClockPage.h>
 
-ArpeggiatorSketch sketch;
+MDNotesRecordSketch sketch;
 MDWesenLivePatchSketch sketch2;
 PitchEuclidSketch sketch3;
-SketchSwitchPage sketchSwitchPage(NULL, &sketch, &sketch2, &sketch3);
+MelodyHelperSketch sketch4;
+SketchSwitchPage sketchSwitchPage(NULL, &sketch, &sketch2, &sketch3, &sketch4);
 
 void setup() {
   initMDTask();
@@ -14,6 +16,7 @@ void setup() {
   sketch.setupMonster(true);
   sketch2.setupMonster(true);
   sketch3.setupMonster(true);
+  sketch4.setupMonster(true);
   GUI.setSketch(&_defaultSketch);
   GUI.setPage(&sketchSwitchPage);
   GUI.addEventHandler(handleEvent);

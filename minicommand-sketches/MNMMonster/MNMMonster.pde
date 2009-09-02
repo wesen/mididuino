@@ -1,17 +1,16 @@
 #include <MNMWesenLivePatchSketch.h>
-#include <MidiPitchEuclidSketch.h>
+#include <MidiEuclidSketch.h>
 #include <MidiClockPage.h>
 
 MNMWesenLivePatchSketch sketch2;
 PitchEuclidSketch sketch3;
-SketchSwitchPage sketchSwitchPage(NULL, &sketch, &sketch2, &sketch3);
+SketchSwitchPage sketchSwitchPage(NULL, &sketch2, &sketch3);
 
 void setup() {
-  initMDTask();
+  initMNMTask();
   
-  sketch.setup();
-  sketch2.setup();
-  sketch3.setup();
+  sketch2.setupMonster(true);
+  sketch3.setupMonster(true);
   GUI.setSketch(&_defaultSketch);
   GUI.setPage(&sketchSwitchPage);
   GUI.addEventHandler(handleEvent);
