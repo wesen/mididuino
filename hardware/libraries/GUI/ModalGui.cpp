@@ -4,14 +4,17 @@
 #include "GUI.h"
 #include "ModalGui.hh"
 
+
 #ifndef HOST_MIDIDUINO
 class ModalGuiPage : public Page {
 public:
   char line1[16];
   char line2[16];
   bool hasPressedKey;
+  bool hasReleasedKey;
   int pressedKey;
   uint16_t buttonMask;
+  uint16_t releaseMask;
   
   ModalGuiPage() {
     hasPressedKey = false;
@@ -20,8 +23,9 @@ public:
     line2[0] = '\0';
   }
 
-  int getModalKey(uint16_t _buttonMask) {
+  int getModalKey(uint16_t _buttonMask, uint16_t _releaseMask = 0) {
     buttonMask = _buttonMask;
+    releaseMask = _releaseMask;
     hasPressedKey = false;
 
     if (GUI.sketch != NULL) {
@@ -53,6 +57,10 @@ public:
 	pressedKey = i;
 	hasPressedKey = true;
       }
+      if (EVENT_RELEASED(event, i) && releaseMask & _BV(i)) {
+	pressedKey = -1;
+	hasPressedKey = true;
+      }
     }
     return true;
   }
@@ -60,16 +68,16 @@ public:
 
 ModalGuiPage modalGuiPage;
 
-int showModalGui(char *line1, char *line2, int numOptions) {
-  m_strncpy(modalGuiPage.line1, line1, 16);
-  m_strncpy(modalGuiPage.line2, line2, 16);
-  return modalGuiPage.getModalKey(numOptions);
+int showModalGui(char *line1, char *line2, uint16_t buttonMask, uint16_t releaseMask) {
+  m_strncpy_fill(modalGuiPage.line1, line1, 16);
+  m_strncpy_fill(modalGuiPage.line2, line2, 16);
+  return modalGuiPage.getModalKey(buttonMask, releaseMask);
 }
 
-int showModalGui_p(PGM_P line1, PGM_P line2, int numOptions) {
-  m_strncpy_p(modalGuiPage.line1, line1, 16);
-  m_strncpy_p(modalGuiPage.line2, line2, 16);
-  return modalGuiPage.getModalKey(numOptions);
+int showModalGui_p(PGM_P line1, PGM_P line2, uint16_t buttonMask, uint16_t releaseMask) {
+  m_strncpy_p_fill(modalGuiPage.line1, line1, 16);
+  m_strncpy_p_fill(modalGuiPage.line2, line2, 16);
+  return modalGuiPage.getModalKey(buttonMask, releaseMask);
 }
 
 class NameModalGuiPage : public EncoderPage {

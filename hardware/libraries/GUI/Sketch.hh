@@ -24,7 +24,11 @@ public:
     }
     setup();
   }
-  
+
+  bool isVisible() {
+    return GUI.sketch == this;
+  }
+
   virtual void setup() {
   }
 
