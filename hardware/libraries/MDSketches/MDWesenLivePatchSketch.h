@@ -95,9 +95,6 @@ public:
       } 
       else if (EVENT_RELEASED(event, Buttons.BUTTON3)) {
         mdBreakdown.stopSupatrigga();
-      } 
-      else if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
-//        GUI.pushPage(&midiClockPage);
       } else {
         return false;
       }

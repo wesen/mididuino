@@ -44,7 +44,6 @@ public:
     GUI.flash_string_fill(MD.kit.name);
   }  
   
-  
   virtual void onCCCallback(uint8_t *msg) {
     if (muted)
       return;
@@ -104,11 +103,19 @@ public:
   }
 
   virtual void show() {
-    muted = false;
+    if (monster) {
+      mute(true);
+      GUI.setSketch(&_defaultSketch);
+    } else {
+      muted = false;
+    }
   }
 
   virtual void hide() {
-    muted = true;
+    if (!monster) {
+      muted = true; 
+      GUI.flash_strings_fill("MELODY", "MUTED");
+    }
   }
 
   virtual void mute(bool pressed) {
