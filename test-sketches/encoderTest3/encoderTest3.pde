@@ -5,15 +5,20 @@ RangeEncoder enc2(0, 127, "TST");
 RangeEncoder enc3(0, 127, "TST");
 RangeEncoder enc4(0, 127, "TST");
 
-void onNoteCallback(uint8_t *msg) {
+class NoteCallback : public MidiCallback {
+  public:
+  void onNoteCallback(uint8_t *msg) {
   GUI.setLine(GUI.LINE1);
   GUI.flash_string_fill("NOTE RECV");
-}
+  }
+};
+
+NoteCallback foo;
 
 EncoderPage page(&enc1, &enc2, &enc3, &enc4);
 void setup() {
   GUI.setPage(&page);
-  Midi2.setOnNoteOnCallback(onNoteCallback);
+  Midi2.addOnNoteOnCallback(&foo, (midi_callback_ptr_t)&NoteCallback::onNoteCallback);
   GUI.addEventHandler(handleEvent);
 }
 
