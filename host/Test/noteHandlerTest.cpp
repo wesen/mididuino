@@ -31,3 +31,16 @@ TEST_F (NoteHandlerFixture, OneNoteOnHandler) {
   CHECK_EQUAL(100, pitches[0]);
   CHECK_EQUAL(100, velocities[0]);
 }
+
+TEST_F (NoteHandlerFixture, OneNoteOnNoteOff) {
+  uint8_t note[3] = { MIDI_NOTE_ON, 100, 100 };
+  noteHandler.onNoteOnCallback(note);
+  uint8_t num = noteHandler.getLastPressedNotes(pitches, velocities, countof(pitches));
+  CHECK_EQUAL(1, num);
+  CHECK_EQUAL(100, pitches[0]);
+  CHECK_EQUAL(100, velocities[0]);
+  note[0] = MIDI_NOTE_OFF;
+  noteHandler.onNoteOffCallback(note);
+  num = noteHandler.getLastPressedNotes(pitches, velocities, countof(pitches));
+  CHECK_EQUAL(0, num);
+}
