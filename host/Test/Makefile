@@ -1,5 +1,7 @@
-CXX = llvm-g++-4.2
-CC = llvm-gcc-4.2
+#CXX = llvm-g++-4.2
+CXX = g++
+#CC = llvm-gcc-4.2
+CC = gcc
 ARCHFLAGS = -arch x86_64
 
 BASE_DIR=../..
@@ -19,6 +21,7 @@ CXXFLAGS += -I$(CPPUNITDIR)/src
 CLDFLAGS += $(CPPUNITDIR)/cppunitlite.a
 
 CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
+CFLAGS += -Os
 CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
 CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
 
