@@ -6,6 +6,7 @@
 
 MidiUartOSXClass MidiUart;
 MidiClass Midi;
+MidiClass Midi2;
 
 int main() {
   TestResultStdErr result;
