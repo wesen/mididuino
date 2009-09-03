@@ -26,6 +26,9 @@ class MDBreakdown : public ClockCallback {
  public:
   static const char *repeatSpeedNames[REPEAT_SPEED_CNT];
   static const uint8_t repeatSpeedMask[REPEAT_SPEED_CNT];
+
+  bool muted;
+  
   static const char *breakdownNames[BREAKDOWN_CNT];
   
   bool supaTriggaActive, restorePlayback, breakdownActive, storedBreakdownActive;
@@ -35,6 +38,7 @@ class MDBreakdown : public ClockCallback {
   breakdown_type_t breakdown;
 
   MDBreakdown() {
+    muted = false;
     supaTriggaActive = false;
     restorePlayback = false;
     breakdownActive = false;

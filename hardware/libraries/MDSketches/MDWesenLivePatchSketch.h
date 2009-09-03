@@ -23,6 +23,8 @@ public:
 
   uint8_t ramP1Track;
 
+  bool muted ;
+
   void getName(char *n1, char *n2) {
     m_strncpy_p(n1, PSTR("MD  "), 5);
     m_strncpy_p(n2, PSTR("LIV "), 5);
@@ -59,6 +61,7 @@ public:
   }
 
   virtual void setup() {
+    muted = false;
     setupPages();
     
     MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDWesenLivePatchSketch::onKitChanged);
@@ -76,6 +79,16 @@ public:
   }
 
   virtual void mute(bool pressed) {
+    if (pressed) {
+      muted = !muted;
+      mdBreakdown.muted = muted;
+      autoMDPage.muted = muted;
+      if (muted) {
+	GUI.flash_strings_fill("LIVE PATCH", "MUTED");
+      } else {
+	GUI.flash_strings_fill("LIVE PATCH", "UNMUTED");
+      }
+    }
   }
 
   virtual bool handleEvent(gui_event_t *event) {

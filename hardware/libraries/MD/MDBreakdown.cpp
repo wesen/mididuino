@@ -64,6 +64,9 @@ void MDBreakdown::on16Callback() {
 }
 
 void MDBreakdown::doBreakdown() {
+  if (muted)
+    return;
+  
   uint8_t val = (MidiClock.div16th_counter) % 64;
 
   switch (breakdown) {
