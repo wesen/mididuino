@@ -19,8 +19,8 @@ class NoteHandler {
 
   void setup();
   void destroy();
-  uint8_t getLastPressedNotes(uint8_t *pitches, uint8_t *velocity, uint8_t maxNotes = 8);
-  uint8_t getLastPressedNotesOrderPitch(uint8_t *pitches, uint8_t *velocity, uint8_t maxNotes = 8);
+  uint8_t getLastPressedNotes(uint8_t *pitches, uint8_t *velocities, uint8_t maxNotes = 8);
+  uint8_t getLastPressedNotesOrderPitch(uint8_t *pitches, uint8_t *velocities, uint8_t maxNotes = 8);
   void onNoteOnCallback(uint8_t *msg);
   void onNoteOffCallback(uint8_t *msg);
 };
