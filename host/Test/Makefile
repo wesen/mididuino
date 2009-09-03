@@ -1,6 +1,6 @@
-CXX = g++
-CC = gcc
-ARCHFLAGS = -arch i386   -mmacosx-version-min=10.4
+CXX = llvm-g++-4.2
+CC = llvm-gcc-4.2
+ARCHFLAGS = -arch x86_64
 
 BASE_DIR=../..
 LBASE_DIR=$(BASE_DIR)/hardware/libraries
