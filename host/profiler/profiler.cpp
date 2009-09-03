@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 MidiUartOSXClass MidiUart;
-MidiClass Midi;
+MidiClass Midi, Midi2;
 
 char *file = NULL;
 
