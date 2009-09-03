@@ -1,7 +1,7 @@
 #include <MidiClockPage.h>
 #include <MDPitchEuclidSketch.h>
 
-PitchEuclidSketch sketch;
+MDPitchEuclidSketch sketch;
 
 void setup() {
   initMDTask();

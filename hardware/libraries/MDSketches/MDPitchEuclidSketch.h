@@ -69,7 +69,7 @@ public:
 
 MDPitchEuclid pitchEuclid;
 
-class PitchEuclidConfigPage1 : 
+class MDPitchEuclidConfigPage1 : 
 public EncoderPage {
 public:
   RangeEncoder pitchLengthEncoder;
@@ -77,7 +77,7 @@ public:
   RangeEncoder lengthEncoder;
   RangeEncoder offsetEncoder;
 
-  PitchEuclidConfigPage1() :
+  MDPitchEuclidConfigPage1() :
   pitchLengthEncoder(1, 32, "PTC", 4),
   pulseEncoder(1, 32, "PLS", 3),
   lengthEncoder(2, 32, "LEN", 8),
@@ -99,7 +99,7 @@ public:
   }
 };
 
-class PitchEuclidConfigPage2 : 
+class MDPitchEuclidConfigPage2 : 
 public EncoderPage {
 public:
   MDMelodicTrackFlashEncoder trackEncoder;
@@ -107,7 +107,7 @@ public:
   RangeEncoder octavesEncoder;
   NotePitchEncoder basePitchEncoder;
 
-  PitchEuclidConfigPage2() :
+  MDPitchEuclidConfigPage2() :
   trackEncoder("TRK", 0),
   scaleEncoder(0, NUM_SCALES - 1, "SCL", 0),
   basePitchEncoder("BAS"),
@@ -137,13 +137,13 @@ public:
   }
 };
 
-class PitchEuclidSketch : 
+class MDPitchEuclidSketch : 
 public Sketch, public MDCallback, public ClockCallback {
 public:
-  PitchEuclidConfigPage1 page1;
-  PitchEuclidConfigPage2 page2;
+  MDPitchEuclidConfigPage1 page1;
+  MDPitchEuclidConfigPage2 page2;
 
-  PitchEuclidSketch() {
+  MDPitchEuclidSketch() {
   }
 
     void getName(char *n1, char *n2) {
@@ -154,10 +154,10 @@ public:
 
 
   void setup() {
-    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&PitchEuclidSketch::onKitChanged);
+    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDPitchEuclidSketch::onKitChanged);
     //    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
 
-    MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&PitchEuclidSketch::on16Callback);
+    MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&MDPitchEuclidSketch::on16Callback);
   }
 
   virtual void show() {

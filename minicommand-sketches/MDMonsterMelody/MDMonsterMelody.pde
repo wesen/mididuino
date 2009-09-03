@@ -7,7 +7,7 @@
 ArpeggiatorSketch sketch;
 //SketchSwitchPage sketchSwitchPage(NULL, &sketch);
 MDWesenLivePatchSketch sketch2;
-PitchEuclidSketch sketch3;
+MDPitchEuclidSketch sketch3;
 MelodyHelperSketch sketch4;
 SketchSwitchPage sketchSwitchPage(NULL, &sketch, &sketch2, &sketch3, &sketch4);
 
