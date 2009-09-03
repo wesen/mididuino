@@ -1,0 +1,14 @@
+MDRandomizer
+
+This is the upgraded version of the randomizer. It doesn't have any
+new features yet, but a bug (the upper parameters on the third page
+were not randomized) has been fixed.
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which messages on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+

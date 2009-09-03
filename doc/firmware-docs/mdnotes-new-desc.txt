@@ -1,0 +1,64 @@
+MDNotesRecorder
+
+This is a simplified version of MDNotes (just monophonic), with
+recording function (in very early beta).
+
+Connect a keyboard to the second input of the MiniCommand, select a
+destination track on the MachineDrum by using the TRK encoder, and
+start to play your melodies.
+
+Built in is a very simple looper (as a beta for now). Press Button1
+(top left), and it will begin recording for 1 bar (16 steps) on the
+start of the next bar. The debug numbers of the display will count up
+accordingly. To play back the recorded loop, press Button2 (bottom
+left). It will loop the recorded bar. To stop play back, press Button3
+(bottom right).
+
+Also, if you want to record the loop into the MachineDrum, follow
+these steps:
+
+1) stop loop playback on the MiniCommand by pressing Button3 (bottom
+right)
+
+2 ) stop the playback of the MD completely (press STOP two times)
+
+3) then activate live record on the MD (REC + PLAY)
+
+4) press Button4 (top right) to activate playback
+
+This will playback the recorded pattern in a weird way (necessary for
+clean recording of the param locks): in the first bar just the track
+is triggered to record the hits, and in the second bar, just the CC
+parameters are sent to set the param locks. After these two bars, stop
+the MachineDrum, and the pattern should be recorded correctly. This
+will be simplified in the future by having the MiniCommand generate
+the param locks and store them directly into the pattern.
+
+Also, the recording quantization is not very good now, as it will not
+move notes hit in front to the correct step. This will be fixed soon
+as well. Until then, have fun :)
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which MESSAGES on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+
+New feature: automatic detection of global and kit. When connecting
+the MC to the MachineDrum (both input and output), it will detect the
+loaded GLOBAL settings and the loaded KIT. It will flash "LOADED KIT"
+followed by the KIT name. This allows the MC to use the current
+channel settings and the configured triggers for each track (set in
+GLOBAL -> MAP EDITOR). It will reload the kit automatically every 3
+seconds, and detect changes of GLOBAL and KITs. However, it won't
+detect if the currently used GLOBAL has been modified, you need to
+switch to another GLOBAL and then back to reload a GLOBAL. This is a
+good way to detect if the MC is connected correctly. If it doesn't
+load the KIT automatically, either IN or OUT is not connected
+correctly.
+
+Improved feature: additional melodic machines. Additional melodic
+machines (such as GND-SN, E12-BC, etc...) are available for the
+arpeggiator.

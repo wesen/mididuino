@@ -1,0 +1,56 @@
+MDArpeggiator
+
+This is the upgraded arpeggiator. It works like the original
+Arpeggiator firmware, with a few bugfixes and additional features.
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which MESSAGES on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+
+A note about MIDI sync: MIDI clock sync is necessary for the
+slicing/repetition and the knob movement part to work. For this, the
+MC needs to be synced to the clock of the MachineDrum. The simplest
+way to achieve this is to configure the MD to send SYNC information on
+its output. In the GLOBAL edit menu, select SYNC and set TEMPO IN to
+INTERNAL, CTRL IN to OFF, TEMPO OUT to ON and CTRL OUT to ON. On the
+MiniCommand, set CLK (in the configuration menu at startup) to
+IN1. When START is pressed on the MachineDrum, the left LED should
+blink synchronized to the tempo. Alternatively, if you are using
+multiple synthesizers and sequencers, you can connect the clock source
+to the second input of the MidiCommand, and select IN2 in the sync
+configuration menu, and set SND to ON. This will duplicate the clock
+and send it to the MachineDrum. On the MachineDrum, set TEMPO IN to
+EXTERNAL and CTRL IN to ON. This way, you can easily chain a lot of
+synthesizers. For example, we use 3 MachineDrums and 1 MonoMachine
+with 4 MiniCommands on stage. Each MiniCommand is connected directly
+to the sequencer it controls. The first MachineDrum generates the
+tempo, and in order to start the chain, TEMPO IN is set to INTERNAL,
+CTRL IN is set to OFF, TEMPO OUT to ON and CTRL OUT to ON. The first
+MiniCommand is set to CLK: IN1 *and* SND: ON. This way, the clock of
+the MachineDrum is set again to the MachineDrum, and available on the
+THRU output of the MD. This THRU is then connected to the IN2 of the
+next MiniCommand, which is configured to CLK: IN2, and SND: ON. The
+clock is sent to the MachineDrum the second MiniCommand controls, and
+is again available at the THRU output. From there, it is sent to the
+IN2 of the next MiniCommand, etc...
+
+New feature: automatic detection of global and kit. When connecting
+the MC to the MachineDrum (both input and output), it will detect the
+loaded GLOBAL settings and the loaded KIT. It will flash "LOADED KIT"
+followed by the KIT name. This allows the MC to use the current
+channel settings and the configured triggers for each track (set in
+GLOBAL -> MAP EDITOR). It will reload the kit automatically every 3
+seconds, and detect changes of GLOBAL and KITs. However, it won't
+detect if the currently used GLOBAL has been modified, you need to
+switch to another GLOBAL and then back to reload a GLOBAL. This is a
+good way to detect if the MC is connected correctly. If it doesn't
+load the KIT automatically, either IN or OUT is not connected
+correctly.
+
+Improved feature: additional melodic machines. Additional melodic
+machines (such as GND-SN, E12-BC, etc...) are available for the
+arpeggiator.

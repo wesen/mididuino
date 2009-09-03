@@ -1,0 +1,129 @@
+MNMWesenLivePatch
+
+This is the firmware Wesen uses to play live with the MonoMachine. Its
+features are: - revert to kit (reload all the stored kit settings) -
+revert to track (like revert to kit, but just for the active track) -
+two "magic" learning pages to learn parameters from the MNM - two
+"template" pages allowing you to map 16 predefined control parameters
+to control the current track - recording and overdubbing of knob
+movements
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which messages on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+
+A note about MIDI sync: MIDI clock sync is necessary for the
+slicing/repetition and the knob movement part to work. For this, the
+MC needs to be synced to the clock of the MachineDrum. The simplest
+way to achieve this is to configure the MNM to send SYNC information
+on its output. In the GLOBAL edit menu, select CONTROL and set CONTROL
+IN -> TEMPO SYNC to INTERNAL, CONTROL IN -> TRANSPORT to IGNORE,
+CONTROL OUT2 -> TRANSPORT to OUT and CONTROL OUT2 -> MIDI CLOCK to
+OUT. On the MiniCommand, set CLK (in the configuration menu at
+startup) to IN1. When START is pressed on the MonoMachine, the left
+LED should blink synchronized to the tempo. Alternatively, if you are
+using multiple synthesizers and sequencers, you can connect the clock
+source to the second input of the MidiCommand, and select IN2 in the
+sync configuration menu, and set SND to ON. This will duplicate the
+clock and send it to the MachineDrum. On the MachineDrum, set TEMPO IN
+to EXTERNAL and CTRL IN to ON. This way, you can easily chain a lot of
+synthesizers. For example, we use 3 MachineDrums and 1 MonoMachine
+with 4 MiniCommands on stage. Each MiniCommand is connected directly
+to the sequencer it controls. The first MachineDrum generates the
+tempo, and in order to start the chain, TEMPO IN is set to INTERNAL,
+CTRL IN is set to OFF, TEMPO OUT to ON and CTRL OUT to ON. The first
+MiniCommand is set to CLK: IN1 *and* SND: ON. This way, the clock of
+the MachineDrum is set again to the MachineDrum, and available on the
+THRU output of the MD. This THRU is then connected to the IN2 of the
+next MiniCommand, which is configured to CLK: IN2, and SND: ON. The
+clock is sent to the MachineDrum the second MiniCommand controls, and
+is again available at the THRU output. From there, it is sent to the
+IN2 of the next MiniCommand, etc...
+
+New feature: automatic detection of global and kit. When connecting
+the MC to the MonoMachine (both input and output), it will detect the
+loaded GLOBAL settings and the loaded KIT. It will flash "LOADED KIT"
+followed by the KIT name. This allows the MC to use the current
+channel settings. It will reload the kit automatically every 3
+seconds, and detect changes of GLOBAL and KITs. However, it won't
+detect if the currently used GLOBAL has been modified, you need to
+switch to another GLOBAL and then back to reload a GLOBAL. This is a
+good way to detect if the MNM is connected correctly. If it doesn't
+load the KIT automatically, either IN or OUT is not connected
+correctly.
+
+New feature: modified page switching. To switch pages in the
+MNMWesenLivePatch firmware, hold down Button1 (upper left) and press
+one of the encoders. The name of the corresponding page is shown above
+the encoder: P0 (first automagic learning page, see below), P1 (second
+automagic learning page), M0 (first template page, see below), M1
+(second template page).
+
+New feature: knob movement recording. When MIDI sync is enabled, you
+can record knob movements for every encoder in every page. Make sure
+that the sync is running (the left LED is blinking), hold down Button3
+(bottom right), and turn the encoder while Button3 is held down. This
+will record the knob movements as long as the button is held down (and
+for a duration of 2 bars). When you release the button, the recorded
+sequence is played back. You can overwrite the recorded movement by
+holding down Button3 again, and moving the knob. This way, you can
+easily evolve the recorded sequences. To clear a sequence, hold down
+Button4 (top right), and press the corresponding encoder. This will
+clear the recorded sequence. To clear all sequences, hold down Button4
+(top right) and press Button1 (top left). The recorded sequences are
+also cleared when the KIT on the MonoMachine is changed, when a new
+parameter has been assigned to one of the encoders, or when revert to
+kit or revert to track is used.
+
+New feature: revert to kit. To restore all the stored kit settings
+(like revert to kit when pressing FUNC + CLASSIC on a MachineDrum),
+hold down Button1 (top left) and press Button4 (top right). The MC
+will show "REVERT TO KIT" and the MonoMachine will revert to the
+stored kit settings. Very useful when completely destroying kits :)
+
+New feature: revert to track. To restore the stored settings of the
+currently active track on the MonoMachine, hold down Button1 (top
+left) and press Button3 (bottom right). This is like revert to kit,
+but for the currently active track.
+
+New feature: magic learning. The "P0" and "P1" pages are magic
+learning pages that can easily MIDI learn 4 encoders at one. After
+switching on, these four encoders are not assigned. Move some
+parameters on the MonoMachine, switch to P0 or P1 and then press
+Button2 (the bottom left button). The MiniCommand will MIDI learn the
+last 4 moved parameters and display their names. This way, you can
+move parameters on the MNM, then quickly assign these on the MC, and
+switch to another page or track on the MNM while still being able to
+tweak the previous parameters. This is incredibly useful when playing
+live: you discover a nice sound combo, but want to modify something
+else without losing the ability to tweak the previous sound.
+
+New feature: magic template pages. The "M0" and "M1" pages are
+template pages that allow to quickly map a range of parameters to the
+currently selected track. Select the track you want to control on the
+MonoMachine, switch to M0 or M1, and hold down Button2 (bottom left)
+and press Button1 (top left). The MC will display "MAGIC PAGE", the
+track number and the machine name on the track. Each magic template
+page provide four "subpages" that can be switched to by holding down
+Button2 (bottom left) and pressing one of the encoders. The parameters
+on these subpages are mapped to the configured track. The subpages
+are:
+
+- "STD", which allows you to control the decay "DEC", the filter width
+- "WDT", the delay send "DSN" and the delay feedback "DFB".  "DEL",
+- which allows you to control the delay send "DSN", the delay feedback
+- "DFB", the delay filter base "DBS" and the delay filter width "DWI".
+- "FLT", which allows you to control the filter base "BAS", the filter
+- width "WDT", the filter envelope decay "DEC" and the filter width
+- offset "WOF".  "LFO", which allows you to control the envelope decay
+- "DEC", the depth of the first LFO "DPT", the depth of the second LFO
+- "DPT" and the depth of the third LFO "DPT".
+
+With the template pages, you can quickly control combos of parameters
+that are otherwise hard to access on the MonoMachine. For now the
+subpages are fixed, but they will be user-configurable in the next
+version of the firmware.

@@ -1,0 +1,62 @@
+MIDIPitchEuclid
+
+This is the standard MIDI version of the euclidian pitch bassline
+generator. New features are:
+
+- Base pitch for the generated bassline Selection of different scales
+- Selection of the number of octaves the bassline comprises
+
+The firmware uses two configuration pages, which can be selected by
+pressing Button1 (top left) or Button2 (bottom left). On the first
+page, you can select the number of different pitches in the bassline
+(PTC), the number of pulses in the pattern (PLS) and the length of the
+pattern (LEN). The pulses will be distributed equidistantly in the
+generated bassline, for example PLS: 3, LEN: 8 generates the pattern X
+. . X . . X . , while PLS: 2, LEN: 5 generates the pattern X . . X
+. The start point of the pattern can be set with OFF. Pressing the
+first encoder randomizes the pitches in the bassline.
+
+On the second page, you can configure the destination MIDI channel of
+the generated bassline. SCL selects the scale which is used to
+generate the bassline. 0: ionian scale, 1: aeolian scale, 2: blue
+scale, 3: major pentatonic scale, 4: major maj7 arpeggio, 5: major
+min7 arpeggio, 6: minor min7 arpeggio. OCT selects the number of
+octaves the generated bassline will span, while BAS selects the base
+note of the generated bassline.
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which messages on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+
+A note about MIDI sync: MIDI clock sync is necessary for the
+slicing/repetition and the knob movement part to work. For this, the
+MC needs to be synced to the clock of the MachineDrum. The simplest
+way to achieve this is to configure the MD to send SYNC information on
+its output. In the GLOBAL edit menu, select SYNC and set TEMPO IN to
+INTERNAL, CTRL IN to OFF, TEMPO OUT to ON and CTRL OUT to ON. On the
+MiniCommand, set CLK (in the configuration menu at startup) to
+IN1. When START is pressed on the MachineDrum, the left LED should
+blink synchronized to the tempo. Alternatively, if you are using
+multiple synthesizers and sequencers, you can connect the clock source
+to the second input of the MidiCommand, and select IN2 in the sync
+configuration menu, and set SND to ON. This will duplicate the clock
+and send it to the MachineDrum. On the MachineDrum, set TEMPO IN to
+EXTERNAL and CTRL IN to ON. This way, you can easily chain a lot of
+synthesizers. For example, we use 3 MachineDrums and 1 MonoMachine
+with 4 MiniCommands on stage. Each MiniCommand is connected directly
+to the sequencer it controls. The first MachineDrum generates the
+tempo, and in order to start the chain, TEMPO IN is set to INTERNAL,
+CTRL IN is set to OFF, TEMPO OUT to ON and CTRL OUT to ON. The first
+MiniCommand is set to CLK: IN1 *and* SND: ON. This way, the clock of
+the MachineDrum is set again to the MachineDrum, and available on the
+THRU output of the MD. This THRU is then connected to the IN2 of the
+next MiniCommand, which is configured to CLK: IN2, and SND: ON. The
+clock is sent to the MachineDrum the second MiniCommand controls, and
+is again available at the THRU output. From there, it is sent to the
+IN2 of the next MiniCommand, etc...
+
+

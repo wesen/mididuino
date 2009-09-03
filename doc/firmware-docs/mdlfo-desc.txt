@@ -1,0 +1,38 @@
+MDLFO
+
+This is a quick firmware to control the LFOs of the MachineDrum
+without having to enter the LFO menu. It's more a proof of concept of
+how quickly I can bang out features with the new framework than
+anything else.
+
+The firmware allows you to control 4 LFO parameters of a selected
+track. These four parameters are per default Shape 1 "SH1", Shape 2
+"SH2", LFO trigger type "TYP, and the LFO speed "SPD". To select the
+controlled track, hold down Button1 (top left), and select the track
+with the first encoder. The MC will display the machine type of the
+controlled track.
+
+To configure the controlled parameters, hold down Button2 (bottom
+left), and select the controlled parameter for each encoder by turning
+it. Release Button2 to go back to the LFO control page.
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which messages on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+
+New feature: automatic detection of global and kit. When connecting
+the MC to the MachineDrum (both input and output), it will detect the
+loaded GLOBAL settings and the loaded KIT. It will flash "LOADED KIT"
+followed by the KIT name. This allows the MC to use the current
+channel settings and the configured triggers for each track (set in
+GLOBAL -> MAP EDITOR). It will reload the kit automatically every 3
+seconds, and detect changes of GLOBAL and KITs. However, it won't
+detect if the currently used GLOBAL has been modified, you need to
+switch to another GLOBAL and then back to reload a GLOBAL. This is a
+good way to detect if the MC is connected correctly. If it doesn't
+load the KIT automatically, either IN or OUT is not connected
+correctly.
