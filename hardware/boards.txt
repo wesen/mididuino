@@ -42,7 +42,7 @@ minicommand2.build.mcu=atmega64
 minicommand2.build.f_cpu=16000000L
 minicommand2.build.core=minicommand2
 minicommand2.build.libraries=Midi GUI CommonTools Elektron
-minicommand2.build.flags=-Wl,--section-start=.bss=0x802000,--defsym=__heap_end=0x80ffff -mcall-prologues -funsigned-char -funsigned-bitfields -fshort-enums -fpack-struct -Wall -fno-default-inline -nostdinc++ -fno-rtti -fno-implement-inlines --param inline-call-cost=2 -finline-limit=3 -fno-inline-small-functions -fno-tree-scev-cprop -fsplit-wide-types
+minicommand2.build.flags=-Wl,--section-start=.bss=0x802000,--defsym=__heap_end=0x80ffff -mcall-prologues -funsigned-char -funsigned-bitfields -fshort-enums -fpack-struct -Wall -fno-default-inline -fno-rtti -fno-implement-inlines --param inline-call-cost=2 -finline-limit=3 -fno-inline-small-functions -fno-tree-scev-cprop -fsplit-wide-types
 
 ############################################################
 
