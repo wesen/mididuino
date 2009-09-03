@@ -33,12 +33,11 @@ class BreakdownPage : public EncoderPage {
       mdBreakdown.storedBreakdownActive = !mdBreakdown.storedBreakdownActive;
       if (mdBreakdown.storedBreakdownActive) {
         GUI.flash_p_strings_fill(PSTR("BREAKDOWN ON"), PSTR(""));
-      } 
-      else {
+      } else {
         GUI.flash_p_strings_fill(PSTR("BREAKDOWN OFF"), PSTR(""));
       }
       return true;
-    } 
+    }
 
     return false;
   }
