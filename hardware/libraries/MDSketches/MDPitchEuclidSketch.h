@@ -17,7 +17,7 @@ scale_t *scales[NUM_SCALES] = {
   &minorMin7Arp
 };
 
-class PitchEuclid {
+class MDPitchEuclid {
 public:
   EuclidDrumTrack track;
   scale_t *currentScale;
@@ -33,7 +33,7 @@ public:
 
   bool muted;
 
-  PitchEuclid() : track(3, 8, 0) {
+  MDPitchEuclid() : track(3, 8, 0) {
     currentScale = scales[0];
     octaves = 0;
     muted = false;
@@ -67,7 +67,7 @@ public:
   }
 };
 
-PitchEuclid pitchEuclid;
+MDPitchEuclid pitchEuclid;
 
 class PitchEuclidConfigPage1 : 
 public EncoderPage {
