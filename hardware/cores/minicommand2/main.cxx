@@ -142,6 +142,10 @@ void handleIncomingMidi() {
 void __mainInnerLoop(bool callLoop) {
   //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
   //  setLed2();
+  if ((MidiClock.mode == MidiClock.EXTERNAL ||
+       MidiClock.mode == MidiClock.EXTERNAL_UART2)) {
+    MidiClock.updateClockInterval();
+  }
 
   //  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
   handleIncomingMidi();
