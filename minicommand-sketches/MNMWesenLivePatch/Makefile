@@ -50,7 +50,7 @@ main.o: $(PDEFILES) $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	echo $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	java -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./main $(PDEFILES)
 	$(CXX) $(CXXFLAGS) -c main.cpp -o $@
-	rm main.cpp
+#	rm main.cpp
 
 mainwhole.elf: main.mycpp $(COBJS)
 	$(CXX) $(CLDFLAGS) $(CFLAGS) -o $@ -fwhole-program --combine $^ $(SRCS)
