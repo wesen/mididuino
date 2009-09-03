@@ -31,6 +31,8 @@ static uint8_t mergerConfigMasks[] = {
 };
 
 void MidiClockPage::writeClockSettings() {
+  if (!SDCard.isInit)
+    return;
   uint8_t buf[2];
   buf[0] = MidiClock.mode;
   buf[1] = MidiClock.transmit ? 1 : 0;
@@ -40,6 +42,8 @@ void MidiClockPage::writeClockSettings() {
 }
 
 void MidiClockPage::readClockSettings() {
+  if (!SDCard.isInit)
+    return;
   uint8_t buf[2];
   if (!SDCard.readFile("/ClockSettings.txt", buf, 2)) {
     GUI.flash_strings_fill("ERROR READING", "CLOCK SETUP");
@@ -53,6 +57,8 @@ void MidiClockPage::readClockSettings() {
 }
 
 void MidiClockPage::writeMergeSettings() {
+  if (!SDCard.isInit)
+    return;
   uint8_t buf[2];
   buf[0] = merger.mask;
   if (!SDCard.writeFile("/MergeSettings.txt", buf, 2, true)) {
@@ -61,6 +67,8 @@ void MidiClockPage::writeMergeSettings() {
 }
 
 void MidiClockPage::readMergeSettings() {
+  if (!SDCard.isInit)
+    return;
   uint8_t buf[2];
   if (!SDCard.readFile("/MergeSettings.txt", buf, 1)) {
     GUI.flash_strings_fill("ERROR READING", "MERGE SETUP");
@@ -171,8 +179,12 @@ void initClockPage() {
     GUI.display();
     delay(800);
     MidiClock.mode = MidiClock.EXTERNAL_MIDI;
-    MidiClock.transmit = true;
-    MidiClock.start();
+    MidiClock.transmit = false;
+
+    midiClockPage.setup();
+    if (BUTTON_DOWN(Buttons.BUTTON1)) {
+      GUI.pushPage(&midiClockPage);
+    }
   } else {
     midiClockPage.setup();
     if (BUTTON_DOWN(Buttons.BUTTON1)) {
