@@ -1,3 +1,4 @@
+#include <GUI.h>
 #include <MD.h>
 #include <Vector.hh>
 

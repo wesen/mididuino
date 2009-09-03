@@ -8,7 +8,7 @@
 class MockTestResult : public TestResult
 {
 public:
-    void MockTestResult::AddFailure (const Failure & failure) 
+    void AddFailure (const Failure & failure) 
     {
         TestResult::AddFailure(failure);
         std::stringstream stream;

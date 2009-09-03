@@ -34,5 +34,5 @@ TEST_F (MidiCallbackFixture, TestAddRemove) {
 TEST_F (MidiCallbackFixture, TestCall) {
   CHECK(callbackList.add(&foobar));
   CHECK_EQUAL(1, callbackList.size());
-  callbackMidi(callbackList, NULL);
+  //  callbackMidi(callbackList, NULL);
 }
