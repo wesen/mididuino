@@ -37,14 +37,14 @@ public:
   }
 };
 
-MDLFOPage lfoPage;
-
 class MDLFOConfigPage : 
 public EncoderPage {
 public:
   EnumEncoder paramEncoders[4];
+  MDLFOPage *lfoPage;
 
-  MDLFOConfigPage() {
+  MDLFOConfigPage(MDLFOPage *_lfoPage) {
+    lfoPage = _lfoPage;
     for (uint8_t i = 0; i < 4; i++) {
       paramEncoders[i].initEnumEncoder(MDLFONames, 8);
       encoders[i] = &paramEncoders[i];
@@ -57,37 +57,35 @@ public:
 
   virtual void show() {
     for (uint8_t i = 0; i < 4; i++) {
-      paramEncoders[i].setValue(lfoPage.lfoEncoders[i].param);
+      paramEncoders[i].setValue(lfoPage->lfoEncoders[i].param);
     }
   }
 
   virtual void loop() {
     for (uint8_t i = 0 ;i < 4; i++) {
       if (paramEncoders[i].hasChanged()) {
-        lfoPage.lfoEncoders[i].setParam(paramEncoders[i].getValue());
+        lfoPage->lfoEncoders[i].setParam(paramEncoders[i].getValue());
       }
     }
   }
 };
 
-MDLFOConfigPage lfoConfigPage;
-
 class MDLFOTrackSelectPage : 
 public EncoderPage {
 public:
   MDTrackFlashEncoder trackEncoder;
+  MDLFOPage *lfoPage;
 
-  MDLFOTrackSelectPage() : trackEncoder("TRK") {
+  MDLFOTrackSelectPage(MDLFOPage *_lfoPage) : trackEncoder("TRK") {
     encoders[0] = &trackEncoder;
+    lfoPage = _lfoPage;
   }  
 
   virtual void loop() {
     if (trackEncoder.hasChanged()) {
-      lfoPage.setTrack(trackEncoder.getValue());
+      lfoPage->setTrack(trackEncoder.getValue());
     }
   }
 };
-
-MDLFOTrackSelectPage lfoTrackSelectPage;
 
 #endif /* MD_LFO_PAGE_H__ */
