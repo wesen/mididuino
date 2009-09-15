@@ -12,7 +12,7 @@ const char *MDLFONames[8] = {
   "MIX"
 };
 
-md_machine_name_t machine_names[] PROGMEM = {
+md_machine_name_t machine_names[134] PROGMEM = {
   { "GND---", 0},
   { "GND-SN", 1},
   { "GND-NS", 2},
@@ -87,12 +87,10 @@ md_machine_name_t machine_names[] PROGMEM = {
   { "MID-16", 111},
   { "CTR-AL", 112},
   { "CTR-8P", 113},
-			
   { "CTR-RE", 120},
   { "CTR-GB", 121},
   { "CTR-EQ", 122},
   { "CTR-DX", 123},
-			
   { "ROM-01", 128},
   { "ROM-02", 129},
   { "ROM-03", 130},
@@ -129,12 +127,10 @@ md_machine_name_t machine_names[] PROGMEM = {
   { "RAM-R2", 161},
   { "RAM-P1", 162},
   { "RAM-P2", 163},
-			
   { "RAM-R3", 165},
   { "RAM-R4", 166},
   { "RAM-P3", 167},
   { "RAM-P4", 168},
-
   { "ROM-33", 176},
   { "ROM-34", 177},
   { "ROM-35", 178},

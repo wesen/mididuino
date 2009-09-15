@@ -90,6 +90,7 @@ class MDKitSelectEncoder : public RangeEncoder {
   MDKitSelectEncoder(const char *_name = NULL, uint8_t init = 0);
 
   virtual void displayAt(int i);
+  void loadFromMD();
 };
 
 class MDPatternSelectEncoder : public RangeEncoder {
@@ -97,7 +98,36 @@ class MDPatternSelectEncoder : public RangeEncoder {
   MDPatternSelectEncoder(const char *_name = NULL, uint8_t init = 0);
 
   virtual void displayAt(int i);
+  void loadFromMD();
 };
+
+class MDAssignMachineEncoder : public RangeEncoder {
+ public:
+  MDAssignMachineEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0);
+
+  uint8_t track;
+  virtual void displayAt(int i);
+  void loadFromMD();
+};
+
+class MDTrigGroupEncoder : public RangeEncoder {
+ public:
+  MDTrigGroupEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0);
+
+  uint8_t track;
+  virtual void displayAt(int i);
+  void loadFromMD();
+};
+
+class MDMuteGroupEncoder : public RangeEncoder {
+ public:
+  MDMuteGroupEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0);
+
+  uint8_t track;
+  virtual void displayAt(int i);
+  void loadFromMD();
+};
+
 #endif
 
 #endif /* MD_ENCODERS_H__ */

@@ -1,6 +1,7 @@
 #include "MDEncoders.h"
 #include "GUI.h"
 #include "MD.h"
+#include "MDParams.hh"
 
 #ifdef MIDIDUINO_USE_GUI
 
@@ -213,6 +214,86 @@ void MDMelodicTrackFlashEncoder::displayAt(int i) {
     } else {
       GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
     }
+  }
+}
+
+void MDAssignMachineEncoderHandle(Encoder *enc) {
+  uint8_t model = machine_names[enc->getValue()].id;
+  MD.assignMachine(((MDAssignMachineEncoder*)enc)->track, model);
+}
+
+MDAssignMachineEncoder::MDAssignMachineEncoder(uint8_t _track, const char *_name, uint8_t init) :
+  RangeEncoder(0, countof(machine_names), _name, init) {
+  track = _track;
+  handler = MDAssignMachineEncoderHandle;
+}
+
+void MDAssignMachineEncoder::displayAt(int i) {
+  uint8_t model = machine_names[getValue()].id;
+  GUI.setLine(GUI.LINE2);
+  GUI.put_value(i, model);
+  GUI.flash_put_value(i, model);
+  GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(model));
+}
+
+void MDAssignMachineEncoder::loadFromMD() {
+  if (MD.loadedKit) {
+    for (uint8_t i = 0; i < countof(machine_names); i++) {
+      if (machine_names[i].id == MD.kit.machines[track].model)
+	setValue(i);
+    }
+  }
+}
+
+void MDTrigGroupEncoderHandle(Encoder *enc) {
+  MD.setTrigGroup(((MDTrigGroupEncoder*)enc)->track, enc->getValue());
+}
+
+MDTrigGroupEncoder::MDTrigGroupEncoder(uint8_t _track, const char *_name, uint8_t init) :
+  RangeEncoder(0, 15, _name, init) {
+  track = _track;
+  handler = MDTrigGroupEncoderHandle;
+}
+
+void MDTrigGroupEncoder::displayAt(int i) {
+  GUI.setLine(GUI.LINE2);
+  uint8_t track = getValue();
+  GUI.put_value(i, track + 1);
+  if (MD.loadedKit) {
+    GUI.flash_put_value(i, track + 1);
+    GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+  }
+}
+
+void MDTrigGroupEncoder::loadFromMD() {
+  if (MD.loadedKit) {
+    setValue(MD.kit.machines[track].trigGroup);
+  }
+}
+
+void MDMuteGroupEncoderHandle(Encoder *enc) {
+  MD.setMuteGroup(((MDMuteGroupEncoder*)enc)->track, enc->getValue());
+}
+
+MDMuteGroupEncoder::MDMuteGroupEncoder(uint8_t _track, const char *_name, uint8_t init) :
+  RangeEncoder(0, 15, _name, init) {
+  track = _track;
+  handler = MDMuteGroupEncoderHandle;
+}
+
+void MDMuteGroupEncoder::displayAt(int i) {
+  GUI.setLine(GUI.LINE2);
+  uint8_t track = getValue();
+  GUI.put_value(i, track + 1);
+  if (MD.loadedKit) {
+    GUI.flash_put_value(i, track + 1);
+    GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+  }
+}
+
+void MDMuteGroupEncoder::loadFromMD() {
+  if (MD.loadedKit) {
+    setValue(MD.kit.machines[track].muteGroup);
   }
 }
 
