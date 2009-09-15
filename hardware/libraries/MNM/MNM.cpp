@@ -123,13 +123,16 @@ bool MNMClass::parseCC(uint8_t channel, uint8_t cc, uint8_t *track, uint8_t *par
   return false;
 }
 
-void MNMClass::setStatus(uint8_t id, uint8_t value) {
+void MNMClass::sendSysex(uint8_t *bytes, uint8_t cnt) {
   MidiUart.putc(0xF0);
   MidiUart.sendRaw(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
-  MidiUart.putc(0x71);
-  MidiUart.putc(id & 0x7F);
-  MidiUart.putc(value & 0x7F);
+  MidiUart.sendRaw(bytes, cnt);
   MidiUart.putc(0xF7);
+}
+
+void MNMClass::setStatus(uint8_t id, uint8_t value) {
+  uint8_t data[] = { 0x71, id & 0x7F, value & 0x7F };
+  MNM.sendSysex(data, countof(data));
 }
 
 void MNMClass::loadGlobal(uint8_t id) {
@@ -169,17 +172,16 @@ void MNMClass::setMidiTrack(uint8_t track) {
 }
 
 void MNMClass::setCurrentKitName(char *name) {
+  // XXX
 }
 
 void MNMClass::saveCurrentKit(uint8_t id) {
+  // XXX
 }
 
 void MNMClass::sendRequest(uint8_t type, uint8_t param) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
-  MidiUart.putc(type);
-  MidiUart.putc(param);
-  MidiUart.putc(0xF7);
+  uint8_t data[] = { type, param };
+  MNM.sendSysex(data, countof(data));
 }
 
 void MNMClass::revertToCurrentKit(bool reloadKit) {
@@ -221,19 +223,15 @@ void MNMClass::requestGlobal(uint8_t _global) {
 }
 
 void MNMClass::assignMachine(uint8_t track, uint8_t model, bool initAll, bool initSynth) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
-  MidiUart.putc(MNM_LOAD_GLOBAL_ID);
-  MidiUart.putc(track);
-  MidiUart.putc(model);
+  uint8_t data[] = { MNM_LOAD_GLOBAL_ID, track, model, 0x00 };
   if (initAll) {
-    MidiUart.putc(0x01);
+    data[3] = 0x01;
   } else if (initSynth) {
-    MidiUart.putc(0x02);
+    data[3] = 0x02;
   } else {
-    MidiUart.putc(0x00);
+    data[3] = 0x00;
   }
-  MidiUart.putc(0xF7);
+  MNM.sendSysex(data, countof(data));
 }
 
 void MNMClass::setMachine(uint8_t track, MNMMachine *machine) {

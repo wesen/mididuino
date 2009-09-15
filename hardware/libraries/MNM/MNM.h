@@ -60,6 +60,8 @@ class MNMClass {
 
   int currentPattern;
 
+  void sendSysex(uint8_t *bytes, uint8_t cnt);
+  
   void sendMultiTrigNoteOn(uint8_t note, uint8_t velocity);
   void sendMultiTrigNoteOff(uint8_t note);
   void sendMultiMapNoteOn(uint8_t note, uint8_t velocity);
