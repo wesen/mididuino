@@ -170,6 +170,7 @@ void MidiClockPage::loop() {
   }
   return true;
 }
+
 void initClockPage() {
   static MidiClockPage midiClockPage;
 
@@ -191,3 +192,4 @@ void initClockPage() {
     }
   }
 }
+
