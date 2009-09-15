@@ -104,13 +104,16 @@ void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
 
 //  0x5E, 0x5D, 0x5F, 0x60
 
-void MDClass::sendFXParam(uint8_t param, uint8_t value, uint8_t type) {
+void MDClass::sendSysex(uint8_t *bytes, uint8_t cnt) {
   MidiUart.putc(0xF0);
   MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  uint8_t data[4] = {
-    type, param, value, 0xF7
-  };
-  MidiUart.sendRaw(data, 4);
+  MidiUart.sendRaw(bytes, cnt);
+  MidiUart.putc(0xf7);
+}
+
+void MDClass::sendFXParam(uint8_t param, uint8_t value, uint8_t type) {
+  uint8_t data[3] = { type, param, value };
+  MD.sendSysex(data, 3);
 }
   
 void MDClass::setEchoParam(uint8_t param, uint8_t value) {
@@ -223,12 +226,8 @@ bool MDClass::isMelodicTrack(uint8_t track) {
 }
 
 void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x62);
-  MidiUart.putc(track << 3 | param);
-  MidiUart.putc(value);
-  MidiUart.putc(0xF7);
+  uint8_t data[3] = { 0x62, track << 3 | param, value };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::setLFO(uint8_t track, MDLFO *lfo) {
@@ -243,79 +242,50 @@ void MDClass::setLFO(uint8_t track, MDLFO *lfo) {
 }
 
 void MDClass::mapMidiNote(uint8_t pitch, uint8_t track) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x5a);
-  MidiUart.putc(pitch);
-  MidiUart.putc(track);
-  MidiUart.putc(0xF7);
+  uint8_t data[3] = { 0x5a, pitch, track };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::resetMidiMap() {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x64);
-  MidiUart.putc(0xF7);
+  uint8_t data[1] = { 0x64 };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::setTrackRouting(uint8_t track, uint8_t output) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x5c);
-  MidiUart.putc(track);
-  MidiUart.putc(output);
-  MidiUart.putc(0xF7);
+  uint8_t data[3] = { 0x5c, track, output };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::setTempo(uint16_t tempo) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x61);
-  MidiUart.putc(tempo >> 7);
-  MidiUart.putc(tempo & 0x7F);
-  MidiUart.putc(0xF7);
+  uint8_t data[3] = { 0x61, tempo >> 7, tempo & 0x7F };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::setTrigGroup(uint8_t srcTrack, uint8_t trigTrack) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x65);
-  MidiUart.putc(srcTrack);
-  MidiUart.putc(trigTrack);
-  MidiUart.putc(0xF7);
+  uint8_t data[3] = { 0x65, srcTrack, trigTrack };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::setMuteGroup(uint8_t srcTrack, uint8_t muteTrack) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x66);
-  MidiUart.putc(srcTrack);
-  MidiUart.putc(muteTrack);
-  MidiUart.putc(0xF7);
+  uint8_t data[3] = { 0x66, srcTrack, muteTrack };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::saveCurrentKit(uint8_t pos) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x59);
-  MidiUart.putc(pos & 0x7F);
-  MidiUart.putc(0xF7);
+  uint8_t data[2] = { 0x59, pos & 0x7F };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::assignMachine(uint8_t track, uint8_t model) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x5B);
-  MidiUart.putc(track);
+  uint8_t data[] = { 0x5B, track, model, 0x00, 0x00 };
   if (model > 128) {
-    MidiUart.putc(model - 128);
-    MidiUart.putc(0x01);
+    data[3] = (model - 128);
+    data[4] = 0x01;
   } else {
-    MidiUart.putc(model);
-    MidiUart.putc(0x00);
+    data[3] = model;
+    data[4] = 0x00;
   }
-  MidiUart.putc(0x00);
-  MidiUart.putc(0xF7);
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::setMachine(uint8_t track, MDMachine *machine) {
@@ -337,12 +307,8 @@ void MDClass::muteTrack(uint8_t track, bool mute) {
 }
 
 void MDClass::setStatus(uint8_t id, uint8_t value) {
-  MidiUart.putc(0xF0);
-  MidiUart.sendRaw(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  MidiUart.putc(0x71);
-  MidiUart.putc(id & 0x7F);
-  MidiUart.putc(value & 0x7F);
-  MidiUart.putc(0xf7);
+  uint8_t data[] = { 0x71, id & 0x7F, value & 0x7F };
+  MD.sendSysex(data, countof(data));
 }
 
 void MDClass::loadGlobal(uint8_t id) {

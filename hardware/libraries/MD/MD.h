@@ -43,6 +43,8 @@ class MDClass {
   void triggerTrack(uint8_t track, uint8_t velocity);
   void setTrackParam(uint8_t track, uint8_t param, uint8_t value);
 
+  void sendSysex(uint8_t *bytes, uint8_t cnt);
+
   void sendFXParam(uint8_t param, uint8_t value, uint8_t type);
   void setEchoParam(uint8_t param, uint8_t value);
   void setReverbParam(uint8_t param, uint8_t value);
