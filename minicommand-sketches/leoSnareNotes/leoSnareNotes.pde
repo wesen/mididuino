@@ -1,7 +1,7 @@
 #include <MidiClockPage.h>
 #include <LeoSketch.h>
 
-LeoSnareNotesSketch sketch;
+LeoSketch sketch;
 
 void setup() {
   initMDTask();
