@@ -174,6 +174,39 @@ void MDLFOEncoder::displayAt(int i) {
   }
 }
 
+void MDKitSelectEncoderHandle(Encoder *enc) {
+  MD.loadKit(enc->getValue());
+}
+
+MDKitSelectEncoder::MDKitSelectEncoder(const char *_name, uint8_t init) :
+  RangeEncoder(0, 63, _name, init) {
+  handler = MDKitSelectEncoderHandle;
+}
+
+void MDKitSelectEncoder::displayAt(int i) {
+  GUI.setLine(GUI.LINE2);
+  uint8_t kit = getValue();
+  GUI.put_value(i, kit + 1);
+  redisplay = false;
+}
+
+void MDPatternSelectEncoderHandle(Encoder *enc) {
+  MD.loadPattern(enc->getValue());
+}
+
+MDPatternSelectEncoder::MDPatternSelectEncoder(const char *_name, uint8_t init) :
+  RangeEncoder(0, 127, _name, init) {
+  handler = MDPatternSelectEncoderHandle;
+}
+
+void MDPatternSelectEncoder::displayAt(int i) {
+  GUI.setLine(GUI.LINE2);
+  char name[5];
+  uint8_t pattern = getValue();
+  MD.getPatternName(pattern, name);
+  GUI.put_string_at(i * 4, name);
+}
+
 static const uint8_t flashOffset[4] = {
   4, 8, 0, 0
 };
@@ -183,8 +216,10 @@ void MDTrackFlashEncoder::displayAt(int i) {
   uint8_t track = getValue();
   GUI.put_value(i, track + 1);
   redisplay = false;
-  GUI.flash_put_value(i, track + 1);
-  GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+  if (MD.loadedKit) {
+    GUI.flash_put_value(i, track + 1);
+    GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+  }
 }
 
 void MDMelodicTrackFlashEncoder::displayAt(int i) {
@@ -193,10 +228,12 @@ void MDMelodicTrackFlashEncoder::displayAt(int i) {
   GUI.put_value(i, track + 1);
   redisplay = false;
   GUI.flash_put_value(i, track + 1);
-  if (MD.isMelodicTrack(track)) {
-    GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
-  } else {
-    GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
+  if (MD.loadedKit) {
+    if (MD.isMelodicTrack(track)) {
+      GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+    } else {
+      GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
+    }
   }
 }
 

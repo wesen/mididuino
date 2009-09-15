@@ -105,6 +105,20 @@ class MDMelodicTrackFlashEncoder : public MDTrackFlashEncoder {
 
   virtual void displayAt(int i);
 };
+
+class MDKitSelectEncoder : public RangeEncoder {
+ public:
+  MDKitSelectEncoder(const char *_name = NULL, uint8_t init = 0);
+
+  virtual void displayAt(int i);
+};
+
+class MDPatternSelectEncoder : public RangeEncoder {
+ public:
+  MDPatternSelectEncoder(const char *_name = NULL, uint8_t init = 0);
+
+  virtual void displayAt(int i);
+};
 #endif
 
 extern uint8_t track_pitches[16];
