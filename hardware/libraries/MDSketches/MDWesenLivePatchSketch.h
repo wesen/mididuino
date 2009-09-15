@@ -137,11 +137,6 @@ public:
   void onKitChanged() {
     for (int i = 0; i < 16; i++) {
       if (MD.kit.machines[i].model == RAM_P1_MODEL) {
-        GUI.setLine(GUI.LINE1);
-        GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
-//        GUI.flash_put_value(3, (uint8_t)i);
-        GUI.setLine(GUI.LINE2);
-        GUI.flash_string_fill(MD.kit.name);
         ramP1Track = i;
         mdBreakdown.ramP1Track = i;
         break;

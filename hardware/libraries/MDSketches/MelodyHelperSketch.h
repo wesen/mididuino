@@ -32,18 +32,8 @@ public:
   
   void setup() {
     Midi.addOnControlChangeCallback(this, (void(MidiCallback::*)(uint8_t*))&MelodyHelperSketch::onCCCallback);
-    if (!monster) {
-      MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MelodyHelperSketch::onKitChanged);
-    }
   }
 
-  void onKitChanged() {
-    GUI.setLine(GUI.LINE1);
-    GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_string_fill(MD.kit.name);
-  }  
-  
   virtual void onCCCallback(uint8_t *msg) {
     if (muted)
       return;

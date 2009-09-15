@@ -20,12 +20,6 @@ public:
 
   void onKitChanged() {
     MDRandomizer.onKitChanged();
-    if (!monster) {
-      GUI.setLine(GUI.LINE1);
-      GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
-      GUI.setLine(GUI.LINE2);
-      GUI.flash_string_fill(MD.kit.name);
-    }
   }
 
 

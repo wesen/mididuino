@@ -117,7 +117,6 @@ class ConfigPage_2 : public EncoderPage {
 
 
   void setup() {
-    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&ArpeggiatorSketch::onKitChanged);
     arpeggiator.setup();
   }
 
@@ -165,12 +164,6 @@ class ConfigPage_2 : public EncoderPage {
     }
   }
 
-  void onKitChanged() {
-    GUI.setLine(GUI.LINE1);
-    GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_string_fill(MD.kit.name);
-  }
 };
 
 #endif /* MDARPEGGIATORSKETCH_H__ */

@@ -154,9 +154,6 @@ public:
 
 
   void setup() {
-    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDPitchEuclidSketch::onKitChanged);
-    //    MDTask.addOnGlobalChangeCallback(_onGlobalChanged);
-
     MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&MDPitchEuclidSketch::on16Callback);
   }
 
@@ -205,13 +202,6 @@ public:
       pitchEuclid.randomizePitches();
     }
   }
-
-  void onKitChanged() {
-    GUI.setLine(GUI.LINE1);
-    GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_string_fill(MD.kit.name);
-  }  
 
   void on16Callback() {
     pitchEuclid.on16Callback();

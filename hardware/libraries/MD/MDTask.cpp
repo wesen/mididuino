@@ -83,6 +83,10 @@ void MDTaskClass::onKitMessageCallback() {
   if (MD.kit.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
     MD.loadedKit = true;
     kitChangeCallbacks.call();
+    GUI.setLine(GUI.LINE1);
+    GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+    GUI.setLine(GUI.LINE2);
+    GUI.flash_string_fill(MD.kit.name);
   } else {
     //    GUI.flash_strings_fill("FROM SYSEX", "ERROR");
   }
