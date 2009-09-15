@@ -8,6 +8,9 @@ public:
   MDLFOConfigPage lfoConfigPage;
   MDLFOTrackSelectPage lfoTrackSelectPage;
   
+  MDLFOSketch() : lfoConfigPage(&lfoPage), lfoTrackSelectPage(&lfoPage) {
+  }
+  
   void setup() {
     MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDLFOSketch::onKitChanged);
     setPage(&lfoPage);
