@@ -27,8 +27,6 @@ typedef struct tuning_s {
 } tuning_t;
 
 
-extern uint8_t track_pitches[16];
-
 class MDClass {
  public:
   MDClass();
