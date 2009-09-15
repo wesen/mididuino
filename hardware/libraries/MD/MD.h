@@ -69,7 +69,7 @@ class MDClass {
   void setLFOParam(uint8_t track, uint8_t param, uint8_t value);
   void setLFO(uint8_t track, MDLFO *lfo);
   
-  void assignMachine(uint8_t track, uint8_t model);
+  void assignMachine(uint8_t track, uint8_t model, uint8_t init = 0);
 
   void setMachine(uint8_t track, MDMachine *machine);
 

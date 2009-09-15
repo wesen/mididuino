@@ -276,14 +276,14 @@ void MDClass::saveCurrentKit(uint8_t pos) {
   MD.sendSysex(data, countof(data));
 }
 
-void MDClass::assignMachine(uint8_t track, uint8_t model) {
-  uint8_t data[] = { 0x5B, track, model, 0x00, 0x00 };
-  if (model > 128) {
-    data[3] = (model - 128);
-    data[4] = 0x01;
+void MDClass::assignMachine(uint8_t track, uint8_t model, uint8_t init) {
+  uint8_t data[] = { 0x5B, track, model, 0x00, init };
+  if (model >= 128) {
+    data[2] = (model - 128);
+    data[3] = 0x01;
   } else {
-    data[3] = model;
-    data[4] = 0x00;
+    data[2] = model;
+    data[3] = 0x00;
   }
   MD.sendSysex(data, countof(data));
 }
