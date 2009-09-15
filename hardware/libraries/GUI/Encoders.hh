@@ -18,6 +18,8 @@ class Encoder {
  public:
   int old, cur;
   char name[4];
+  bool fastmode;
+  bool pressmode;
 
   encoder_handle_t handler;
   

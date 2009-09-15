@@ -24,6 +24,8 @@ Encoder::Encoder(const char *_name, encoder_handle_t _handler) {
   redisplay = false;
   setName(_name);
   handler = _handler;
+  fastmode = true;
+  pressmode = false;
 }
 
 void Encoder::checkHandle() {
@@ -66,7 +68,7 @@ void Encoder::clear() {
 }
 
 int Encoder::update(encoder_t *enc) {
-  cur = cur + enc->normal + 5 * enc->button;
+  cur = cur + enc->normal + (pressmode ? 0 : (fastmode ? 5 * enc->button : enc->button));
   return cur;
 }
 
@@ -86,7 +88,7 @@ void PEnumEncoder::displayAt(int i) {
 /* RangeEncoder */
 
 int RangeEncoder::update(encoder_t *enc) {
-  int inc = enc->normal + 5 * enc->button;
+  int inc = enc->normal + (pressmode ? 0 : (fastmode ? 5 * enc->button : enc->button));
   
   cur = limit_value(cur, inc, min, max);
   return cur;

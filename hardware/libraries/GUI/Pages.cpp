@@ -84,7 +84,43 @@ bool SwitchPage::handleEvent(gui_event_t *event) {
   for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
     if (pages[i] != NULL && EVENT_PRESSED(event, i)) {
       if (parent != NULL) {
-	parent->setPage(pages[i]);
+	parent->setPage(pages[i - Buttons.ENCODER1]);
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+void EncoderSwitchPage::display() {
+  if (redisplay) {
+    GUI.setLine(GUI.LINE1);
+    GUI.clearLine();
+    if (pages[0] != NULL) {
+      GUI.put_string_at(0, pages[0]->name);
+    }
+    if (pages[3] != NULL) {
+      int l = m_strlen(pages[3]->name);
+      GUI.put_string_at(15 - l, pages[3]->name);
+    }
+
+    GUI.setLine(GUI.LINE2);
+    GUI.clearLine();
+    if (pages[1] != NULL) {
+      GUI.put_string_at(0, pages[1]->name);
+    }
+    if (pages[2] != NULL) {
+      int l = m_strlen(pages[2]->name);
+      GUI.put_string_at(15 - l, pages[2]->name);
+    }
+  }
+}
+
+bool EncoderSwitchPage::handleEvent(gui_event_t *event) {
+  for (int i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
+    if (pages[i] != NULL && EVENT_PRESSED(event, i)) {
+      if (parent != NULL) {
+	parent->setPage(pages[i - Buttons.BUTTON1]);
       }
       return true;
     }

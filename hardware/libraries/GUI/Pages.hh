@@ -105,6 +105,16 @@ public:
   virtual bool handleEvent(gui_event_t *event);
 };
 
+class EncoderSwitchPage : public SwitchPage {
+public:
+  EncoderSwitchPage(Page *p1 = NULL, Page *p2 = NULL, Page *p3 = NULL, Page *p4 = NULL) :
+    SwitchPage(NULL, p1, p2, p3, p4) {
+  }
+
+  virtual void display();
+  virtual bool handleEvent(gui_event_t *event);
+};
+
 class PageContainer {
  public:
   Stack<Page *, 8> pageStack;
