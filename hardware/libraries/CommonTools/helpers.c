@@ -7,6 +7,13 @@
 
 #include "helpers.h"
 
+uint16_t m_strlen(const char *src) {
+  uint16_t result = 0;
+  while (src[result++] != '\0')
+    ;
+  return result;
+}
+
 void m_memcpy(void *dst, void *src, uint16_t cnt) {
   while (cnt) {
     *((uint8_t *)dst++) = *((uint8_t *)src++);
