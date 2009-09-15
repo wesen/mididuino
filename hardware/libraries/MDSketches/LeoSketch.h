@@ -3,27 +3,30 @@
 
 #include <MD.h>
 #include <Scales.h>
+#include <MDLFOPage.h>
 
 scale_t *currentScale = &minorMin7Arp;
 
-class LeoPage : public EncoderPage {
+class LeoTriggerPage : public EncoderPage {
   public:
   MDTrackFlashEncoder trackStartEncoder;
   BoolEncoder triggerOnOffEncoder;
-  RangeEncoder kitSelectEncoder;
-  RangeEncoder patternSelectEncoder;
+  MDKitSelectEncoder kitSelectEncoder;
+  MDPatternSelectEncoder patternSelectEncoder;
   
-  LeoPage() : trackStartEncoder("STR"), triggerOnOffEncoder("TRG"),
-     kitSelectEncoder(0, 64, "KIT"), patternSelectEncoder(0, 127, "PAT") {
-       encoders[0] = &trackStartEncoder;
-       encoders[1] = &triggerOnOffEncoder;
-       encoders[2] = &kitSelectEncoder;
-       encoders[3] = &patternSelectEncoder;
+  LeoTriggerPage() : trackStartEncoder("STR"), triggerOnOffEncoder("TRG"),
+    kitSelectEncoder("KIT"), patternSelectEncoder("PAT") {
+    encoders[0] = &trackStartEncoder;
+    encoders[1] = &triggerOnOffEncoder;
+    encoders[2] = &kitSelectEncoder;
+    encoders[3] = &patternSelectEncoder;
+    for (uint8_t i = 0; i < 4; i++) {
+      encoders[i]->pressmode = true;
+    }
   }
   
   virtual void loop() {
     if (kitSelectEncoder.hasChanged()) {
-      MD.loadKit(kitSelectEncoder.getValue());
     }
     if (patternSelectEncoder.hasChanged()) {
       MD.loadPattern(patternSelectEncoder.getValue());
@@ -59,21 +62,32 @@ class LeoPage : public EncoderPage {
   }
 };
 
-class LeoSnareNotesSketch : public Sketch, public MDCallback {
-  LeoPage leoPage;
-  public:
+class LeoSketch : public Sketch, public MDCallback {
+  LeoTriggerPage triggerPage;
+  MDLFOPage lfoPage;
+  EncoderSwitchPage switchPage;
+
+ public:
   virtual void setup() {
-    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&LeoSnareNotesSketch::onKitChanged);
-    setPage(&leoPage);
-  }
-  
-  void onKitChanged() {
-    GUI.setLine(GUI.LINE1);
-    GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_string_fill(MD.kit.name);
+    lfoPage.setName("LFOS");
+    triggerPage.setName("TRIGGER");
+    switchPage.initPages(&triggerPage, &lfoPage);
+    switchPage.parent = this;
+    
+    setPage(&lfoPage);
   }
 
+  virtual bool handleEvent(gui_event_t *event) {
+    if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
+      pushPage(&switchPage);
+      return true;
+    } else if (EVENT_RELEASED(event, Buttons.ENCODER1)) {
+      popPage(&switchPage);
+      return true;
+    }
+
+    return false;
+  }
 };
 
 
