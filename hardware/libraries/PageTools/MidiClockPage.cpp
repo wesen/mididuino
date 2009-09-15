@@ -170,10 +170,9 @@ void MidiClockPage::loop() {
   }
   return true;
 }
-
-MidiClockPage midiClockPage;
-
 void initClockPage() {
+  static MidiClockPage midiClockPage;
+
   if (SDCard.init() != 0) {
     GUI.flash_strings_fill("SDCARD ERROR", "");
     GUI.display();
