@@ -47,47 +47,49 @@ CFLAGS += $(INCS)
 CXXFLAGS += $(INCS)
 LLVMCFLAGS ?= -emit-llvm -O4 $(CFLAGS)
 
-all: main.hex
+TARGET ?= $(shell pwd  | sed -e 's/.*\///')
+
+all: $(TARGET).hex
 
 bla:
 	echo $(CFLAGS)
 	echo $(CFLAGS)
 
-main.cpp: $(PDEFILES)  $(wildcard $(CORE_DIR)/*.cxx)
+$(TARGET).cpp: $(PDEFILES)  $(wildcard $(CORE_DIR)/*.cxx)
 	echo $(wildcard $(CORE_DIR)/*.cxx)
-	java -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./main $(PDEFILES)
+	java -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./$(TARGET) $(PDEFILES)
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp -o $@
-#	rm main.cpp
+$(TARGET).o: $(TARGET).cpp
+	$(CXX) $(CXXFLAGS) -c $(TARGET).cpp -o $@
+	rm $(TARGET).cpp
 
-mainwhole.elf: main.mycpp $(COBJS)
+$(TARGET)whole.elf: $(TARGET).mycpp $(COBJS)
 	$(CXX) $(CLDFLAGS) $(CFLAGS) -o $@ -fwhole-program --combine $^ $(SRCS)
-	rm -f main.mycpp
+	rm -f $(TARGET).mycpp
 
-upload: main.hex
+upload: $(TARGET).hex
 	midi-send -I 0x41 -b -i0 -o0 $<
 
-main.bc.o: main.llvm.o $(LLVMOBJS)
+$(TARGET).bc.o: $(TARGET).llvm.o $(LLVMOBJS)
 	llvm-link -o $@ -f $^
 
-main.elf: main.o $(OBJS)
+$(TARGET).elf: $(TARGET).o $(OBJS)
 	$(CXX) $(CLDFLAGS) -g -o $@ $^ 
-	rm -f main.mycpp
+	rm -f $(TARGET).mycpp
 
-%.o: %.c Makefile
+%.o: %.c 
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.cpp Makefile
+%.o: %.cpp 
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-%.llvm.o: %.c Makefile
+%.llvm.o: %.c 
 	$(LLVMCC) $(LLVMCFLAGS) -emit-llvm -c $< -o $@
 
-%.llvm.o: %.cpp Makefile
+%.llvm.o: %.cpp 
 	$(LLVMCXX) $(LLVMCFLAGS) -emit-llvm -c $< -o $@
 
-%.o: %.s Makefile
+%.o: %.s 
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.s: %.c
@@ -124,4 +126,4 @@ libclean:
 	rm -rf $(OBJS)
 
 clean:
-	rm -rf *.os *.o *.elf *.elfs *.lst main.mycpp
+	rm -rf *.os *.o *.elf *.elfs *.lst $(TARGET).mycpp
