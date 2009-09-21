@@ -9,6 +9,11 @@ void CCEncoderHandle(Encoder *enc) {
   MidiUart.sendCC(ccEnc->getChannel(), ccEnc->getCC(), ccEnc->getValue());
 }
 
+void VarRangeEncoderHandle(Encoder *enc) {
+  VarRangeEncoder *rEnc = (VarRangeEncoder *)enc;
+  *(rEnc->var) = rEnc->getValue();
+}
+
 #ifndef HOST_MIDIDUINO
 #include <MidiClock.h>
 

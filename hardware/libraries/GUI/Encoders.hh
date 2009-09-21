@@ -70,6 +70,17 @@ class RangeEncoder : public Encoder {
   virtual int update(encoder_t *enc);
 };
 
+void VarRangeEncoderHandle(Encoder *enc);
+
+class VarRangeEncoder : public RangeEncoder {
+public:
+  uint8_t *var;
+
+  VarRangeEncoder(uint8_t *var, int _max = 127, int _min = 0, const char *_name = NULL, int init = 0) :
+    RangeEncoder(_max, _min, _name, init, VarRangeEncoderHandle) {
+  }
+};
+
 class EnumEncoder : public RangeEncoder {
 public:
   const char **enumStrings;
