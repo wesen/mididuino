@@ -177,6 +177,13 @@ void MidiClockClass::handleImmediateClock() {
 
   if (transmit)
     MidiUart.putc_immediate(0xF8);
+
+  if (state == STARTING) {
+    state = STARTED;
+  }
+
+  if (state != STARTED)
+    return;
   
   if (mod6_counter == 5) {
     div16th_counter++;
@@ -199,10 +206,6 @@ void MidiClockClass::handleImmediateClock() {
   mod6_counter++;
   if (mod6_counter == 6)
     mod6_counter = 0;
-
-  if (state == STARTING && div96th_counter >= 1) {
-    state = STARTED;
-  }
 
   static bool inCallback = false;
   if (inCallback) {
