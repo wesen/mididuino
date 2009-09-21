@@ -53,6 +53,6 @@ extern scale_t minorMin7ArpMin9;
 extern scale_t minorMaj7Arp9;
 extern scale_t minorMaj7ArpMin9;
 
-uint8_t randomScalePitch(scale_t *scale, uint8_t octaves = 0);
+uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves = 0);
 
 #endif /* SCALES_H__ */

@@ -23,7 +23,7 @@
 
 extern uint8_t minorScale[12];
 extern uint8_t majorScale[12];
-uint8_t scalePitch(uint8_t pitch, uint8_t root, uint8_t *scale);
+uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
 void getNotePitch(uint8_t pitch, char *name);
 
 #endif /* MIDITOOLS_H__ */

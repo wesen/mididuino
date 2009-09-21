@@ -2,7 +2,7 @@
 #include "helpers.h"
 #include "Scales.h"
 
-uint8_t randomScalePitch(scale_t *scale, uint8_t octaves) {
+uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves) {
   uint8_t pitch = scale->pitches[random(scale->size)];
   if (octaves == 0) {
     return pitch;
