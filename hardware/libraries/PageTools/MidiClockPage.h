@@ -9,6 +9,7 @@ class MidiClockPage : public EncoderPage {
  public:
   EnumEncoder clockSourceEncoder;
   BoolEncoder transmitEncoder;
+  BoolEncoder immediateEncoder;
   EnumEncoder mergerEncoder;
   static const char *clockSourceEnum[];
 

@@ -33,10 +33,11 @@ static uint8_t mergerConfigMasks[] = {
 void MidiClockPage::writeClockSettings() {
   if (!SDCard.isInit)
     return;
-  uint8_t buf[2];
+  uint8_t buf[3];
   buf[0] = MidiClock.mode;
   buf[1] = MidiClock.transmit ? 1 : 0;
-  if (!SDCard.writeFile("/ClockSettings.txt", buf, 2, true)) {
+  buf[2] = MidiClock.useImmediateClock ? 1 : 0;
+  if (!SDCard.writeFile("/ClockSettings.txt", buf, 3, true)) {
     GUI.flash_strings_fill("ERROR SAVING", "CLOCK SETUP");
   }
 }
@@ -44,12 +45,13 @@ void MidiClockPage::writeClockSettings() {
 void MidiClockPage::readClockSettings() {
   if (!SDCard.isInit)
     return;
-  uint8_t buf[2];
-  if (!SDCard.readFile("/ClockSettings.txt", buf, 2)) {
+  uint8_t buf[3];
+  if (!SDCard.readFile("/ClockSettings.txt", buf, 3)) {
     GUI.flash_strings_fill("ERROR READING", "CLOCK SETUP");
   } else {
     MidiClock.mode = (MidiClockClass::clock_mode_t)buf[0];
     MidiClock.transmit = buf[1];
+    MidiClock.useImmediateClock = buf[2];
     if (MidiClock.mode == MidiClock.EXTERNAL_MIDI || MidiClock.mode == MidiClock.EXTERNAL_UART2) {
       MidiClock.start();
     }
@@ -81,6 +83,7 @@ void MidiClockPage::setup() {
   clockSourceEncoder.initEnumEncoder(clockSourceEnum, 3, "CLK");
   transmitEncoder.initBoolEncoder("SND");
   mergerEncoder.initEnumEncoder(mergerConfigStrings, countof(mergerConfigStrings), "MRG");
+  immediateEncoder.initBoolEncoder("IMM");
   readClockSettings();
   switch (MidiClock.mode) {
   case MidiClockClass::OFF:
@@ -92,6 +95,9 @@ void MidiClockPage::setup() {
   case MidiClockClass::EXTERNAL_UART2:
     clockSourceEncoder.setValue(2);
     break;
+  }
+  if (MidiClock.useImmediateClock) {
+    immediateEncoder.setValue(1);
   }
   if (MidiClock.transmit) {
     transmitEncoder.setValue(1);
@@ -106,7 +112,8 @@ void MidiClockPage::setup() {
   
   encoders[0] = &clockSourceEncoder;
   encoders[1] = &transmitEncoder;
-  encoders[2] = &mergerEncoder;
+  encoders[2] = &immediateEncoder;
+  encoders[3] = &mergerEncoder;
   
 }
 
@@ -148,6 +155,14 @@ void MidiClockPage::loop() {
     } else {
       MidiClock.transmit = false;
       //      GUI.flash_strings_fill("MIDI CLOCK OUT", "DEACTIVATED");
+    }
+    changed = true;
+  }
+  if (immediateEncoder.hasChanged()) {
+    if (immediateEncoder.getBoolValue()) {
+      MidiClock.useImmediateClock = true;
+    } else {
+      MidiClock.useImmediateClock = false;
     }
     changed = true;
   }
