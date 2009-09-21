@@ -3,7 +3,7 @@ CXX     = avr-g++
 OBJCOPY = avr-objcopy
 
 ARCH  = atxmega128a1
-F_CPU = 32000000L
+F_CPU = 2000000L
 
 CFLAGS += -Os
 CFLAGS += -mmcu=$(ARCH)
