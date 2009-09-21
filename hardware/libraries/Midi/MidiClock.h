@@ -33,6 +33,8 @@ class MidiClockClass {
   volatile uint16_t rx_clock;
   volatile bool doUpdateClock;
 
+  volatile bool useImmediateClock;
+
   volatile bool updateSmaller;
   uint16_t pll_x;
   uint16_t tempo;
@@ -112,6 +114,7 @@ class MidiClockClass {
   
   void init();
   void handleClock();
+  void handleImmediateClock();
   void updateClockPhase();
   void updateClockInterval();
   void handleMidiStart();
