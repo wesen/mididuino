@@ -5,7 +5,60 @@
 #include <Scales.h>
 #include <MDLFOPage.h>
 
-scale_t *currentScale = &minorMin7Arp;
+class LeoTriggerClass {
+ public:
+  bool isTriggerOn;
+  const static scale_t *scales[];
+  uint8_t currentScale;
+  uint8_t numOctaves;
+  uint8_t basePitch;
+  uint8_t scaleSpread;
+  
+  LeoTriggerClass() {
+    isTriggerOn = true;
+    currentScale = 0;
+    numOctaves = 1;
+    scaleSpread = 5;
+  }
+  
+  void triggerTrack(uint8_t track) {
+    uint8_t pitch = basePitch + randomScalePitch(scales[currentScale], numOctaves);
+    uint8_t value = MIN(127, pitch * scaleSpread);
+    MD.setTrackParam(track, 0, value);
+    
+    if (isTriggerOn) {
+      MD.triggerTrack(track, 100);
+    }
+  }
+};
+
+const scale_t *LeoTriggerClass::scales[] = {
+  &ionianScale,
+  &aeolianScale,
+  &bluesScale,
+  &majorPentatonicScale,
+  &majorMaj7Arp,
+  &majorMin7Arp,
+  &minorMin7Arp
+};
+
+LeoTriggerClass leoTrigger;
+
+class LeoScalePage : public EncoderPage {
+ public:
+  VarRangeEncoder scaleSelectEncoder;
+  VarRangeEncoder basePitchEncoder;
+  VarRangeEncoder spreadEncoder;
+  VarRangeEncoder octaveEncoder;
+
+ LeoScalePage() :
+  scaleSelectEncoder(&leoTrigger.currentScale, 0, countof(LeoTriggerClass::scales) - 1, "SCL"),
+    basePitchEncoder(&leoTrigger.basePitch, 0, 127, "BAS"),
+    spreadEncoder(&leoTrigger.scaleSpread, 1, 10, "SPR"),
+    octaveEncoder(&leoTrigger.numOctaves, 0, 5, "OCT") {
+    setEncoders(&scaleSelectEncoder, &basePitchEncoder, &spreadEncoder, &octaveEncoder);
+  }
+};
 
 class LeoTriggerPage : public EncoderPage {
   public:
@@ -16,20 +69,15 @@ class LeoTriggerPage : public EncoderPage {
   
   LeoTriggerPage() : trackStartEncoder("STR"), triggerOnOffEncoder("TRG"),
     kitSelectEncoder("KIT"), patternSelectEncoder("PAT") {
-    encoders[0] = &trackStartEncoder;
-    encoders[1] = &triggerOnOffEncoder;
-    encoders[2] = &kitSelectEncoder;
-    encoders[3] = &patternSelectEncoder;
+    setEncoders(&trackStartEncoder, &triggerOnOffEncoder, &kitSelectEncoder, &patternSelectEncoder);
     for (uint8_t i = 0; i < 4; i++) {
       encoders[i]->pressmode = true;
     }
   }
   
   virtual void loop() {
-    if (kitSelectEncoder.hasChanged()) {
-    }
-    if (patternSelectEncoder.hasChanged()) {
-      MD.loadPattern(patternSelectEncoder.getValue());
+    if (triggerOnOffEncoder.hasChanged()) {
+      leoTrigger.isTriggerOn = triggerOnOffEncoder.getBoolValue();
     }
   }
   
@@ -46,17 +94,7 @@ class LeoTriggerPage : public EncoderPage {
   virtual bool handleEvent(gui_event_t *event) {
     for (uint8_t i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
       if (EVENT_PRESSED(event, i)) {
-        static const uint8_t ccValues[8] = {
-          10, 20,  30, 50, 70, 90, 100, 110
-        };
-        uint8_t track = trackStartEncoder.getValue() + (i - Buttons.BUTTON1);
-        uint8_t pitch = randomScalePitch(currentScale, 1) ;
-        uint8_t realPitch = MD.trackGetPitch(track, pitch);
-        MD.setTrackParam(track, 0, ccValues[random(8)]);
-        
-        if (triggerOnOffEncoder.getValue() == 1) {
-          MD.triggerTrack(track, 100);
-        }
+	leoTrigger.triggerTrack(trackStartEncoder.getValue() + (i - Buttons.BUTTON1));
       }
     }
   }
