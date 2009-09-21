@@ -10,9 +10,12 @@ AVR_ARCH = atmega64
 F_CPU = 16000000L
 
 CORE = minicommand2
-BASE_DIR = /Applications/mididuino-0013
-LBASE_DIR = $(BASE_DIR)/hardware/libraries
-JAR_DIR = $(BASE_DIR)/MidiDuino\ 14.app/Contents/Resources/Java
+#BASE_DIR = /Applications/Mididuino.app
+BASE_DIR = /Users/manuel/code/mididuino-app/build/macosx/work/Mididuino.app
+HARDWARE_DIR = $(BASE_DIR)/Contents/Resources/Java/hardware
+LBASE_DIR = $(HARDWARE_DIR)/libraries
+CORE_DIR = $(HARDWARE_DIR)/cores/$(CORE)
+JAR_DIR = $(BASE_DIR)/Contents/Resources/Java
 CLASSPATH = $(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
 PDEFILES=$(wildcard $(PDEDIR)/*.pde)
@@ -24,12 +27,12 @@ PDEFILES=$(wildcard $(PDEDIR)/*.pde)
 #CFLAGS += --param inline-call-cost=2 -finline-limit=3 -fno-inline-small-functions
 #CFLAGS += -fno-tree-scev-cprop -fsplit-wide-types
 
-CFLAGS = $(shell cd $(BASE_DIR) && java -cp "$(CLASSPATH)" processing.app.Compiler --board $(CORE) --print-c-flags)
-CXXFLAGS = $(shell cd $(BASE_DIR) && java -cp "$(CLASSPATH)" processing.app.Compiler --board $(CORE) --print-cxx-flags)
-CLDFLAGS = $(shell cd $(BASE_DIR) && java -cp "$(CLASSPATH)" processing.app.Compiler --board $(CORE) --print-ld-flags)
+CFLAGS := $(shell cd $(JAR_DIR) && java -cp "$(CLASSPATH)" processing.app.debug.Compiler --board $(CORE) --print-c-flags)
+CXXFLAGS := $(shell cd $(JAR_DIR) && java -cp "$(CLASSPATH)" processing.app.debug.Compiler --board $(CORE) --print-cxx-flags)
+CLDFLAGS := $(shell cd $(JAR_DIR) && java -cp "$(CLASSPATH)" processing.app.debug.Compiler --board $(CORE) --print-ld-flags)
 
-DIRS = CommonTools Midi GUI SDCard MNM MD MidiTools Elektron PageTools
-LDIRS = $(wildcard $(LBASE_DIR)/*) $(BASE_DIR)/hardware/cores/$(CORE)
+DIRS = CommonTools Midi GUI SDCard MNM MD MidiTools Elektron PageTools MDPages
+LDIRS = $(wildcard $(LBASE_DIR)/*) $(CORE_DIR)
 INCS = $(foreach dir,$(LDIRS),-I$(dir))
 
 SRCS =  $(foreach dir,$(LDIRS),$(wildcard $(dir)/*.cpp))
@@ -46,11 +49,17 @@ LLVMCFLAGS ?= -emit-llvm -O4 $(CFLAGS)
 
 all: main.hex
 
-main.o: $(PDEFILES) $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
-	echo $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
+bla:
+	echo $(CFLAGS)
+	echo $(CFLAGS)
+
+main.cpp: $(PDEFILES)  $(wildcard $(CORE_DIR)/*.cxx)
+	echo $(wildcard $(CORE_DIR)/*.cxx)
 	java -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./main $(PDEFILES)
+
+main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c main.cpp -o $@
-	rm main.cpp
+#	rm main.cpp
 
 mainwhole.elf: main.mycpp $(COBJS)
 	$(CXX) $(CLDFLAGS) $(CFLAGS) -o $@ -fwhole-program --combine $^ $(SRCS)
