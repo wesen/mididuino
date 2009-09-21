@@ -126,6 +126,14 @@ void MidiClockClass::handleClock() {
     div16th_counter++;
     div32th_counter++;
   }
+
+  
+  if (div16th_counter % 4 == 0) {
+    setLed();
+  } else {
+    clearLed();
+  }
+
   
   if (mod6_counter == 2) {
     div32th_counter++;
