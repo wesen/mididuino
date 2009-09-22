@@ -127,3 +127,39 @@ bool EncoderSwitchPage::handleEvent(gui_event_t *event) {
   }
   return false;
 }
+
+void ScrollSwitchPage::addPage(Page *page) {
+  pages.add(page);
+  pageEncoder.max = pages.length() - 1;
+}
+
+void ScrollSwitchPage::display() {
+  if (redisplay) {
+    GUI.setLine(GUI.LINE1);
+    GUI.put_p_string(PSTR("SELECT PAGE:"));
+    GUI.setLine(GUI.LINE2);
+    Page *page = pages.arr[pageEncoder.getValue()];
+    if (page != NULL) {
+      GUI.put_string_fill(page->name);
+    }
+  }
+}
+
+void ScrollSwitchPage::loop() {
+  if (pageEncoder.hasChanged()) {
+    redisplay = true;
+  }
+}
+
+bool ScrollSwitchPage::handleEvent(gui_event_t *event) {
+  Page *page = pages.arr[pageEncoder.getValue()];
+  if (page != NULL) {
+    if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
+      if (parent != NULL) {
+	parent->setPage(page);
+      }
+      return true;
+    }
+  }
+  return false;
+}

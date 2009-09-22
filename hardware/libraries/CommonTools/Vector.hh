@@ -5,8 +5,8 @@ template <class T, int N>
 class Vector {
 protected:
 public:
-  int size;
   T arr[N];
+  int size;
 
 
   Vector() {
@@ -34,6 +34,15 @@ public:
       }
     }
     return false;
+  }
+
+  int length() {
+    int res = 0;
+    for (int i = 0; i < N; i++) {
+      if (arr[i] != 0)
+	res++;
+    }
+    return res;
   }
 };
 

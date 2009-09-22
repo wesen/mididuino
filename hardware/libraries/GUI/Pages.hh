@@ -16,7 +16,7 @@ class Page {
   PageContainer *parent;
   bool isSetup;
 
-  Page(char *_name = NULL, char *_shortName = NULL) {
+  Page(const char *_name = NULL, const char *_shortName = NULL) {
     parent = NULL;
     redisplay = false;
     setName(_name);
@@ -24,7 +24,7 @@ class Page {
     isSetup = false;
   }
 
-  void setName(char *_name = NULL) {
+  void setName(const char *_name = NULL) {
     if (_name != NULL) {
       m_strncpy(name, _name, 17);
     } else {
@@ -32,7 +32,7 @@ class Page {
     }
   }
 
-  void setShortName(char *_shortName = NULL) {
+  void setShortName(const char *_shortName = NULL) {
     if (_shortName != NULL) {
       m_strncpy(shortName, _shortName, 4);
     } else {
@@ -87,7 +87,7 @@ class SwitchPage : public Page {
 public:
   Page *pages[4];
 
-  SwitchPage(char *_name = "SELECT PAGE:",
+  SwitchPage(const char *_name = "SELECT PAGE:",
 	     Page *p1 = NULL, Page *p2 = NULL, Page *p3 = NULL, Page *p4 = NULL) :
     Page(_name) {
     initPages(p1, p2, p3, p4);
@@ -112,6 +112,23 @@ public:
   }
 
   virtual void display();
+  virtual bool handleEvent(gui_event_t *event);
+};
+
+class ScrollSwitchPage : public EncoderPage {
+public:
+  Vector<Page *, 8> pages;
+  RangeEncoder pageEncoder;
+
+  ScrollSwitchPage() : pageEncoder(0, 0) {
+    pageEncoder.pressmode = true;
+    encoders[0] = &pageEncoder;
+  }
+
+  void addPage(Page *page);
+
+  virtual void display();
+  virtual void loop();
   virtual bool handleEvent(gui_event_t *event);
 };
 
