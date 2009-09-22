@@ -23,8 +23,8 @@ class LeoTriggerClass {
   }
   
   void triggerTrack(uint8_t track) {
-    uint8_t pitch = basePitch + randomScalePitch(scales[currentScale], numOctaves);
-    uint8_t value = MIN(127, pitch * scaleSpread);
+    uint8_t pitch = randomScalePitch(scales[currentScale], numOctaves);
+    uint8_t value = MIN(127, pitch * scaleSpread + basePitch);
 
 #if 0
     GUI.setLine(GUI.LINE1);
