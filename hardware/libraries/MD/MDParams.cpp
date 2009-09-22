@@ -603,7 +603,15 @@ model_param_name_t ram_r_model_names[] PROGMEM = { { "MLV", 0},
 						   { "LEN", 6},
 						   { "RAT", 7}, {"", 127} };
 
-model_param_name_t generic_param_names[] PROGMEM = { { "AMD", 8 },
+model_param_name_t generic_param_names[] PROGMEM = { { "P1", 0},
+						     { "P2", 1},
+						     { "P3", 2},
+						     { "P4", 3},
+						     { "P5", 4},
+						     { "P6", 5},
+						     { "P7", 6},
+						     { "P8", 7},
+						     { "AMD", 8 },
 						      { "AMF", 9 },
 						      { "EQF", 10 },
 						      { "EQG", 11 },
@@ -723,16 +731,21 @@ PGM_P model_param_name(uint8_t model, uint8_t param) {
   } else if (param == 33) {
     return PSTR("LEV");
   }
-  
+
   if (model >= MID_MODEL && model <= MID_16_MODEL) {
     return get_param_name(mid_model_names, param);
   }
   if (model >= CTR_8P_MODEL && model < ROM_01_MODEL) {
     return get_param_name(get_model_param_names(model), param);
   }
+
   if (param >= 8) {
     return get_param_name(generic_param_names, param);
   } else {
+    if (model == 0xFF) {
+      return get_param_name(generic_param_names, param);
+    }
+  
     if ((model >= ROM_01_MODEL && model <= ROM_32_MODEL) ||
 	(model >= ROM_33_MODEL && model <= ROM_48_MODEL)) {
       return get_param_name(rom_model_names, param);

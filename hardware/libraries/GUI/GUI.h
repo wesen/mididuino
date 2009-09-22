@@ -12,6 +12,7 @@
 #define MIDIDUINO_GUI_ACTIVE 1
 
 #include "Events.hh"
+#include "Encoders.hh"
 #include "Pages.hh"
 
 typedef struct line_s {

@@ -107,6 +107,48 @@ void MDLFOEncoder::setLFOParamName() {
   setName(MDLFONames[param]);
 }
 
+void MDLFOEncoder::setParam(uint8_t _param) {
+  param = _param;
+  setLFOParamName();
+
+  switch (param) {
+  case MD_LFO_TRACK:
+    max = 15;
+    break;
+    
+  case MD_LFO_PARAM:
+    max = 23;
+    break;
+
+  case MD_LFO_SHP1:
+    max = 5;
+    break;
+    
+  case MD_LFO_SHP2:
+    max = 5;
+    break;
+    
+  case MD_LFO_UPDTE:
+    max = 3;
+    break;
+    
+  case MD_LFO_SPEED:
+    max = 127;
+    break;
+    
+  case MD_LFO_DEPTH:
+    max = 127;
+    break;
+    
+  case MD_LFO_SHMIX:
+    max = 127;
+    break;
+  }
+
+  loadFromKit();
+  
+}
+
 void MDLFOEncoder::loadFromKit() {
   if (MD.loadedKit) {
     switch (param) {
@@ -145,12 +187,41 @@ void MDLFOEncoder::loadFromKit() {
   }
 }
 
+static const char *lfoUpdateStrings[] = { "FRE", "TRG", "HLD" };
+static const char *lfoShapeStrings[] = { "TRI", "SAW", "SQR", "RMP", "EXP", "RND" };
+
+static void MDTrackDisplayAt(Encoder *enc, int i, uint8_t track);
+static void MDParamDisplayAt(Encoder *enc, int i, uint8_t track, uint8_t param);
+
 void MDLFOEncoder::displayAt(int i) {
-  if (param == MD_LFO_SHP1 || param == MD_LFO_SHP2) {
+  switch (param) {
+  case MD_LFO_TRACK:
+    MDTrackDisplayAt(this, i, getValue());
+    break;
+
+  case MD_LFO_PARAM: {
+    GUI.setLine(GUI.LINE2);
+    PGM_P name = NULL;
+    name = model_param_name(0xFF, getValue());
+    GUI.put_p_string(i, name);
+    redisplay = false;
+  }
+    break;
+    
+  case MD_LFO_SHP1:
+  case MD_LFO_SHP2:
+    GUI.put_string_at(i * 4, lfoShapeStrings[getValue()]);
+    redisplay = false;
+    break;
+
+  case MD_LFO_UPDTE:
+    GUI.put_string_at(i * 4, lfoUpdateStrings[getValue()]);
+    redisplay = false;
+    break;
+
+  default:
     Encoder::displayAt(i);
-    // XXX fill with waveform name
-  } else {
-    Encoder::displayAt(i);
+    break;
   }
 }
 
@@ -191,15 +262,18 @@ static const uint8_t flashOffset[4] = {
   4, 8, 0, 0
 };
 
-void MDTrackFlashEncoder::displayAt(int i) {
+static void MDTrackDisplayAt(Encoder *enc, int i, uint8_t track) {
   GUI.setLine(GUI.LINE2);
-  uint8_t track = getValue();
   GUI.put_value(i, track + 1);
-  redisplay = false;
-  if (MD.loadedKit && hasChanged()) {
+  enc->redisplay = false;
+  if (MD.loadedKit && enc->hasChanged()) {
     GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
     GUI.flash_put_value(i, track + 1);
   }
+}
+
+void MDTrackFlashEncoder::displayAt(int i) {
+  MDTrackDisplayAt(this, i, getValue());
 }
 
 void MDMelodicTrackFlashEncoder::displayAt(int i) {
@@ -331,6 +405,22 @@ void MDMuteGroupEncoder::loadFromMD() {
     }
     setValue(group);
   }
+}
+
+static void MDParamDisplayAt(Encoder *enc, int i, uint8_t track, uint8_t param) {
+  GUI.setLine(GUI.LINE2);
+  PGM_P name = NULL;
+  if (MD.loadedKit) {
+    name = model_param_name(MD.kit.machines[track].model, param);
+  } else {
+    name = model_param_name(0xFF, param);
+  }
+  GUI.put_p_string(i, name);
+  enc->redisplay = false;
+}
+
+void MDParamSelectEncoder::displayAt(int i) {
+  MDParamDisplayAt(this, i, track, getValue());
 }
 
 #endif

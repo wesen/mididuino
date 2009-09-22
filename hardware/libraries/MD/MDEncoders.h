@@ -61,10 +61,7 @@ class MDLFOEncoder : public RangeEncoder {
   
   void loadFromKit();
   void setLFOParamName();
-  void setParam(uint8_t _param) {
-    param = _param;
-    setLFOParamName();
-  }
+  void setParam(uint8_t _param);
 
   virtual void displayAt(int i);
 };
@@ -99,6 +96,16 @@ class MDPatternSelectEncoder : public RangeEncoder {
 
   virtual void displayAt(int i);
   void loadFromMD();
+};
+
+class MDParamSelectEncoder : public RangeEncoder {
+ public:
+ MDParamSelectEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0) :
+  track(_track), RangeEncoder(0, 23, _name, init) {
+  }
+
+  uint8_t track;
+  virtual void displayAt(int i);
 };
 
 class MDAssignMachineEncoder : public RangeEncoder {

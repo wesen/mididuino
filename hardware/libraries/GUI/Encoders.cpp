@@ -11,7 +11,9 @@ void CCEncoderHandle(Encoder *enc) {
 
 void VarRangeEncoderHandle(Encoder *enc) {
   VarRangeEncoder *rEnc = (VarRangeEncoder *)enc;
-  *(rEnc->var) = rEnc->getValue();
+  if (rEnc->var != NULL) {
+    *(rEnc->var) = rEnc->getValue();
+  }
 }
 
 #ifndef HOST_MIDIDUINO

@@ -115,6 +115,7 @@ public:
   virtual bool handleEvent(gui_event_t *event);
 };
 
+
 class ScrollSwitchPage : public EncoderPage {
 public:
   Vector<Page *, 8> pages;

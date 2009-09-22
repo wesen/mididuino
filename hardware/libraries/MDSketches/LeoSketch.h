@@ -25,6 +25,19 @@ class LeoTriggerClass {
   void triggerTrack(uint8_t track) {
     uint8_t pitch = basePitch + randomScalePitch(scales[currentScale], numOctaves);
     uint8_t value = MIN(127, pitch * scaleSpread);
+
+#if 0
+    GUI.setLine(GUI.LINE1);
+    GUI.flash_put_value(0, track);
+    GUI.flash_put_value(1, pitch);
+    GUI.flash_put_value(2, value);
+    GUI.setLine(GUI.LINE2);
+    GUI.flash_put_value(0, currentScale);
+    GUI.flash_put_value(1, numOctaves);
+    GUI.flash_put_value(2, basePitch);
+    GUI.flash_put_value(3, scaleSpread);
+#endif
+
     MD.setTrackParam(track, 0, value);
     
     if (isTriggerOn) {
@@ -144,22 +157,22 @@ class MuteTrigPage : public EncoderPage, MDCallback {
 class LeoSketch : public Sketch, public MDCallback {
   LeoTriggerPage triggerPage;
   LeoScalePage scalePage;
-  MDLFOPage lfoPage;
+  //  MDLFOPage lfoPage;
   MuteTrigPage muteTrigPage;
   ScrollSwitchPage switchPage;
 
  public:
   virtual void setup() {
-    lfoPage.setName("LFOS");
+    //    lfoPage.setName("LFOS");
     scalePage.setName("SCALE");
     triggerPage.setName("TRIGGER");
     muteTrigPage.setName("MUTE & TRIG");
     switchPage.addPage(&triggerPage);
     switchPage.addPage(&scalePage);
     switchPage.addPage(&muteTrigPage);
-    switchPage.addPage(&lfoPage);
+    //    switchPage.addPage(&lfoPage);
 
-    lfoPage.encoders[3]->pressmode = true;
+    //    lfoPage.encoders[3]->pressmode = true;
     scalePage.encoders[3]->pressmode = true;
     triggerPage.encoders[3]->pressmode = true;
 

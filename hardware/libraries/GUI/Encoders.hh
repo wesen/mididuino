@@ -2,9 +2,8 @@
 #define ENCODERS_H__
 
 #include <inttypes.h>
-#include <Midi.h>
-#include "WProgram.h"
-#include "GUI.h"
+#include "helpers.h"
+#include "GUI_private.h"
 
 class Encoder;
 
@@ -76,8 +75,13 @@ class VarRangeEncoder : public RangeEncoder {
 public:
   uint8_t *var;
 
-  VarRangeEncoder(uint8_t *var, int _max = 127, int _min = 0, const char *_name = NULL, int init = 0) :
+  VarRangeEncoder(uint8_t *_var, int _max = 127, int _min = 0, const char *_name = NULL, int init = 0) :
     RangeEncoder(_max, _min, _name, init, VarRangeEncoderHandle) {
+    var = _var;
+    if (var != NULL) {
+      *var = init;
+    }
+    handler = VarRangeEncoderHandle;
   }
 };
 
