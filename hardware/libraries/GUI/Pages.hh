@@ -127,6 +127,7 @@ public:
 
   void addPage(Page *page);
 
+  bool setSelectedPage();
   virtual void display();
   virtual void loop();
   virtual bool handleEvent(gui_event_t *event);

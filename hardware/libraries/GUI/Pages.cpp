@@ -151,6 +151,17 @@ void ScrollSwitchPage::loop() {
   }
 }
 
+bool ScrollSwitchPage::setSelectedPage() {
+  Page *page = pages.arr[pageEncoder.getValue()];
+  if (page != NULL) {
+    if (parent != NULL) {
+      parent->setPage(page);
+      return true;
+    }
+  }
+  return false;
+}
+
 bool ScrollSwitchPage::handleEvent(gui_event_t *event) {
   Page *page = pages.arr[pageEncoder.getValue()];
   if (page != NULL) {
