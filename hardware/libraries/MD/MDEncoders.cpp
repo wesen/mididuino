@@ -196,9 +196,9 @@ void MDTrackFlashEncoder::displayAt(int i) {
   uint8_t track = getValue();
   GUI.put_value(i, track + 1);
   redisplay = false;
-  if (MD.loadedKit) {
-    GUI.flash_put_value(i, track + 1);
+  if (MD.loadedKit && hasChanged()) {
     GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+    GUI.flash_put_value(i, track + 1);
   }
 }
 
@@ -207,13 +207,15 @@ void MDMelodicTrackFlashEncoder::displayAt(int i) {
   GUI.setLine(GUI.LINE2);
   GUI.put_value(i, track + 1);
   redisplay = false;
-  GUI.flash_put_value(i, track + 1);
-  if (MD.loadedKit) {
-    if (MD.isMelodicTrack(track)) {
-      GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
-    } else {
-      GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
+  if (hasChanged()) {
+    if (MD.loadedKit) {
+      if (MD.isMelodicTrack(track)) {
+	GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+      } else {
+	GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
+      }
     }
+    GUI.flash_put_value(i, track + 1);
   }
 }
 
@@ -233,8 +235,10 @@ void MDAssignMachineEncoder::displayAt(int i) {
   GUI.setLine(GUI.LINE2);
   GUI.put_value(i, model);
   redisplay = false;
-  GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(model));
-  GUI.flash_put_value(i, model);
+  if (hasChanged()) {
+    GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(model));
+    GUI.flash_put_value(i, model);
+  }
 }
 
 void MDAssignMachineEncoder::loadFromMD() {
@@ -263,19 +267,28 @@ void MDTrigGroupEncoder::displayAt(int i) {
   redisplay = false;
   if (track == 16) {
     GUI.put_p_string(i, PSTR("---"));
-    GUI.flash_p_string_at_fill(i << 2, PSTR("---"));
+
+    if (hasChanged()) {
+      GUI.flash_p_string_at_fill(i << 2, PSTR("---"));
+    }
   } else {
     GUI.put_value(i, track + 1);
-    if (MD.loadedKit) {
-      GUI.flash_put_value(i, track + 1);
-      GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+    if (MD.loadedKit && hasChanged()) {
+      if (track <= 15) {
+	GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+	GUI.flash_put_value(i, track + 1);
+      }
     }
   }
 }
 
 void MDTrigGroupEncoder::loadFromMD() {
   if (MD.loadedKit) {
-    setValue(MD.kit.machines[track].trigGroup);
+    uint8_t group = MD.kit.machines[track].trigGroup;
+    if (group == 0xFF) {
+      group = 16;
+    }
+    setValue(group);
   }
 }
 
@@ -296,19 +309,27 @@ void MDMuteGroupEncoder::displayAt(int i) {
   redisplay = false;
   if (track == 16) {
     GUI.put_p_string(i, PSTR("---"));
-    GUI.flash_p_string_at_fill(i << 2, PSTR("---"));
+    if (hasChanged()) {
+      GUI.flash_p_string_at_fill(i << 2, PSTR("---"));
+    }
   } else {
     GUI.put_value(i, track + 1);
-    if (MD.loadedKit) {
-      GUI.flash_put_value(i, track + 1);
-      GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+    if (MD.loadedKit && hasChanged()) {
+      if (track <= 15) {
+	GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.machines[track].model));
+	GUI.flash_put_value(i, track + 1);
+      }
     }
   }
 }
 
 void MDMuteGroupEncoder::loadFromMD() {
   if (MD.loadedKit) {
-    setValue(MD.kit.machines[track].muteGroup);
+    uint8_t group = MD.kit.machines[track].muteGroup;
+    if (group == 0xFF) {
+      group = 16;
+    }
+    setValue(group);
   }
 }
 

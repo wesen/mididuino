@@ -170,6 +170,10 @@ void GuiClass::display() {
       lines[i].changed = false;
     }
   }
+  GUI.setLine(GUI.LINE1);
+  GUI.clearFlashLine();
+  GUI.setLine(GUI.LINE2);
+  GUI.clearFlashLine();
 }
 
 char hex2c(uint8_t hex) {

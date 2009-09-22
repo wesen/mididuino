@@ -13,6 +13,7 @@ class LeoTriggerClass {
   uint8_t numOctaves;
   uint8_t basePitch;
   uint8_t scaleSpread;
+  uint8_t trackStart;
   
   LeoTriggerClass() {
     isTriggerOn = true;
@@ -29,6 +30,16 @@ class LeoTriggerClass {
     if (isTriggerOn) {
       MD.triggerTrack(track, 100);
     }
+  }
+
+  bool handleEvent(gui_event_t *event) {
+    for (uint8_t i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
+      if (EVENT_PRESSED(event, i)) {
+	triggerTrack(trackStart + (i - Buttons.BUTTON1));
+	return true;
+      }
+    }
+    return false;
   }
 };
 
@@ -58,6 +69,10 @@ class LeoScalePage : public EncoderPage {
     octaveEncoder(&leoTrigger.numOctaves, 0, 5, "OCT") {
     setEncoders(&scaleSelectEncoder, &basePitchEncoder, &spreadEncoder, &octaveEncoder);
   }
+
+  virtual bool handleEvent(gui_event_t *event) {
+    return leoTrigger.handleEvent(event);
+  }
 };
 
 class LeoTriggerPage : public EncoderPage {
@@ -76,6 +91,9 @@ class LeoTriggerPage : public EncoderPage {
     if (triggerOnOffEncoder.hasChanged()) {
       leoTrigger.isTriggerOn = triggerOnOffEncoder.getBoolValue();
     }
+    if (trackStartEncoder.hasChanged()) {
+      leoTrigger.trackStart = trackStartEncoder.getValue();
+    }
   }
   
   virtual void display() {
@@ -89,13 +107,37 @@ class LeoTriggerPage : public EncoderPage {
   }
   
   virtual bool handleEvent(gui_event_t *event) {
-    for (uint8_t i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
-      if (EVENT_PRESSED(event, i)) {
-	leoTrigger.triggerTrack(trackStartEncoder.getValue() + (i - Buttons.BUTTON1));
-	return true;
-      }
+    return leoTrigger.handleEvent(event);
+  }
+};
+ 
+class MuteTrigPage : public EncoderPage, MDCallback {
+ public:
+  MDTrackFlashEncoder trackEncoder;
+  MDTrigGroupEncoder trigEncoder;
+  MDMuteGroupEncoder muteEncoder;
+
+ MuteTrigPage() : trackEncoder("TRK"), trigEncoder(0, "TRG", 16), muteEncoder(0, "MUT", 16) {
+    setEncoders(&trackEncoder, &trigEncoder, &muteEncoder);
+    MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)(&MuteTrigPage::onKitChanged));
+  }
+
+  void onKitChanged() {
+    muteEncoder.loadFromMD();
+    trigEncoder.loadFromMD();
+  }
+
+  virtual void loop() {
+    if (trackEncoder.hasChanged()) {
+      uint8_t track = trackEncoder.getValue();
+      trigEncoder.track = track;
+      muteEncoder.track = track;
+      onKitChanged();
     }
-    return false;
+  }
+
+  virtual bool handleEvent(gui_event_t *event) {
+    return leoTrigger.handleEvent(event);
   }
 };
 
@@ -103,6 +145,7 @@ class LeoSketch : public Sketch, public MDCallback {
   LeoTriggerPage triggerPage;
   LeoScalePage scalePage;
   MDLFOPage lfoPage;
+  MuteTrigPage muteTrigPage;
   ScrollSwitchPage switchPage;
 
  public:
@@ -110,8 +153,10 @@ class LeoSketch : public Sketch, public MDCallback {
     lfoPage.setName("LFOS");
     scalePage.setName("SCALE");
     triggerPage.setName("TRIGGER");
+    muteTrigPage.setName("MUTE & TRIG");
     switchPage.addPage(&triggerPage);
     switchPage.addPage(&scalePage);
+    switchPage.addPage(&muteTrigPage);
     switchPage.addPage(&lfoPage);
 
     lfoPage.encoders[3]->pressmode = true;
@@ -120,7 +165,7 @@ class LeoSketch : public Sketch, public MDCallback {
 
     switchPage.parent = this;
     
-    setPage(&lfoPage);
+    setPage(&triggerPage);
   }
 
   virtual bool handleEvent(gui_event_t *event) {
