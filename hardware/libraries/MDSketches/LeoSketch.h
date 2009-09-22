@@ -70,9 +70,6 @@ class LeoTriggerPage : public EncoderPage {
   LeoTriggerPage() : trackStartEncoder("STR"), triggerOnOffEncoder("TRG"),
     kitSelectEncoder("KIT"), patternSelectEncoder("PAT") {
     setEncoders(&trackStartEncoder, &triggerOnOffEncoder, &kitSelectEncoder, &patternSelectEncoder);
-    for (uint8_t i = 0; i < 4; i++) {
-      encoders[i]->pressmode = true;
-    }
   }
   
   virtual void loop() {
@@ -95,38 +92,50 @@ class LeoTriggerPage : public EncoderPage {
     for (uint8_t i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
       if (EVENT_PRESSED(event, i)) {
 	leoTrigger.triggerTrack(trackStartEncoder.getValue() + (i - Buttons.BUTTON1));
+	return true;
       }
     }
+    return false;
   }
 };
 
 class LeoSketch : public Sketch, public MDCallback {
   LeoTriggerPage triggerPage;
+  LeoScalePage scalePage;
   MDLFOPage lfoPage;
-  EncoderSwitchPage switchPage;
+  ScrollSwitchPage switchPage;
 
  public:
   virtual void setup() {
     lfoPage.setName("LFOS");
+    scalePage.setName("SCALE");
     triggerPage.setName("TRIGGER");
-    switchPage.initPages(&triggerPage, &lfoPage);
+    switchPage.addPage(&triggerPage);
+    switchPage.addPage(&scalePage);
+    switchPage.addPage(&lfoPage);
+
+    lfoPage.encoders[3]->pressmode = true;
+    scalePage.encoders[3]->pressmode = true;
+    triggerPage.encoders[3]->pressmode = true;
+
     switchPage.parent = this;
     
     setPage(&lfoPage);
   }
 
   virtual bool handleEvent(gui_event_t *event) {
-    if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
+    if (EVENT_PRESSED(event, Buttons.ENCODER4)) {
       pushPage(&switchPage);
       return true;
-    } else if (EVENT_RELEASED(event, Buttons.ENCODER1)) {
-      popPage(&switchPage);
+    } else if (EVENT_RELEASED(event, Buttons.ENCODER4)) {
+      if (!switchPage.setSelectedPage()) {
+	popPage(&switchPage);
+      }
       return true;
     }
 
     return false;
   }
 };
-
 
 #endif /* LEO_SKETCH_H__ */
