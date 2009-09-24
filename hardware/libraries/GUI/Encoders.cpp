@@ -2,6 +2,8 @@
 #include "MidiTools.h"
 #include "Midi.h"
 
+#include "GUI.h"
+
 /* handlers */
 
 void CCEncoderHandle(Encoder *enc) {
@@ -144,4 +146,6 @@ void AutoNameCCEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
   CCEncoder::initCCEncoder(_channel, _cc);
   setCCName();
   GUI.redisplay();
+
 }
+
