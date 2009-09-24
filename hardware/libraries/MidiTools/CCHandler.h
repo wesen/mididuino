@@ -3,6 +3,7 @@
 
 #include "Encoders.hh"
 #include "Circular.hh"
+#include "Midi.h"
 
 typedef void (*midi_learn_cc_callback_t)(CCEncoder *enc);
 
