@@ -55,8 +55,8 @@ public:
     }
   }
 
-  void on16Callback() {
-    if (track.isHit(MidiClock.div16th_counter)) {
+  void on16Callback(uint32_t counter) {
+    if (track.isHit(counter)) {
       uint8_t pitch = basePitch + pitches[pitches_idx];
       if (pitch <= 127) {
 	if (!muted)
@@ -67,8 +67,6 @@ public:
   }
 };
 
-MDPitchEuclid pitchEuclid;
-
 class MDPitchEuclidConfigPage1 : 
 public EncoderPage {
 public:
@@ -76,8 +74,10 @@ public:
   RangeEncoder pulseEncoder;
   RangeEncoder lengthEncoder;
   RangeEncoder offsetEncoder;
+  MDPitchEuclid *euclid;
 
-  MDPitchEuclidConfigPage1() :
+  MDPitchEuclidConfigPage1(MDPitchEuclid *_euclid) :
+  euclid(_euclid), 
   pitchLengthEncoder(1, 32, "PTC", 4),
   pulseEncoder(1, 32, "PLS", 3),
   lengthEncoder(2, 32, "LEN", 8),
@@ -90,11 +90,11 @@ public:
 
   void loop() {
     if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
-      pitchEuclid.track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(),
+      euclid->track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(),
       offsetEncoder.getValue());
     }
     if (pitchLengthEncoder.hasChanged()) {
-      pitchEuclid.setPitchLength(pitchLengthEncoder.getValue());
+      euclid->setPitchLength(pitchLengthEncoder.getValue());
     }
   }
 };
@@ -106,8 +106,10 @@ public:
   RangeEncoder scaleEncoder;
   RangeEncoder octavesEncoder;
   NotePitchEncoder basePitchEncoder;
+  MDPitchEuclid *euclid;
 
-  MDPitchEuclidConfigPage2() :
+  MDPitchEuclidConfigPage2(MDPitchEuclid *_euclid) :
+  euclid(_euclid),
   trackEncoder("TRK", 0),
   scaleEncoder(0, NUM_SCALES - 1, "SCL", 0),
   basePitchEncoder("BAS"),
@@ -121,18 +123,18 @@ public:
 
   void loop() {
     if (scaleEncoder.hasChanged()) {
-      pitchEuclid.currentScale = scales[scaleEncoder.getValue()];
-      pitchEuclid.randomizePitches();
+      euclid->currentScale = scales[scaleEncoder.getValue()];
+      euclid->randomizePitches();
     }
     if (basePitchEncoder.hasChanged()) {
-      pitchEuclid.basePitch = basePitchEncoder.getValue();
+      euclid->basePitch = basePitchEncoder.getValue();
     }
     if (octavesEncoder.hasChanged()) {
-      pitchEuclid.octaves = octavesEncoder.getValue();
-      pitchEuclid.randomizePitches();
+      euclid->octaves = octavesEncoder.getValue();
+      euclid->randomizePitches();
     }
     if (trackEncoder.hasChanged()) {
-      pitchEuclid.mdTrack = trackEncoder.getValue();
+      euclid->mdTrack = trackEncoder.getValue();
     }
   }
 };
@@ -142,8 +144,9 @@ public Sketch, public MDCallback, public ClockCallback {
 public:
   MDPitchEuclidConfigPage1 page1;
   MDPitchEuclidConfigPage2 page2;
+  MDPitchEuclid pitchEuclid;
 
-  MDPitchEuclidSketch() {
+ MDPitchEuclidSketch() :page1(&pitchEuclid), page2(&pitchEuclid) {
   }
 
     void getName(char *n1, char *n2) {
@@ -203,8 +206,8 @@ public:
     }
   }
 
-  void on16Callback() {
-    pitchEuclid.on16Callback();
+  void on16Callback(uint32_t counter) {
+    pitchEuclid.on16Callback(counter);
   }
 
 

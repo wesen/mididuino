@@ -1,6 +1,8 @@
 #include <MD.h>
 #include <MDPitchEuclidSketch.h>
 
+extern "C" uint8_t *__data_end;
+
 uint8_t patData[4096];
 class MDPatternEuclid : 
 public MDPitchEuclid {
@@ -31,70 +33,31 @@ public:
   }
 };
 
-class RandomPatternPage : 
-public EncoderPage, MDCallback {
-public:
-  MDTrackFlashEncoder trackEncoder;
-  MDPatternEuclid *euclid;
-
-  RandomPatternPage(MDPatternEuclid *_euclid) : 
-  euclid(_euclid),
-  trackEncoder("TRK") {
-    setEncoders(&trackEncoder);
-  }
-
-  void setup() {
-    MDTask.addOnPatternChangeCallback(this, (md_callback_ptr_t)&RandomPatternPage::onPatternChange);
-    MDSysexListener.addOnPatternMessageCallback(this, (md_callback_ptr_t)&RandomPatternPage::onPatternMessage);
-  }
-
-  virtual bool handleEvent(gui_event_t *event) {
-    if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
-      MD.requestPattern(MD.currentPattern);
-      return true;
-    }
-    if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
-      euclid->makeTrack(trackEncoder.getValue());
-    }
-    return false;
-  }
-
-  void onPatternChange() {
-    MD.requestPattern(MD.currentPattern);
-  }
-
-  void onPatternMessage() {
-    if (euclid->pattern.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
-      char name[5];
-      MD.getPatternName(euclid->pattern.origPosition, name);
-      GUI.flash_strings_fill("PATTERN", name);
-    }
-  }
-};
-
 class RandomPatternSketch : 
-public Sketch {
+public Sketch, MDCallback {
 public:
-  RandomPatternPage page;
   MDPatternEuclid euclid;
   MDPitchEuclidConfigPage1 configPage1;
   MDPitchEuclidConfigPage2 configPage2;
   SwitchPage switchPage;
+  MDTrackFlashEncoder trackEncoder;
 
   RandomPatternSketch() : 
-  page(&euclid), configPage1(&euclid), configPage2(&euclid) {
+  configPage1(&euclid), configPage2(&euclid), trackEncoder("TRK") {
+    configPage2.encoders[0] = &trackEncoder; // HACK HACK
   }
 
   void setup() {
-    page.setup();
-    page.setShortName("PAT");
     configPage1.setShortName("EUC");
     configPage2.setShortName("SCL");
 
-    switchPage.initPages(&page, &configPage1, &configPage2);
+    switchPage.initPages(&configPage1, &configPage2);
     switchPage.parent = this;
 
-    setPage(&page);
+    MDTask.addOnPatternChangeCallback(this, (md_callback_ptr_t)&RandomPatternSketch::onPatternChange);
+    MDSysexListener.addOnPatternMessageCallback(this, (md_callback_ptr_t)&RandomPatternSketch::onPatternMessage);
+
+    setPage(&configPage1);
   }
   
   virtual bool handleEvent(gui_event_t *event) {
@@ -105,8 +68,32 @@ public:
       popPage(&switchPage);
       return true;
     } 
-    
+    if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+      MD.requestPattern(MD.currentPattern);
+      return true;
+    }
+    if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+      GUI.flash_string_fill("RANDOM TRACK");
+      euclid.makeTrack(trackEncoder.getValue());
+      return true;
+    }
+    if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
+      euclid.randomizePitches();
+    }
+
     return false;
+  }
+
+  void onPatternChange() {
+    MD.requestPattern(MD.currentPattern);
+  }
+
+  void onPatternMessage() {
+    if (euclid.pattern.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
+      char name[5];
+      MD.getPatternName(euclid.pattern.origPosition, name);
+      GUI.flash_strings_fill("PATTERN", name);
+    }
   }
 
 };
@@ -116,6 +103,10 @@ RandomPatternSketch sketch;
 void setup() {
   initMDTask();
   MDTask.verbose = false;
+  
+  volatile uint8_t *ptr = __data_end;
+  
+  *ptr = 0;
 
   sketch.setup();
   GUI.setSketch(&sketch);
