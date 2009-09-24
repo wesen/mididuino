@@ -14,12 +14,14 @@ public:
   bool reloadKit;
   bool reloadGlobal;
   bool redisplay;
+  bool verbose;
 
   MDTaskClass(uint16_t interval) : Task(interval) {
     redisplay = false;
     autoLoadKit = reloadKit = false;
     autoLoadGlobal = true;
     reloadGlobal = false;
+    verbose = true;
   }
 
   const static uint8_t MD_CB_CLASS_ID = 10;
@@ -62,12 +64,7 @@ public:
   void setup(uint16_t interval = 3000, bool autoLoadKit = false, bool autoLoadGlobal = true,
 	     bool reloadGlobal = true);
 
-  virtual void run() {
-    MD.sendRequest(MD_STATUS_REQUEST_ID,
-		   MD_CURRENT_KIT_REQUEST);
-    MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_GLOBAL_SLOT_REQUEST);
-    MD.sendRequest(MD_STATUS_REQUEST_ID, MD_CURRENT_PATTERN_REQUEST);
-  }
+  virtual void run();
 
   void onStatusResponseCallback(uint8_t type, uint8_t value);
   void onGlobalMessageCallback();

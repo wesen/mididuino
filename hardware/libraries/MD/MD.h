@@ -117,6 +117,11 @@ class MDClass {
   bool checkParamSettings();
   bool checkTriggerSettings();
   bool checkClockSettings();
+
+  /* requests */
+  uint8_t getBlockingStatus(uint8_t type, uint16_t timeout);
+  uint8_t getCurrentKit(uint16_t timeout);
+  uint8_t getCurrentPattern(uint16_t timeout);
 };
 
 extern MDClass MD;

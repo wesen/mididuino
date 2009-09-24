@@ -378,4 +378,63 @@ bool MDClass::checkClockSettings() {
   return false;
 }
 
+class BlockCurrentStatusCallback : public MDCallback {
+public:
+  uint8_t type;
+  uint8_t value;
+  bool received;
+
+  BlockCurrentStatusCallback(uint8_t _type) {
+    type = _type;
+    received = false;
+    value = 255;
+  }
+
+  void onStatusResponseCallback(uint8_t _type, uint8_t param) {
+    if (type == _type) {
+      value = param;
+      received = true;
+    }
+  }
+};
+
+uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
+  uint16_t start_clock = read_slowclock();
+  uint16_t current_clock = start_clock;;
+  BlockCurrentStatusCallback cb(type);
+
+  MDSysexListener.addOnStatusResponseCallback
+    (&cb, (md_status_callback_ptr_t)&BlockCurrentStatusCallback::onStatusResponseCallback);
+  MD.sendRequest(MD_STATUS_REQUEST_ID, type);
+  do {
+    current_clock = read_slowclock();
+    handleIncomingMidi();
+  } while ((clock_diff(start_clock, current_clock) < timeout) && !cb.received);
+  MDSysexListener.removeOnStatusResponseCallback(&cb);
+
+  return cb.value;
+}
+  
+
+uint8_t MDClass::getCurrentKit(uint16_t timeout) {
+  uint8_t value = getBlockingStatus(MD_CURRENT_KIT_REQUEST, timeout);
+  if (value == 255) {
+    return 255;
+  } else {
+    MD.currentKit = value;
+    return value;
+  }
+}
+
+uint8_t MDClass::getCurrentPattern(uint16_t timeout) {
+  uint8_t value = getBlockingStatus(MD_CURRENT_PATTERN_REQUEST, timeout);
+  if (value == 255) {
+    return 255;
+  } else {
+    MD.currentPattern = value;
+    return value;
+  }
+}
+
+
 MDClass MD;

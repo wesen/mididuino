@@ -76,6 +76,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
   cksum &= 0x3FFF;
   if (cksum != ElektronHelper::to16Bit7(data[len - 4], data[len - 3])) {
+    GUI.flash_string_fill("WRONG CKSUM");
     // wrong checksum
     return false;
   }
