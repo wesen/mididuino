@@ -20,7 +20,7 @@ typedef void(MonomeCallback::*monome_callback_ptr_t)(monome_event_t *evt);
 #define MONOME_STATE(data) ((data) & 0xF)
 
 #define MONOME_GEN_XY(x, y) ((((x) & 0xF) << 4) | ((y) & 0xF))
-#define MONOME_X(data) (((data >> 4) & 0xF)
+#define MONOME_X(data) ((data >> 4) & 0xF)
 #define MONOME_Y(data) ((data) & 0xF)
 
 #define MONOME_CMD_PRESS         0x00
@@ -35,10 +35,19 @@ typedef void(MonomeCallback::*monome_callback_ptr_t)(monome_event_t *evt);
 
 class MonomeParentClass {
  public:
-	MonomeParentClass() { for (uint8_t i = 0; i < 8; i++) { buf[i] = 0; } }
-	~MonomeParentClass() { }
-
+	enum {
+		MONOME_BYTE_1 = 0,
+		MONOME_BYTE_2
+	} parse_state;
 	uint8_t buf[8]; // blitting buffer
+
+	MonomeParentClass() {
+		for (uint8_t i = 0; i < 8; i++) {
+			buf[i] = 0;
+		}
+		parse_state = MONOME_BYTE_1;
+	}
+	~MonomeParentClass() { }
 
 	virtual void sendBuf(uint8_t *data, uint8_t len) = 0;
 	virtual void sendMessage(uint8_t byte1, uint8_t byte2) = 0;
@@ -67,7 +76,7 @@ class MonomeParentClass {
 
 	// callbacks
 	CallbackVector1<MonomeCallback, 8, monome_event_t *> callbacks;
-	void addCalllback(MonomeCallback *obj, void (MonomeCallback::*func)(monome_event_t *)) {
+	void addCallback(MonomeCallback *obj, void (MonomeCallback::*func)(monome_event_t *)) {
 		callbacks.add(obj, func);
 	}
 	void removeCallback(MonomeCallback *obj, void (MonomeCallback::*func)(monome_event_t *) = NULL) {
@@ -75,6 +84,31 @@ class MonomeParentClass {
 			callbacks.remove(obj);
 		} else {
 			callbacks.remove(obj, func);
+		}
+	}
+
+	void handleByte(uint8_t byte) {
+		static uint8_t lastByte = 0;
+		switch (parse_state) {
+		case MONOME_BYTE_1:
+			parse_state = MONOME_BYTE_2;
+			lastByte = byte;
+			break;
+
+		case MONOME_BYTE_2:
+			{
+				parse_state = MONOME_BYTE_1;
+				monome_event_t event;
+				switch (MONOME_ADDRESS(lastByte)) {
+				case MONOME_CMD_PRESS:
+					event.x = MONOME_X(byte);
+					event.y = MONOME_Y(byte);
+					event.state = MONOME_STATE(lastByte);
+					callbacks.call(&event);
+					break;
+				}
+			}
+			break;
 		}
 	}
 };
