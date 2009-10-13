@@ -28,10 +28,14 @@ else
   #cp -a dist/${DISTNAME}.app work/   # #@$(* bsd switches
   #/sw/bin/cp -a dist/${DISTNAME}.app work/
   cp -pRX ${DISTDIR}/macosx/Application.app work/${DISTNAME}.app
+	PREVDIR=`pwd`
+	cd ../../hardware/tools/mididuino && make -f Makefile
+	cd "${PREVDIR}"
+	
   # cvs doesn't seem to want to honor the +x bit 
   chmod +x work/${DISTNAME}.app/Contents/MacOS/JavaApplicationStub
 
-  cp -rX ${DISTDIR}/shared/lib "$RESOURCES/"
+  cp -rX ../../app/lib "$RESOURCES/"
 #  cp -rX ../shared/libraries "$RESOURCES/"
 #  cp -rX ../shared/tools "$RESOURCES/"
   
@@ -51,7 +55,7 @@ else
 #  echo Extracting avr tools...
   unzip -q -d "$RESOURCES/" "$TOOLSZIP"
 
-  mv "${RESOURCES}/hardware/tools/mididuino" "${RESOURCES}/tools"
+#  mv "${RESOURCES}/hardware/tools/mididuino" "${RESOURCES}/tools"
 fi
 
 
