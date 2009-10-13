@@ -27,7 +27,7 @@ void setup() {
   //  setLed2();
   //  setLed();
   GUI.setPage(&page);
-  Midi2.addOnNoteOnCallback(&foo, (midi_callback_ptr_t)&NoteCallback::onNoteCallback);
+  Midi2.addOnNoteOnCallback(&foo, (midi_callback_ptr_t)(&NoteCallback::onNoteCallback));
   GUI.addEventHandler(handleEvent);
 }
 

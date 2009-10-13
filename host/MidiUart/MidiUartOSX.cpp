@@ -40,6 +40,7 @@ uint8_t MidiUartOSXClass::getc() {
   return rxRb.get();
 }
 
+
 static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *connRefCon) {
   MidiUartOSXClass *uart = (MidiUartOSXClass *)refCon;
   if (uart != NULL) {
