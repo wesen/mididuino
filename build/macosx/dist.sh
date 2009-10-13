@@ -1,15 +1,16 @@
 #!/bin/sh
 
 
+DISTDIR=../../../mididuino-dist
 REVISION=`head -1 ../../todo.txt | awk '{print $1}'`
 
 if [ $1 ]
 then
   RELEASE=$1
-  echo Creating Arduino release $RELEASE...
+  echo Creating Mididuino release $RELEASE...
 else 
   RELEASE=$REVISION
-  echo Creating Arduino distribution for revision $REVISION...
+  echo Creating Mididuino distribution for revision $REVISION...
 fi
 
 VERSIONED=`cat ../../app/src/processing/app/Base.java | grep $REVISION`
@@ -20,9 +21,9 @@ then
 fi
 
 # remove any unfinished builds or old builds
-rm -rf arduino
-rm -rf Arduino*
-rm -rf arduino-*
+rm -rf mididuino
+rm -rf Mididuino*
+rm -rf mididuino-*
 rm -rf work
 
 ./make.sh
@@ -30,7 +31,7 @@ rm -rf work
 if [ $1 ]
 then
   # write the release version number into the output directory
-  echo $1 > work/Arduino.app/Contents/Resources/Java/lib/version.txt
+  echo $1 > work/Mididuino.app/Contents/Resources/Java/lib/version.txt
 fi
 
 echo Cleaning file boogers...
@@ -54,12 +55,12 @@ find work -name ".svn" -exec rm -rf {} 2> /dev/null ';'
 echo Creating disk image...
 
 SOURCE_DIR="work"
-SOURCE_FILES="Arduino.app"
-OUTPUT_DMG="arduino-$RELEASE"
+SOURCE_FILES="Mididuino.app"
+OUTPUT_DMG="mididuino-$RELEASE"
 WORK_DMG="working.dmg"
 WORK_DIR="working_dir"
 
-gzip -cd template.dmg.gz > "$WORK_DMG"
+gzip -cd ${DISTDIR}/macosx/template.dmg.gz > "$WORK_DMG"
 mkdir -p "$WORK_DIR"
 hdiutil attach "$WORK_DMG" -noautoopen -quiet -mountpoint "$WORK_DIR"
 for i in "$SOURCE_FILES"; do

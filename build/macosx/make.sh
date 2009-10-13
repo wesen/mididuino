@@ -6,8 +6,10 @@
 DISTNAME=Mididuino
 RESOURCES=`pwd`/work/${DISTNAME}.app/Contents/Resources/Java
 
-HARDWAREDIR=../../../mididuino-core/hardware
-TOOLSZIP=/Users/manuel/mididuino.old.git/build/macosx/dist/tools-universal.zip
+HARDWAREDIR=../../hardware
+DISTDIR=../../../mididuino-dist
+TOOLSZIP=${DISTDIR}/macosx/tools-universal.zip
+SHAREDDIST=${DISTDIR}/shared
 
 #echo $RESOURCES
 #exit
@@ -25,18 +27,18 @@ else
   echo Copying ${DISTNAME}.app...
   #cp -a dist/${DISTNAME}.app work/   # #@$(* bsd switches
   #/sw/bin/cp -a dist/${DISTNAME}.app work/
-  cp -pRX dist/Application.app work/${DISTNAME}.app
+  cp -pRX ${DISTDIR}/macosx/Application.app work/${DISTNAME}.app
   # cvs doesn't seem to want to honor the +x bit 
   chmod +x work/${DISTNAME}.app/Contents/MacOS/JavaApplicationStub
 
-  cp -rX ../shared/lib "$RESOURCES/"
+  cp -rX ${DISTDIR}/shared/lib "$RESOURCES/"
 #  cp -rX ../shared/libraries "$RESOURCES/"
 #  cp -rX ../shared/tools "$RESOURCES/"
   
   cp -rX "$HARDWAREDIR" "$RESOURCES/"
 
   cp -X ../../app/lib/antlr.jar "$RESOURCES/"
-  cp -X ../../app/lib/ecj.jar "$RESOURCES/"
+#  cp -X ../../app/lib/ecj.jar "$RESOURCES/"
   cp -X ../../app/lib/jna.jar "$RESOURCES/"
   cp -X ../../app/lib/oro.jar "$RESOURCES/"
 
@@ -78,13 +80,15 @@ javac -source 1.5 -target 1.5 -d bin \
 rm -f "$RESOURCES/core.jar"
 
 cd bin && \
-  zip -rq "$RESOURCES/core.jar" \
+		zip -rq "$RESOURCES/core.jar" \
   processing/core/*.class \
-  processing/xml/*.class \
-  && cd ..
+  processing/xml/*.class
+cd ..
 
 # head back to "processing/app"
-cd ../app
+echo `pwd`
+cd ../app 
+echo `pwd`
 
 
 
