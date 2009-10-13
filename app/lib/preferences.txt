@@ -13,6 +13,8 @@
 # You'll have problems running Arduino if you incorrectly 
 # modify lines in this file.
 
+last.sketch.count = 0
+
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

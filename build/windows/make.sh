@@ -3,6 +3,11 @@
 
 ### -- SETUP WORK DIR -------------------------------------------
 
+HARDWAREDIR=../../hardware
+DISTDIR=../../../mididuino-dist
+TOOLSZIP=${DISTDIR}/macosx/tools-universal.zip
+SHAREDDIST=${DISTDIR}/shared
+
 if test -d work
 then
   BUILD_PREPROC=false
@@ -11,50 +16,53 @@ else
   BUILD_PREPROC=true
 
   mkdir work
-  cp -r ../shared/lib work/
-  cp -r ../shared/tools work/
+  cp -r ../../app/lib work/
+#  cp -r ../shared/tools work/
 
-  cp dist/*.dll work/
-  cp -r dist/drivers work/
+  PREVDIR=`pwd`
+  cd ../../hardware/tools/mididuino && make -f Makefile.windows
+  cd "${PREVDIR}"
+
+  cp ${DISTDIR}/windows/*.dll work/
 
   cp -r ../../hardware work/
 
   cp ../../app/lib/antlr.jar work/lib/
-  cp ../../app/lib/ecj.jar work/lib/
+#  cp ../../app/lib/ecj.jar work/lib/
   cp ../../app/lib/jna.jar work/lib/
   cp ../../app/lib/oro.jar work/lib/
-  cp ../../app/lib/RXTXcomm.jar work/lib/
 
-  echo Copying examples...
-  cp -r ../shared/examples work/
+#  echo Copying examples...
+#  cp -r ../shared/examples work/
 
-  echo Extracting reference...
-  unzip -q -d work/ ../shared/reference.zip
+#  echo Extracting reference...
+#  unzip -q -d work/ ../shared/reference.zip
 
   echo Extracting avr tools...
-  unzip -q -d work/hardware/ avr_tools.zip
+  unzip -q -d work/ ${DISTDIR}/windows/avr_tools.zip
 
   echo Extracting enormous JRE...
-  unzip -q -d work/ jre.zip
+  unzip -q -d work/ ${DISTDIR}/windows/jre.zip
+  chmod -R +x work/java
 
   # build the processing.exe bundle
   # there are a few hacks in the source to launch4j-3.0.1
   # to build them, use the following:
   # cd head_src/gui_head && make -f Makefile.win
-  cd launcher
+  PREVDIR=`pwd`
+  cd ${DISTDIR}/windows/launcher
   ./launch4j/launch4jc.exe config.xml
-  cp arduino.exe ../work/
-  cd ..
+  cp mididuino.exe "${PREVDIR}/work/mididuino.exe"
+  cd "${PREVDIR}"
 
   # chmod +x the crew
   # cygwin requires this because of unknown weirdness
   # it was not formerly this anal retentive
   # with the html, it's necessary on windows for launching reference 
   # from shell/command prompt, which is done internally to view reference
-  find work -name "*.html" -exec chmod +x {} ';'
-  find work -name "*.dll" -exec chmod +x {} ';'
-  find work -name "*.exe" -exec chmod +x {} ';'
-  find work -name "*.html" -exec chmod +x {} ';'
+  find work -name "*.html" -print0 | xargs -0 chmod +x 
+  find work -name "*.exe" -print0 | xargs -0 chmod +x 
+  find work -name "*.dll" -print0 | xargs -0 chmod +x 
 fi
 
 cd ../..
@@ -110,6 +118,7 @@ mkdir ../build/windows/work/classes
     src/processing/app/debug/*.java \
     src/processing/app/syntax/*.java \
     src/processing/app/preproc/*.java \
+    src/processing/app/library/*.java \
     src/processing/app/tools/*.java \
     src/processing/app/windows/*.java
 
