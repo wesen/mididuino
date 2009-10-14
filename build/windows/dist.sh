@@ -1,14 +1,18 @@
 #!/bin/sh
 
 REVISION=`head -1 ../../todo.txt | awk '{print $1}'`
+HARDWAREDIR=../../hardware
+DISTDIR=../../../mididuino-dist
+TOOLSZIP=${DISTDIR}/macosx/tools-universal.zip
+SHAREDDIST=${DISTDIR}/shared
 
 if [ $1 ]
 then
   RELEASE=$1
-  echo Creating Arduino release $RELEASE...
+  echo Creating Mididuino release $RELEASE...
 else 
   RELEASE=$REVISION
-  echo Creating Arduino distribution for revision $REVISION...
+  echo Creating Mididuino distribution for revision $REVISION...
 fi
 
 # check to see if the version number in the app is correct
@@ -23,80 +27,81 @@ fi
 ./make.sh
 
 # remove any old boogers
-rm -rf arduino
-rm -rf arduino-*
+rm -rf mididuino
+rm -rf mididuino-*
 
-mkdir arduino
-cp -r ../shared/lib arduino/
-cp -r ../shared/tools arduino/
+mkdir mididuino
+cp -r ../../app/lib mididuino
 
-cp dist/*.dll arduino/
-cp -r dist/drivers arduino/
+cd ../../hardware/tools/mididuino && make -f Makefile.windows
+cd "${PREVDIR}"
 
-cp -r ../../hardware arduino/
+cp ${DISTDIR}/windows/*.dll work/
 
+cp -r ../../hardware work/
 
 if [ $1 ]
 then
   # write the release version number into the output directory
-  echo $1 > arduino/lib/version.txt
+  echo $1 > mididuino/lib/version.txt
 fi
 
-cp ../../app/lib/antlr.jar arduino/lib/
-cp ../../app/lib/ecj.jar arduino/lib/
-cp ../../app/lib/jna.jar arduino/lib/
-cp ../../app/lib/oro.jar arduino/lib/
-cp ../../app/lib/RXTXcomm.jar arduino/lib/
+cp ../../app/lib/antlr.jar mididuino/lib/
+#cp ../../app/lib/ecj.jar mididuino/lib/
+cp ../../app/lib/jna.jar mididuino/lib/
+cp ../../app/lib/oro.jar mididuino/lib/
 
-cp ../../readme.txt arduino/
+#echo Copying examples...
+#cp -r ../shared/examples mididuino/
 
-echo Copying examples...
-cp -r ../shared/examples arduino/
+#echo Extracting reference...
+#unzip -q -d mididuino/ ../shared/reference.zip
 
-echo Extracting reference...
-unzip -q -d arduino/ ../shared/reference.zip
-
-unzip -q -d arduino/hardware avr_tools.zip
+unzip -q -d mididuino/hardware ${DISTDIR}/windows/avr_tools.zip
 
 # add java (jre) files
-unzip -q -d arduino jre.zip
+unzip -q -d mididuino ${DISTDIR}/windows/jre.zip
 
 # get platform-specific goodies from the dist dir
-cp launcher/arduino.exe arduino/
+PREVDIR=`pwd`
+cd ${DISTDIR}/windows/launcher
+./launch4j/launch4jc.exe config.xml
+cp mididuino.exe "${PREVDIR}/mididuino/mididuino.exe"
+cd "${PREVDIR}"
 
 # grab pde.jar and export from the working dir
-cp work/lib/pde.jar arduino/lib/
-cp work/lib/core.jar arduino/lib/
+cp work/lib/pde.jar mididuino/lib/
+cp work/lib/core.jar mididuino/lib/
 
 # convert revisions.txt to windows LFs
 # the 2> is because the app is a little chatty
-unix2dos arduino/readme.txt 2> /dev/null
-unix2dos arduino/lib/preferences.txt 2> /dev/null
-unix2dos arduino/lib/keywords.txt 2> /dev/null
+unix2dos mididuino/readme.txt 2> /dev/null
+unix2dos mididuino/lib/preferences.txt 2> /dev/null
+unix2dos mididuino/lib/keywords.txt 2> /dev/null
 
 # remove boogers
-find arduino -name "*.bak" -exec rm -f {} ';'
-find arduino -name "*~" -exec rm -f {} ';'
-find arduino -name ".DS_Store" -exec rm -f {} ';'
-find arduino -name "._*" -exec rm -f {} ';'
-find arduino -name "Thumbs.db" -exec rm -f {} ';'
+find mididuino -name "*.bak" -print0 | xargs -0 rm -rf
+find mididuino -name "*~" -print0 | xargs -0 rm -rf
+find mididuino -name ".DS_Store" -print0 | xargs -0 rm -rf
+find mididuino -name "._*" -print0 | xargs -0 rm -rf
+find mididuino -name "Thumbs.db" -print0 | xargs -0 rm -rf
 
 # chmod +x the crew
-find arduino -name "*.html" -exec chmod +x {} ';'
-find arduino -name "*.dll" -exec chmod +x {} ';'
-find arduino -name "*.exe" -exec chmod +x {} ';'
-find arduino -name "*.html" -exec chmod +x {} ';'
+find mididuino -name "*.html" -print0 | xargs -0 chmod +x
+find mididuino -name "*.dll" -print0 | xargs -0 chmod +x
+find mididuino -name "*.exe" -print0 | xargs -0 chmod +x
+find mididuino -name "*.html" -print0 | xargs -0 chmod +x
 
 # clean out the cvs entries
-find arduino -name "CVS" -exec rm -rf {} ';' 2> /dev/null
-find arduino -name ".cvsignore" -exec rm -rf {} ';'
-find arduino -name ".svn" -exec rm -rf {} ';' 2> /dev/null
+find mididuino -name "CVS" -print0 | xargs -0 rm -rf
+find mididuino -name ".cvsignore" -print0 | xargs -0 rm -rf
+find mididuino -name ".svn" -print0 | xargs -0 rm -rf
 
 # zip it all up for release
 echo Packaging standard release...
 echo
-P5=arduino-$RELEASE
-mv arduino $P5
+P5=mididuino-$RELEASE
+mv mididuino $P5
 zip -rq $P5.zip $P5
 # nah, keep the new directory around
 #rm -rf $P5
