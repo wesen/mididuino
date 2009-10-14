@@ -1,8 +1,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>/Users/manuel/Documents/workspace/patchmanagersvn/dist/patchmanager/patchmanager.jar</jar>
-  <outfile>/Users/manuel/Documents/workspace/patchmanagersvn/dist/patchmanager/patchmanager.exe</outfile>
+  <jar>dist/patchmanager/patchmanager.jar</jar>
+  <outfile>dist/patchmanager/patchmanager.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
