@@ -765,42 +765,42 @@ public class Compiler implements MessageConsumer {
     }
   }
 	
-	public static void main(String args[]) {
-		if (args.length <= 1) {
-			return;
-		}
-		Preferences.initBoards();
-		java.util.List printList = new ArrayList();
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("--print-c-flags")) {
-				printList = Compiler.getCompilerFlags();
-			} else if (args[i].equals("--print-cxx-flags")) {
-				printList = Compiler.getCompilerFlags();
-			} else if (args[i].equals("--print-ld-flags")) {
-				printList = Compiler.getLinkerFlags();
-			} else if (args[i].equals("--board")) {
-				Preferences.set("board", args[i+1]);
-				i++;
-//			} else if (args[i].equals("--libraries")) {
-//			  String file = args[++i];
-//			  String program = "";
-//	      try {
-//	        for (int i = 1; i < args.length; i++) {
-//	          program += readFileAsString(file);
-//	        }
-//	      
-//	      Target target = new Target("/Users/manuel/code/mididuino-core/hardware/cores/", "minicommand2");
-//	      PdePreprocessor preproc = new PdePreprocessor();
-//	        for (String s : preproc.getExtraImports()) {
-//	          System.out.println("import: " + s);
-//	        }
-//	        
-			}
-		}
+  public static void main(String args[]) {
+    String mididuinoDir = null;
+    String board = "minicommand2";
+          
+    if (args.length <= 1) {
+      return;
+    }
+    java.util.List printList = new ArrayList();
+    int i;
+    for (i = 0; i < args.length; i++) {
+      if (args[i].equals("--board")) {
+        board = args[i+1];
+        i++;
+      } else if (args[i].equals("--dir")) {
+        mididuinoDir = args[i+1];
+        i++;
+      } else {
+        break;
+      }
+    }
 
-		for(int j = 0; j < printList.size(); j++) {
-			System.out.print((String)printList.get(j) + " ");
-		}
-		System.out.println();
-	}
+    Preferences.initBoards(mididuinoDir);
+    Preferences.set("board", board);
+    if (args.length > i) {
+      if (args[i].equals("--print-c-flags")) {
+        printList = Compiler.getCompilerFlags();
+      } else if (args[i].equals("--print-cxx-flags")) {
+        printList = Compiler.getCompilerFlags();
+      } else if (args[i].equals("--print-ld-flags")) {
+        printList = Compiler.getLinkerFlags();
+      }
+    }
+    
+    for(int j = 0; j < printList.size(); j++) {
+      System.out.print((String)printList.get(j) + " ");
+    }
+    System.out.println();
+  }
 }

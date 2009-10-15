@@ -244,12 +244,14 @@ public class Preferences {
   }
 
 
-  public static void initBoards() {
+  public static void initBoards(String dir) {
     try {
-      load(new FileInputStream(new File(
-                        System.getProperty("user.dir") +
-                        File.separator + "hardware" +
-                        File.separator + "boards.txt")),
+      if (dir == null) {
+        dir = System.getProperty("user.dir");
+      }
+      load(new FileInputStream(new File(dir,
+                                        File.separator + "hardware" +
+                                        File.separator + "boards.txt")),
          "boards");
     } catch (Exception ex) {
       Base.showError("Error reading board definitions",

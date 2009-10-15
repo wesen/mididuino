@@ -403,19 +403,42 @@ public class PdePreprocessor {
 
 
   public static void main(String args[]) {
-    if (args.length > 1) {
-      String outputFile = args[0];
+    java.util.List printList = new ArrayList();
+    String board = "minicommand2";
+    String mididuinoDir = null;
+    int i;
+    for (i = 0; i < args.length; i++) {
+      if (args[i].equals("--board")) {
+        board = args[i+1];
+        i++;
+      } else if (args[i].equals("--dir")) {
+        mididuinoDir = args[i+1];
+        i++;
+      } else {
+        break;
+      }
+    }
+    System.out.println("dir: " + mididuinoDir);
+    Preferences.initBoards(mididuinoDir);
+    Preferences.set("board", board);
+
+    if (args.length > i) {
+      String outputFile = args[i];
+      i++;
       File output = new File(outputFile);
       String dir = output.getParent();
       String name = output.getName();
       String program = "";
       try {
-        for (int i = 1; i < args.length; i++) {
+        for (; i < args.length; i++) {
           program += readFileAsString(args[i]);
         }
-      
-      Target target = new Target("/Users/manuel/code/mididuino-core/hardware/cores/", "minicommand2");
-      PdePreprocessor preproc = new PdePreprocessor();
+
+        String hardwarePath = (mididuinoDir != null ? mididuinoDir : System.getProperty("user.dir")) +
+          File.separator + "hardware";
+        Target target = new Target(hardwarePath  + File.separator + "cores",
+                                   Preferences.get("boards." + Preferences.get("board") + ".build.core"));
+        PdePreprocessor preproc = new PdePreprocessor();
         preproc.write(program, dir, name, new String[] { }, target);
         for (String s : preproc.getExtraImports()) {
           System.out.println("import: " + s);
@@ -425,7 +448,7 @@ public class PdePreprocessor {
         e.printStackTrace();
       }
       
-      }
+    }
   }
 
 }
