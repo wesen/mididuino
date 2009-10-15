@@ -127,4 +127,4 @@ libclean:
 	rm -rf $(OBJS)
 
 clean:
-	rm -rf *.os *.o *.elf *.elfs *.lst $(TARGET).mycpp
+	rm -rf *.os *.o *.elf *.elfs *.lst $(TARGET).cpp $(TARGET).hex
