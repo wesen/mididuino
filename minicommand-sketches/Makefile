@@ -11,12 +11,12 @@ F_CPU = 16000000L
 
 CORE = minicommand2
 #BASE_DIR = /Applications/Mididuino.app
-BASE_DIR = /Users/manuel/code/mididuino-app/build/macosx/work/Mididuino.app
-HARDWARE_DIR = $(BASE_DIR)/Contents/Resources/Java/hardware
+BASE_DIR ?= /Users/manuel/code/mididuino-app/build/macosx/work/Mididuino.app/Contents/Resources/Java
+HARDWARE_DIR = $(BASE_DIR)/hardware
+
 LBASE_DIR = $(HARDWARE_DIR)/libraries
 CORE_DIR = $(HARDWARE_DIR)/cores/$(CORE)
-JAR_DIR = $(BASE_DIR)/Contents/Resources/Java
-CLASSPATH = $(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
+CLASSPATH = $(subst jar ,jar;,$(wildcard $(BASE_DIR)/lib/*.jar))
 
 PDEFILES=$(wildcard $(PDEDIR)/*.pde)
 
@@ -27,9 +27,9 @@ PDEFILES=$(wildcard $(PDEDIR)/*.pde)
 #CFLAGS += --param inline-call-cost=2 -finline-limit=3 -fno-inline-small-functions
 #CFLAGS += -fno-tree-scev-cprop -fsplit-wide-types
 
-CFLAGS := $(shell cd $(JAR_DIR) && java -cp "$(CLASSPATH)" processing.app.debug.Compiler --board $(CORE) --print-c-flags)
-CXXFLAGS := $(shell cd $(JAR_DIR) && java -cp "$(CLASSPATH)" processing.app.debug.Compiler --board $(CORE) --print-cxx-flags)
-CLDFLAGS := $(shell cd $(JAR_DIR) && java -cp "$(CLASSPATH)" processing.app.debug.Compiler --board $(CORE) --print-ld-flags)
+CFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$(BASE_DIR)" --board $(CORE) --print-c-flags)
+CXXFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler  --dir "$(BASE_DIR)" --board $(CORE) --print-cxx-flags)
+CLDFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$(BASE_DIR)" --board $(CORE) --print-ld-flags)
 
 DIRS = CommonTools Midi GUI SDCard MNM MD MidiTools Elektron PageTools MDPages
 LDIRS = $(wildcard $(LBASE_DIR)/*) $(CORE_DIR)
@@ -51,13 +51,14 @@ TARGET ?= $(shell pwd  | sed -e 's/.*\///')
 
 all: $(TARGET).hex
 
-bla:
-	echo $(CFLAGS)
-	echo $(CFLAGS)
+bla: 
+	echo "FOO"
+	echo "$(CLASSPATH)"
+	echo "$(TARGET).cpp"
 
-$(TARGET).cpp: $(PDEFILES)  $(wildcard $(CORE_DIR)/*.cxx)
+$(TARGET).cpp: $(PDEFILES) $(wildcard $(CORE_DIR)/*.cxx)
 	echo $(wildcard $(CORE_DIR)/*.cxx)
-	java -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./$(TARGET) $(PDEFILES)
+	java -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor --dir "$(BASE_DIR)" --board $(CORE) ./$(TARGET) $(PDEFILES)
 
 $(TARGET).o: $(TARGET).cpp
 	$(CXX) $(CXXFLAGS) -c $(TARGET).cpp -o $@
