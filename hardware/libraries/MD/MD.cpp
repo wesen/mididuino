@@ -2,6 +2,8 @@
 #include "MD.h"
 #include "helpers.h"
 
+#include "MidiUartParent.hh"
+
 uint8_t machinedrum_sysex_hdr[5] = {
   0x00,
   0x20,

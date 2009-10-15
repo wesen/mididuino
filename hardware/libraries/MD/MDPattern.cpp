@@ -3,10 +3,9 @@
 #include "MDMessages.hh"
 #include "helpers.h"
 #include "MDParams.hh"
-
-#ifdef AVR
 #include "GUI.h"
-#else
+
+#ifdef HOST_MIDIDUINO
 #include <stdio.h>
 #endif
 

@@ -1,3 +1,5 @@
+#include "WProgram.h"
+
 #include "Midi.h"
 #include "MidiSDS.hh"
 

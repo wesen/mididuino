@@ -1,6 +1,7 @@
 #include "MidiClock.h"
 #include "midi-common.hh"
 #include "helpers.h"
+#include "MidiUartParent.hh"
 // #include "MidiUart.h"
 
 // #define DEBUG_MIDI_CLOCK 0
@@ -214,7 +215,9 @@ void MidiClockClass::handleImmediateClock() {
     inCallback = true;
   }
 
+#ifndef HOST_MIDIDUINO
   sei();
+#endif /* HOST_MIDIDUINO */
 
   //    on96Callbacks.call();
   
