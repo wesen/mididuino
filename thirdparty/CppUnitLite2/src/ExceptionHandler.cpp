@@ -1,3 +1,6 @@
+#include <string.h>
+#include <stdio.h>
+
 #include "ExceptionHandler.h"
 #include "TestResult.h"
 #include "Failure.h"

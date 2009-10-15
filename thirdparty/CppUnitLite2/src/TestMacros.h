@@ -19,14 +19,14 @@ void CheckEqual( TestResult& result_, const Type1& expected, const Type2& actual
     try {                                                                                              
         if (!(expected == actual)) {                                                               
             std::stringstream msg;                                                                     
-            msg << "expected: '" << (expected) << "' but was: '" << (actual) << "'" << std::ends;   
+            msg << "expected: '" << (expected) << "' but was off: '" << (int)(actual) << "'" << std::ends;   
             result_.AddFailure (Failure (msg.str().c_str(), name, file, line));                   
         }                                                                                              
     } catch( const TestException& e ) {                                                                
         UnitExceptionHandler::Handle(result_, e, name, file, line );                             
     } catch(...) {                                                                                     
         std::stringstream msg;                                                                         
-        msg << "expected: '" << (expected) << "' but was: '" << (actual) << "'" << std::ends;       
+        msg << "expected: '" << (expected) << "' but was off: '" << (int)(actual) << "'" << std::ends;       
         UnitExceptionHandler::Handle(result_, msg.str().c_str(), name, file, line);                   
     }                                                                                                  
 }
@@ -38,7 +38,7 @@ void CheckClose( TestResult& result_, const Type1& expected, const Type2& actual
         if ((((expected)-(actual)) > (epsilon)) ||                                                    
             (((actual)-(expected)) > (epsilon))) {                                                    
             std::stringstream msg;                                                                     
-            msg  << "expected: " << (expected) << " but was: " << (actual) << std::ends;            
+            msg  << "expected: " << (expected) << " but was off2: " << (actual) << std::ends;            
             result_.AddFailure (Failure (msg.str().c_str(),  name, file, line));                
         }                                                                                              
     } catch( const TestException& e ) {                                                                
