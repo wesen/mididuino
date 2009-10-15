@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export BASE_DIR=$1
+
 rm -f .failure
 
 find . -maxdepth 1 -type d | grep -v '^\.$' | grep -v '\.svn' |
@@ -13,7 +15,7 @@ while read i; do
 	    echo "SUCCESS"
 	else
 	    echo "FAILURE"
-	    touch .failure
+	    touch ../.failure
 	fi
 	
 	make -f ../Makefile clean >/dev/null 2>&1
