@@ -203,7 +203,10 @@ public:
     } 
     else if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
       pitchEuclid.randomizePitches();
+			return true;
     }
+
+		return false;
   }
 
   void on16Callback(uint32_t counter) {

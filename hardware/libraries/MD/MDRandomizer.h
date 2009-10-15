@@ -8,6 +8,19 @@
 class MDRandomizerClass : public MidiCallback {
  public:
   static const uint32_t paramSelectMask[13];
+	static const uint8_t FILTER_MASK = 0;
+	static const uint8_t AMD_MASK    = 1;
+	static const uint8_t EQ_MASK     = 2;
+	static const uint8_t EFFECT_MASK = 3;
+	static const uint8_t LOWSYN_MASK = 4;
+	static const uint8_t UPSYN_MASK  = 5;
+	static const uint8_t SYN_MASK    = 6;
+	static const uint8_t LFO_MASK    = 7;
+	static const uint8_t SENDS_MASK  = 8;
+	static const uint8_t DIST_MASK   = 9;
+	static const uint8_t FXLOW_MASK  = 10;
+	static const uint8_t FXSYN_MASK  = 11;
+	static const uint8_t ALL_MASK    = 12;
   static const char *selectNames[13];
 
   MDRandomizerClass() {
