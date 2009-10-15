@@ -22,7 +22,7 @@ class MDRandomizerClass : public MidiCallback {
 
   void setup();
   
-  void randomize(int amount, uint8_t mask);
+  void randomize(int amount, uint8_t mask, uint8_t *params = NULL);
   bool undo();
   void revert();
   void morphOrig(uint8_t value);

@@ -75,7 +75,7 @@ void MDRandomizerClass::setTrack(uint8_t _track) {
     undoStack.reset();
   }
 
-void MDRandomizerClass::randomize(int amount, uint8_t mask) {
+void MDRandomizerClass::randomize(int amount, uint8_t mask, uint8_t *params) {
     uint32_t trackMask = paramSelectMask[mask];
 
     if (amount == 0)
@@ -91,8 +91,12 @@ void MDRandomizerClass::randomize(int amount, uint8_t mask) {
           param = 127;
         if (param < 0)
           param = 0;
-        MD.kit.machines[track].params[i] = param;
-        MD.setTrackParam(track, i, param);
+				if (params != NULL) {
+					params[i] = param;
+				} else {
+					MD.kit.machines[track].params[i] = param;
+					MD.setTrackParam(track, i, param);
+				}
       }
     }
 }

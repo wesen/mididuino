@@ -59,8 +59,8 @@ public:
     if (track.isHit(counter)) {
       uint8_t pitch = basePitch + pitches[pitches_idx];
       if (pitch <= 127) {
-	if (!muted)
-	  MD.sendNoteOn(mdTrack, pitch, 100);
+				if (!muted)
+					MD.sendNoteOn(mdTrack, pitch, 100);
       }
       pitches_idx = (pitches_idx + 1) % pitches_len;
     }
