@@ -1,5 +1,5 @@
-CC = gcc
-CXX = g++
+CC = gcc-3
+CXX = g++-3
 CFLAGS += -mno-cygwin -DWINDOWS
 CFLAGS += -W -Wall
 LDFLAGS += -lwinmm
