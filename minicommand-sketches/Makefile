@@ -16,7 +16,8 @@ HARDWARE_DIR = $(BASE_DIR)/hardware
 
 LBASE_DIR = $(HARDWARE_DIR)/libraries
 CORE_DIR = $(HARDWARE_DIR)/cores/$(CORE)
-CLASSPATH = $(subst jar ,jar;,$(wildcard $(BASE_DIR)/lib/*.jar))
+SEPARATOR = $(shell if test -e C:/; then echo ";"; else echo ":"; fi)
+CLASSPATH = $(subst jar ,jar$(SEPARATOR),$(wildcard $(BASE_DIR)/lib/*.jar) $(wildcard $(BASE_DIR)/*.jar))
 
 PDEFILES=$(wildcard $(PDEDIR)/*.pde)
 
