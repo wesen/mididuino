@@ -128,6 +128,7 @@ zip -rq ../lib/pde.jar .
 cd ../..
 
 
+echo `pwd`
 echo
 echo Done.
 

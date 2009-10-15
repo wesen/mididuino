@@ -26,6 +26,8 @@ fi
 
 ./make.sh
 
+echo `pwd`
+
 # remove any old boogers
 rm -rf mididuino
 rm -rf mididuino-*
@@ -33,12 +35,13 @@ rm -rf mididuino-*
 mkdir mididuino
 cp -r ../../app/lib mididuino
 
+PREVDIR=`pwd`
 cd ../../hardware/tools/mididuino && make -f Makefile.windows
 cd "${PREVDIR}"
 
-cp ${DISTDIR}/windows/*.dll work/
+cp ${DISTDIR}/windows/*.dll mididuino/
 
-cp -r ../../hardware work/
+cp -r ../../hardware mididuino/
 
 if [ $1 ]
 then

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-rm -rf work mididuino*.dmg
+rm -rf work mididuino*.dmg mididuino*
