@@ -1,7 +1,9 @@
 #!/bin/sh
 
-find . -maxdepth 1 -type d | grep -v '^\.$' | grep -v '\.svn' | (
-    while read i; do
+rm -f .failure
+
+find . -maxdepth 1 -type d | grep -v '^\.$' | grep -v '\.svn' |
+while read i; do
 	echo -e "\n\n"
 	echo "Making $i"
 	PREVDIR=`pwd`
@@ -11,8 +13,20 @@ find . -maxdepth 1 -type d | grep -v '^\.$' | grep -v '\.svn' | (
 	    echo "SUCCESS"
 	else
 	    echo "FAILURE"
+	    touch .failure
 	fi
+	
 	make -f ../Makefile clean >/dev/null 2>&1
 	cd "$PREVDIR"
-    done
-)
+done
+
+if test -f .failure
+then
+    FAILURE=0
+else
+    FAILURE=1
+fi
+
+rm -f .failure
+
+exit $FAILURE
