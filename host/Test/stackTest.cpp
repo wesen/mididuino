@@ -107,4 +107,23 @@ struct UndoStackFixture {
 };
 
 TEST_F (UndoStackFixture, UndoStackPush) {
+	uint8_t data[24];
+	uint8_t data2[24];
+
+	stack.reset();
+
+	for (uint8_t i = 0; i < countof(data); i++) {
+		data[i] = 0;
+		data2[i] = 1;
+	}
+
+	stack.push(&data);
+	CHECK(!stack.isFull());
+	CHECK_EQUAL(1, stack.size());
+
+	bool ret = stack.pop(&data2);
+	CHECK(ret);
+	for (uint8_t i = 0; i < countof(data2); i++) {
+		CHECK_EQUAL(data[i], data2[i]);
+	}
 }

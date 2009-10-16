@@ -2,7 +2,7 @@
 CXX = g++
 #CC = llvm-gcc-4.2
 CC = gcc
-ARCHFLAGS = -arch x86_64
+#ARCHFLAGS = -arch x86_64
 
 BASE_DIR=../..
 LBASE_DIR=$(BASE_DIR)/hardware/libraries
@@ -23,7 +23,12 @@ CLDFLAGS += $(CPPUNITDIR)/cppunitlite.a
 CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
 CFLAGS += -Os
 CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
-CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+
+# MACOSX Flags
+#CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+
+# Windows Flags
+LIBS += -lwinmm
 
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
@@ -39,7 +44,7 @@ all: test
 test: main.host.o bitTests.host.o listTest.host.o \
       arpTest.host.o stackTest.host.o miscTest.host.o \
       midiTest.host.o callbackTest.host.o noteHandlerTest.host.o $(OBJS)
-	$(CXX) $(CLDFLAGS) -o $@ $^
+	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 
 clean:
 	- rm -f *.o test

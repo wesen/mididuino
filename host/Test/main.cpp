@@ -2,11 +2,14 @@
 #include <TestResultStdErr.h>
 
 #include <Midi.h>
-#include <MidiUartOsx.h>
+#include <MidiUartHost.h>
 
-MidiUartOSXClass MidiUart;
+MidiUartHostClass MidiUart;
 MidiClass Midi;
 MidiClass Midi2;
+
+void handleIncomingMidi() {
+}
 
 int main() {
   TestResultStdErr result;
