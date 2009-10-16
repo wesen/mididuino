@@ -10,7 +10,7 @@ while read i; do
 	echo "Making $i"
 	PREVDIR=`pwd`
 	cd "$i"
-	if make -f ../Makefile 2>&1 > /dev/null
+	if make -f ../Makefile >/dev/null 2>&1
 	then
 	    echo "SUCCESS"
 	else
