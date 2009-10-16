@@ -20,17 +20,21 @@ OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,
 
 CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
 CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) 		
-CFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
-CXXFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
-CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
 #CLDFLAGS += -lreadline -L/opt/local/lib
 CLDFLAGS += --gc-sections
-CLDFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+
+# MACOSX FLAGS
+#CFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+#CXXFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+#CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+#CLDFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
 
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
 
-all: monometest
+OBJS += 
+
+all: monometest monometest2
 
 %.host.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -38,7 +42,10 @@ all: monometest
 %.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-monometest: monometest.host.o $(OBJS)
+monometest: $(OBJS) MonomeTrigPage.o MonomeHost.o MonomeMidiPage.o monometest.host.o
+	$(CLDCXX) $(CLDFLAGS) -o $@ $^
+
+monometest2: $(OBJS) MonomeHost.o monometest2.host.o
 	$(CLDCXX) $(CLDFLAGS) -o $@ $^
 
 
