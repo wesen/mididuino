@@ -1,8 +1,60 @@
+#ifdef apple
+
 #include "WProgram.h"
 
 #include <midi-common.hh>
 #include <MidiUartParent.hh>
 #include "MidiUartOSX.h"
+
+void MidiUartOSXClass::listInputMidiDevices() {
+	unsigned long   iNumDevs, i;
+	
+	iNumDevs = MIDIGetNumberOfSources();
+	
+	for (i = 0; i < iNumDevs; i++) {
+		CFStringRef pname, pmanuf, pmodel;
+		char name[64], manuf[64], model[64];
+    
+		MIDIEndpointRef ep = MIDIGetSource(i);
+		MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
+		MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
+		MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
+    
+		CFStringGetCString(pname, name, sizeof(name), 0);
+		CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
+		CFStringGetCString(pmodel, model, sizeof(model), 0);
+		CFRelease(pname);
+		CFRelease(pmanuf);
+		CFRelease(pmodel);
+    
+		printf("%ld) %s - %s\n", i, name, manuf);
+	}
+}
+
+void MidiUartOSXClass::listOutputMidiDevices() {
+	unsigned long   iNumDevs, i;
+	
+	iNumDevs = MIDIGetNumberOfDestinations();
+	
+	for (i = 0; i < iNumDevs; i++) {
+		CFStringRef pname, pmanuf, pmodel;
+		char name[64], manuf[64], model[64];
+    
+		MIDIEndpointRef ep = MIDIGetDestination(i);
+		MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
+		MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
+		MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
+    
+		CFStringGetCString(pname, name, sizeof(name), 0);
+		CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
+		CFStringGetCString(pmodel, model, sizeof(model), 0);
+		CFRelease(pname);
+		CFRelease(pmanuf);
+		CFRelease(pmodel);
+    
+      printf("%ld) %s - %s\n", i, name, manuf);
+	}  
+}    
 
 MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
   inputDevice = -1;
@@ -111,3 +163,4 @@ void MidiUartOSXClass::runLoop() {
   CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
 }
 
+#endif /* apple */
