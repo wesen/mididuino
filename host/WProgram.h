@@ -47,7 +47,7 @@ extern "C" {
 #include "Midi.h"
 #include "MidiClock.h"
 
-#include "MidiUartOSX.h"
+#include "MidiUartHost.h"
 #include "GUI_private.h"
 
 void hexDump(uint8_t *data, uint16_t len);
