@@ -80,7 +80,8 @@ void MDRandomizerClass::randomize(int amount, uint8_t mask, uint8_t *params) {
 
     if (amount == 0)
       return;
-    undoStack.push(&MD.kit.machines[track].params);
+		
+		//    undoStack.push(&MD.kit.machines[track].params);
 
     for (uint8_t i = 0; i < 24; i++) {
       if (IS_BIT_SET32(trackMask, i)) {
@@ -103,6 +104,7 @@ void MDRandomizerClass::randomize(int amount, uint8_t mask, uint8_t *params) {
 
 void MDRandomizerClass::setup() {
   Midi.addOnControlChangeCallback(this, (midi_callback_ptr_t)&MDRandomizerClass::onCCCallback);
+	undoStack.reset();
 }
 
 bool MDRandomizerClass::undo() {

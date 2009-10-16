@@ -25,10 +25,10 @@ class MDEuclidRandomizer {
 
 		params_len = 0;
 		params_idx = 0;
-		mdTrack = 0;
 		amount = 0;
 		selectMask = 0;
-		
+
+		setTrack(0);
 		setParamsLength(4);
 	}
 
