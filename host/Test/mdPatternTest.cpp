@@ -11,9 +11,6 @@ struct MDPatternFixture {
 
 	MDPattern pattern;
 	MDPattern pattern2;
-
-	uint8_t buf[8192];
-	uint8_t buf2[8192];
 };
 
 TEST_F (MDPatternFixture, MDPatternTestInit) {
@@ -22,7 +19,7 @@ TEST_F (MDPatternFixture, MDPatternTestInit) {
 	}
 }
 
-#define MDPATTERN_EQUAL(p1, p2) { \
+#define MDPATTERN_EQUAL_OLD(p1, p2) { \
 	CHECK_EQUAL((p1).origPosition, (p2).origPosition);                         \
 	CHECK_EQUAL((p1).accentPattern, (p2).accentPattern);                       \
 	CHECK_EQUAL((p1).slidePattern, (p2).slidePattern);                         \
@@ -52,17 +49,19 @@ TEST_F (MDPatternFixture, MDPatternTestInit) {
 	} \
 }
 
-TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
-	uint16_t len = pattern.toSysex(buf, sizeof(buf));
-	bool ret = pattern2.fromSysex(buf + 6, len - 7);
-	CHECK(ret);
-	uint16_t len2 = pattern2.toSysex(buf2, sizeof(buf2));
-	CHECK_EQUAL(len, len2);
-	for (uint16_t i = 0; i < len; i++) {
-		CHECK_EQUAL(buf[i], buf2[i]);
+#define MDPATTERN_SYSEX_EQUAL(p1) { \
+	MDPattern p2; \
+	uint8_t buf[8192], buf2[8192]; \
+	uint16_t len = (p1).toSysex(buf, sizeof(buf));         \
+	bool ret = (p2).fromSysex(buf + 6, len - 7);          \
+	CHECK(ret);                                               \
+	uint16_t len2 = (p2).toSysex(buf2, sizeof(buf2));     \
+	CHECK_EQUAL(len, len2);                                   \
+	MDPATTERN_EQUAL_OLD(pattern, pattern2);												\
 	}
 
-	MDPATTERN_EQUAL(pattern, pattern2);
+TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
+	MDPATTERN_SYSEX_EQUAL(pattern);
 }
 
 bool reimportSysex(MDPattern *p) {
@@ -136,6 +135,99 @@ TEST_F (MDPatternFixture, MDPatternSetTrigSysex) {
 		CHECK(ret);
 		CHECK(!pattern.isTrigSet(track, 0));
 		CHECK(pattern.isTrackEmpty(track));
+	}
+}
+
+TEST_F (MDPatternFixture, MDPatternSingleLock) {
+	for (uint8_t track = 0 ; track < 16 ; track++) {
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
+		pattern.addLock(track, 0, 0, 100);
+		CHECK_EQUAL(100, pattern.getLock(track, 0, 0));
+		bool ret = reimportSysex(&pattern);
+		CHECK(ret);
+		CHECK_EQUAL(100, (int)pattern.getLock(track, 0, 0));
+
+		pattern.clearLock(track, 0, 0);
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
+		ret = reimportSysex(&pattern);
+		CHECK(ret);
+		CHECK_EQUAL(255, (int)pattern.getLock(track, 0, 0));
+	}
+}
+
+TEST_F (MDPatternFixture, MDPatternTwoParamLocks) {
+	for (uint8_t track = 0 ; track < 16 ; track++) {
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 1));
+
+		pattern.addLock(track, 0, 0, 100);
+		pattern.addLock(track, 0, 1, 101);
+		CHECK_EQUAL(100, pattern.getLock(track, 0, 0));
+		CHECK_EQUAL(101, pattern.getLock(track, 0, 1));
+		
+		pattern.clearLock(track, 0, 0);
+		pattern.clearLock(track, 0, 1);
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 1));
+	}
+}
+
+TEST_F (MDPatternFixture, MDPatternTwoParamLocksNoClear) {
+	for (uint8_t track = 0 ; track < 16 ; track++) {
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
+		CHECK_EQUAL(255, pattern.getLock(track, 0, 1));
+
+		pattern.addLock(track, 0, 0, 100);
+		pattern.addLock(track, 0, 1, 101);
+		CHECK_EQUAL(100, pattern.getLock(track, 0, 0));
+		CHECK_EQUAL(101, pattern.getLock(track, 0, 1));
+		
+	}
+
+	for (uint8_t track = 0 ; track < 16 ; track++) {
+		CHECK_EQUAL(100, pattern.getLock(track, 0, 0));
+		CHECK_EQUAL(101, pattern.getLock(track, 0, 1));
+	}
+}
+
+TEST_F (MDPatternFixture, MDPatternOneParamMoreLocks) {
+	for (uint8_t track = 0 ; track < 16 ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(255, pattern.getLock(track, step, 0));
+
+			pattern.addLock(track, step, 0, step * 2);
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < 32; step++) {
+			pattern.clearLock(track, step, 0);
+			CHECK_EQUAL(255, pattern.getLock(track, step, 0));
+		}
+	}
+}
+
+TEST_F (MDPatternFixture, MDPatternOneParamMoreLocksNoClear) {
+	for (uint8_t track = 0 ; track < 16 ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(255, pattern.getLock(track, step, 0));
+
+			pattern.addLock(track, step, 0, step * 2);
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+	}
+
+	for (uint8_t track = 0 ; track < 16 ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
 	}
 }
 
