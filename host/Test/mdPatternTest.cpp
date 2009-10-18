@@ -157,6 +157,40 @@ TEST_F (MDPatternFixture, MDPatternSingleLock) {
 	}
 }
 
+TEST_F (MDPatternFixture, MDPatternSingleLockDebug) {
+	PrintMDPattern pattern;
+	pattern.init();
+	
+	for (uint8_t track = 0; track < 2 ; track++) {
+		printf("\n\ntrack: %d\n", track);
+		pattern.addLock(track, 0, 0, 100);
+		printf("add\n");
+		pattern.printLocks(track);
+		pattern.recalculateLockPatterns();
+		printf("recalculate\n");
+		pattern.printLocks(track);
+		
+		bool ret = reimportSysex(&pattern);
+		printf("reimport\n");
+		pattern.printLocks(track);
+
+		pattern.clearLock(track, 0, 0);
+		printf("clear\n");
+		pattern.printLocks(track);
+
+		pattern.recalculateLockPatterns();
+		printf("recalculate\n");
+		pattern.printLocks(track);
+
+		ret = reimportSysex(&pattern);
+		printf("reimport\n");
+		pattern.printLocks(track);
+
+		CHECK_EQUAL(255, (int)pattern.getLock(track, 0, 0));
+	}
+}
+
+
 TEST_F (MDPatternFixture, MDPatternTwoParamLocks) {
 	for (uint8_t track = 0 ; track < 16 ; track++) {
 		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
