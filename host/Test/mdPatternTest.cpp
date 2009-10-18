@@ -157,6 +157,7 @@ TEST_F (MDPatternFixture, MDPatternSingleLock) {
 	}
 }
 
+#ifdef DEBUG
 TEST_F (MDPatternFixture, MDPatternSingleLockDebug) {
 	PrintMDPattern pattern;
 	pattern.init();
@@ -189,7 +190,7 @@ TEST_F (MDPatternFixture, MDPatternSingleLockDebug) {
 		CHECK_EQUAL(255, (int)pattern.getLock(track, 0, 0));
 	}
 }
-
+#endif
 
 TEST_F (MDPatternFixture, MDPatternTwoParamLocks) {
 	for (uint8_t track = 0 ; track < 16 ; track++) {
@@ -266,4 +267,3 @@ TEST_F (MDPatternFixture, MDPatternOneParamMoreLocksNoClear) {
 		}
 	}
 }
-
