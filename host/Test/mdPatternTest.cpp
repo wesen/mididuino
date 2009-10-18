@@ -3,6 +3,8 @@
 
 #include <MD.h>
 
+#include "../pattern-tests/PrintMDPattern.h"
+
 struct MDPatternFixture {
 	MDPatternFixture() {
 		pattern.init();
