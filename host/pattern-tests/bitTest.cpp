@@ -14,7 +14,7 @@ int main(void) {
   SET_BIT(val, 12);
   SET_BIT(val, 15);
 
-  printf("%x\n", val);
+  printf("%lx\n", val);
 
   return 0;
     
