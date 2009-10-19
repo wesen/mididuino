@@ -25,11 +25,11 @@
 #define IS_BIT_SET32(port, bit) (((port) & (uint32_t)(1UL << (bit))) ? 1 : 0)
 #define IS_BIT_CLEAR32(port, bit) (((port) & (uint32_t)(1UL << (bit))) == 0 ? 1 : 0)
 
-#define SET_BIT64(port, bit)   ((port) |= (uint64_t)(1UL << (bit)))
-#define CLEAR_BIT64(port, bit) ((port) &= (uint64_t)~(1UL << (bit)))
-#define TOGGLE_BIT64(port, bit) ((port) ^= (uint64_t)(1UL << (bit)))
-#define IS_BIT_SET64(port, bit) (((port) & (uint64_t)(1UL << (bit))) ? 1 : 0)
-#define IS_BIT_CLEAR64(port, bit) (((port) & (uint64_t)(1UL << (bit))) == 0 ? 1 : 0)
+#define SET_BIT64(port, bit)   ((port) |= (uint64_t)(1ULL << (bit)))
+#define CLEAR_BIT64(port, bit) ((port) &= (uint64_t)~(1ULL << (bit)))
+#define TOGGLE_BIT64(port, bit) ((port) ^= (uint64_t)(1ULL << (bit)))
+#define IS_BIT_SET64(port, bit) (((port) & (uint64_t)(1ULL << (bit))) ? 1 : 0)
+#define IS_BIT_CLEAR64(port, bit) (((port) & (uint64_t)(1ULL << (bit))) == 0 ? 1 : 0)
 
 
 #ifdef AVR

@@ -93,6 +93,8 @@ public:
       char name[5];
       MD.getPatternName(euclid.pattern.origPosition, name);
       GUI.flash_strings_fill("PATTERN", name);
+    } else {
+      GUI.flash_strings_fill("SYSEX", "ERROR");
     }
   }
 
@@ -104,10 +106,6 @@ void setup() {
   initMDTask();
   MDTask.verbose = false;
   
-  volatile uint8_t *ptr = __data_end;
-  
-  *ptr = 0;
-
   sketch.setup();
   GUI.setSketch(&sketch);
 }
