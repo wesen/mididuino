@@ -21,49 +21,41 @@ TEST_F (MDPatternFixture, MDPatternTestInit) {
 	}
 }
 
-#define MDPATTERN_EQUAL_OLD(p1, p2) { \
-	CHECK_EQUAL((p1).origPosition, (p2).origPosition);                         \
-	CHECK_EQUAL((p1).accentPattern, (p2).accentPattern);                       \
-	CHECK_EQUAL((p1).slidePattern, (p2).slidePattern);                         \
-	CHECK_EQUAL((p1).swingPattern, (p2).swingPattern);                         \
-	CHECK_EQUAL((p1).swingAmount, (p2).swingAmount);                           \
-	CHECK_EQUAL((p1).accentAmount, (p2).accentAmount);                         \
-	CHECK_EQUAL((p1).patternLength, (p2).patternLength);                       \
-	CHECK_EQUAL((p1).doubleTempo, (p2).doubleTempo);                           \
-	CHECK_EQUAL((p1).scale, (p2).scale);                                       \
-	CHECK_EQUAL((p1).kit, (p2).kit);                                           \
-                                                                           \
-	for (uint8_t track = 0; track < 16; track++) {                           \
-		CHECK_EQUAL((p1).trigPatterns[track], (p2).trigPatterns[track]);         \
-		CHECK_EQUAL((p1).lockPatterns[track], (p2).lockPatterns[track]);         \
-		CHECK_EQUAL((p1).accentPatterns[track], (p2).accentPatterns[track]);     \
-		CHECK_EQUAL((p1).slidePatterns[track], (p2).slidePatterns[track]);       \
-		CHECK_EQUAL((p1).swingPatterns[track], (p2).swingPatterns[track]);       \
-  \
-		for (uint8_t param = 0; param < 24; param++) {                         \
-			CHECK_EQUAL((p1).isParamLocked(track, param),                         \
-									(p2).isParamLocked(track, param));                        \
-			for (uint8_t step = 0; step < 32; step++) {                          \
-				CHECK_EQUAL((p1).getLock(track, step, param),                       \
-										(p2).getLock(track, step, param));                      \
-			}                               \
-		} \
-	} \
-}
-
-#define MDPATTERN_SYSEX_EQUAL(p1) { \
-	MDPattern p2; \
-	uint8_t buf[8192], buf2[8192]; \
-	uint16_t len = (p1).toSysex(buf, sizeof(buf));         \
-	bool ret = (p2).fromSysex(buf + 6, len - 7);          \
-	CHECK(ret);                                               \
-	uint16_t len2 = (p2).toSysex(buf2, sizeof(buf2));     \
-	CHECK_EQUAL(len, len2);                                   \
-	MDPATTERN_EQUAL_OLD(pattern, pattern2);												\
-	}
-
 TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
-	MDPATTERN_SYSEX_EQUAL(pattern);
+	MDPattern p2; 
+	uint8_t buf[8192], buf2[8192]; 
+	uint16_t len = pattern.toSysex(buf, sizeof(buf));         
+	bool ret = (p2).fromSysex(buf + 6, len - 7);          
+	CHECK(ret);                                               
+	uint16_t len2 = (p2).toSysex(buf2, sizeof(buf2));     
+	CHECK_EQUAL(len, len2);                                   
+	CHECK_EQUAL(pattern.origPosition, (p2).origPosition);                         
+	CHECK_EQUAL(pattern.accentPattern, (p2).accentPattern);                       
+	CHECK_EQUAL(pattern.slidePattern, (p2).slidePattern);                         
+	CHECK_EQUAL(pattern.swingPattern, (p2).swingPattern);                         
+	CHECK_EQUAL(pattern.swingAmount, (p2).swingAmount);                           
+	CHECK_EQUAL(pattern.accentAmount, (p2).accentAmount);                         
+	CHECK_EQUAL(pattern.patternLength, (p2).patternLength);                       
+	CHECK_EQUAL(pattern.doubleTempo, (p2).doubleTempo);                           
+	CHECK_EQUAL(pattern.scale, (p2).scale);                                       
+	CHECK_EQUAL(pattern.kit, (p2).kit);                                           
+                                                                           
+	for (uint8_t track = 0; track < 16; track++) {                           
+		CHECK_EQUAL(pattern.trigPatterns[track], (p2).trigPatterns[track]);         
+		CHECK_EQUAL(pattern.lockPatterns[track], (p2).lockPatterns[track]);         
+		CHECK_EQUAL(pattern.accentPatterns[track], (p2).accentPatterns[track]);     
+		CHECK_EQUAL(pattern.slidePatterns[track], (p2).slidePatterns[track]);       
+		CHECK_EQUAL(pattern.swingPatterns[track], (p2).swingPatterns[track]);       
+  
+		for (uint8_t param = 0; param < 24; param++) {                         
+			CHECK_EQUAL(pattern.isParamLocked(track, param),                         
+									(p2).isParamLocked(track, param));                        
+			for (uint8_t step = 0; step < 32; step++) {                          
+				CHECK_EQUAL(pattern.getLock(track, step, param),                       
+										(p2).getLock(track, step, param));                      
+			}                               
+		} 
+	} 
 }
 
 bool reimportSysex(MDPattern *p) {
@@ -267,3 +259,94 @@ TEST_F (MDPatternFixture, MDPatternOneParamMoreLocksNoClear) {
 		}
 	}
 }
+
+TEST_F (MDPatternFixture, MDPatternAllParameters) {
+	uint8_t maxTrack = 2;
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(255, (int)pattern.getLock(track, step, 0));
+
+			pattern.addLock(track, step, 0, step * 2);
+			pattern.setTrig(track, step);
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+		
+	bool ret = reimportSysex(&pattern);
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+}
+
+TEST_F (MDPatternFixture, MDLongPatternTrig) {
+	pattern.patternLength = 64;
+	pattern.setTrig(0, 32);
+	CHECK(pattern.isTrigSet(0, 32));
+
+	bool ret = reimportSysex(&pattern);
+	CHECK(ret);
+	CHECK(pattern.isTrigSet(0, 32));
+}
+
+#ifdef DEBUG
+TEST_F (MDPatternFixture, MDPatternAllParametersDebug) {
+	PrintMDPattern pattern;
+	pattern.init();
+	
+	uint8_t maxTrack = 2;
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(255, (int)pattern.getLock(track, step, 0));
+
+			pattern.addLock(track, step, 0, step * 2 + track);
+			pattern.setTrig(track, step);
+			CHECK_EQUAL(step * 2 + track, (int)pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2 + track, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2 + track, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+	printf("before\n");
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		pattern.printLocks(track);
+	}
+	pattern.recalculateLockPatterns();
+
+	printf("recalc\n");
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		pattern.printLocks(track);
+	}
+	
+	printf("after\n");
+	bool ret = reimportSysex(&pattern);
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		pattern.printLocks(track);
+	}
+}
+#endif

@@ -33,7 +33,7 @@ LIBS += -lwinmm
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
 
-all: test
+all: MDPatternTest generateMDPattern printMDPattern
 
 %.host.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -41,10 +41,15 @@ all: test
 %.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-test: main.host.o bitTests.host.o listTest.host.o \
-      arpTest.host.o stackTest.host.o miscTest.host.o \
-      midiTest.host.o callbackTest.host.o noteHandlerTest.host.o \
-      mdPatternTest.host.o dataEncoderTest.host.o \
+MDPatternTest: MDPatternTest.host.o \
+      $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
+
+generateMDPattern: generateMDPattern.host.o \
+      $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
+
+printMDPattern: printMDPattern.host.o \
       $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 
