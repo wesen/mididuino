@@ -145,7 +145,16 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
       }
     }
   }
-  
+
+  if (isExtraPattern) {
+    uint8_t data3[16*4+16];
+    ElektronHelper::MDSysexToData(data + 0xAC6 - 6, data3, 16*4+16);
+    uint8_t *ptr1 = data3;
+    for (int i = 0; i < 16; i++) {
+      trigPatterns[i] |= ((uint64_t)ElektronHelper::to32Bit(ptr1)) << 32;
+      ptr1 += 4;
+    }
+  }
 
   return true;
 }
