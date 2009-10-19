@@ -44,7 +44,7 @@ all: test
 test: main.host.o bitTests.host.o listTest.host.o \
       arpTest.host.o stackTest.host.o miscTest.host.o \
       midiTest.host.o callbackTest.host.o noteHandlerTest.host.o \
-      mdPatternTest.host.o \
+      mdPatternTest.host.o dataEncoderTest.host.o \
       $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 

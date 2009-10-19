@@ -42,6 +42,7 @@ void MDPattern::init() {
   accentEditAll = 1;
   swingEditAll = 1;
   slideEditAll = 1;
+	doubleTempo = 0;
 
   patternLength = 16;
   swingAmount = 50 << 14;
@@ -99,9 +100,6 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 		decoder.get32(lockPatterns + i);
   }
 
-	uint8_t data2[400];
-  uint8_t *ptr = data2;
-
 	decoder.init(data + 0x9e - 6, 19);
 	decoder.get32(&accentPattern);
 	decoder.get32(&slidePattern);
@@ -152,13 +150,25 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   if (isExtraPattern) {
-    uint8_t data3[16*4+16];
-    ElektronHelper::MDSysexToData(data + 0xAC6 - 6, data3, 16*4+16);
-    uint8_t *ptr1 = data3;
+		decoder.init(data + 0xac6 - 6, 2647);
     for (int i = 0; i < 16; i++) {
-      trigPatterns[i] |= ((uint64_t)ElektronHelper::to32Bit(ptr1)) << 32;
-      ptr1 += 4;
+			decoder.get32hi(trigPatterns + i);
     }
+		decoder.get32hi(&accentPattern);
+		decoder.get32hi(&slidePattern);
+		decoder.get32hi(&swingPattern);
+		for (uint8_t i = 0; i < 64; i++) {
+			decoder.get(locks[i] + 32, 32);
+		}
+		for (int i = 0; i < 16; i++) {
+			decoder.get32hi(accentPatterns + i);
+		}
+		for (int i = 0; i < 16; i++) {
+			decoder.get32hi(slidePatterns + i);
+		}
+		for (int i = 0; i < 16; i++) {
+			decoder.get32hi(swingPatterns + i);
+		}
   }
 
   return true;
@@ -185,29 +195,27 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   data[8] = 0x01;
   data[9] = origPosition;
 
-  uint8_t data2[204];
-  uint8_t *ptr = data2;
-
+	MDDataToSysexEncoder encoder(data + 0xA, 74);
+	
   for (int i = 0; i < 16; i++) {
-    ElektronHelper::from32Bit(trigPatterns[i], ptr);
-    ptr += 4;
+		encoder.pack32(trigPatterns[i]);
   }
-  ElektronHelper::MDDataToSysex(data2, data + 0xA, 64);
+	encoder.finish();
 
   recalculateLockPatterns();
 	
-  ptr = data2;
+	encoder.init(data + 0x54, 74);
   for (int i = 0; i < 16; i++) {
-    ElektronHelper::from32Bit(lockPatterns[i], ptr);
-    ptr += 4;
+		encoder.pack32(lockPatterns[i]);
   }
-  ElektronHelper::MDDataToSysex(data2, data + 0x54, 64);
+	encoder.finish();
 
-  ElektronHelper::from32Bit(accentPattern, data2);
-  ElektronHelper::from32Bit(slidePattern, data2 + 4);
-  ElektronHelper::from32Bit(swingPattern, data2 + 8);
-  ElektronHelper::from32Bit(swingAmount, data2 + 12);
-  ElektronHelper::MDDataToSysex(data2, data + 0x9e, 16);
+	encoder.init(data + 0x9e, 19);
+	encoder.pack32(accentPattern);
+	encoder.pack32(slidePattern);
+	encoder.pack32(swingPattern);
+	encoder.pack32(swingAmount);
+	encoder.finish();
     
   data[0xB1] = accentAmount;
   data[0xB2] = patternLength;
@@ -218,6 +226,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
   uint16_t cnt = 0;
 
+	encoder.init(data + 0xB7, 2341);
 	uint8_t lockData[64][32];
   for (int i = cnt; i < 64; i++) {
     m_memclr(lockData[i], 32);
@@ -239,49 +248,36 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
       }
     }
   }
-  ElektronHelper::MDDataToSysex((uint8_t*)lockData, data + 0xB7, 64 * 32);
+	for (int i = cnt; i < 64; i++) {
+		encoder.pack((uint8_t *)lockData, (64 * 32));
+	}
+	encoder.finish();
   
-  ptr = data + 0xB7;
+	encoder.init(data + 0x9dc, 234);
+	encoder.pack32(accentEditAll ? 1 : 0);
+	encoder.pack32(slideEditAll ? 1 : 0);
+  encoder.pack32(swingEditAll ? 1 : 0);
 
-  ElektronHelper::from32Bit(accentEditAll ? 1 : 0, data2);
-  ElektronHelper::from32Bit(slideEditAll ? 1 : 0, data2 + 4);
-  ElektronHelper::from32Bit(swingEditAll ? 1 : 0, data2 + 8);
-
-  ptr = data2 + 12;
   for (int i = 0; i < 16; i++) {
-    ElektronHelper::from32Bit(accentPatterns[i], ptr);
-    ptr += 4;
+		encoder.pack32(accentPatterns[i]);
   }
   for (int i = 0; i < 16; i++) {
-    ElektronHelper::from32Bit(slidePatterns[i], ptr);
-    ptr += 4;
+		encoder.pack32(slidePatterns[i]);
   }
   for (int i = 0; i < 16; i++) {
-    ElektronHelper::from32Bit(swingPatterns[i], ptr);
-    ptr += 4;
+		encoder.pack32(swingPatterns[i]);
   }
-  ElektronHelper::MDDataToSysex(data2, data + 0x9DC, 204);
+	encoder.finish();
 
 	if (isExtraPattern) {
-		ptr = data2;
+		encoder.init(data + 0xac6, 2647);
 		for (int i = 0; i < 16; i++) {
-			ElektronHelper::from32Bit(trigPatterns[i], ptr);
-			ptr += 4;
+			encoder.pack32hi(trigPatterns[i]);
 		}
-		ElektronHelper::MDDataToSysex(data2, data + 0xac6, 64);
-		
-		ptr = data2;
-		for (int i = 0; i < 16; i++) {
-			ElektronHelper::from32Bit(lockPatterns[i], ptr);
-			ptr += 4;
-		}
-		ElektronHelper::MDDataToSysex(data2, data + 0x54, 64);
-		
-		ElektronHelper::from32Bit(accentPattern, data2);
-		ElektronHelper::from32Bit(slidePattern, data2 + 4);
-		ElektronHelper::from32Bit(swingPattern, data2 + 8);
-		ElektronHelper::from32Bit(swingAmount, data2 + 12);
-		ElektronHelper::MDDataToSysex(data2, data + 0x9e, 16);
+		encoder.pack32hi(accentPattern);
+		encoder.pack32hi(slidePattern);
+		encoder.pack32hi(swingPattern);
+		encoder.pack32hi(swingAmount);
     
 		for (int i = cnt; i < 64; i++) {
 			m_memclr(lockData[i], 32);
@@ -290,20 +286,14 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 			for (int param = 0; param < 24; param++) {
 				int8_t lock = paramLocks[track][param];
 				if (lock != -1) {
-#if 0
-					printf("track %d, param %d, lock %d\n", track, param, lock);
-					for (uint8_t i = 0; i < 32; i++) {
-						printf("%.2d ", locks[lock][i]);
-					}
-					printf("\n");
-#endif
 					
-					m_memcpy(lockData[lock], locks[lock], 32);
+					m_memcpy(lockData[lock], locks[lock] + 32, 32);
 					cnt++;
 				}
 			}
 		}
-		ElektronHelper::MDDataToSysex((uint8_t*)lockData, data + 0xB7, 64 * 32);
+		encoder.pack((uint8_t *)lockData, 64 * 32);
+		encoder.finish();
 	}
 	
   uint16_t checksum = 0;
