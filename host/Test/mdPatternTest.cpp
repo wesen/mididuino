@@ -267,3 +267,94 @@ TEST_F (MDPatternFixture, MDPatternOneParamMoreLocksNoClear) {
 		}
 	}
 }
+
+TEST_F (MDPatternFixture, MDPatternAllParameters) {
+	uint8_t maxTrack = 2;
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(255, pattern.getLock(track, step, 0));
+
+			pattern.addLock(track, step, 0, step * 2);
+			pattern.setTrig(track, step);
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+	}
+
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+	}
+
+		
+	bool ret = reimportSysex(&pattern);
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+		}
+	}
+
+}
+
+TEST_F (MDPatternFixture, MDLongPatternTrig) {
+	pattern.patternLength = 64;
+	pattern.setTrig(0, 32);
+	CHECK(pattern.isTrigSet(0, 32));
+
+	bool ret = reimportSysex(&pattern);
+	CHECK(ret);
+	CHECK(pattern.isTrigSet(0, 32));
+}
+
+#ifdef DEBUG
+TEST_F (MDPatternFixture, MDPatternAllParametersDebug) {
+	PrintMDPattern pattern;
+	pattern.init();
+	
+	uint8_t maxTrack = 2;
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(255, (int)pattern.getLock(track, step, 0));
+
+			pattern.addLock(track, step, 0, step * 2 + track);
+			pattern.setTrig(track, step);
+			CHECK_EQUAL(step * 2 + track, (int)pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2 + track, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < 32; step++) {
+			CHECK_EQUAL(step * 2 + track, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+	printf("before\n");
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		pattern.printLocks(track);
+	}
+	pattern.recalculateLockPatterns();
+
+	printf("recalc\n");
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		pattern.printLocks(track);
+	}
+	
+	printf("after\n");
+	bool ret = reimportSysex(&pattern);
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		pattern.printLocks(track);
+	}
+}
+#endif

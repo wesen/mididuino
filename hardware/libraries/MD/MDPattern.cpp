@@ -114,7 +114,11 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   scale = data[0xb4 - 6];
   kit = data[0xb5 - 6];
   numLockedRows = data[0xb6 - 6];
-  ElektronHelper::MDSysexToData(data + 0xB7 - 6, (uint8_t *)locks, 2341);
+	uint8_t tmpLocks[64][32];
+  ElektronHelper::MDSysexToData(data + 0xB7 - 6, (uint8_t *)tmpLocks, 2341);
+	for (uint8_t i = 0; i < 64; i++) {
+		m_memcpy(locks[i], tmpLocks[i], 32);
+	}
   ElektronHelper::MDSysexToData(data + 0x9DC - 6, data2, 234);
 
   accentEditAll = (ElektronHelper::to32Bit(data2) == 1);
@@ -159,14 +163,18 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   return true;
 }
 
-uint8_t lockData[64][32];
-
 uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
+	if (patternLength > 32) {
+		isExtraPattern = true;
+	}
+
+	uint16_t sysexLength = isExtraPattern ? 0x151d : 0xac6;
+	
   // XXX check extrapattern
-  if (len < 0xacb)
+  if (len < (sysexLength + 5))
     return 0;
 
-  m_memclr(data, 0xACB);
+  m_memclr(data, sysexLength + 5);
   
   data[0] = 0xF0;
   m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
@@ -209,6 +217,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
   uint16_t cnt = 0;
 
+	uint8_t lockData[64][32];
   for (int i = cnt; i < 64; i++) {
     m_memclr(lockData[i], 32);
   }
@@ -216,6 +225,14 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
     for (int param = 0; param < 24; param++) {
       int8_t lock = paramLocks[track][param];
       if (lock != -1) {
+#if 0
+				printf("track %d, param %d, lock %d\n", track, param, lock);
+				for (uint8_t i = 0; i < 32; i++) {
+					printf("%.2d ", locks[lock][i]);
+				}
+				printf("\n");
+#endif
+				
 				m_memcpy(lockData[lock], locks[lock], 32);
 				cnt++;
       }
@@ -244,17 +261,61 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   }
   ElektronHelper::MDDataToSysex(data2, data + 0x9DC, 204);
 
+	if (isExtraPattern) {
+		ptr = data2;
+		for (int i = 0; i < 16; i++) {
+			ElektronHelper::from32Bit(trigPatterns[i], ptr);
+			ptr += 4;
+		}
+		ElektronHelper::MDDataToSysex(data2, data + 0xac6, 64);
+		
+		ptr = data2;
+		for (int i = 0; i < 16; i++) {
+			ElektronHelper::from32Bit(lockPatterns[i], ptr);
+			ptr += 4;
+		}
+		ElektronHelper::MDDataToSysex(data2, data + 0x54, 64);
+		
+		ElektronHelper::from32Bit(accentPattern, data2);
+		ElektronHelper::from32Bit(slidePattern, data2 + 4);
+		ElektronHelper::from32Bit(swingPattern, data2 + 8);
+		ElektronHelper::from32Bit(swingAmount, data2 + 12);
+		ElektronHelper::MDDataToSysex(data2, data + 0x9e, 16);
+    
+		for (int i = cnt; i < 64; i++) {
+			m_memclr(lockData[i], 32);
+		}
+		for (int track = 0; track < 16; track++) {
+			for (int param = 0; param < 24; param++) {
+				int8_t lock = paramLocks[track][param];
+				if (lock != -1) {
+#if 0
+					printf("track %d, param %d, lock %d\n", track, param, lock);
+					for (uint8_t i = 0; i < 32; i++) {
+						printf("%.2d ", locks[lock][i]);
+					}
+					printf("\n");
+#endif
+					
+					m_memcpy(lockData[lock], locks[lock], 32);
+					cnt++;
+				}
+			}
+		}
+		ElektronHelper::MDDataToSysex((uint8_t*)lockData, data + 0xB7, 64 * 32);
+	}
+	
   uint16_t checksum = 0;
-  for (int i = 9; i < 0xac6; i++)
+  for (int i = 9; i < sysexLength; i++)
     checksum += data[i];
-  data[0xac6] = (uint8_t)((checksum >> 7) & 0x7F);
-  data[0xac7] = (uint8_t)(checksum & 0x7F);
-  uint16_t length = 0xacb - 7 - 3;
-  data[0xac8] = (uint8_t)((length >> 7) &0x7F);
-  data[0xac9] = (uint8_t)(length & 0x7F);
-  data[0xaca] = 0xF7;
+  data[sysexLength] = (uint8_t)((checksum >> 7) & 0x7F);
+  data[sysexLength + 1] = (uint8_t)(checksum & 0x7F);
+  uint16_t length = sysexLength + 5 - 7 - 3;
+  data[sysexLength + 2] = (uint8_t)((length >> 7) &0x7F);
+  data[sysexLength + 3 ] = (uint8_t)(length & 0x7F);
+  data[sysexLength + 4] = 0xF7;
 
-  return 0xacb;
+  return sysexLength + 5;
 }
 
 bool MDPattern::isTrackEmpty(uint8_t track) {
