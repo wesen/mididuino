@@ -14,19 +14,19 @@ namespace cppunitlite
 {
 
 template < typename Type1, typename Type2 >
-void CheckEqual( TestResult& result_, const Type1& expected, const Type2& actual, const char* file, unsigned int line, const char* name)
+  void CheckEqual( TestResult& result_, const Type1& expected, const Type2& actual, const char* file, unsigned int line, const char* name)
 {                                                                                                   
     try {                                                                                              
         if (!(expected == actual)) {                                                               
             std::stringstream msg;                                                                     
-            msg << "expected: '" << (expected) << "' but was off: '" << (actual) << "'" << std::ends;   
+            msg << "expected: '" << (expected) << "' but was : '" << (actual) << "'" << std::ends;   
             result_.AddFailure (Failure (msg.str().c_str(), name, file, line));                   
         }                                                                                              
     } catch( const TestException& e ) {                                                                
         UnitExceptionHandler::Handle(result_, e, name, file, line );                             
     } catch(...) {                                                                                     
         std::stringstream msg;                                                                         
-        msg << "expected: '" << (expected) << "' but was off: '" << (actual) << "'" << std::ends;       
+        msg << "expected: '" << (expected) << "' but was : '" << (actual) << "'" << std::ends;       
         UnitExceptionHandler::Handle(result_, msg.str().c_str(), name, file, line);                   
     }                                                                                                  
 }

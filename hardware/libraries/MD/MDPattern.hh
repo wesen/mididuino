@@ -74,7 +74,8 @@ public:
 
   int8_t getNextEmptyLock();
   void recalculateLockPatterns();
-  
+
+	static const uint8_t NO_LOCK = 255;
   bool addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t value);
   void clearLock(uint8_t track, uint8_t trig, uint8_t param);
   uint8_t getLock(uint8_t track, uint8_t trig, uint8_t param);
