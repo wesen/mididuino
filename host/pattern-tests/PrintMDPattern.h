@@ -21,7 +21,7 @@ class PrintMDPattern : public MDPattern {
 
     for (int param = 0; param < 24; param++) {
       if (isParamLocked(track, param)) {
-	printf("P%.2d: ", param);
+	printf("P%.2d (idx: %d): ", param, paramLocks[track][param]);
 	//	printf("    ");
 	for (int i = 0; i < patternLength; i++) {
 	  uint8_t lock = getLock(track, i, param);
