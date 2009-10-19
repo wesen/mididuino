@@ -57,6 +57,18 @@ public:
   virtual bool pack(uint8_t inb) {
     return false;
   }
+	virtual bool pack16(uint16_t inw) {
+		return pack((inw >> 8) & 0xFF) &&	pack(inw & 0xFF);
+		
+	}
+
+	virtual bool pack32(uint32_t inw) {
+		return pack((inw >> 24) & 0xFF) &&
+			pack((inw >> 16) & 0xFF) &&
+			pack((inw >> 8) & 0xFF) &&
+			pack(inw & 0xFF);
+	}
+
   virtual uint16_t finish() {
     return 0;
   }
@@ -64,6 +76,40 @@ public:
   virtual ~DataEncoder() { };
 #endif
 };
+
+class MDDataToSysexEncoder : public DataEncoder {
+  uint16_t retLen;
+  uint16_t cnt7;
+
+public:
+	MDDataToSysexEncoder(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0) {
+		init(_sysex, _sysexLen);
+	}
+
+	virtual void init(uint8_t *_sysex, uint16_t _sysexLen);
+	bool encode7Bit(uint8_t inb);
+	virtual bool pack(uint8_t inb);
+	virtual uint16_t finish();
+};
+
+class MDSysexToDataEncoder : public DataEncoder {
+  uint16_t retLen;
+  uint8_t cnt7;
+  uint8_t bits;
+  uint8_t tmpData[7];
+	uint16_t cnt;
+
+public:
+	MDSysexToDataEncoder(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0) {
+		init(_sysex, _sysexLen);
+	}
+
+	virtual void init(uint8_t *_sysex, uint16_t _sysexLen);
+	virtual bool pack(uint8_t inb);
+	bool unpack8Bit();
+	virtual uint16_t finish();
+};
+
 
 class MNMDataToSysexEncoder : public DataEncoder {
   uint16_t retLen;

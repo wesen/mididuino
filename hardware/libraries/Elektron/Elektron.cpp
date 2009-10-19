@@ -116,6 +116,38 @@ void ElektronHelper::from64Bit(uint64_t num, uint8_t *b) {
 
 /* Encoders */
 
+void MDDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
+	DataEncoder::init(_sysex, _sysexLen);
+	cnt7 = 0;
+	retLen = 0;
+}
+
+bool MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
+  uint8_t msb = inb >> 7;
+  uint8_t c = inb & 0x7F;
+  ptr[0] |= msb << (6 - cnt7);
+  ptr[cnt7 + 1] = c;
+  if (++cnt7 == 7) {
+    retLen += 8;
+    ptr += 8;
+    if (ptr >= (data + maxLen - 8)) {
+      return false;
+    }
+    ptr[0] = 0;
+    cnt7 = 0;
+  }
+  return true;
+}
+
+bool MDDataToSysexEncoder::pack(uint8_t inb) {
+	encode7Bit(inb);
+	return true;
+}
+
+uint16_t MDDataToSysexEncoder::finish() {
+	return retLen + ((cnt7 > 0) ? (cnt7 + 1) : 0);
+}
+
 void MNMDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
   DataEncoder::init(_sysex, _sysexLen);
   cnt7 = 0;
@@ -153,12 +185,12 @@ bool MNMDataToSysexEncoder::pack(uint8_t inb) {
     if (inb == lastByte) {
       lastCnt++;
       if (lastCnt == 127) {
-	if (!packLastByte())
-	  return false;
+				if (!packLastByte())
+					return false;
       }
     } else {
       if (!packLastByte())
-	return false;
+				return false;
       lastByte = inb;
       lastCnt = 1;
     }
@@ -170,13 +202,13 @@ bool MNMDataToSysexEncoder::packLastByte() {
   if (lastCnt > 0) {
     if ((lastCnt == 1) && !(lastByte & 0x80)) {
       if (!encode7Bit(lastByte))
-	return false;
+				return false;
       lastCnt = 0;
     } else {
       if (!encode7Bit(0x80 | lastCnt))
-	return false;
+				return false;
       if (!encode7Bit(lastByte))
-	return false;
+				return false;
       lastCnt = 0;
     }
   }
@@ -188,6 +220,44 @@ uint16_t MNMDataToSysexEncoder::finish() {
     return 0;
   else
     return retLen + ((cnt7 > 0) ? (cnt7 + 1) : 0);
+}
+
+void MDSysexToDataEncoder::init(uint8_t *_data, uint16_t _maxLen) {
+	DataEncoder::init(_data, _maxLen);
+	cnt7 = 0;
+  cnt = 0;
+	retLen = 0;
+}
+
+bool MDSysexToDataEncoder::pack(uint8_t inb) {
+	if ((cnt % 8) == 0) {
+		bits = inb;
+	} else {
+		bits <<= 1;
+		tmpData[cnt7++] = inb | (bits & 0x80);
+	}
+	cnt++;
+
+	if (cnt7 == 7) {
+		return unpack8Bit();
+	}
+	return true;
+}
+
+bool MDSysexToDataEncoder::unpack8Bit() {
+	for (uint8_t i = 0; i < cnt7; i++) {
+		*(ptr++) = tmpData[i];
+		retLen++;
+	}
+	cnt7 = 0;
+	return true;
+}
+
+uint16_t MDSysexToDataEncoder::finish() {
+	if (!unpack8Bit())
+		return 0;
+	else
+		return retLen;
 }
 
 void MNMSysexToDataEncoder::init(uint8_t *_data, uint16_t _maxLen) {
@@ -219,21 +289,21 @@ bool MNMSysexToDataEncoder::unpack8Bit() {
     //    printf("tmpdata[%d]: %x\n", i, tmpData[i]);
     if (repeat == 0) {
       if (tmpData[i] & 0x80) {
-	repeat = tmpData[i] & 0x7F;
+				repeat = tmpData[i] & 0x7F;
       } else {
-	if (retLen > maxLen) {
-	  return false;
-	}
-	*(ptr++) = tmpData[i];
-	retLen++;
+				if (retLen > maxLen) {
+					return false;
+				}
+				*(ptr++) = tmpData[i];
+				retLen++;
       }
     } else {
       for (uint8_t j = 0; j < repeat; j++) {
-	if (retLen > maxLen) {
-	  return false;
-	}
-	*(ptr++) = tmpData[i];
-	retLen++;
+				if (retLen > maxLen) {
+					return false;
+				}
+				*(ptr++) = tmpData[i];
+				retLen++;
       }
       repeat = 0;
     }
