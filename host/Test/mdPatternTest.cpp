@@ -272,21 +272,21 @@ TEST_F (MDPatternFixture, MDPatternAllParameters) {
 	uint8_t maxTrack = 2;
 	for (uint8_t track = 0 ; track < maxTrack ; track++) {
 		for (uint8_t step = 0; step < 32; step++) {
-			CHECK_EQUAL(255, pattern.getLock(track, step, 0));
+			CHECK_EQUAL(255, (int)pattern.getLock(track, step, 0));
 
 			pattern.addLock(track, step, 0, step * 2);
 			pattern.setTrig(track, step);
-			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
 		}
 
 		for (uint8_t step = 0; step < 32; step++) {
-			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
 		}
 	}
 
 	for (uint8_t track = 0 ; track < maxTrack ; track++) {
 		for (uint8_t step = 0; step < 32; step++) {
-			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
 		}
 	}
 
@@ -295,7 +295,7 @@ TEST_F (MDPatternFixture, MDPatternAllParameters) {
 	for (uint8_t track = 0 ; track < maxTrack ; track++) {
 		printf("track: %d\n", track);
 		for (uint8_t step = 0; step < 32; step++) {
-			CHECK_EQUAL(step * 2, pattern.getLock(track, step, 0));
+			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
 		}
 	}
 

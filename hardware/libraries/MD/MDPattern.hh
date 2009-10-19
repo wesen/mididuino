@@ -8,7 +8,7 @@ class MDPattern {
 public:
   uint8_t origPosition;
   uint64_t trigPatterns[16];
-  uint64_t lockPatterns[16];
+  uint32_t lockPatterns[16];
 
   uint64_t accentPattern;
   uint64_t slidePattern;

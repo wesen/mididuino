@@ -15,7 +15,6 @@ typedef struct md_machine_name_s {
   uint8_t id;
 } md_machine_name_t;
 
-
 typedef struct model_param_name_s {
   char name[4];
   uint8_t id;
@@ -42,113 +41,7 @@ public:
   static void from64Bit(uint64_t num, uint8_t *b);
 };
 
-class DataEncoder {
-public:
-  uint8_t *data;
-  uint8_t *ptr;
-  uint16_t maxLen;
-
-  virtual void init(uint8_t *_data, uint16_t _maxLen) {
-    data = _data;
-    maxLen = _maxLen;
-    ptr = data;
-  }
- 
-  virtual bool pack(uint8_t inb) {
-    return false;
-  }
-	virtual bool pack16(uint16_t inw) {
-		return pack((inw >> 8) & 0xFF) &&	pack(inw & 0xFF);
-		
-	}
-
-	virtual bool pack32(uint32_t inw) {
-		return pack((inw >> 24) & 0xFF) &&
-			pack((inw >> 16) & 0xFF) &&
-			pack((inw >> 8) & 0xFF) &&
-			pack(inw & 0xFF);
-	}
-
-  virtual uint16_t finish() {
-    return 0;
-  }
-#ifdef HOST_MIDIDUINO
-  virtual ~DataEncoder() { };
-#endif
-};
-
-class MDDataToSysexEncoder : public DataEncoder {
-  uint16_t retLen;
-  uint16_t cnt7;
-
-public:
-	MDDataToSysexEncoder(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0) {
-		init(_sysex, _sysexLen);
-	}
-
-	virtual void init(uint8_t *_sysex, uint16_t _sysexLen);
-	bool encode7Bit(uint8_t inb);
-	virtual bool pack(uint8_t inb);
-	virtual uint16_t finish();
-};
-
-class MDSysexToDataEncoder : public DataEncoder {
-  uint16_t retLen;
-  uint8_t cnt7;
-  uint8_t bits;
-  uint8_t tmpData[7];
-	uint16_t cnt;
-
-public:
-	MDSysexToDataEncoder(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0) {
-		init(_sysex, _sysexLen);
-	}
-
-	virtual void init(uint8_t *_sysex, uint16_t _sysexLen);
-	virtual bool pack(uint8_t inb);
-	bool unpack8Bit();
-	virtual uint16_t finish();
-};
-
-
-class MNMDataToSysexEncoder : public DataEncoder {
-  uint16_t retLen;
-  uint16_t cnt7;
-
-  uint8_t lastByte;
-  uint8_t lastCnt;
-  bool isFirstByte;
-  
-public:
-  MNMDataToSysexEncoder(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0) {
-    init(_sysex, _sysexLen);
-  }
-
-  virtual void init(uint8_t *_sysex, uint16_t _sysexLen);
-  bool encode7Bit(uint8_t inb);
-  virtual bool pack(uint8_t inb);
-  bool packLastByte();
-  virtual uint16_t finish();
-};
-
-class MNMSysexToDataEncoder : public DataEncoder {
-public:
-  uint16_t retLen;
-  uint8_t cnt7;
-  uint8_t repeat;
-  uint16_t cnt;
-  uint8_t bits;
-  uint8_t tmpData[7];
-  
-  MNMSysexToDataEncoder(uint8_t *_data = NULL, uint16_t _maxLen = 0) {
-    init(_data, _maxLen);
-  }
-
-  virtual void init(uint8_t *_data, uint16_t _maxLen);
-  virtual bool pack(uint8_t inb);
-  bool unpack8Bit();
-  virtual uint16_t finish();
-};
-
+#include "MNMDataEncoder.hh"
+#include "MDDataEncoder.hh"
 
 #endif /* ELEKTRON_H__ */
