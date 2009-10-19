@@ -54,6 +54,18 @@ public:
     void test_name##Test::RunTest (TestResult& result_)
 
 
+#define TEST_CHILD(test_name, parent)						\
+    class test_name##Test : public parent                                                 \
+    {                                                                                   \
+        public:                                                                         \
+            test_name##Test () : Test (#test_name "Test", __FILE__, __LINE__){}   \
+        protected:                                                                      \
+            virtual void RunTest (TestResult& result_);                                 \
+    } test_name##Instance;                                                              \
+    TestRegistrar test_name##_registrar (&test_name##Instance);                         \
+    void test_name##Test::RunTest (TestResult& result_)
+
+
 // Test with fixture
 #define TEST_F(fixture, test_name)                                                      \
     struct fixture##test_name : public fixture {                                        \

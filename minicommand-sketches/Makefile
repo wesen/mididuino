@@ -48,6 +48,11 @@ CFLAGS += $(INCS)
 CXXFLAGS += $(INCS)
 LLVMCFLAGS ?= -emit-llvm -O4 $(CFLAGS)
 
+CFLAGS += -flto
+CXXFLAGS += -flto
+CLDFLAGS += -flto
+CXXLDFLAGS += -flto
+
 TARGET ?= $(shell pwd  | sed -e 's/.*\///')
 
 all: $(TARGET).hex

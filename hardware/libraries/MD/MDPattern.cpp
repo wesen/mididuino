@@ -242,6 +242,11 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   return 0xacb;
 }
 
+bool MDPattern::isTrackEmpty(uint8_t track) {
+	return ((trigPatterns[track] == 0) &&
+					(lockPatterns[track] == 0));
+}
+
 bool MDPattern::isLockPatternEmpty(uint8_t idx) {
   for (int i = 0; i < 64; i++) {
     if (locks[idx][i] != 255)

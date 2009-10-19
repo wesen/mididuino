@@ -32,26 +32,32 @@ void MidiUartWinClass::listOutputMidiDevices() {
 
 MidiUartWinClass::MidiUartWinClass(int _inputDevice, int _outputDevice) {
 	inputDevice = -1;
+	inHandle = (HMIDIIN)-1;
 	outputDevice = -1;
+	outHandle = (HMIDIOUT)-1;
 	if ((_inputDevice >= 0) && (_outputDevice >= 0)) {
 		init(_inputDevice, _outputDevice);
 	}
 }
 
 MidiUartWinClass::~MidiUartWinClass() {
-	if (midiInStop(inHandle) != MMSYSERR_NOERROR) {
-		throw "Could not stop MIDI input";
-	}
-	if (midiInReset(inHandle) != MMSYSERR_NOERROR) {
-		throw "Could reset MIDI input";
-	}
-	if (midiInClose(inHandle) != MMSYSERR_NOERROR) {
-		throw "Could not close MIDI input";
+	if (inHandle != (HMIDIIN)-1) {
+		if (midiInStop(inHandle) != MMSYSERR_NOERROR) {
+			throw "Could not stop MIDI input";
+		}
+		if (midiInReset(inHandle) != MMSYSERR_NOERROR) {
+			throw "Could reset MIDI input";
+		}
+		if (midiInClose(inHandle) != MMSYSERR_NOERROR) {
+			throw "Could not close MIDI input";
+		}
+		
+		midiInUnprepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
 	}
 
-	midiInUnprepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
-
-	midiOutClose(outHandle);
+	if (outHandle != (HMIDIOUT)-1) {
+		midiOutClose(outHandle);
+	}
 }
 
 void MidiUartWinClass::sendSysex(uint8_t *data, uint8_t cnt) {

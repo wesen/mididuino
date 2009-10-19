@@ -50,6 +50,9 @@ public:
 
   bool isLockPatternEmpty(uint8_t idx);
   bool isLockPatternEmpty(uint8_t idx, uint64_t trigs);
+
+	bool isTrackEmpty(uint8_t track);
+	
   bool isParamLocked(uint8_t track, uint8_t param);
   void clearLockPattern(uint8_t lock);
   void cleanupLocks();
