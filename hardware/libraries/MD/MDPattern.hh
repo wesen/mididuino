@@ -2,6 +2,7 @@
 #define MDPATTERN_H__
 
 #include <inttypes.h>
+#include "helpers.h"
 
 class MDPattern {
 public:
@@ -64,7 +65,12 @@ public:
   void clearTrackLocks(uint8_t track);
 
   void clearTrig(uint8_t track, uint8_t trig);
-  void setTrig(uint8_t track, uint8_t trig);
+  inline void setTrig(uint8_t track, uint8_t trig) {
+		SET_BIT64(trigPatterns[track], trig);
+	}
+	inline bool isTrigSet(uint8_t track, uint8_t trig) {
+		return IS_BIT_SET64(trigPatterns[track], trig);
+	}
 
   int8_t getNextEmptyLock();
   void recalculateLockPatterns();

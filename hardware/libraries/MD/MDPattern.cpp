@@ -74,8 +74,13 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit7(data[len - 4], data[len - 3])) {
+	uint16_t realcksum = ElektronHelper::to16Bit7(data[len - 4], data[len - 3]);
+  if (cksum != realcksum) {
+#ifdef HOST_MIDIDUINO
+		printf("wrong checksum, %x should be %x\n", cksum, realcksum);
+#else
     GUI.flash_string_fill("WRONG CKSUM");
+#endif
     // wrong checksum
     return false;
   }
@@ -133,10 +138,10 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 24; j++) {
       if (IS_BIT_SET64(lockPatterns[i], j)) {
-	paramLocks[i][j] = numRows;
-	lockTracks[numRows] = i;
-	lockParams[numRows] = j;
-	numRows++;
+				paramLocks[i][j] = numRows;
+				lockTracks[numRows] = i;
+				lockParams[numRows] = j;
+				numRows++;
       }
     }
   }
@@ -333,10 +338,6 @@ void MDPattern::clearTrig(uint8_t track, uint8_t trig) {
   }
 }
 
-void MDPattern::setTrig(uint8_t track, uint8_t trig) {
-  SET_BIT32(trigPatterns[track], trig);
-}
-
 int8_t MDPattern::getNextEmptyLock() {
   for (int i = 0; i < 64; i++) {
     if (lockTracks[i] == -1 && lockParams[i] == -1) {
@@ -381,7 +382,7 @@ void MDPattern::recalculateLockPatterns() {
     lockPatterns[track] = 0;
     for (int param = 0; param < 24; param++) {
       if (paramLocks[track][param] != -1) {
-	SET_BIT32(lockPatterns[track], param);
+				SET_BIT64(lockPatterns[track], param);
       }
     }
   }

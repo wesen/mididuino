@@ -31,12 +31,12 @@ public:
   }
   
   void callbackNone() {
-    printf("call none\n");
+		//    printf("call none\n");
     callbackNoneCalled = true;
   }
 
   void callbackNone2() {
-    printf("call none2 \n");
+		//    printf("call none2 \n");
     callbackNone2Called = true;
   }
   

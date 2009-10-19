@@ -54,7 +54,8 @@ TEST_F (MDPatternFixture, MDPatternTestInit) {
 
 TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
 	uint16_t len = pattern.toSysex(buf, sizeof(buf));
-	pattern2.fromSysex(buf + 7, len - 7);
+	bool ret = pattern2.fromSysex(buf + 6, len - 7);
+	CHECK(ret);
 	uint16_t len2 = pattern2.toSysex(buf2, sizeof(buf2));
 	CHECK_EQUAL(len, len2);
 	for (uint16_t i = 0; i < len; i++) {
@@ -64,6 +65,77 @@ TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
 	MDPATTERN_EQUAL(pattern, pattern2);
 }
 
+bool reimportSysex(MDPattern *p) {
+	uint8_t buf[8192];
+	uint16_t len = p->toSysex(buf, sizeof(buf));
+	return p->fromSysex(buf + 6, len - 7);
+}
 
+TEST_F (MDPatternFixture, MDPatternSetTrig) {
+	for (uint8_t track = 0; track < 16; track++) {
+		pattern.setTrig(track, 0);
+		CHECK(pattern.isTrigSet(track, 0));
+		CHECK(!pattern.isTrackEmpty(track));
+		for (uint8_t i = 0; i < 16; i++) {
+			if (i != track) {
+				CHECK(pattern.isTrackEmpty(i));
+			}
+		}
+		
+		pattern.clearTrig(track, 0);
+		CHECK(!pattern.isTrigSet(track, 0));
+		CHECK(pattern.isTrackEmpty(track));
+		for (uint8_t i = 0; i < 16; i++) {
+			if (i != track) {
+				CHECK(pattern.isTrackEmpty(i));
+			}
+		}
+	
+		pattern.setTrig(track, 0);
+		CHECK(pattern.isTrigSet(track, 0));
+		CHECK(!pattern.isTrackEmpty(track));
+	
+		pattern.clearTrack(track);
+		CHECK(!pattern.isTrigSet(track, 0));
+		CHECK(pattern.isTrackEmpty(track));
+	}
+}
 
+TEST_F (MDPatternFixture, MDPatternSetTrigSysex) {
+	for (uint8_t track = 0; track < 16; track++) {
+		pattern.setTrig(track, 0);
+		bool ret = reimportSysex(&pattern);
+		CHECK(ret);
+		CHECK(pattern.isTrigSet(track, 0));
+		CHECK(!pattern.isTrackEmpty(track));
+		for (uint8_t i = 0; i < 16; i++) {
+			if (i != track) {
+				CHECK(pattern.isTrackEmpty(i));
+			}
+		}
+		
+		pattern.clearTrig(track, 0);
+		ret = reimportSysex(&pattern);
+		CHECK(ret);
+		CHECK(!pattern.isTrigSet(track, 0));
+		CHECK(pattern.isTrackEmpty(track));
+		for (uint8_t i = 0; i < 16; i++) {
+			if (i != track) {
+				CHECK(pattern.isTrackEmpty(i));
+			}
+		}
+	
+		pattern.setTrig(track, 0);
+		ret = reimportSysex(&pattern);
+		CHECK(ret);
+		CHECK(pattern.isTrigSet(track, 0));
+		CHECK(!pattern.isTrackEmpty(track));
+	
+		pattern.clearTrack(track);
+		ret = reimportSysex(&pattern);
+		CHECK(ret);
+		CHECK(!pattern.isTrigSet(track, 0));
+		CHECK(pattern.isTrackEmpty(track));
+	}
+}
 
