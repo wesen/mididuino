@@ -4,6 +4,12 @@
 #include "MidiUartWin.h"
 #include "Midi.h"
 
+MidiClass Midi, Midi2;
+MidiUartHostClass MidiUart;
+
+void handleIncomingMidi() {
+}
+
 void MidiUartWinClass::listInputMidiDevices() {
   MIDIINCAPS     mic;
   unsigned long   iNumDevs, i;

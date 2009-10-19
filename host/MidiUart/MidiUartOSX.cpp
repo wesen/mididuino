@@ -6,6 +6,12 @@
 #include <MidiUartParent.hh>
 #include "MidiUartOSX.h"
 
+MidiClass Midi, Midi2;
+MidiUartHostClass MidiUart;
+
+void handleIncomingMidi() {
+}
+
 void MidiUartOSXClass::listInputMidiDevices() {
 	unsigned long   iNumDevs, i;
 	
