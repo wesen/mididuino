@@ -200,18 +200,17 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
   uint16_t cnt = 0;
 
+  for (int i = cnt; i < 64; i++) {
+    m_memclr(lockData[i], 32);
+  }
   for (int track = 0; track < 16; track++) {
     for (int param = 0; param < 24; param++) {
       int8_t lock = paramLocks[track][param];
       if (lock != -1) {
-				printf("outputting lock for track %d, param %d, idx %d\n", track, param, lock);
 				m_memcpy(lockData[lock], locks[lock], 32);
 				cnt++;
       }
     }
-  }
-  for (int i = cnt; i < 64; i++) {
-    m_memclr(lockData[i], 32);
   }
   ElektronHelper::MDDataToSysex((uint8_t*)lockData, data + 0xB7, 64 * 32);
   
@@ -265,7 +264,7 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx) {
 
 bool MDPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
   for (int i = 0; i < 64; i++) {
-    if (locks[idx][i] != 255 || !IS_BIT_SET64(trigs, i))
+    if (locks[idx][i] != 255 && IS_BIT_SET64(trigs, i))
       return false;
   }
 
@@ -372,9 +371,7 @@ void MDPattern::clearLock(uint8_t track, uint8_t trig, uint8_t param) {
     return;
   locks[idx][trig] = 255;
 
-	//	printf("clear lock: lockpattern: %llx\n", 
   if (isLockPatternEmpty(idx, trigPatterns[track])) {
-		printf("clearig lock pattern for lock %d, %d\n", track, param);
     paramLocks[track][param] = -1;
     lockTracks[idx] = -1;
     lockParams[idx] = -1;
