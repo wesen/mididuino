@@ -1,4 +1,5 @@
-#include "MidiUartParent.hh"
+#include "WProgram.h"
+
 #include "MidiUartHost.h"
 
 #include "MonomeMidiPage.h"

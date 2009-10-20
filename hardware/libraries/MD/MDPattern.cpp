@@ -176,6 +176,8 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 	if (patternLength > 32) {
 		isExtraPattern = true;
+	} else {
+		isExtraPattern = false;
 	}
 
 	uint16_t sysexLength = isExtraPattern ? 0x151d : 0xac6;

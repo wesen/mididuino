@@ -18,16 +18,28 @@ EXCLUDE = %MidiClock.cpp %MDArpeggiator.cpp
 OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
 OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
 
-CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
-CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) 		
+CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
+CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g	
 #CLDFLAGS += -lreadline -L/opt/local/lib
 CLDFLAGS += --gc-sections
 
+UNAME=$(shell uname)
+ISWIN=$(findstring CYGWIN,$(UNAME))
+ISMAC=$(findstring Darwin,$(UNAME))
+
+ifneq (,$(ISMAC))
+CFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+CXXFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+CLDFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+endif
+
+ifneq (,$(ISWIN))
+LIBS += -lwinmm
+endif
+
+
 # MACOSX FLAGS
-#CFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
-#CXXFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
-#CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
-#CLDFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
 
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
@@ -43,10 +55,10 @@ all: monometest monometest2
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 monometest: $(OBJS) MonomeTrigPage.o MonomeHost.o MonomeMidiPage.o monometest.host.o
-	$(CLDCXX) $(CLDFLAGS) -o $@ $^
+	$(CLDCXX) $(CLDFLAGS) -o $@ $^ $(LIBS)
 
 monometest2: $(OBJS) MonomeHost.o monometest2.host.o
-	$(CLDCXX) $(CLDFLAGS) -o $@ $^
+	$(CLDCXX) $(CLDFLAGS) -o $@ $^ $(LIBS)
 
 
 clean:
