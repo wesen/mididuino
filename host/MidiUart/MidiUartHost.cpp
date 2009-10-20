@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include "WProgram.h"
 
 #include "MidiUartHost.h"
@@ -6,6 +8,7 @@ MidiClass Midi, Midi2;
 MidiUartHostClass MidiUart;
 
 void MidiUartHostSysexListener::end() {
+	//	printf("send sysex of %d bytes\n", sysex->len);
 	uint8_t buf[sysex->len +2];
 	buf[0] = 0xF0;
 	m_memcpy(buf + 1, sysex->data, sysex->len);
@@ -14,13 +17,15 @@ void MidiUartHostSysexListener::end() {
 }
 
 void handleIncomingMidi() {
+	MidiUart.runLoop();
   while (MidiUart.avail()) {
     Midi.handleByte(MidiUart.getc());
   }
+	usleep(1000);
 }
 
 void MidiUartHostParent::onOutputMessage(uint8_t *msg, uint8_t len) {
-	printf("output message %d bytes\n", len);
+	//	printf("output message %d bytes\n", len);
 	if (len > 3) {
 		midiSendLong(msg, len);
 	} else {
