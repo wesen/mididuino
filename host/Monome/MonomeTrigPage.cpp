@@ -27,16 +27,13 @@ void MonomeTrigPage::toggleRouting(uint8_t x, uint8_t y) {
 	//		printf("set routing %d, %d, to %d\n", trig, output, routing[trig][output]);
 }
 
-void MonomeTrigPage::handleEvent(monome_event_t *evt) {
-	if ((evt->y == 7) && (evt->state == 1)) {
-		switchPage(evt->x);
-		return;
-	}
-		
+bool MonomeTrigPage::handleEvent(monome_event_t *evt) {
 	if ((evt->y >= 1) && (evt->state == 1)) {
 		toggleRouting(evt->x, evt->y);
+		return true;
 		//			printf("evt x: %d y: %d: %d\n", evt->x, evt->y, evt->state);
 	}
+	return false;
 }
 
 bool MonomeTrigPage::isValidColumn(uint8_t column) {

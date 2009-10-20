@@ -11,7 +11,7 @@ class MonomeTrigPage : public MonomePage {
   MonomeTrigPage(MonomeParentClass *monome, uint8_t _start);
   ~MonomeTrigPage();
   void toggleRouting(uint8_t x, uint8_t y);
-  virtual void handleEvent(monome_event_t *evt);
+  virtual bool handleEvent(monome_event_t *evt);
   bool isValidColumn(uint8_t column);
   uint8_t getColumn(uint8_t pitch);
   virtual void onTrigNote(uint8_t pitch);
