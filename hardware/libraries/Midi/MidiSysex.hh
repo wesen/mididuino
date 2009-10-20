@@ -2,17 +2,20 @@
 #define MIDISYSEX_H__
 
 #include <inttypes.h>
-#include "WProgram.h"
 
 #ifndef SYSEX_BUF_SIZE
 #define SYSEX_BUF_SIZE 128
 #endif
 
+class MidiSysexClass;
+
 class MidiSysexListenerClass {
  public:
   uint8_t ids[3];
+	MidiSysexClass *sysex;
 
-  MidiSysexListenerClass() {
+  MidiSysexListenerClass(MidiSysexClass *_sysex = NULL) {
+		sysex = _sysex;
     ids[0] = 0;
     ids[1] = 0;
     ids[2] = 0;
@@ -77,8 +80,9 @@ class MidiSysexClass {
   bool addSysexListener(MidiSysexListenerClass *listener) {
     for (int i = 0; i < NUM_SYSEX_SLAVES; i++) {
       if (listeners[i] == NULL || listeners[i] == listener) {
-	listeners[i] = listener;
-	return true;
+				listeners[i] = listener;
+				listener->sysex = this;
+				return true;
       }
     }
     return false;
@@ -111,8 +115,10 @@ class MididuinoSysexListenerClass : public MidiSysexListenerClass {
 #endif
 };
 
-extern MidiSysexClass MidiSysex;
-extern MidiSysexClass MidiSysex2;
+// extern MidiSysexClass MidiSysex;
+// extern MidiSysexClass MidiSysex2;
+#define MidiSysex Midi.midiSysex
+#define MidiSysex2 Midi2.midiSysex
 extern MididuinoSysexListenerClass MididuinoSysexListener;
 
 #endif /* MIDISYSEX_H__ */

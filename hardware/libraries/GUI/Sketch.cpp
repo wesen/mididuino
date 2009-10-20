@@ -67,6 +67,8 @@ bool SketchSwitchPage::handlePopEvent(gui_event_t *event) {
   } else {
     return false;
   }
+
+	return false;
 }
 
 bool SketchSwitchPage::handleGlobalEvent(gui_event_t *event) {

@@ -11,7 +11,7 @@ F_CPU = 16000000L
 
 CORE = minicommand2
 #BASE_DIR = /Applications/Mididuino.app
-BASE_DIR ?= /Users/manuel/code/mididuino-app/build/macosx/work/Mididuino.app/Contents/Resources/Java
+BASE_DIR ?= ../../build/macosx/work/Mididuino.app/Contents/Resources/Java
 HARDWARE_DIR = $(BASE_DIR)/hardware
 
 LBASE_DIR = $(HARDWARE_DIR)/libraries
@@ -48,11 +48,6 @@ CFLAGS += $(INCS)
 CXXFLAGS += $(INCS)
 LLVMCFLAGS ?= -emit-llvm -O4 $(CFLAGS)
 
-CFLAGS += -flto
-CXXFLAGS += -flto
-CLDFLAGS += -flto
-CXXLDFLAGS += -flto
-
 TARGET ?= $(shell pwd  | sed -e 's/.*\///')
 
 all: $(TARGET).hex
@@ -75,7 +70,7 @@ $(TARGET)whole.elf: $(TARGET).mycpp $(COBJS)
 	rm -f $(TARGET).mycpp
 
 upload: $(TARGET).hex
-	midi-send -I 0x41 -b -i0 -o0 $<
+	midi-send -I 0x41 -b -i2 -o2 $<
 
 $(TARGET).bc.o: $(TARGET).llvm.o $(LLVMOBJS)
 	llvm-link -o $@ -f $^

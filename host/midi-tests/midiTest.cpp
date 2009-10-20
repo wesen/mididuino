@@ -1,11 +1,10 @@
+#include "WProgram.h"
+
 #include <inttypes.h>
 #include <unistd.h>
 
-#include "MidiUartOSX.h"
+#include "MidiUartHost.h"
 #include "MNM.h"
-
-MidiUartOSXClass MidiUart;
-MidiClass Midi;
 
 void onCCCallback(uint8_t *msg) {
   printf("cc %d: %d received\n", msg[1], msg[2]);
@@ -16,18 +15,18 @@ void onKitChanged() {
 }
 
 int main(void) {
-  MidiUartOSXClass::listInputMidiDevices();
-  MidiUartOSXClass::listOutputMidiDevices();
+  MidiUartHostClass::listInputMidiDevices();
+  MidiUartHostClass::listOutputMidiDevices();
 
   MidiUart.init(0, 0);
 
-  Midi.setOnControlChangeCallback(onCCCallback);
+	//  Midi.setOnControlChangeCallback(onCCCallback);
 
   MNMTask.setup();
   MNMTask.autoLoadKit = true;
   MNMTask.autoLoadGlobal = true;
   MNMTask.reloadGlobal = true;
-  MNMTask.addOnKitChangeCallback(onKitChanged);
+	//  MNMTask.addOnKitChangeCallback(onKitChanged);
 
   MNM.requestKit(0);
   

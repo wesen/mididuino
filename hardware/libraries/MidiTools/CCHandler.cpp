@@ -1,3 +1,5 @@
+#include "WProgram.h"
+
 #include "CCHandler.h"
 #include "Midi.h"
 
