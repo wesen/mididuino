@@ -10,8 +10,8 @@ JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
 CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
 DIRS  = CommonTools Midi MidiTools GUI MD Elektron
-LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../MidiUart ../GUI
-INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I..
+LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../../host/MidiUart ../../host/GUI
+INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I../../host
 #EXCLUDE += %MidiClock.cpp
 OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
 OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
@@ -24,11 +24,17 @@ CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
 CFLAGS += -Os
 CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
 
-# MACOSX Flags
-#CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+UNAME=$(shell uname)
+ISWIN=$(findstring CYGWIN,$(UNAME))
+ISMAC=$(findstring Darwin,$(UNAME))
 
-# Windows Flags
+ifneq (,$(ISMAC))
+CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+endif
+
+ifneq (,$(ISWIN))
 LIBS += -lwinmm
+endif
 
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)

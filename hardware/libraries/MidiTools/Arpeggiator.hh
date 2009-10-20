@@ -1,8 +1,7 @@
 #ifndef ARPEGGIATOR_H__
 #define ARPEGGIATOR_H__
 
-#include "Midi.h"
-#include "Callback.hh"
+#include "WProgram.h"
 
 typedef enum {
   ARP_STYLE_UP = 0,
