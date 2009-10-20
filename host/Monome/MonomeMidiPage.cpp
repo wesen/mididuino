@@ -11,10 +11,10 @@ void switchPage(uint8_t page);
 MonomeMidiPage::MonomeMidiPage(MonomeParentClass *monome) : MonomeTrigPage(monome, 0) {
 }
 
-void MonomeMidiPage::handleEvent(monome_event_t *evt) {
+bool MonomeMidiPage::handleEvent(monome_event_t *evt) {
 	if ((evt->y == 7) && (evt->state == 1)) {
 		switchPage(evt->x);
-		return;
+		return true;
 	}
 		
 	if ((evt->y >= 1) && (evt->y < 7)) {
@@ -25,6 +25,7 @@ void MonomeMidiPage::handleEvent(monome_event_t *evt) {
 			MidiUart.sendNoteOn(60 + evt->y - 1, 0);
 			clearLED(evt->x, evt->y);
 		}
+		return true;
 	}
 }
 

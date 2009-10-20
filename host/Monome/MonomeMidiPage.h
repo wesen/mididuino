@@ -6,7 +6,7 @@
 class MonomeMidiPage : public MonomeTrigPage {
  public:
   MonomeMidiPage(MonomeParentClass *monome);
-  virtual void handleEvent(monome_event_t *evt);
+  virtual bool handleEvent(monome_event_t *evt);
   virtual void onTrigNote(uint8_t pitch);
   virtual void onTrigNoteOff(uint8_t pitch);
 };

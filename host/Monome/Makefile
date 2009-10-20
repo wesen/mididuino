@@ -14,7 +14,7 @@ CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 DIRS  = CommonTools Midi Monome
 LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../MidiUart ../GUI ../Tools
 INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I.. -I../Tools -I/opt/local/include
-EXCLUDE = %MidiClock.cpp %MDArpeggiator.cpp
+EXCLUDE =  %MDArpeggiator.cpp
 OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
 OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
 
