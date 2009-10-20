@@ -4,6 +4,10 @@ CXX = g++
 CC = gcc
 #ARCHFLAGS = -arch x86_64
 
+UNAME=$(shell uname)
+ISWIN=$(findstring CYGWIN,$(UNAME))
+ISMAC=$(findstring Darwin,$(UNAME))
+
 BASE_DIR=../..
 LBASE_DIR=$(BASE_DIR)/hardware/libraries
 JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
@@ -27,10 +31,14 @@ CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
 CFLAGS += -g
 
 # MACOSX Flags
-#CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+ifneq (,$(ISMAC))
+CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
+endif
 
 # Windows Flags
+ifneq (,$(ISWIN))
 LIBS += -lwinmm
+endif
 
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)

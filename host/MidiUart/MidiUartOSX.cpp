@@ -70,29 +70,6 @@ MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
   }
 }
 
-void MidiUartOSXClass::sendSysex(uint8_t *data, uint8_t cnt) {
-  midiSendLong(data, cnt);
-}
-
-void MidiUartOSXClass::putc(uint8_t c) {
-  static struct MIDIPacketList pktlist;
-  
-  pktlist.numPackets = 1;
-  pktlist.packet[0].timeStamp = 0;
-  pktlist.packet[0].length = 1;
-  pktlist.packet[0].data[0] = c;
-  MIDISend(outPort, dest, &pktlist); 
-}
-
-bool MidiUartOSXClass::avail() {
-  return !rxRb.isEmpty();
-}
-
-uint8_t MidiUartOSXClass::getc() {
-  return rxRb.get();
-}
-
-
 static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *connRefCon) {
   MidiUartOSXClass *uart = (MidiUartOSXClass *)refCon;
   if (uart != NULL) {
@@ -123,6 +100,8 @@ void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
     return;
   }
 
+	MidiUartHostParent::init(_inputDevice, _outputDevice);
+	
   inputDevice = _inputDevice;
   outputDevice = _outputDevice;
   MIDIClientCreate(CFSTR("MIDI Send"), NULL, NULL, &client);

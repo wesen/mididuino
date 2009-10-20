@@ -65,6 +65,7 @@ public:
 	}
 
 	virtual bool get8(uint8_t *c) {
+		return false;
 	}
 	virtual bool get16(uint16_t *c) {
 		uint8_t b1, b2;
