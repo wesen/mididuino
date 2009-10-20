@@ -1,0 +1,55 @@
+MDPatternEuclid
+
+This is a modified version of the pitch euclid firmware that writes its results
+directly into the MD pattern. 
+
+The firmware uses two configuration pages, which can be selected by
+holding Button1 (top left) down, and selecting the page by pressing one
+of the first two encoders. The two pages are: "EUC" (to configure the euclid
+parameters) and "SCL" to select the scale settings.
+
+On the first page, you can select the number of different pitches in
+the bassline (PTC), the number of pulses in the pattern (PLS) and the
+length of the pattern (LEN). The pulses will be distributed
+equidistantly in the generated bassline, for example PLS: 3, LEN: 8
+generates the pattern X . . X . . X . , while PLS: 2, LEN: 5 generates
+the pattern X . . X . The start point of the pattern can be set with
+OFF. Pressing the first encoder randomizes the pitches in the
+bassline.
+
+On the second page, you can configure the destination track of the
+generated bassline. The machine on this track must be melodic. When
+turning the knob, melodic machines are indicated by their name, while
+non-melodic machines will show "XXX". SCL selects the scale which is
+used to generate the bassline. 0: ionian scale, 1: aeolian scale, 2:
+blue scale, 3: major pentatonic scale, 4: major maj7 arpeggio, 5:
+major min7 arpeggio, 6: minor min7 arpeggio. OCT selects the number of
+octaves the generated bassline will span, while BAS selects the base
+note of the generated bassline. Depending on the selected track and
+machine, this will be outside the range of the melodic machine and
+will need to be adjusted.
+
+The recognized machines and the automatic kit loading work just like
+on the normal MD Pitch Euclid firmware. However, the big difference in
+this firmware is that it stores the results directly into the pattern,
+and thus does not need to send out MIDI notes. It loads the current
+pattern over sysex (the sysex message is quite big, so it will usually
+take a few seconds after switching a pattern to have it loaded). Once
+the pattern has been loaded, the minicommand will flash "PATTERN" and
+the pattern name.
+
+Notice that this will not track changes made to the current pattern
+itself. If you modify this pattern (for example by adding triggers or
+param locks), you need to have the Minicommand reload the
+pattern. This is done by pressing Button2 (bottom left). After a few
+seconds, the Minicommand will flash "PATTERN" and the pattern name.
+
+To store a new melodic line on the MD, press Button3 (lower
+right). This will generate a new bassline according to the scale and
+euclid settings, and store it on the MD by sending a pattern sysex
+message to it. This can be used while the pattern is playing as well!
+However, note that sending a new pattern will cause the MD to reload
+the pattern kit, so that changes made to the kit will be lost.
+
+This firmware does not handle 64 steps patterns yet (just up to 32
+steps).
