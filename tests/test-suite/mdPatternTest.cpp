@@ -135,6 +135,7 @@ TEST_F (MDPatternFixture, MDPatternSetTrigSysex) {
 TEST_F (MDPatternFixture, MDPatternSingleLock) {
 	for (uint8_t track = 0 ; track < 16 ; track++) {
 		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
+		pattern.setTrig(track, 0);
 		pattern.addLock(track, 0, 0, 100);
 		CHECK_EQUAL(100, pattern.getLock(track, 0, 0));
 		bool ret = reimportSysex(&pattern);
@@ -326,12 +327,12 @@ TEST_F (MDPatternFixture, MDPatternAllParameters64) {
 		}
 	}
 
-	printf("reimport\n");
+	//	printf("reimport\n");
 		
 	bool ret = reimportSysex(&pattern);
 	CHECK(ret);
 	for (uint8_t track = 0 ; track < maxTrack ; track++) {
-		printf("track: %d\n", track);
+		//		printf("track: %d\n", track);
 		for (uint8_t step = 0; step < pattern.patternLength; step++) {
 			CHECK_EQUAL(step + track, (int)pattern.getLock(track, step, 0));
 		}
@@ -412,6 +413,8 @@ TEST_F (MDPatternFixture, MDPatternClearLockSkip) {
 }
 
 TEST_F (MDPatternFixture, MDPatternClearLockSkipClearOne) {
+	PrintMDPattern pattern;
+	pattern.init();
 	pattern.patternLength = 64;
 
 	uint8_t maxTrack = 4;
@@ -449,9 +452,12 @@ TEST_F (MDPatternFixture, MDPatternClearLockSkipClearOne) {
 			}
 		}
 	}
+	//	pattern.print();
 
+	//	printf("reimport\n");
 	bool ret = reimportSysex(&pattern);
 	CHECK(ret);
+	//	pattern.print();
 	for (uint8_t track = 0 ; track < maxTrack ; track += 2) {
 		for (uint8_t step = 0; step < pattern.patternLength; step++) {
 			if (track == clearTrack) {
