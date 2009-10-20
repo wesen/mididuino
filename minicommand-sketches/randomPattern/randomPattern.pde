@@ -3,7 +3,7 @@
 
 extern "C" uint8_t *__data_end;
 
-uint8_t patData[4096];
+uint8_t patData[8190];
 class MDPatternEuclid : 
 public MDPitchEuclid {
 public:
@@ -29,7 +29,9 @@ public:
       }
     }
     uint16_t len = pattern.toSysex(patData, sizeof(patData));
-    MidiUart.puts(patData, len);
+    GUI.flash_strings_fill("SYSEX", "");
+    GUI.flash_put_value16(0, len); 
+    MidiUart.sendRaw(patData, len);
   }
 };
 
