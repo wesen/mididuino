@@ -34,6 +34,8 @@ class MidiSysexClass;
 typedef void(MidiCallback::*midi_callback_ptr_t)(uint8_t *msg);
 typedef void(MidiCallback::*midi_callback_ptr2_t)(uint8_t *msg, uint8_t len);
 
+#include "MidiSysex.hh"
+
 class MidiClass {
  private:
   midi_state_t in_state;
@@ -43,7 +45,8 @@ class MidiClass {
   uint8_t msg[3];
 
   MidiUartParent *uart;
-  MidiSysexClass *sysex;
+
+  uint8_t sysexBuf[SYSEX_BUF_SIZE];
 
   uint8_t callback;
   //  midi_callback_t callbacks[7];
@@ -54,7 +57,7 @@ class MidiClass {
 
  public:
   bool midiActive;
-
+  MidiSysexClass midiSysex;
   uint8_t receiveChannel;
 
   MidiClass(MidiUartParent *_uart = NULL);
@@ -152,7 +155,6 @@ extern MidiClass Midi;
 extern MidiClass Midi2;
 extern MidiClass USBMidi;
 
-#include "MidiSysex.hh"
 #include <MidiUartParent.hh>
 
 #endif /* MIDI_H__ */

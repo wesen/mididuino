@@ -19,16 +19,10 @@ const midi_parse_t midi_parse[] = {
   { 0, midi_ignore_message}
 };
 
-MidiClass::MidiClass(MidiUartParent *_uart) {
+MidiClass::MidiClass(MidiUartParent *_uart) : midiSysex(sysexBuf, sizeof(sysexBuf)) {
   midiActive = true;
   uart = _uart;
   receiveChannel = 0xFF;
-	// XXX refactor
-  if (this == &Midi) {
-    sysex = &MidiSysex;
-  } else if (this == &Midi2) {
-    sysex = &MidiSysex2;
-  }
   init();
 }
 
@@ -81,13 +75,13 @@ void MidiClass::handleByte(uint8_t byte) {
     if (MIDI_IS_STATUS_BYTE(byte)) {
       if (byte != MIDI_SYSEX_END) {
 				in_state = midi_wait_status;
-				sysex->abort();
+				midiSysex.abort();
 				goto again;
       } else {
-				sysex->end();
+				midiSysex.end();
       }
     } else {
-      sysex->handleByte(byte);
+      midiSysex.handleByte(byte);
     }
     break;
 
@@ -95,7 +89,7 @@ void MidiClass::handleByte(uint8_t byte) {
     {
       if (byte == MIDI_SYSEX_START) {
 				in_state = midi_wait_sysex;
-				sysex->reset();
+				midiSysex.reset();
 				last_status = running_status = 0;
 				return;
       }

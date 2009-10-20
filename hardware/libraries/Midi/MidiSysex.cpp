@@ -129,20 +129,23 @@ bool MidiSysexClass::recordByte(uint8_t c) {
   }
 }
 
+#if 0
 static uint8_t sysexBuf[SYSEX_BUF_SIZE];
 static uint8_t sysexBuf2[SYSEX_BUF_SIZE];
 
 MidiSysexClass MidiSysex(sysexBuf, sizeof(sysexBuf));
 MidiSysexClass MidiSysex2(sysexBuf2, sizeof(sysexBuf2));
+#endif
 
-MididuinoSysexListenerClass::MididuinoSysexListenerClass() {
+MididuinoSysexListenerClass::MididuinoSysexListenerClass(MidiSysexClass *_sysex)
+	: MidiSysexListenerClass(_sysex) {
   ids[0] = MIDIDUINO_SYSEX_VENDOR_1;
   ids[1] = MIDIDUINO_SYSEX_VENDOR_2;
   ids[2] = BOARD_ID;
 }
 
 void MididuinoSysexListenerClass::handleByte(uint8_t byte) {
-  if (MidiSysex.len == 3 && byte == CMD_START_BOOTLOADER) {
+  if (sysex->len == 3 && byte == CMD_START_BOOTLOADER) {
     //      LCD.line1_fill((char *)"BOOTLOADER");
 #ifdef MIDIDUINO
     start_bootloader();
@@ -150,4 +153,4 @@ void MididuinoSysexListenerClass::handleByte(uint8_t byte) {
   }
 }
 
-MididuinoSysexListenerClass MididuinoSysexListener;
+MididuinoSysexListenerClass MididuinoSysexListener(&Midi.midiSysex);
