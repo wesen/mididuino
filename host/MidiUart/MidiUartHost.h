@@ -61,7 +61,7 @@ class MidiUartHostParent : public MidiUartParent, public MidiCallback {
   virtual void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2) = 0;
 };
 
-#ifdef apple
+#ifdef __APPLE__
 #include "MidiUartOSX.h"
 #endif
 

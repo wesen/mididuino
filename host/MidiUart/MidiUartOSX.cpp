@@ -1,4 +1,4 @@
-#ifdef apple
+#ifdef __APPLE__
 
 #include "WProgram.h"
 
@@ -165,4 +165,4 @@ void MidiUartOSXClass::runLoop() {
   CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
 }
 
-#endif /* apple */
+#endif /* __APPLE__ */
