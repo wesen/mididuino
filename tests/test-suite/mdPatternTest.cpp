@@ -285,7 +285,6 @@ TEST_F (MDPatternFixture, MDPatternAllParameters) {
 		
 	bool ret = reimportSysex(&pattern);
 	for (uint8_t track = 0 ; track < maxTrack ; track++) {
-		printf("track: %d\n", track);
 		for (uint8_t step = 0; step < 32; step++) {
 			CHECK_EQUAL(step * 2, (int)pattern.getLock(track, step, 0));
 		}
@@ -302,6 +301,42 @@ TEST_F (MDPatternFixture, MDLongPatternTrig) {
 	CHECK(ret);
 	CHECK(pattern.isTrigSet(0, 32));
 }
+
+TEST_F (MDPatternFixture, MDPatternAllParameters64) {
+	pattern.patternLength = 64;
+	uint8_t maxTrack = 2;
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < pattern.patternLength; step++) {
+			CHECK_EQUAL(255, (int)pattern.getLock(track, step, 0));
+
+			pattern.addLock(track, step, 0, step + track);
+			pattern.setTrig(track, step);
+			CHECK_EQUAL(step + track, (int)pattern.getLock(track, step, 0));
+		}
+
+		for (uint8_t step = 0; step < pattern.patternLength; step++) {
+			CHECK_EQUAL(step + track, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		for (uint8_t step = 0; step < pattern.patternLength; step++) {
+			CHECK_EQUAL(step + track, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+	printf("reimport\n");
+		
+	bool ret = reimportSysex(&pattern);
+	for (uint8_t track = 0 ; track < maxTrack ; track++) {
+		printf("track: %d\n", track);
+		for (uint8_t step = 0; step < pattern.patternLength; step++) {
+			CHECK_EQUAL(step + track, (int)pattern.getLock(track, step, 0));
+		}
+	}
+
+}
+
 
 #ifdef DEBUG
 TEST_F (MDPatternFixture, MDPatternAllParametersDebug) {

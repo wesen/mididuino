@@ -276,7 +276,6 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 		encoder.pack32hi(accentPattern);
 		encoder.pack32hi(slidePattern);
 		encoder.pack32hi(swingPattern);
-		encoder.pack32hi(swingAmount);
     
 		for (int i = cnt; i < 64; i++) {
 			m_memclr(lockData[i], 32);
