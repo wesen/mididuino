@@ -3,16 +3,14 @@
 
 #include <stdlib.h>
 
-#include <WProgram.h>
-
-#include <MidiUartParent.hh>
 #include <inttypes.h>
 
 // #include "MidiSDS.hh"
-#include "MidiSysex.hh"
 #include "Vector.hh"
 #include "ListPool.hh"
 #include "Callback.hh"
+
+class MidiUartParent;
 
 extern "C" {
 #include "midi-common.hh"
@@ -34,6 +32,9 @@ typedef struct {
 class MidiSysexClass;
 
 typedef void(MidiCallback::*midi_callback_ptr_t)(uint8_t *msg);
+typedef void(MidiCallback::*midi_callback_ptr2_t)(uint8_t *msg, uint8_t len);
+
+#include "MidiSysex.hh"
 
 class MidiClass {
  private:
@@ -44,21 +45,39 @@ class MidiClass {
   uint8_t msg[3];
 
   MidiUartParent *uart;
-  MidiSysexClass *sysex;
+
+  uint8_t sysexBuf[SYSEX_BUF_SIZE];
 
   uint8_t callback;
   //  midi_callback_t callbacks[7];
   CallbackVector1<MidiCallback, 8, uint8_t *> midiCallbacks[7];
+#ifdef HOST_MIDIDUINO
+  CallbackVector2<MidiCallback, 8, uint8_t *, uint8_t> messageCallback;
+#endif
 
  public:
   bool midiActive;
-
+  MidiSysexClass midiSysex;
   uint8_t receiveChannel;
 
   MidiClass(MidiUartParent *_uart = NULL);
 
   void init();
   void handleByte(uint8_t c);
+
+#ifdef HOST_MIDIDUINO
+  void addOnMessageCallback(MidiCallback *obj,
+			    void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+    messageCallback.add(obj, func);
+  }
+  void removeOnMessageCallback(MidiCallback *obj,
+			    void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+    messageCallback.remove(obj, func);
+  }
+  void removeOnMessageCallback(MidiCallback *obj) {
+    messageCallback.remove(obj);
+  }
+#endif
 
   void addOnControlChangeCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
     midiCallbacks[MIDI_CC_CB].add(obj, func);
@@ -135,5 +154,7 @@ class MidiClass {
 extern MidiClass Midi;
 extern MidiClass Midi2;
 extern MidiClass USBMidi;
+
+#include <MidiUartParent.hh>
 
 #endif /* MIDI_H__ */
