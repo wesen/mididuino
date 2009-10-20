@@ -34,6 +34,7 @@ void MidiClass::init() {
 void MidiClass::handleByte(uint8_t byte) {
  again:
   if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
+
 #ifndef HOST_MIDIDUINO
     USE_LOCK();
     SET_LOCK();

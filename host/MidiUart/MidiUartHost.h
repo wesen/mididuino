@@ -50,10 +50,8 @@ class MidiUartHostParent : public MidiUartParent, public MidiCallback {
   }
   
   virtual void putc(uint8_t c) { outputMidi.handleByte(c); }
-  virtual void putc_immediate(uint8_t c) { putc(c); }
   virtual bool avail() { return !rxRb.isEmpty(); }
   virtual uint8_t getc() { return rxRb.get(); }
-  virtual void puts(uint8_t *data, uint16_t cnt) { midiSendLong(data, cnt); }
 
   virtual void init(int _inputDevice, int _outputDevice);  
   virtual void runLoop() = 0;
