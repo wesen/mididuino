@@ -20,9 +20,9 @@ CPPUNITDIR=$(BASE_DIR)/thirdparty/CppUnitLite2
 CXXFLAGS += -I$(CPPUNITDIR)/src
 CLDFLAGS += $(CPPUNITDIR)/cppunitlite.a
 
-CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
+CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
 CFLAGS += -Os
-CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS)
+CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
 
 UNAME=$(shell uname)
 ISWIN=$(findstring CYGWIN,$(UNAME))

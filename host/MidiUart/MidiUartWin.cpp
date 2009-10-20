@@ -62,13 +62,79 @@ MidiUartWinClass::~MidiUartWinClass() {
 
 void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
 													 DWORD dwParam1, DWORD dwParam2) {
-	printf("dwInstance %p\n", (void *)dwInstance);
+	MidiUartWinClass *uart = (MidiUartWinClass *)dwInstance;
+	if (uart == NULL)
+		return;
 
+	//	printf("dwParam1: %lx, dwParam2: %lx\n", dwParam1, dwParam2);
 	switch (uMsg) {
 	case MIM_DATA:
+		{
+		uint8_t status = SHORT_MSG_STATUS(dwParam1);
+		if (MIDI_IS_REALTIME_STATUS_BYTE(status)) {
+			if (status >= 0xF8) {
+				uart->rxRb.put(status);
+			} else {
+				switch (status) {
+				case MIDI_MTC_QUARTER_FRAME:
+				case MIDI_SONG_SELECT:
+					uart->rxRb.put(SHORT_MSG_STATUS(dwParam1));
+					uart->rxRb.put(SHORT_MSG_BYTE1(dwParam1));
+					break;
+
+				case MIDI_SONG_POSITION_PTR:
+					uart->rxRb.put(SHORT_MSG_STATUS(dwParam1));
+					uart->rxRb.put(SHORT_MSG_BYTE1(dwParam1));
+					uart->rxRb.put(SHORT_MSG_BYTE2(dwParam1));
+					break;
+
+				default:
+					printf("unknown status: %x\n", status);
+					break;
+				}
+			}
+		} else {
+			switch (status & 0xF0) {
+			case MIDI_NOTE_OFF:
+			case MIDI_NOTE_ON:
+			case MIDI_AFTER_TOUCH:
+			case MIDI_CONTROL_CHANGE:
+			case MIDI_PITCH_WHEEL:
+				uart->rxRb.put(SHORT_MSG_STATUS(dwParam1));
+				uart->rxRb.put(SHORT_MSG_BYTE1(dwParam1));
+				uart->rxRb.put(SHORT_MSG_BYTE2(dwParam1));
+				break;
+
+			case MIDI_PROGRAM_CHANGE:
+			case MIDI_CHANNEL_PRESSURE:
+				uart->rxRb.put(SHORT_MSG_STATUS(dwParam1));
+				uart->rxRb.put(SHORT_MSG_BYTE1(dwParam1));
+				break;
+
+			default:
+				printf("unknown midi status: %x\n", status);
+				break;
+			}
+		}
+		}
 		break;
 
 	case MIM_LONGDATA:
+		{
+      MIDIHDR *midiHdr = (MIDIHDR *)dwParam1;
+      if (midiHdr->dwBytesRecorded == 0) {
+	return;
+      }
+      int len = 0;
+      for (len = 0; len < midiHdr->dwBufferLength; len++) {
+				uart->rxRb.put(midiHdr->lpData[len]);
+				if (((unsigned char)midiHdr->lpData[len]) == 0xF7)
+					break;
+      }
+      midiInUnprepareHeader(handle, midiHdr, sizeof(*midiHdr));
+      midiInPrepareHeader(handle, midiHdr, sizeof(*midiHdr));
+      midiInAddBuffer(handle, midiHdr, sizeof(*midiHdr));
+		}			
 		break;
 
 	case MIM_MOREDATA:

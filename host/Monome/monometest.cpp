@@ -5,15 +5,13 @@
 #include <vector>
 using namespace std;
 
+#include "WProgram.h"
 #include "MidiUartHost.h"
 
 #include "Monome.h"
 #include "MonomeHost.h"
 #include "MonomeTrigPage.h"
 #include "MonomeMidiPage.h"
-
-MidiUartHostClass MidiUart;
-MidiClass Midi, Midi2;
 
 uint8_t standardDrumMapping[16] = {
   36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62

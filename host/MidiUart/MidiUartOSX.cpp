@@ -78,9 +78,9 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *conn
       unsigned int j;
       int i;
       for (j = 0; j < pktlist->numPackets; j++) {
-	for (i = 0; i < packet->length; i++) {
-	  uart->rxRb.put(packet->data[i]);
-	}
+				for (i = 0; i < packet->length; i++) {
+					uart->rxRb.put(packet->data[i]);
+				}
 	
 	packet = MIDIPacketNext(packet);
       }

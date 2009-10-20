@@ -35,22 +35,22 @@ void MidiClass::handleByte(uint8_t byte) {
  again:
   if (MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
 
-#ifndef HOST_MIDIDUINO
+#ifdef HOST_MIDIDUINO
     USE_LOCK();
     SET_LOCK();
     
     if (MidiClock.mode == MidiClock.EXTERNAL_MIDI) {
       switch (byte) {
       case MIDI_CLOCK:
-				// handled in interrupt routine
+				MidiClock.handleClock();
 				break;
 	
       case MIDI_START:
-				//	MidiClock.handleMidiStart();
+				MidiClock.handleMidiStart();
 				break;
 	
       case MIDI_STOP:
-				//	MidiClock.handleMidiStop();
+				MidiClock.handleMidiStop();
 				break;
       }
     }

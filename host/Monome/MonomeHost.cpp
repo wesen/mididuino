@@ -1,14 +1,26 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <termios.h>
+#include <fcntl.h>
 
 #include "MonomeHost.h"
 
 MonomeHost::MonomeHost(const char *file) {
-	fd = open(file, O_RDWR);
+	fd = open(file, O_RDWR | O_NONBLOCK | O_NOCTTY);
 	if (fd < 0)
 		throw "could not open Monome file";
+
+	struct termios options;
+	fcntl(fd, F_SETFL, 0);
+	tcgetattr(fd, &options);
+	cfsetispeed(&options, B9600);
+	cfsetospeed(&options, B9600);
+	options.c_cflag |= (CLOCAL | CREAD);
+	tcsetattr(fd, TCSANOW, &options);
+
 	fds.add(fd);
+	printf("fd: %d\n", fd);
 }
 
 MonomeHost::~MonomeHost() {
