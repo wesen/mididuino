@@ -24,7 +24,9 @@ public:
           uint8_t pitch = basePitch + pitches[pitches_idx];
           pitches_idx = (pitches_idx + 1) % pitches_len;
           uint8_t realPitch = MD.trackGetPitch(trackNum, pitch);
-          pattern.addLock(trackNum, i, 0, realPitch);
+          if (realPitch < 128) {
+            pattern.addLock(trackNum, i, 0, realPitch);
+          }
         }
       }
     }
