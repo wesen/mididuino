@@ -21,8 +21,11 @@ void EuclidDrumTrack::setEuclid(uint8_t pulses, uint8_t _len, uint8_t _offset) {
     return;
 
   uint8_t cnt = len;
-  for (uint8_t i = 1; i < len + 1; i++) {
-    pattern <<= 1;
+  for (uint8_t i = 0; i < len; i++) {
+    if (i < (len - 1)) {
+			pattern <<= 1;
+		}
+		
     if (cnt >= len) {
       SET_BIT64(pattern, 0);
       cnt -= len;

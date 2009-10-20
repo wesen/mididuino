@@ -34,10 +34,6 @@ int FDSelect::_select(fd_set *readFds, fd_set *writeFds,
 		selected = select(maxFD + 1, readFds, writeFds, NULL,
 											(timeoutInMs == INFINITE_TIMEOUT) ? NULL : &tv);
 		finished = true;
-		printf("reval: %d\n", selected);
-		for (std::list<int>::iterator it = fdList.begin(); it != fdList.end(); it++) {
-			printf("isset: %d: %d\n", *it, FD_ISSET(*it, &fds));
-		}
 
 		/* Even though select() is not supposed to set errno to EAGAIN
 		 * (according to the linux man page), it seems that errno can be set

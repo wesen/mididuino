@@ -12,36 +12,19 @@ using namespace std;
 #include "MonomeHost.h"
 #include "MonomeTrigPage.h"
 #include "MonomeMidiPage.h"
+#include "MonomeMidiSeqPage.h"
 
 uint8_t standardDrumMapping[16] = {
   36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62
 };
 
 void addOffTrig(uint8_t pitch);
-void switchPage(uint8_t page);
 
 uint8_t routing[16][6] = { { 0 } };
+MonomeTrigPage *trigPages[3] = { 0 };
 
 void trigRoutingOn(uint8_t routing);
 void trigRoutingOff(uint8_t routing);
-
-MonomeTrigPage *pages[3] = { 0 };
-MonomeParentClass *gMonome;
-
-void switchPage(uint8_t page) {
-	if ((page < countof(pages)) && (pages[page] != NULL)) {
-		pages[page]->needsRefresh = true;
-		gMonome->setActivePage(pages[page]);
-		printf("switch page %d\n", page);
-		for (uint8_t i = 0; i < countof(pages); i++) {
-			if (pages[i] != NULL) {
-				for (uint8_t j = 0; j < countof(pages); j++) {
-					pages[i]->setLED(j, 7, j == page ? 1 : 0);
-				}
-			}
-		}
-	}
-}
 
 void trigRoutingOn(uint8_t trig) {
 }
@@ -57,27 +40,28 @@ void trigNoteOn(uint8_t trig) {
 			break;
 		}
 	}
-	for (uint8_t i = 0; i < countof(pages); i++) {
-		if (pages[i] != NULL) {
-			pages[i]->onTrigNote(trig);
+	for (uint8_t i = 0; i < countof(trigPages); i++) {
+		if (trigPages[i] != NULL) {
+			trigPages[i]->onTrigNote(trig);
 		}
 	}
 
 	if (column != -1) {
 		for (int i = 0; i < 6; i++) {
 			if (routing[column][i]) {
-				printf("TRIGGER VIDEO EFFECT ON %d\n", i);
+				//				printf("TRIGGER VIDEO EFFECT ON %d\n", i);
 				MidiUart.sendNoteOn(60 + i, 100);
 			}
 		}
 	}
-	
+
+	addOffTrig(trig);
 }
 
 void trigNoteOff(uint8_t trig) {
-	for (uint8_t i = 0; i < countof(pages); i++) {
-		if (pages[i] != NULL) {
-			pages[i]->onTrigNoteOff(trig);
+	for (uint8_t i = 0; i < countof(trigPages); i++) {
+		if (trigPages[i] != NULL) {
+			trigPages[i]->onTrigNoteOff(trig);
 		}
 	}
 	int column = -1;
@@ -90,12 +74,11 @@ void trigNoteOff(uint8_t trig) {
 	if (column != -1) {
 		for (int i = 0; i < 6; i++) {
 			if (routing[column][i]) {
-				printf("TRIGGER VIDEO EFFECT OFF %d\n", i);
+				//				printf("TRIGGER VIDEO EFFECT OFF %d\n", i);
 				MidiUart.sendNoteOn(60 + i, 0);
 			}
 		}
 	}
-	
 }
 
 typedef struct {
@@ -138,14 +121,9 @@ public:
 	}
 
 	void setup() {
-		monome->addCallback(this, (monome_callback_ptr_t)(&MonomeHandler::onEvent));
 		Midi.addOnNoteOnCallback(this, (midi_callback_ptr_t)&MonomeHandler::onNoteOn);
 	}
 	
-	void onEvent(monome_event_t *evt) {
-		//		monome->setLED(evt->x, evt->y, evt->state);
-	}
-
 	void onNoteOn(uint8_t *msg) {
 		trigNoteOn(msg[1]);
 	}
@@ -155,50 +133,40 @@ int main(int argc, const char *argv[]) {
 	int input = -1;
 	int output = -1;
 
-#ifdef apple
 	if (argc != 4) {
 		printf("Usage: ./monome inputdevice outputdevice monomedevice\n\n");
 		printf("input devices\n");
-		MidiUartOSXClass::listInputMidiDevices();
+		MidiUartHostClass::listInputMidiDevices();
 		printf("output devices\n");
-		MidiUartOSXClass::listOutputMidiDevices();
+		MidiUartHostClass::listOutputMidiDevices();
 		return 0;
 	} else {
 		input = atoi(argv[1]);
 		output = atoi(argv[2]);
 		MidiUart.init(input, output);
 	}
-#endif
+	MidiClock.mode = MidiClock.EXTERNAL_MIDI;
+	MidiClock.start();
 	
 	MonomeHost monome(argv[3]);
+	monome.setup();
+
 	MonomeHandler handler(&monome);
-	MonomeTrigPage page(&monome, 0), page2(&monome, 8), page3(&monome, 16);
-	MonomeMidiPage midiPage(&monome);
-
-	pages[0] = &page;
-	pages[1] = &page2;
-	pages[2] = &midiPage;
-
-	for (uint8_t i = 0; i < countof(pages); i++) {
-		if (pages[i] != NULL) {
-			for (uint8_t j = 0; j < countof(pages); j++) {
-				if (pages[j] != NULL) {
-					//					pages[i]->setLED(j, 7);
-				}
-			}
-		}
-	}
-
 	handler.setup();
-
-
-	gMonome = &monome;
- 	monome.setBuffer();
-	monome.setActivePage(&page);
-
-	switchPage(0);
-
 	
+	MonomeTrigPage page(&monome, 0), page2(&monome, 8);
+	trigPages[0] = &page;
+	trigPages[1] = &page2;
+	
+	MonomeMidiPage midiPage(&monome);
+	MonomeMidiSeqPage seqPage(&monome), seqPage2(&monome);
+	seqPage.setup();
+	seqPage2.setup();
+
+	MonomePageSwitcher switcher(&monome, &page, &page2, &midiPage, &seqPage, &seqPage2);
+	switcher.setup();
+	switcher.setPage(4);
+	monome.setBuffer();
 
 	for (;;) {
 		MidiUart.runLoop();
@@ -207,7 +175,7 @@ int main(int argc, const char *argv[]) {
 			Midi.handleByte(c);
 		}
 
-		monome.updateGUI();
+		monome.loop();
 		if (monome.isAvailable()) {
 			monome.handle();
 		}

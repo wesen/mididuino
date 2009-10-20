@@ -7,6 +7,8 @@ void addOffTrig(uint8_t pitch);
 
 MonomeTrigPage::MonomeTrigPage(MonomeParentClass *monome, uint8_t _start) : MonomePage(monome) {
 	start = _start;
+	y = 0;
+	height = 7;
 }
 
 MonomeTrigPage::~MonomeTrigPage() {
@@ -69,7 +71,6 @@ void MonomeTrigPage::onTrigNote(uint8_t pitch) {
 			}
 		}
 		setLED(column, 0);
-		addOffTrig(pitch);
 	}
 }
 
