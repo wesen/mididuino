@@ -57,3 +57,4 @@ void MonomeHost::handle() {
 		handleByte(buf[i]);
 	}
 }
+

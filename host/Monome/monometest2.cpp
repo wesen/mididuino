@@ -6,16 +6,12 @@
 #include "Monome.h"
 #include "MonomeHost.h"
 
-void sigquit(int isngal) {
-	printf("sigquit\n");
-	exit(1);
-}
-
 class TestMonomePage : public MonomePage {
 public:
 	TestMonomePage(MonomeParentClass *monome) : MonomePage(monome) {
 		setLED(1, 1);
 		setLED(2, 2);
+		height = 7;
 	}
 	
 	bool handleEvent(monome_event_t *event) {
@@ -27,29 +23,41 @@ public:
 		}
 		return true;
 	}
+
 };
 
-class MonomePageSwitcher : public MonomeCallback {
-public:
-	MonomePage *pages[8];
 
-	MonomePageSwitcher() {
+class TestMonomePage2 : public MonomePage {
+public:
+	TestMonomePage2(MonomeParentClass *monome) : MonomePage(monome) {
+		setLED(4, 4);
+		setLED(5, 4);
+		height = 7;
 	}
 	
 	bool handleEvent(monome_event_t *event) {
+		printf("handle event %d, %d, %d\n", event->x, event->y, event->state);
+		if (IS_BUTTON_PRESSED(event)) {
+			toggleLED(event->x, event->y);
+		}
+		return true;
 	}
+
 };
 
+
 int main(int argc, const char *argv[]){
-	signal(SIGINT, sigquit);
-	
 	try {
 		MonomeHost monome(argv[1]);
-		TestMonomePage page(&monome);
-
 		monome.setup();
 
-		monome.setPage(&page);
+		TestMonomePage page(&monome);
+		TestMonomePage2 page2(&monome);
+		MonomePageSwitcher switcher(&monome, &page, &page2);
+
+		switcher.setup();
+		switcher.setPage(0);
+		monome.setBuffer();
 
 		for (;;) {
 			monome.loop();

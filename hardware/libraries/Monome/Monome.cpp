@@ -104,7 +104,8 @@ void MonomeParentClass::handleByte(uint8_t byte) {
 }
 
 void MonomeParentClass::drawPage(MonomePage *page) {
-	for (uint8_t y = 0; y < 8; y++) {
+	// XXX add support for clever masking and stuff
+	for (uint8_t y = page->y; y < (page->y + page->height); y++) {
 		setRow(y, page->buf[y]);
 	}
 	page->needsRefresh = false;
@@ -136,8 +137,13 @@ void MonomeParentClass::loop() {
 
     MonomePage *curPage = currentPage();
     if (curPage != NULL) {
-      if (curPage->handleEvent(&event)) {
-				continue;
+			if ((event.x >= (curPage->x)) &&
+					(event.x < (curPage->x + curPage->width)) &&
+					(event.y >= (curPage->y)) &&
+					(event.y < (curPage->y + curPage->height))) {
+				if (curPage->handleEvent(&event)) {
+					continue;
+				}
 			}
     }
 		

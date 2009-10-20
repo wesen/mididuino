@@ -92,6 +92,7 @@ public:
     tasks.remove(task);
   }
 
+	void setBuffer();
 
 protected:
 	/* buffer leds */
@@ -114,7 +115,6 @@ protected:
 			return 0;
 		}
 	}
-	void setBuffer();
 };
 
 

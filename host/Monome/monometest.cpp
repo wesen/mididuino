@@ -18,7 +18,6 @@ uint8_t standardDrumMapping[16] = {
 };
 
 void addOffTrig(uint8_t pitch);
-void switchPage(uint8_t page);
 
 uint8_t routing[16][6] = { { 0 } };
 
@@ -27,21 +26,6 @@ void trigRoutingOff(uint8_t routing);
 
 MonomeTrigPage *pages[3] = { 0 };
 MonomeParentClass *gMonome;
-
-void switchPage(uint8_t page) {
-	if ((page < countof(pages)) && (pages[page] != NULL)) {
-		pages[page]->needsRefresh = true;
-		gMonome->setPage(pages[page]);
-		printf("switch page %d\n", page);
-		for (uint8_t i = 0; i < countof(pages); i++) {
-			if (pages[i] != NULL) {
-				for (uint8_t j = 0; j < countof(pages); j++) {
-					pages[i]->setLED(j, 7, j == page ? 1 : 0);
-				}
-			}
-		}
-	}
-}
 
 void trigRoutingOn(uint8_t trig) {
 }
@@ -171,10 +155,15 @@ int main(int argc, const char *argv[]) {
 #endif
 	
 	MonomeHost monome(argv[3]);
+	monome.setup();
+
 	MonomeHandler handler(&monome);
 	MonomeTrigPage page(&monome, 0), page2(&monome, 8), page3(&monome, 16);
 	MonomeMidiPage midiPage(&monome);
 
+	MonomePageSwitcher switcher(&monome, &page, &page2, &page3, &midiPage);
+		
+	
 	pages[0] = &page;
 	pages[1] = &page2;
 	pages[2] = &midiPage;
@@ -190,7 +179,6 @@ int main(int argc, const char *argv[]) {
 	}
 
 	handler.setup();
-
 
 	gMonome = &monome;
 	monome.setPage(&page);

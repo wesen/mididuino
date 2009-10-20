@@ -14,6 +14,10 @@ public:
 	bool isSetup;
 	uint8_t buf[8];
 	bool needsRefresh;
+	uint8_t width;
+	uint8_t height;
+	uint8_t x;
+	uint8_t y;
 	MonomeParentClass *monome;
   MonomePageContainer *parent;
 
@@ -101,6 +105,35 @@ class MonomePageContainer {
 
 };
 
+class MonomePageSwitcher : public MonomeCallback {
+public:
+	MonomePage *pages[8];
+	MonomeParentClass *monome;
 
+	MonomePageSwitcher(MonomeParentClass *_monome,
+										 MonomePage *p1 = NULL,
+										 MonomePage *p2 = NULL,
+										 MonomePage *p3 = NULL,
+										 MonomePage *p4 = NULL,
+										 MonomePage *p5 = NULL,
+										 MonomePage *p6 = NULL,
+										 MonomePage *p7 = NULL,
+										 MonomePage *p8 = NULL
+										 ) {
+		monome = _monome;
+		pages[0] = p1;
+		pages[1] = p2;
+		pages[2] = p3;
+		pages[3] = p4;
+		pages[4] = p5;
+		pages[5] = p6;
+		pages[6] = p7;
+		pages[7] = p8;
+	}
+
+	void setup();
+	bool handleEvent(monome_event_t *event);
+	bool setPage(uint8_t page);
+};
 
 #endif /* MONOME_PAGES_H__ */
