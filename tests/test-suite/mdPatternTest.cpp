@@ -437,6 +437,19 @@ TEST_F (MDPatternFixture, MDPatternClearLockSkipClearOne) {
 		CHECK_EQUAL(255, (int)pattern.getLock(clearTrack, step, 0));
 	}
 
+	pattern.recalculateLockPatterns();
+	for (uint8_t track = 0 ; track < maxTrack ; track += 2) {
+		for (uint8_t step = 0; step < pattern.patternLength; step++) {
+			if (track == clearTrack) {
+				CHECK(!pattern.isTrigSet(clearTrack, step));
+				CHECK_EQUAL(255, (int)pattern.getLock(clearTrack, step, 0));
+			} else {
+				CHECK(pattern.isTrigSet(track, step));
+				CHECK_EQUAL(step + track, (int)pattern.getLock(track, step, 0));
+			}
+		}
+	}
+
 	bool ret = reimportSysex(&pattern);
 	CHECK(ret);
 	for (uint8_t track = 0 ; track < maxTrack ; track += 2) {
