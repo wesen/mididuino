@@ -129,6 +129,14 @@ public:
 	}
 };
 
+MonomePageSwitcher *gSwitcher = NULL;
+
+void switchPage(uint8_t page) {
+	if (gSwitcher != NULL) {
+		gSwitcher->setPage(page);
+	}
+}
+
 int main(int argc, const char *argv[]) {
 	int input = -1;
 	int output = -1;
@@ -159,11 +167,12 @@ int main(int argc, const char *argv[]) {
 	trigPages[1] = &page2;
 	
 	MonomeMidiPage midiPage(&monome);
-	MonomeMidiSeqPage seqPage(&monome), seqPage2(&monome);
+	MonomeMidiSeqPage seqPage(&monome, 0), seqPage2(&monome, 16);
 	seqPage.setup();
 	seqPage2.setup();
 
 	MonomePageSwitcher switcher(&monome, &page, &page2, &midiPage, &seqPage, &seqPage2);
+	gSwitcher = &switcher;
 	switcher.setup();
 	switcher.setPage(0);
 	monome.setBuffer();
