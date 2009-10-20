@@ -1,4 +1,4 @@
-//#ifdef WINDOWS
+#ifdef __CYGWIN__
 
 #include "WProgram.h"
 #include "MidiUartWin.h"
@@ -181,4 +181,4 @@ void MidiUartWinClass::midiSendShort(unsigned char status,
 void MidiUartWinClass::runLoop() {
 }
 
-//#endif /* WINDOWS */
+#endif /* __CYGWIN__ */

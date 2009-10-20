@@ -65,7 +65,9 @@ class MidiUartHostParent : public MidiUartParent, public MidiCallback {
 #include "MidiUartOSX.h"
 #endif
 
+#ifdef __CYGWIN__
 #include "MidiUartWin.h"
+#endif
 
 class MidiUartHostClass;
 extern MidiUartHostClass MidiUart;
