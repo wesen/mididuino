@@ -15,7 +15,7 @@ void MonomePage::setLED(uint8_t x, uint8_t y, uint8_t status) {
 		CLEAR_BIT(buf[y], x);
 	}
 
-	if (monome->isActivePage(this)) {
+	if (monome->currentPage() == this) {
 		monome->setLED(x, y, status);
 	} else {
 		needsRefresh = true;

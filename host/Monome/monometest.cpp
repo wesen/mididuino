@@ -31,7 +31,7 @@ MonomeParentClass *gMonome;
 void switchPage(uint8_t page) {
 	if ((page < countof(pages)) && (pages[page] != NULL)) {
 		pages[page]->needsRefresh = true;
-		gMonome->setActivePage(pages[page]);
+		gMonome->setPage(pages[page]);
 		printf("switch page %d\n", page);
 		for (uint8_t i = 0; i < countof(pages); i++) {
 			if (pages[i] != NULL) {
@@ -142,7 +142,7 @@ public:
 		Midi.addOnNoteOnCallback(this, (midi_callback_ptr_t)&MonomeHandler::onNoteOn);
 	}
 	
-	void onEvent(monome_event_t *evt) {
+	bool onEvent(monome_event_t *evt) {
 		//		monome->setLED(evt->x, evt->y, evt->state);
 	}
 
@@ -193,12 +193,9 @@ int main(int argc, const char *argv[]) {
 
 
 	gMonome = &monome;
- 	monome.setBuffer();
-	monome.setActivePage(&page);
+	monome.setPage(&page);
 
 	switchPage(0);
-
-	
 
 	for (;;) {
 		MidiUart.runLoop();
@@ -207,7 +204,7 @@ int main(int argc, const char *argv[]) {
 			Midi.handleByte(c);
 		}
 
-		monome.updateGUI();
+		monome.loop();
 		if (monome.isAvailable()) {
 			monome.handle();
 		}

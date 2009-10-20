@@ -1,5 +1,24 @@
 #include "Monome.h"
 
+#define MONOME_GEN_ADDRESS(addr, data) ((((addr) & 0xF) << 4) | ((data) & 0xF))
+#define MONOME_ADDRESS(data) (((data) >> 4) & 0xF)
+#define MONOME_STATE(data) ((data) & 0xF)
+
+#define MONOME_GEN_XY(x, y) ((((x) & 0xF) << 4) | ((y) & 0xF))
+#define MONOME_X(data) ((data >> 4) & 0xF)
+#define MONOME_Y(data) ((data) & 0xF)
+
+#define MONOME_CMD_PRESS         0x00
+#define MONOME_CMD_ADC_VAL       0x01
+#define MONOME_CMD_LED           0x02
+#define MONOME_CMD_LED_INTENSITY 0x03
+#define MONOME_CMD_LED_TEST      0x04
+#define MONOME_CMD_ADC_ENABLE    0x05
+#define MONOME_CMD_SHUTDOWN      0x06
+#define MONOME_CMD_LED_ROW       0x07
+#define MONOME_CMD_LED_COLUMN    0x08
+
+
 MonomeParentClass::MonomeParentClass() {
 	activePage = NULL;
 	for (uint8_t i = 0; i < 8; i++) {
@@ -8,25 +27,10 @@ MonomeParentClass::MonomeParentClass() {
 	parse_state = MONOME_BYTE_1;
 }
 
-MonomeParentClass::~MonomeParentClass() {
+void MonomeParentClass::setLEDIntensity(uint8_t intensity) {
+	sendMessage(MONOME_GEN_ADDRESS(MONOME_CMD_LED_INTENSITY, 0), intensity);
 }
 
-void MonomeParentClass::setBufLED(uint8_t x, uint8_t y, uint8_t status) {
-	if (status) {
-		SET_BIT(buf[y], x);
-	} else {
-		CLEAR_BIT(buf[y], x);
-	}
-}
-
-uint8_t MonomeParentClass::getBufLED(uint8_t x, uint8_t y) {
-	if (IS_BIT_SET(buf[y], x)) {
-		return 1;
-	} else {
-		return 0;
-	}
-}
-	
 void MonomeParentClass::setLED(uint8_t x, uint8_t y, uint8_t status) {
 	if (getBufLED(x, y) != status) {
 		setBufLED(x, y, status);
@@ -40,10 +44,6 @@ void MonomeParentClass::toggleLED(uint8_t x, uint8_t y) {
 	} else {
 		setLED(x, y);
 	}
-}
-
-void MonomeParentClass::clearLED(uint8_t x, uint8_t y) {
-	setLED(x, y, 0);
 }
 
 void MonomeParentClass::setRow(uint8_t row, uint8_t leds) {
@@ -95,23 +95,12 @@ void MonomeParentClass::handleByte(uint8_t byte) {
 				event.x = MONOME_X(byte);
 				event.y = MONOME_Y(byte);
 				event.state = MONOME_STATE(lastByte);
-				callbacks.call(&event);
-				if (activePage != NULL) {
-					activePage->handleEvent(&event);
-				}
+				eventRB.putp(&event);
 				break;
 			}
 		}
 		break;
 	}
-}
-
-void MonomeParentClass::setActivePage(MonomePage *_page) {
-	activePage = _page;
-}
-
-bool MonomeParentClass::isActivePage(MonomePage *_page) {
-	return activePage == _page;
 }
 
 void MonomeParentClass::drawPage(MonomePage *page) {
@@ -121,9 +110,46 @@ void MonomeParentClass::drawPage(MonomePage *page) {
 	page->needsRefresh = false;
 }
 
-void MonomeParentClass::updateGUI() {
-	if (activePage && activePage->needsRefresh) {
-		drawPage(activePage);
+void MonomeParentClass::loop() {
+  for (int i = 0; i < tasks.size; i++) {
+    if (tasks.arr[i] != NULL) {
+      tasks.arr[i]->checkTask();
+    }
+  }
+
+  while (!eventRB.isEmpty()) {
+    monome_event_t event;
+    eventRB.getp(&event);
+    for (int i = 0; i < eventHandlers.size; i++) {
+      if (eventHandlers.arr[i] != NULL) {
+				bool ret = eventHandlers.arr[i](&event);
+				if (ret) {
+					continue;
+				}
+      }
+    }
+
+		if (callbacks.callBool(&event)) {
+			continue;
+		}
+
+
+    MonomePage *curPage = currentPage();
+    if (curPage != NULL) {
+      if (curPage->handleEvent(&event)) {
+				continue;
+			}
+    }
+		
+  }
+
+	MonomePage *curPage = currentPage();
+	if (curPage != NULL) {
+		curPage->loop();
+
+		if (curPage->needsRefresh) {
+			drawPage(curPage);
+		}
 	}
 }
 

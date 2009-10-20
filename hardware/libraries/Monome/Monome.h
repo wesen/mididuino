@@ -4,72 +4,117 @@
 #include "WProgram.h"
 #include <inttypes.h>
 #include "Callback.hh"
+#include "Task.hh"
 
-#define MONOME_GEN_ADDRESS(addr, data) ((((addr) & 0xF) << 4) | ((data) & 0xF))
-#define MONOME_ADDRESS(data) (((data) >> 4) & 0xF)
-#define MONOME_STATE(data) ((data) & 0xF)
-
-#define MONOME_GEN_XY(x, y) ((((x) & 0xF) << 4) | ((y) & 0xF))
-#define MONOME_X(data) ((data >> 4) & 0xF)
-#define MONOME_Y(data) ((data) & 0xF)
-
-#define MONOME_CMD_PRESS         0x00
-#define MONOME_CMD_ADC_VAL       0x01
-#define MONOME_CMD_LED           0x02
-#define MONOME_CMD_LED_INTENSITY 0x03
-#define MONOME_CMD_LED_TEST      0x04
-#define MONOME_CMD_ADC_ENABLE    0x05
-#define MONOME_CMD_SHUTDOWN      0x06
-#define MONOME_CMD_LED_ROW       0x07
-#define MONOME_CMD_LED_COLUMN    0x08
-
-#include "MonomePages.hh"
 class MonomePage;
 
-class MonomeParentClass {
- public:
-	enum {
-		MONOME_BYTE_1 = 0,
-		MONOME_BYTE_2
-	} parse_state;
-	uint8_t buf[8]; // blitting buffer
+typedef struct {
+	uint8_t x, y;
+	uint8_t state;
+} monome_event_t;
 
+#define IS_BUTTON_PRESSED(evt)  ((evt)->state == 1)
+#define IS_BUTTON_RELEASED(evt) ((evt)->state == 0)
+
+class MonomeCallback {
+};
+
+typedef bool(MonomeCallback::*monome_callback_ptr_t)(monome_event_t *evt);
+typedef bool (*monome_event_handler_t)(monome_event_t *event);
+
+#include "MonomePages.hh"
+
+class MonomeParentClass : public MonomePageContainer {
+protected:
+  Vector<monome_event_handler_t, 4> eventHandlers;
+  Vector<Task *, 8> tasks;
+	volatile CRingBuffer<monome_event_t, 8> eventRB;
+	
+public:
 	MonomePage *activePage;
 
 	MonomeParentClass();
-	~MonomeParentClass();
+	~MonomeParentClass() {
+	}
 
-	virtual void sendBuf(uint8_t *data, uint8_t len) = 0;
-	virtual void sendMessage(uint8_t byte1, uint8_t byte2) = 0;
+	void setup() {
+		setLEDIntensity(15);
+	}
 
-	void setBufLED(uint8_t x, uint8_t y, uint8_t status);
-	uint8_t getBufLED(uint8_t x, uint8_t y);
+	void drawPage(MonomePage *page);
+	void loop();
+
+	/* commands */
 	void setLED(uint8_t x, uint8_t y, uint8_t status = 1);
 	void toggleLED(uint8_t x, uint8_t y);
-	void clearLED(uint8_t x, uint8_t y);
+	void clearLED(uint8_t x, uint8_t y) {
+		setLED(x, y, 0);
+	}
 	void setRow(uint8_t row, uint8_t leds);
 	void setColumn(uint8_t column, uint8_t leds);
-	void setBuffer();
+	void setLEDIntensity(uint8_t intensity);
 	void shutdown(uint8_t state = 0);
+
+	/* host interface */
+	virtual void sendBuf(uint8_t *data, uint8_t len) {
+	}
+	virtual void sendMessage(uint8_t byte1, uint8_t byte2) {
+	}
+	
+	/* handle input */
 	void handleByte(uint8_t byte);
 
-	void setActivePage(MonomePage *_page);
-	bool isActivePage(MonomePage *_page);
-	void drawPage(MonomePage *page);
-	void updateGUI();
-
-	// callbacks
-	CallbackVector1<MonomeCallback, 8, monome_event_t *> callbacks;
-	void addCallback(MonomeCallback *obj, void (MonomeCallback::*func)(monome_event_t *)) {
+	/* callbacks */
+	BoolCallbackVector1<MonomeCallback, 8, monome_event_t *> callbacks;
+	void addCallback(MonomeCallback *obj, monome_callback_ptr_t func) {
 		callbacks.add(obj, func);
 	}
-	void removeCallback(MonomeCallback *obj, void (MonomeCallback::*func)(monome_event_t *) = NULL) {
+	void removeCallback(MonomeCallback *obj, monome_callback_ptr_t func = NULL) {
 		if (func == NULL) {
 			callbacks.remove(obj);
 		} else {
 			callbacks.remove(obj, func);
 		}
 	}
+
+  void addEventHandler(monome_event_handler_t handler) {
+    eventHandlers.add(handler);
+  }
+  void removeEventHandler(monome_event_handler_t handler) {
+    eventHandlers.remove(handler);
+  }
+
+	/* tasks */
+  void addTask(Task *task) {
+    tasks.add(task);
+  }
+  void removeTask(Task *task) {
+    tasks.remove(task);
+  }
+
+
+protected:
+	/* buffer leds */
+	enum {
+		MONOME_BYTE_1 = 0,
+		MONOME_BYTE_2
+	} parse_state;
+	uint8_t buf[8]; // blitting buffer
+	void setBufLED(uint8_t x, uint8_t y, uint8_t status) {
+		if (status) {
+			SET_BIT(buf[y], x);
+		} else {
+			CLEAR_BIT(buf[y], x);
+		}
+	}
+	uint8_t getBufLED(uint8_t x, uint8_t y) {
+		if (IS_BIT_SET(buf[y], x)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	void setBuffer();
 };
 
 

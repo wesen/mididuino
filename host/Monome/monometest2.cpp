@@ -12,6 +12,32 @@ void sigquit(int isngal) {
 }
 
 class TestMonomePage : public MonomePage {
+public:
+	TestMonomePage(MonomeParentClass *monome) : MonomePage(monome) {
+		setLED(1, 1);
+		setLED(2, 2);
+	}
+	
+	bool handleEvent(monome_event_t *event) {
+		printf("handle event %d, %d, %d\n", event->x, event->y, event->state);
+		if (IS_BUTTON_PRESSED(event)) {
+			setLED(event->x, event->y);
+		} else if (IS_BUTTON_RELEASED(event)) {
+			clearLED(event->x, event->y);
+		}
+		return true;
+	}
+};
+
+class MonomePageSwitcher : public MonomeCallback {
+public:
+	MonomePage *pages[8];
+
+	MonomePageSwitcher() {
+	}
+	
+	bool handleEvent(monome_event_t *event) {
+	}
 };
 
 int main(int argc, const char *argv[]){
@@ -19,18 +45,16 @@ int main(int argc, const char *argv[]){
 	
 	try {
 		MonomeHost monome(argv[1]);
-		MonomePage page(&monome);
+		TestMonomePage page(&monome);
 
-		monome.setActivePage(&page);
-		page.setLED(1, 1);
-		page.setLED(2, 2);
-		
+		monome.setup();
+
+		monome.setPage(&page);
+
 		for (;;) {
-			monome.updateGUI();
+			monome.loop();
 			if (monome.isAvailable(100)) {
-				printf("foo\n");
 				monome.handle();
-				printf("foo2\n");
 			}
 		}
 	} catch (const char *s) {

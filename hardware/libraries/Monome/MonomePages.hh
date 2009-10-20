@@ -6,16 +6,6 @@
 #include "Callback.hh"
 #include "Stack.h"
 
-typedef struct {
-	uint8_t x, y;
-	uint8_t state;
-} monome_event_t;
-
-class MonomeCallback {
-};
-
-typedef void(MonomeCallback::*monome_callback_ptr_t)(monome_event_t *evt);
-
 class MonomeParentClass;
 class MonomePageContainer;
 
@@ -37,9 +27,12 @@ public:
 	}
 	virtual void show() {
 	}
+	virtual void redisplayPage() {
+		needsRefresh = true;
+	}
 	virtual void hide() {
 	}
-	virtual void redisplayPage() {
+	virtual void loop() {
 	}
 	
 	uint8_t getBufLED(uint8_t x, uint8_t y) {
