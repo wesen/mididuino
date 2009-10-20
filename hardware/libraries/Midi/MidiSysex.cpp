@@ -137,8 +137,8 @@ MidiSysexClass MidiSysex(sysexBuf, sizeof(sysexBuf));
 MidiSysexClass MidiSysex2(sysexBuf2, sizeof(sysexBuf2));
 #endif
 
-MididuinoSysexListenerClass::MididuinoSysexListenerClass(MidiSysexClass *_sysex)
-	: MidiSysexListenerClass(_sysex) {
+MididuinoSysexListenerClass::MididuinoSysexListenerClass() 
+	: MidiSysexListenerClass() {
   ids[0] = MIDIDUINO_SYSEX_VENDOR_1;
   ids[1] = MIDIDUINO_SYSEX_VENDOR_2;
   ids[2] = BOARD_ID;
@@ -153,4 +153,4 @@ void MididuinoSysexListenerClass::handleByte(uint8_t byte) {
   }
 }
 
-MididuinoSysexListenerClass MididuinoSysexListener(&Midi.midiSysex);
+MididuinoSysexListenerClass MididuinoSysexListener;

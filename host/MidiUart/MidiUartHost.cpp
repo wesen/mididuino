@@ -5,6 +5,14 @@
 MidiClass Midi, Midi2;
 MidiUartHostClass MidiUart;
 
+void MidiUartHostSysexListener::end() {
+	uint8_t buf[sysex->len +2];
+	buf[0] = 0xF0;
+	m_memcpy(buf + 1, sysex->data, sysex->len);
+	buf[sysex->len + 1] = 0xF7;
+	uart->midiSendLong(buf, sysex->len + 2);
+}
+
 void handleIncomingMidi() {
   while (MidiUart.avail()) {
     Midi.handleByte(MidiUart.getc());
@@ -42,5 +50,6 @@ void MidiUartHostParent::init(int _inputDevice, int _outputDevice) {
 	outputMidi.addOnMessageCallback(this,
 																	(midi_callback_ptr2_t)&MidiUartHostParent::onOutputMessage);
 
+	outputMidi.midiSysex.addSysexListener(&sysexListener);
 }
 

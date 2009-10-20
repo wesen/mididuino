@@ -15,18 +15,19 @@
 #endif
 #define TX_BUF_SIZE 128
 
+class MidiUartHostParent;
+
 class MidiUartHostSysexListener : public MidiSysexListenerClass {
  protected:
-  MidiUartParent *uart;
+  MidiUartHostParent *uart;
 
  public:
- MidiUartHostSysexListener(MidiUartParent *_uart) : MidiSysexListenerClass() {
+ MidiUartHostSysexListener(MidiUartHostParent *_uart) : MidiSysexListenerClass() {
     uart = _uart;
     ids[0] = 0xFF;
   }
 
-  virtual void end() {
-  }
+  virtual void end();
 };
 
 class MidiClass;
