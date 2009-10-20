@@ -40,7 +40,7 @@ public:
     Page *curPage = currentPage();
     if (curPage != NULL) {
       if (curPage->handleEvent(event)) {
-	return true;
+				return true;
       }
     }
     return handleEvent(event);

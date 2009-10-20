@@ -81,22 +81,20 @@ void GuiClass::loop() {
     EventRB.getp(&event);
     for (int i = 0; i < eventHandlers.size; i++) {
       if (eventHandlers.arr[i] != NULL) {
-	bool ret = eventHandlers.arr[i](&event);
-	if (ret) {
-	  goto next;
-	}
+				bool ret = eventHandlers.arr[i](&event);
+				if (ret) {
+					continue;
+				}
       }
     }
-
+		
     if (sketch != NULL) {
       bool ret = sketch->handleTopEvent(&event);
       if (ret)
-	continue;
+				continue;
     }
-
   }
 
- next:
   if (sketch != NULL) {
     Page *page = sketch->currentPage();
     if (page != NULL) {
