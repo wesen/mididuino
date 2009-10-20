@@ -4,12 +4,6 @@
 #include "MidiUartWin.h"
 #include "Midi.h"
 
-MidiClass Midi, Midi2;
-MidiUartHostClass MidiUart;
-
-void handleIncomingMidi() {
-}
-
 void MidiUartWinClass::listInputMidiDevices() {
   MIDIINCAPS     mic;
   unsigned long   iNumDevs, i;
@@ -65,21 +59,6 @@ MidiUartWinClass::~MidiUartWinClass() {
 		midiOutClose(outHandle);
 	}
 }
-
-void MidiUartWinClass::sendSysex(uint8_t *data, uint8_t cnt) {
-}
-
-void MidiUartWinClass::putc(uint8_t c) {
-}
-
-bool MidiUartWinClass::avail() {
-	return false;
-}
-
-uint8_t MidiUartWinClass::getc() {
-	return 0;
-}
-
 
 void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
 													 DWORD dwParam1, DWORD dwParam2) {
@@ -137,11 +116,9 @@ static int getOutputDeviceName(int id, char *buf, int len) {
 }
 
 void MidiUartWinClass::init(int _inputDevice, int _outputDevice) {
+	MidiUartHostParent::init(_inputDevice, _outputDevice);
+	
 	unsigned long result;
-		
-	inputDevice = _inputDevice;
-	outputDevice = _outputDevice;
-
 	char name[256];
 	getOutputDeviceName(outputDevice, name, sizeof(name));
 	result = midiOutOpen(&outHandle, outputDevice, 0, 0, CALLBACK_NULL);

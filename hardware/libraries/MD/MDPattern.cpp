@@ -86,7 +86,6 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
     
-
   origPosition = data[9 - 6];
 	MDSysexDecoder decoder(data + 0xA - 6, 74);
   for (int i = 0; i < 16; i++) {

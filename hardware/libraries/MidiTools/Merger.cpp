@@ -1,3 +1,5 @@
+#include "WProgram.h"
+
 #include <Midi.h>
 #include <MidiUartParent.hh>
 #include "Merger.h"

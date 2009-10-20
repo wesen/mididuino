@@ -6,12 +6,6 @@
 #include <MidiUartParent.hh>
 #include "MidiUartOSX.h"
 
-MidiClass Midi, Midi2;
-MidiUartHostClass MidiUart;
-
-void handleIncomingMidi() {
-}
-
 void MidiUartOSXClass::listInputMidiDevices() {
 	unsigned long   iNumDevs, i;
 	
@@ -153,7 +147,9 @@ void MidiUartOSXClass::midiSendLong(unsigned char *buf, unsigned long len) {
   MIDISendSysex(sysexReq);
 }
 
-void MidiUartOSXClass::midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2) {
+void MidiUartOSXClass::midiSendShort(unsigned char status,
+																		 unsigned char byte1,
+																		 unsigned char byte2) {
   static struct MIDIPacketList pktlist;
   
   pktlist.numPackets = 1;

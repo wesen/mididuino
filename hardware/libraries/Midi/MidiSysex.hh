@@ -2,7 +2,6 @@
 #define MIDISYSEX_H__
 
 #include <inttypes.h>
-#include "WProgram.h"
 
 #ifndef SYSEX_BUF_SIZE
 #define SYSEX_BUF_SIZE 128
