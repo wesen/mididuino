@@ -7,6 +7,8 @@ void addOffTrig(uint8_t pitch);
 
 MonomeTrigPage::MonomeTrigPage(MonomeParentClass *monome, uint8_t _start) : MonomePage(monome) {
 	start = _start;
+	y = 0;
+	height = 7;
 }
 
 MonomeTrigPage::~MonomeTrigPage() {
@@ -26,12 +28,10 @@ void MonomeTrigPage::toggleRouting(uint8_t x, uint8_t y) {
 }
 
 bool MonomeTrigPage::handleEvent(monome_event_t *evt) {
-	if ((evt->y == 7) && (evt->state == 1)) {
-		switchPage(evt->x);
+	if (evt->y == 0)
 		return true;
-	}
-		
-	if ((evt->y >= 1) && (evt->state == 1)) {
+	
+	if (IS_BUTTON_PRESSED(evt)) {
 		toggleRouting(evt->x, evt->y);
 		return true;
 		//			printf("evt x: %d y: %d: %d\n", evt->x, evt->y, evt->state);
@@ -72,7 +72,6 @@ void MonomeTrigPage::onTrigNote(uint8_t pitch) {
 			}
 		}
 		setLED(column, 0);
-		addOffTrig(pitch);
 	}
 }
 
