@@ -17,7 +17,7 @@ class MonomeHost : public MonomeParentClass {
   virtual void sendBuf(uint8_t *data, uint8_t len);
   virtual void sendMessage(uint8_t byte1, uint8_t byte2);
 
-  bool isAvailable(unsigned long timeout = 1);
+  bool isAvailable(unsigned long timeout = 10);
   void handle();
 };
 

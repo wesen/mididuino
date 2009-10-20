@@ -165,7 +165,7 @@ int main(int argc, const char *argv[]) {
 
 	MonomePageSwitcher switcher(&monome, &page, &page2, &midiPage, &seqPage, &seqPage2);
 	switcher.setup();
-	switcher.setPage(4);
+	switcher.setPage(0);
 	monome.setBuffer();
 
 	for (;;) {
