@@ -134,7 +134,10 @@ void MidiClass::handleByte(uint8_t byte) {
       callback = 0; // XXX ugly hack to recgnize NOTE on with velocity 0 as Note Off
     }
 
+#ifdef HOST_MIDIDUINO
 		messageCallback.call(msg, in_msg_len);
+#endif
+		
     if (callback < 7) {
       midiCallbacks[callback].call(msg);
     } else if (msg[0] == MIDI_SONG_POSITION_PTR) {
