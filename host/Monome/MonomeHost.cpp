@@ -14,8 +14,8 @@ MonomeHost::MonomeHost(const char *file) {
 	struct termios options;
 	fcntl(fd, F_SETFL, 0);
 	tcgetattr(fd, &options);
-	cfsetispeed(&options, B9600);
-	cfsetospeed(&options, B9600);
+	cfsetispeed(&options, B115200);
+	cfsetospeed(&options, B115200);
 	options.c_cflag |= (CLOCAL | CREAD);
 	tcsetattr(fd, TCSANOW, &options);
 
@@ -57,3 +57,4 @@ void MonomeHost::handle() {
 		handleByte(buf[i]);
 	}
 }
+

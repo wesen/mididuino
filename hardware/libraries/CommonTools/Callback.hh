@@ -89,5 +89,18 @@ public:
   }
 };
 
+template <class C, int N = 4, typename Arg1 = void, typename M = bool(C::*)(Arg1)>
+class BoolCallbackVector1 :
+  public CallbackVector<C, N, M> {
+public:
+  bool callBool(Arg1 a1) {
+    for (uint8_t i = 0; i < CallbackVector<C,N,M>::size; i++) {
+      if (((CallbackVector<C,N,M>::callbacks[i].obj)->*(CallbackVector<C,N,M>::callbacks[i].ptr))(a1)) {
+				return true;
+			}
+    }
+		return false;
+  }
+};
 
 #endif /* CALLBACK_H__ */
