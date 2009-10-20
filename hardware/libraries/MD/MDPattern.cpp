@@ -86,7 +86,6 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
     
-
   origPosition = data[9 - 6];
 	MDSysexDecoder decoder(data + 0xA - 6, 74);
   for (int i = 0; i < 16; i++) {
@@ -181,7 +180,6 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
 	uint16_t sysexLength = isExtraPattern ? 0x151d : 0xac6;
 	
-  // XXX check extrapattern
   if (len < (sysexLength + 5))
     return 0;
 
@@ -202,6 +200,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   }
 	encoder.finish();
 
+	cleanupLocks();
   recalculateLockPatterns();
 	
 	encoder.init(data + 0x54, 74);
@@ -231,19 +230,21 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   for (int i = cnt; i < 64; i++) {
     m_memclr(lockData[i], 32);
   }
+	uint8_t lockIdx = 0;
   for (int track = 0; track < 16; track++) {
     for (int param = 0; param < 24; param++) {
       int8_t lock = paramLocks[track][param];
       if (lock != -1) {
 #if 0
-				printf("track %d, param %d, lock %d\n", track, param, lock);
+				printf("track %d, param %d, lock %d, new %d\n", track, param, lock, lockIdx);
 				for (uint8_t i = 0; i < 32; i++) {
 					printf("%.2d ", locks[lock][i]);
 				}
 				printf("\n");
 #endif
 				
-				m_memcpy(lockData[lock], locks[lock], 32);
+				m_memcpy(lockData[lockIdx], locks[lock], 32);
+				lockIdx++;
 				cnt++;
       }
     }
@@ -277,8 +278,8 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 		encoder.pack32hi(accentPattern);
 		encoder.pack32hi(slidePattern);
 		encoder.pack32hi(swingPattern);
-		encoder.pack32hi(swingAmount);
-    
+
+		lockIdx = 0;
 		for (int i = cnt; i < 64; i++) {
 			m_memclr(lockData[i], 32);
 		}
@@ -287,7 +288,8 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 				int8_t lock = paramLocks[track][param];
 				if (lock != -1) {
 					
-					m_memcpy(lockData[lock], locks[lock] + 32, 32);
+					m_memcpy(lockData[lockIdx], locks[lock] + 32, 32);
+					lockIdx++;
 					cnt++;
 				}
 			}
@@ -335,12 +337,13 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
 void MDPattern::cleanupLocks() {
   for (int i = 0; i < 64; i++) {
     if (lockTracks[i] != -1) {
+			//			printf("checking lock %d for track %d and param %d\n", i, lockTracks[i], lockParams[i]);
       if (isLockPatternEmpty(i, trigPatterns[lockTracks[i]])) {
-	if (lockParams[i] != -1) {
-	  paramLocks[lockTracks[i]][lockParams[i]] = -1;
-	}
-	lockTracks[i] = -1;
-	lockParams[i] = -1;
+				if (lockParams[i] != -1) {
+					paramLocks[lockTracks[i]][lockParams[i]] = -1;
+				}
+				lockTracks[i] = -1;
+				lockParams[i] = -1;
       }
     } else {
       lockParams[i] = -1;

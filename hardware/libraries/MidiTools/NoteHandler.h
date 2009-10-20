@@ -1,7 +1,7 @@
 #ifndef NOTEHANDLER_H__
 #define NOTEHANDLER_H__
 
-#include "Midi.h"
+#include "WProgram.h"
 #include "ListPool.hh"
 
 typedef struct incoming_note_s {

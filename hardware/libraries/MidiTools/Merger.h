@@ -1,6 +1,7 @@
 #ifndef MERGER_H__
 #define MERGER_H__
 
+#include "helpers.h"
 #include "Midi.h"
 
 class MergerSysexListener : public MidiSysexListenerClass {

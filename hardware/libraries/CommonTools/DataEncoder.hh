@@ -64,7 +64,9 @@ public:
 		ptr = data;
 	}
 
-	virtual bool get8(uint8_t *c) = 0;
+	virtual bool get8(uint8_t *c) {
+		return false;
+	}
 	virtual bool get16(uint16_t *c) {
 		uint8_t b1, b2;
 		bool ret = get8(&b1) && get8(&b2);

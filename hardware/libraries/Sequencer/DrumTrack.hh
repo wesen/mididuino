@@ -6,7 +6,7 @@
 class DrumTrack {
 public:
   uint8_t len;
-  uint32_t pattern;
+  uint64_t pattern;
   uint8_t offset;
   
   DrumTrack(uint32_t _pattern = 0, uint8_t _len = 16, uint8_t _offset = 0) {

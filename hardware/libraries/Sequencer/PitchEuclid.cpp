@@ -20,7 +20,7 @@ void PitchEuclid::on16Callback(uint32_t counter)  {
     uint8_t pitch = basePitch + pitches[pitches_idx];
     if (pitch <= 127) {
       if (!muted) {
-	MidiUart.sendNoteOn(mdTrack, pitch, 100);
+				MidiUart.sendNoteOn(mdTrack, pitch, 100);
       }
     }
     pitches_idx = (pitches_idx + 1) % pitches_len;
