@@ -18,7 +18,7 @@
 #define MAKE_SHORT_MSG(status, byte1, byte2) \
   ((unsigned long)((status & 0xFF) | ((byte1 & 0xFF) << 8) | ((byte2 & 0xFF) << 16)))
 
-#define SHORT_MSG_STATUS(s) ((unsigned char)(s & 0xF))
+#define SHORT_MSG_STATUS(s) ((unsigned char)(s & 0xFF))
 #define SHORT_MSG_BYTE1(s) ((unsigned char)((s >> 8) & 0xFF))
 #define SHORT_MSG_BYTE2(s) ((unsigned char)((s >> 16) & 0xFF))
 

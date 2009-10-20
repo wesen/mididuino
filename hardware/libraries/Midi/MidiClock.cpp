@@ -12,6 +12,10 @@ MidiClockClass::MidiClockClass() {
   setTempo(120);
   transmit = false;
   useImmediateClock = false;
+
+#ifdef HOST_MIDIDUINO
+	useImmediateClock = true;
+#endif
 }
 
 void MidiClockClass::init() {

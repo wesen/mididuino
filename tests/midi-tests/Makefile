@@ -10,8 +10,8 @@ JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
 CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
 DIRS  = CommonTools Midi MidiTools GUI MD Elektron MNM
-LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../MidiUart ../GUI
-INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I..
+LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../../host/MidiUart ../../host/GUI
+INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I../../host
 #EXCLUDE += %MidiClock.cpp
 OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
 OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
@@ -41,7 +41,7 @@ endif
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
 
-all: midiTest midiTest2 midiTest3
+all: midiTest midiTest2 midiTest3 midiClockTest
 
 %.host.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -60,6 +60,11 @@ midiTest2: midiTest2.host.o \
 midiTest3: midiTest3.host.o \
       $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
+
+midiClockTest: midiClockTest.host.o \
+      $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
+
 
 
 clean:
