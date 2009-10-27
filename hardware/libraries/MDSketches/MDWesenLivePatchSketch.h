@@ -74,8 +74,10 @@ public:
   }
 
   virtual void show() {
-    if (currentPage() == NULL)
-      setPage(&page);
+		if (currentPage() == &breakPage)
+			popPage(&breakPage);
+		if (currentPage() == NULL)
+			setPage(&page);
   }
 
   virtual void mute(bool pressed) {

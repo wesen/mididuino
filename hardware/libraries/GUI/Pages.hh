@@ -148,6 +148,11 @@ class PageContainer {
   }
   
   void pushPage(Page *page) {
+		if (currentPage() == page) {
+			// can't push the same page twice in a row
+			return;
+		}
+		
     page->parent = this;
     if (!page->isSetup) {
       page->setup();

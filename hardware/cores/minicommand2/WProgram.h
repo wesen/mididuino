@@ -33,6 +33,7 @@ extern "C" {
 #include "mididuino_private.h"
 
 #ifdef __cplusplus
+
 #include "LCD.h"
 #include "GUI_private.h"
 #include "MidiUart.h"
@@ -41,6 +42,7 @@ extern "C" {
 #include "GUI.h"
 #include "Midi.h"
 #include "WMath.h"
+
 #endif
 
 #endif /* WProgram_h */
