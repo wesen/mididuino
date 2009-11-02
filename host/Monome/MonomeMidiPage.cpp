@@ -28,6 +28,10 @@ bool MonomeMidiPage::handleEvent(monome_event_t *evt) {
 }
 
 
+
+
+
+
 void MonomeMidiPage::onTrigNote(uint8_t pitch) {
 }
 

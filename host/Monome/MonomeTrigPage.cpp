@@ -28,15 +28,11 @@ void MonomeTrigPage::toggleRouting(uint8_t x, uint8_t y) {
 }
 
 bool MonomeTrigPage::handleEvent(monome_event_t *evt) {
-	if (evt->y == 0)
-		return true;
-	
-	if (IS_BUTTON_PRESSED(evt)) {
+	if ((evt->y >= 1) && (evt->state == 1)) {
 		toggleRouting(evt->x, evt->y);
 		return true;
 		//			printf("evt x: %d y: %d: %d\n", evt->x, evt->y, evt->state);
 	}
-
 	return false;
 }
 
