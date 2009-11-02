@@ -28,11 +28,24 @@
  */
 package com.ruinwesen.patchmanager.client.protocol;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
+import java.util.List;
 
+import name.cs.csutils.FileFilterFactory;
+
+import com.ruinwesen.patch.directory.FSDirectory;
+import com.ruinwesen.patch.directory.JarFileBuilder;
 import com.ruinwesen.patch.metadata.PatchMetadata;
+import com.ruinwesen.patch.metadata.PatchMetadataUtils;
+import com.ruinwesen.patch.metadata.Path;
+import com.ruinwesen.patchmanager.swing.form.TextFieldFormElement;
 
 public class RequestStorePatch extends MandatoryAuthenticatingRequest {
 
@@ -45,6 +58,36 @@ public class RequestStorePatch extends MandatoryAuthenticatingRequest {
         this(null, auth, metadata, is);
     }
     
+    public static void buildPatchFile(File sourceCodeFile, File mididataFile, PatchMetadata meta, String docu, File dst) throws Exception {
+    	String filterText = "*.h,*.hh,*.c,*.cpp,*.cxx";
+            	
+        FileFilter sourceDirFilter = 
+            FileFilterFactory.or(FileFilterFactory.DirectoriesOnly(), 
+                    FileFilterFactory.parseFilterList(filterText));
+        
+        
+        List<Path> paths = new LinkedList<Path>();
+        JarFileBuilder jarbuilder = new JarFileBuilder(dst);
+        
+        if (mididataFile != null) {
+            jarbuilder.add("mididata.hex", new FileInputStream(mididataFile));
+            paths.add(new Path(PatchMetadata.DEFAULT_MIDIFILE_PATH_NAME, "mididata.hex"));
+        }
+        if (sourceCodeFile != null) {
+            jarbuilder.add("source", new FSDirectory(sourceCodeFile, sourceDirFilter));
+            paths.add(new Path(PatchMetadata.DEFAULT_SOURCE_PATH_NAME, "source"));
+        }
+        if (docu != null && docu.trim().length()!=0) {
+            String path = "documentation.txt";
+            jarbuilder.add(path, new ByteArrayInputStream(docu.getBytes()));
+            paths.add(new Path(PatchMetadata.TEXT_DOCUMENTATION_PATH_NAME, path));
+        }
+        meta.setPaths(paths);
+        jarbuilder.add(PatchMetadata.FILENAME, PatchMetadataUtils.createXMLInputStream(meta));
+        jarbuilder.write();
+        jarbuilder.close();
+    }
+
     public RequestStorePatch(String protocolId,Auth auth, 
             PatchMetadata metadata, InputStream is) {
         super(protocolId, ACTION_STORE_NEW_PATCH, auth);

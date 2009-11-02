@@ -28,41 +28,23 @@
  */
 package com.ruinwesen.patchmanager.client.protocol;
 
-public abstract class Message {
-    
-    public static final String ACTION_REGISTER_NEW_USER = "register-new-user";
-    public static final String ACTION_GET_PATCH_SOURCE_LIST = "get-patch-source-list";
-    public static final String ACTION_STORE_NEW_PATCH = "store-new-patch";
-    public static final String ACTION_DELETE_PATCH = "delete-patch";
-    public static final String ACTION_APPROVE_PATCH = "approve-patch";
-    public static final String ACTION_RESPONSE = "response";
-    public static final String ACTION_DELETE_USER = "delete-user";
-    public static final String ACTION_GET_SERVER_INFO = "get-server-info";
-    public static final String ACTION_GET_CLIENT_INFO = "get-client-info";
-    public static final String ACTION_GET_NEWS = "get-news";
-    public static final String ACTION_SEND_BUG_REPORT = "send-bug-report";
+public class RequestApprovePatch extends MandatoryAuthenticatingRequest {
 
-    private String protocolId;
-    private String action;
+    private String patchid;
 
-    public Message(String protocolId, String action) {
-        if (action == null) {
-            throw new IllegalArgumentException("action:"+action);
-        }
-        this.action = action;
-        this.protocolId=protocolId;
-    }
-    
-    public boolean isResponse() {
-        return ACTION_RESPONSE.equalsIgnoreCase(action);
-    }
-    
-    public String getAction() { 
-        return action;
+    public RequestApprovePatch(Auth auth, String patchid) {
+        this(null, auth, patchid);
     }
 
-    public String getProtocolId() {
-        return protocolId;
+    public RequestApprovePatch(String protocolId, Auth auth, String patchid) {
+        super(protocolId, ACTION_APPROVE_PATCH, auth);
+        if (patchid == null)
+            throw new IllegalArgumentException("patchid:null");
+        this.patchid = patchid;
+    }
+    
+    public String getPatchId() {
+        return patchid;
     }
     
 }

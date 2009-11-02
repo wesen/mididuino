@@ -261,6 +261,8 @@ public class ClientProtocol1 extends Protocol {
                 }
             } else if (Message.ACTION_DELETE_PATCH.equals(action)) {
                 map.put("patch-id",  ((RequestDeletePatch)message).getPatchId());
+            } else if (Message.ACTION_APPROVE_PATCH.equals(action)) {
+                map.put("patch-id",  ((RequestApprovePatch)message).getPatchId());
             } else {
                 throw new ProtocolException("unsupported action:"+action);
             }

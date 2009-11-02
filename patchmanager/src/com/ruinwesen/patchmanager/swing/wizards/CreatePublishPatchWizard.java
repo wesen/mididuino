@@ -165,7 +165,10 @@ public class CreatePublishPatchWizard extends Wizard {
         File tmpPatchFile = File.createTempFile("patch-upload", ".tmp");
         tmpPatchFile.deleteOnExit();
         try {
-            buildPatchFile(meta, patchMetadataForm.getDocumentationText(), tmpPatchFile);
+            File sourceCodeFile = patchMetadataForm.feSourceDir.getFile();
+            File mididataFile = patchMetadataForm.feMidiFile.getFile();
+
+            RequestStorePatch.buildPatchFile(sourceCodeFile, mididataFile, meta, patchMetadataForm.getDocumentationText(), tmpPatchFile);
             InputStream is = new BufferedInputStream(new FileInputStream(tmpPatchFile));
             try {
                 Request request = new RequestStorePatch(auth, meta, is);
@@ -215,7 +218,10 @@ public class CreatePublishPatchWizard extends Wizard {
         meta.setName(file.getName());
         
         try {
-            buildPatchFile(meta, docu, file);
+            File sourceCodeFile = patchMetadataForm.feSourceDir.getFile();
+            File mididataFile = patchMetadataForm.feMidiFile.getFile();
+
+            RequestStorePatch.buildPatchFile(sourceCodeFile, mididataFile, meta, docu, file);
             return true;
         } catch (Exception ex) {
             if(log.isErrorEnabled()) {
@@ -225,37 +231,6 @@ public class CreatePublishPatchWizard extends Wizard {
             SwingPatchManagerUtils.showErrorDialog(getContainer(), "Could not save patch:\n"+ex.getMessage());
             return true;
         }
-    }
-    
-    protected void buildPatchFile(PatchMetadata meta, String docu, File dst) throws Exception {
-        
-        File sourceCodeFile = patchMetadataForm.feSourceDir.getFile();
-        File mididataFile = patchMetadataForm.feMidiFile.getFile();
-        FileFilter sourceDirFilter = 
-            FileFilterFactory.or(FileFilterFactory.DirectoriesOnly(), 
-                    FileFilterFactory.parseFilterList(patchMetadataForm.feSourceFileFilter.getText()));
-        
-        
-        List<Path> paths = new LinkedList<Path>();
-        JarFileBuilder jarbuilder = new JarFileBuilder(dst);
-        
-        if (mididataFile != null) {
-            jarbuilder.add("mididata.hex", new FileInputStream(mididataFile));
-            paths.add(new Path(PatchMetadata.DEFAULT_MIDIFILE_PATH_NAME, "mididata.hex"));
-        }
-        if (sourceCodeFile != null) {
-            jarbuilder.add("source", new FSDirectory(sourceCodeFile, sourceDirFilter));
-            paths.add(new Path(PatchMetadata.DEFAULT_SOURCE_PATH_NAME, "source"));
-        }
-        if (docu != null && docu.trim().length()!=0) {
-            String path = "documentation.txt";
-            jarbuilder.add(path, new ByteArrayInputStream(docu.getBytes()));
-            paths.add(new Path(PatchMetadata.TEXT_DOCUMENTATION_PATH_NAME, path));
-        }
-        meta.setPaths(paths);
-        jarbuilder.add(PatchMetadata.FILENAME, PatchMetadataUtils.createXMLInputStream(meta));
-        jarbuilder.write();
-        jarbuilder.close();
     }
 
     public static void main(String[] args) {
