@@ -29,7 +29,9 @@ class BreakdownPage : public EncoderPage {
   }
 
   virtual bool handleEvent(gui_event_t *event) {
-    if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+    if (EVENT_PRESSED(event, Buttons.BUTTON1) &&
+				!BUTTON_DOWN(Buttons.BUTTON2) &&
+				!BUTTON_DOWN(Buttons.BUTTON3)) {
       mdBreakdown.storedBreakdownActive = !mdBreakdown.storedBreakdownActive;
       if (mdBreakdown.storedBreakdownActive) {
         GUI.flash_p_strings_fill(PSTR("BREAKDOWN ON"), PSTR(""));
