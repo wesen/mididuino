@@ -1,6 +1,8 @@
 #ifndef MIDI_H__
 #define MIDI_H__
 
+#include <inttypes.h>
+
 extern int canSendSysex;
 extern int waitingForBootloader;
 extern int exitMainLoop;
@@ -16,5 +18,9 @@ void midiReceive(unsigned char c);
 void midiMainLoop(void);
 void midiTimeout(void);
 void midiClose(void);
+
+typedef void(*midi_ack_callback_t)(uint8_t *ptr);
+
+extern midi_ack_callback_t midi_ack_callback;
 
 #endif /* MIDI_H__ */

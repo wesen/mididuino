@@ -18,9 +18,6 @@ void hexdump(unsigned char *buf, int len);
 int callbacks = 0;
 /* XXX locks for callbacks */
 
-void timerFunction(CFRunLoopTimerRef timer, void *info) {
-}
-
 void midiSysexSent(MIDISysexSendRequest *request) {
   free(request);
   canSendSysex = 1;
@@ -30,6 +27,7 @@ void midiSysexSent(MIDISysexSendRequest *request) {
 
 void midiSendLong(unsigned char *buf, unsigned long len) {
   struct MIDISysexSendRequest *sysexReq = malloc(sizeof(struct MIDISysexSendRequest) + len);
+	OSStatus ret;
 
   sysexReq->destination = gDest;
   sysexReq->data = ((unsigned char *)sysexReq) + sizeof(struct MIDISysexSendRequest);
@@ -38,24 +36,31 @@ void midiSendLong(unsigned char *buf, unsigned long len) {
     hexdump(buf, len);
   }
   //  printf("sysexReq: %p, data: %p\n", sysexReq, sysexReq->data);
-  memcpy(sysexReq->data, buf, len);
+  memcpy((void *)sysexReq->data, buf, len);
   sysexReq->bytesToSend = len;
   sysexReq->complete = false;
   sysexReq->completionProc = midiSysexSent;
   sysexReq->completionRefCon = NULL;
-  MIDISendSysex(sysexReq);
+  ret = MIDISendSysex(sysexReq);
+	printf("ret: %ld\n", ret);
+}
+
+void midiReceivedAckCallback(uint8_t *ptr) {
+	callbacks = 0;
 }
 
 void midiSendShort(unsigned char status,
 		   unsigned char byte1, unsigned char byte2) {
   static struct MIDIPacketList pktlist;
+	OSStatus ret;
   pktlist.numPackets = 1;
   pktlist.packet[0].timeStamp = 0;
   pktlist.packet[0].length = 3;
   pktlist.packet[0].data[0] = status;
   pktlist.packet[0].data[1] = byte1;
   pktlist.packet[0].data[2] = byte2;
-  MIDISend(gOutPort, gDest, &pktlist); 
+  ret = MIDISend(gOutPort, gDest, &pktlist);
+	printf("send ret: %ld\n", ret);
 }
 
 void timer_callback(CFRunLoopTimerRef ref, void *info) {
@@ -72,7 +77,6 @@ void myReadProc(const MIDIPacketList *pktlist, void *refCon, void *connRefCon) {
     unsigned int j;
     int i;
     for (j = 0; j < pktlist->numPackets; j++) {
-      callbacks = 0;
       for (i = 0; i < packet->length; i++) {
 				midiReceive(packet->data[i]);
       }
@@ -82,6 +86,47 @@ void myReadProc(const MIDIPacketList *pktlist, void *refCon, void *connRefCon) {
   }
 }
 
+bool midiPrintEndpoint(char *buf, uint16_t len, MIDIEndpointRef ep) {
+	CFStringRef pname, pmanuf, pmodel;
+	char name[64], manuf[64], model[64];
+	SInt32 offline;
+	OSStatus ret;
+
+	ret = MIDIObjectGetIntegerProperty(ep, kMIDIPropertyOffline, &offline);
+	if (ret != noErr) {
+		printf("error getting offline property\n");
+		return false;
+	}
+	if (offline == 1) {
+		printf("device offline\n");
+		return false;
+	}
+	ret = MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
+	if (ret != noErr) {
+		printf("error getting name property\n");
+		return false;
+	}
+	ret = MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
+	if (ret != noErr) {
+		printf("error getting manufacturer property\n");
+		return false;
+	}
+	ret = MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
+	if (ret != noErr) {
+		printf("error getting model property\n");
+		return false;
+	}
+  
+	CFStringGetCString(pname, name, sizeof(name), 0);
+	CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
+	CFStringGetCString(pmodel, model, sizeof(model), 0);
+	CFRelease(pname);
+	CFRelease(pmanuf);
+	CFRelease(pmodel);
+
+	snprintf(buf, len, "%s - %s", name, manuf);
+	return true;
+}
 
 void listInputMidiDevices(void) {
   unsigned long   iNumDevs, i;
@@ -89,28 +134,13 @@ void listInputMidiDevices(void) {
   /* Get the number of MIDI Out devices in this computer */
   iNumDevs = MIDIGetNumberOfSources();
 
-  //  printf("%lu output midi devices found\r\n", iNumDevs);
-  
   /* Go through all of those devices, displaying their names */
   for (i = 0; i < iNumDevs; i++) {
-    CFStringRef pname, pmanuf, pmodel;
-    char name[64], manuf[64], model[64];
-    
-    MIDIEndpointRef ep = MIDIGetSource(i);
-    MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
-    MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
-    MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
-    
-    CFStringGetCString(pname, name, sizeof(name), 0);
-    CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
-    CFStringGetCString(pmodel, model, sizeof(model), 0);
-    CFRelease(pname);
-    CFRelease(pmanuf);
-    CFRelease(pmodel);
-    
-    printf("%d) %s - %s\n", i, name, manuf);
+		char buf[128];
+		if (midiPrintEndpoint(buf, sizeof(buf), MIDIGetSource(i))) {
+			printf("%ld) %s\n", i, buf);
+		}
   }
-
 }
 
 void listOutputMidiDevices(void) {
@@ -123,22 +153,10 @@ void listOutputMidiDevices(void) {
   
   /* Go through all of those devices, displaying their names */
   for (i = 0; i < iNumDevs; i++) {
-    CFStringRef pname, pmanuf, pmodel;
-    char name[64], manuf[64], model[64];
-    
-    MIDIEndpointRef ep = MIDIGetDestination(i);
-    MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
-    MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
-    MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
-    
-    CFStringGetCString(pname, name, sizeof(name), 0);
-    CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
-    CFStringGetCString(pmodel, model, sizeof(model), 0);
-    CFRelease(pname);
-    CFRelease(pmanuf);
-    CFRelease(pmodel);
-    
-    printf("%d) %s - %s\n", i, name, manuf);
+		char buf[128];
+		if (midiPrintEndpoint(buf, sizeof(buf), MIDIGetDestination(i))) {
+			printf("%ld) %s\n", i, buf);
+		}
   }  
 }
 
@@ -148,26 +166,31 @@ void midiInitialize(char *inputDeviceStr, char *outputDeviceStr) {
 	OSStatus ret;
   MIDIClientRef client = NULL;
   ret = MIDIClientCreate(CFSTR("MIDI Send"), NULL, NULL, &client);
-	if (ret != 0) {
+	if (ret != noErr) {
 		fprintf(stderr, "Could not create MIDI client\n");
 		exit(1);
 	}
   ret = MIDIOutputPortCreate(client, CFSTR("Output port"), &gOutPort);
-	if (ret != 0) {
+	if (ret != noErr) {
 		fprintf(stderr, "Could not create MIDI output port\n");
 		exit(1);
 	}
   gDest = MIDIGetDestination(outputDevice);
+	if (gDest == NULL) {
+		fprintf(stderr, "Could not open MIDI destination\n");
+		exit(1);
+	}
+	
   MIDIPortRef inPort = NULL;
   ret = MIDIInputPortCreate(client, CFSTR("Input port"), myReadProc, NULL, &inPort);
-	if (ret != 0) {
+	if (ret != noErr) {
 		fprintf(stderr, "Could not create MIDI input port\n");
 		exit(1);
 	}
 
   MIDIEndpointRef src = MIDIGetSource(inputDevice);
   ret = MIDIPortConnectSource(inPort, src, NULL);
-	if (ret != 0) {
+	if (ret != noErr) {
 		fprintf(stderr, "Could not connect to midi source\n");
 		exit(1);
 	}
@@ -178,6 +201,8 @@ void midiMainLoop(void) {
   CFRunLoopTimerRef timer =
     CFRunLoopTimerCreate(NULL, CFAbsoluteTimeGetCurrent(),
 			 interval, 0, 0, timer_callback, NULL);
+
+	midi_ack_callback = midiReceivedAckCallback;
   
   CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopCommonModes);
   

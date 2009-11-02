@@ -13,9 +13,11 @@
 
 #define MIN(a, b) ((a > b) ? b : a)
 
-uint8_t deviceID = 56;
 // 55: midi command 168
 // 56 : mididuino 1.0
+uint8_t deviceID = 56;
+
+midi_ack_callback_t midi_ack_callback = NULL;
 
 #define CMD_DATA_BLOCK          0x01
 #define CMD_DATA_BLOCK_ACK     0x02
@@ -340,6 +342,10 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
     if (verbose >= 2) {
       printf("ACK received\n");
     }
+
+		if (midi_ack_callback != NULL) {
+			midi_ack_callback(NULL);
+		}
     
     if (waitingForBootloader) {
 #ifdef WINDOWS
