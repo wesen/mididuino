@@ -54,7 +54,7 @@ all: monometest monometest2
 %.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-monometest: $(OBJS) MonomeTrigPage.o MonomeHost.o MonomeMidiPage.o monometest.host.o
+monometest: $(OBJS) MonomeTrigPage.o MonomeRouting.o MonomeHost.o MonomeMidiPage.o monometest.host.o
 	$(CLDCXX) $(CLDFLAGS) -o $@ $^ $(LIBS)
 
 monometest2: $(OBJS) MonomeHost.o monometest2.host.o
