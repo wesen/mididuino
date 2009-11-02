@@ -186,7 +186,7 @@ public class CLIUtil {
 		} else if (action.equals("approve")) {
 			String patchId = args[++optind];
 			approvePatch(auth, patchId);
-		} else if (action.equals("approve")) {
+		} else if (action.equals("delete")) {
 			String patchId = args[++optind];
 			deletePatch(auth, patchId);
 		} else if (action.equals("upload")) {
