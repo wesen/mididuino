@@ -26,6 +26,14 @@ void switchPage(uint8_t page) {
 	}
 }
 
+MonomeSequencer *gSequencer;
+
+void clearTrack(uint8_t track) {
+	for (uint8_t i = 0; i < gSequencer->len; i++) {
+		gSequencer->clearTrackTrig(track, i);
+	}
+}	
+
 int main(int argc, const char *argv[]) {
 	int input = -1;
 	int output = -1;
@@ -49,10 +57,12 @@ int main(int argc, const char *argv[]) {
 	monome.setup();
 
 	MonomeSequencer sequencer(16);
+	gSequencer = &sequencer;
 	sequencer.setup();
 
-	MonomeMidiPage midiPage(&monome);
-	MonomeMidiSeqPage seqPage(&monome, &sequencer, 0), seqPage2(&monome, &sequencer, 16);
+	MonomeMidiPage midiPage(&monome, &sequencer);
+	midiPage.setup();
+	MonomeMidiSeqPage seqPage(&monome, &sequencer, 0), seqPage2(&monome, &sequencer, 8);
 	seqPage.setup();
 	seqPage2.setup();
 

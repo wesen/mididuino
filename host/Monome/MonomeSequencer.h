@@ -9,6 +9,7 @@ class MonomeSequencer : public ClockCallback {
 	uint8_t basePitch;
 	uint8_t len;
 	uint32_t tracks[6];
+	bool tracksMuted[6];
 	bool tracksTriggered[6];
 
 	MonomeSequencer(uint8_t _len, uint8_t _basePitch = 60) {
@@ -17,6 +18,7 @@ class MonomeSequencer : public ClockCallback {
 		for (uint8_t i = 0; i < countof(tracks); i++) {
 			tracks[i] = 0;
 			tracksTriggered[i] = false;
+			tracksMuted[i] = false;
 		}
 	}
 
@@ -24,29 +26,56 @@ class MonomeSequencer : public ClockCallback {
 		MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)(&MonomeSequencer::on16Callback));
 	}
 
-	void toggleTrackTrig(uint8_t track, uint8_t step) {
-		TOGGLE_BIT(tracks[track], step);
-		triggerTrack(track, step);
+	void muteTrack(uint8_t track) {
+		tracksMuted[track] = true;
+	}
+
+	void unmutedTrack(uint8_t track) {
+		tracksMuted[track] = true;
+	}
+
+	void toggleMuteTrack(uint8_t track) {
+		tracksMuted[track] = !tracksMuted[track];
+	}
+
+	bool isTrackMuted(uint8_t track) {
+		return tracksMuted[track];
+	}		
+
+	void triggerOffTrack(uint8_t track, uint8_t step) {
+		if (!isTrackTrig(track, step) && (tracksTriggered[track])) {
+			tracksTriggered[track] = false;
+			MidiUart.sendNoteOn(basePitch + track, 0);
+			MidiUart.sendCC(2, basePitch + track, 0);
+		}
 	}
 
 	void triggerTrack(uint8_t track, uint8_t step) {
-		if (isTrackTrig(track, step)) {
-			tracksTriggered[track] = true;
-			MidiUart.sendNoteOn(basePitch + track, 100);
-		} else if (tracksTriggered[track]) {
-			tracksTriggered[track] = false;
-			MidiUart.sendNoteOn(basePitch + track, 0);
+		if (isTrackTrig(track, step) && !tracksMuted[track]) {
+			if (!tracksTriggered[track]) {
+				tracksTriggered[track] = true;
+				MidiUart.sendNoteOn(basePitch + track, 100);
+				MidiUart.sendCC(2, basePitch + track, 127);
+			}
+		} else {
+			triggerOffTrack(track, step);
 		}
+	}
+
+	void toggleTrackTrig(uint8_t track, uint8_t step) {
+		//		printf("toggle track %d, step %d\n", track, step);
+		TOGGLE_BIT(tracks[track], step);
+		triggerOffTrack(track, step);
 	}
 
 	void setTrackTrig(uint8_t track, uint8_t step) {
 		SET_BIT(tracks[track], step);
-		triggerTrack(track, step);
+		triggerOffTrack(track, step);
 	}
 
 	void clearTrackTrig(uint8_t track, uint8_t step) {
 		CLEAR_BIT(tracks[track], step);
-		triggerTrack(track, step);
+		triggerOffTrack(track, step);
 	}
 
 	bool isTrackTrig(uint8_t track, uint8_t step) {
@@ -54,7 +83,11 @@ class MonomeSequencer : public ClockCallback {
 	}
 
 	void on16Callback(uint32_t pos) {
-		uint8_t step = pos % len;
+		if (pos % 2 != 0)
+			return;
+				
+		uint8_t step = (pos / 2) % len;
+		//		printf("step %d\n", step);
 		for (uint8_t i = 0; i < countof(tracks); i++) {
 			triggerTrack(i, step);
 		}
