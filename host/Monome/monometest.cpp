@@ -58,13 +58,14 @@ int main(int argc, const char *argv[]) {
 
 	MonomeSequencer sequencer(16);
 	gSequencer = &sequencer;
-	sequencer.setup();
 
 	MonomeMidiPage midiPage(&monome, &sequencer);
 	midiPage.setup();
 	MonomeMidiSeqPage seqPage(&monome, &sequencer, 0), seqPage2(&monome, &sequencer, 8);
 	seqPage.setup();
 	seqPage2.setup();
+
+	sequencer.setup(); // hack add sequencer as last in callback list
 
 	MonomePageSwitcher switcher(&monome, &midiPage, &seqPage, &seqPage2);
 	gSwitcher = &switcher;

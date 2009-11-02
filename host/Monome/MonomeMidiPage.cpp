@@ -76,15 +76,15 @@ bool MonomeMidiPage::handleEvent(monome_event_t *evt) {
 			return true;
 		} else {
 			uint32_t pos = MidiClock.div16th_counter;
-			MidiUart.sendNoteOn(60 + track, 100);
+			//			MidiUart.sendNoteOn(60 + track, 100);
 			setLED(evt->x, evt->y);
 			sequencer->setTrackTrig(track, (pos / 2) % sequencer->len);
+			sequencer->triggerTrack(track, (pos / 2) % sequencer->len);
 			trackPressed[track] = true;
 			trackStartPoint[track] = evt->x;
 			trackStartTime[track] = pos;
 		}
 	} else {
-		MidiUart.sendNoteOn(60 + track, 0);
 		trackPressed[track] = false;
 		for (uint8_t i = 0; i < 8; i++) {
 			clearLED(i, evt->y);

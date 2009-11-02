@@ -6,16 +6,10 @@
 #include <MidiUartParent.hh>
 #include "MidiUartOSX.h"
 
-void MidiUartOSXClass::listInputMidiDevices() {
-	unsigned long   iNumDevs, i;
-	
-	iNumDevs = MIDIGetNumberOfSources();
-	
-	for (i = 0; i < iNumDevs; i++) {
+void getMidiName(MIDIEndpointRef ep, char *buf, uint16_t len) {
 		CFStringRef pname, pmanuf, pmodel;
 		char name[64], manuf[64], model[64];
     
-		MIDIEndpointRef ep = MIDIGetSource(i);
 		MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
 		MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
 		MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
@@ -26,8 +20,21 @@ void MidiUartOSXClass::listInputMidiDevices() {
 		CFRelease(pname);
 		CFRelease(pmanuf);
 		CFRelease(pmodel);
+
+		snprintf(buf, len, "%s - %s", name, manuf);
+}
     
-		printf("%ld) %s - %s\n", i, name, manuf);
+	
+void MidiUartOSXClass::listInputMidiDevices() {
+	unsigned long   iNumDevs, i;
+	
+	iNumDevs = MIDIGetNumberOfSources();
+	
+	for (i = 0; i < iNumDevs; i++) {
+		char buf[128];
+		MIDIEndpointRef ep = MIDIGetSource(i);
+		getMidiName(ep, buf, countof(buf));
+		printf("%ld) %s\n", i, buf);
 	}
 }
 
@@ -37,22 +44,10 @@ void MidiUartOSXClass::listOutputMidiDevices() {
 	iNumDevs = MIDIGetNumberOfDestinations();
 	
 	for (i = 0; i < iNumDevs; i++) {
-		CFStringRef pname, pmanuf, pmodel;
-		char name[64], manuf[64], model[64];
-    
+		char buf[128];
 		MIDIEndpointRef ep = MIDIGetDestination(i);
-		MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
-		MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
-		MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
-    
-		CFStringGetCString(pname, name, sizeof(name), 0);
-		CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
-		CFStringGetCString(pmodel, model, sizeof(model), 0);
-		CFRelease(pname);
-		CFRelease(pmanuf);
-		CFRelease(pmodel);
-    
-      printf("%ld) %s - %s\n", i, name, manuf);
+		getMidiName(ep, buf, countof(buf));
+		printf("%ld) %s\n", i, buf);
 	}  
 }    
 
@@ -106,10 +101,14 @@ void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
   outputDevice = _outputDevice;
   MIDIClientCreate(CFSTR("MIDI Send"), NULL, NULL, &client);
   MIDIOutputPortCreate(client, CFSTR("Output port"), &outPort);
+	char buf[128];
   dest = MIDIGetDestination(outputDevice);
-  printf("connecting this: %p\n", this);
+	getMidiName(dest, buf, countof(buf));
+	printf("opening output device  \"%s\"\n", buf);
   MIDIInputPortCreate(client, CFSTR("Input port"), midiReadProc, this, &inPort);
   src = MIDIGetSource(inputDevice);
+	getMidiName(src, buf, countof(buf));
+	printf("opening input device:  \"%s\"\n", buf);
   MIDIPortConnectSource(inPort, src, NULL);
 }
 

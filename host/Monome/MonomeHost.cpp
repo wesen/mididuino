@@ -20,7 +20,6 @@ MonomeHost::MonomeHost(const char *file) {
 	tcsetattr(fd, TCSANOW, &options);
 
 	fds.add(fd);
-	printf("fd: %d\n", fd);
 }
 
 MonomeHost::~MonomeHost() {

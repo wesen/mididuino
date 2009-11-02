@@ -143,6 +143,8 @@ class MonomeMidiSeqPage : public MonomePage, public ClockCallback {
 			setLED(previdx, 0, 0);
 			setLED(idx, 0, 1);
 		} else if (monome->currentPage() == this) {
+			return; // deactivate for haye
+			
 			//			printf("printf: start %d should switch \n", start);
 			if (start == 0) {
 				switchPage(2);
