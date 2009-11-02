@@ -132,7 +132,7 @@ class MonomeMidiSeqPage : public MonomePage, public ClockCallback {
 
 		//		printf("page: %p pos2 %d\n", this, pos2);
 		
-		if ((pos2 >= start) && (pos2 < (start + 16))) {
+		if ((pos2 >= start) && (pos2 < (start + 8))) {
 			uint8_t previdx = (pos2 - 1) % 8;
 			if (pos2 == 0) {
 				previdx = 7;
@@ -142,6 +142,13 @@ class MonomeMidiSeqPage : public MonomePage, public ClockCallback {
 			//			printf("previdx: %d idx %d\n", previdx, idx);
 			setLED(previdx, 0, 0);
 			setLED(idx, 0, 1);
+		} else if (monome->currentPage() == this) {
+			//			printf("printf: start %d should switch \n", start);
+			if (start == 0) {
+				switchPage(2);
+			} else {
+				switchPage(1);
+			}
 		}
 	}
 };
