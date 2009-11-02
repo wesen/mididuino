@@ -24,6 +24,7 @@ import com.ruinwesen.patchmanager.client.protocol.PatchSource;
 import com.ruinwesen.patchmanager.client.protocol.ProtocolException;
 import com.ruinwesen.patchmanager.client.protocol.Request;
 import com.ruinwesen.patchmanager.client.protocol.RequestApprovePatch;
+import com.ruinwesen.patchmanager.client.protocol.RequestDeletePatch;
 import com.ruinwesen.patchmanager.client.protocol.RequestGetPatchSourceList;
 import com.ruinwesen.patchmanager.client.protocol.RequestGetServerInfo;
 import com.ruinwesen.patchmanager.client.protocol.RequestStorePatch;
@@ -32,10 +33,11 @@ import com.ruinwesen.patchmanager.swing.tasks.DeletePatchTask;
 
 public class CLIUtil {
 
-	static void uploadPatch(Auth auth, String tags, String documentationFile, 
+	static void uploadPatch(Auth auth, String title, String tags, String documentationFile, 
 			String deviceId, String environmentId, 
 			String comment, String filename) throws Exception {
 		PatchMetadata meta = new DefaultPatchMetadata();
+		meta.setTitle(title);
 		meta.setAuthor(auth.getUsername());
 		
 		meta.setComment(comment);
@@ -76,7 +78,7 @@ public class CLIUtil {
 				}
 				patchmanager.syncRepository(auth, null);
 			} catch (Exception e) {
-				System.out.println("exceiption " + e);
+				System.out.println("exception " + e);
 				e.printStackTrace();
 			} finally {
 				is.close();
@@ -113,6 +115,17 @@ public class CLIUtil {
 		}
 	}
 
+	public static void deletePatch(Auth auth, String patchId) {
+		Response response = executeRequest(new RequestDeletePatch(auth, patchId));
+		if (response != null) {
+			if (response.isOkStatus()) {
+				System.out.println("deleted patch " + patchId);
+			} else {
+				System.out.println("error while deleting patch " + patchId);
+			}
+		}
+	}
+
 	public static Response executeRequest(Request request) {
 		Response response;
 		try {
@@ -137,6 +150,7 @@ public class CLIUtil {
 		String comment = null;
 		String environmentId = "mididuino-17";
 		String deviceId = "minicommand";
+		String title = null;
 
 		int optind = 0;
 		for (optind = 0; optind < args.length; optind++) {
@@ -156,6 +170,8 @@ public class CLIUtil {
 				deviceId = args[++optind];
 			} else if (args[optind].equals("-comment")) {
 				comment = args[++optind];
+			} else if (args[optind].equals("-title")) {
+				title = args[++optind];
 			} else {
 				action = args[optind];
 				break;
@@ -168,12 +184,15 @@ public class CLIUtil {
 		if (action.equals("list")) {
 			listPatches(auth);
 		} else if (action.equals("approve")) {
-			String patchId = args[optind++];
+			String patchId = args[++optind];
 			approvePatch(auth, patchId);
+		} else if (action.equals("approve")) {
+			String patchId = args[++optind];
+			deletePatch(auth, patchId);
 		} else if (action.equals("upload")) {
-			String filename = args[optind++];
+			String filename = args[++optind];
 			try {
-				uploadPatch(auth, tags, documentationFile, deviceId, environmentId, comment, filename);
+				uploadPatch(auth, title, tags, documentationFile, deviceId, environmentId, comment, filename);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
