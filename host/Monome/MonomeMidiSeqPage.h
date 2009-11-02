@@ -5,19 +5,19 @@
 #include "Monome.h"
 #include "Midi.h"
 
+#include "MonomeSequencer.h"
+
 extern void switchPage(uint8_t page);
 
 class MonomeMidiSeqPage : public MonomePage, public ClockCallback {
  public:
-  uint8_t tracks[6];
 	uint8_t start;
+	MonomeSequencer *sequencer;
   
-	MonomeMidiSeqPage(MonomeParentClass *_monome, uint8_t _start): MonomePage(_monome) {
+	MonomeMidiSeqPage(MonomeParentClass *_monome, MonomeSequencer *_sequencer, uint8_t _start):
+	MonomePage(_monome), sequencer(_sequencer) {
     y = 0;
     height = 7;
-    for (uint8_t i = 0; i < countof(tracks); i++) {
-      tracks[i] = 0;
-    }
 		start = _start;
   }
 
@@ -31,10 +31,11 @@ class MonomeMidiSeqPage : public MonomePage, public ClockCallback {
 		
 		if (IS_BUTTON_PRESSED(evt)) {
 			uint8_t y = evt->y - 1;
-			TOGGLE_BIT(tracks[y], evt->x);
-			setLED(evt->x, evt->y, IS_BIT_SET(tracks[y], evt->x) ? 1 : 0);
+			if (sequencer != NULL) {
+				sequencer->toggleTrackTrig(y, evt->x + start);
+				setLED(evt->x, evt->y, sequencer->isTrackTrig(y, evt->x + start) ? 1 : 0);
+			}
 			return true;
-			//			printf("evt x: %d y: %d: %d\n", evt->x, evt->y, evt->state);
 		}
 
 		return false;
@@ -44,34 +45,22 @@ class MonomeMidiSeqPage : public MonomePage, public ClockCallback {
 		uint16_t pos2 = pos % 32;
 		// XXX IGITT
 		if (start == 0 && pos2 == 16 && monome->currentPage() == this) {
-			
 			setLED(7, 0, 0);
-			switchPage(4);
+			switchPage(2);
 			return;
 		}
 		if (start == 16 && pos2 == 0 && monome->currentPage() == this) {
 			setLED(7, 0, 0);
-			switchPage(3);
+			switchPage(1);
 		}
+
 		if ((pos2 >= start) && (pos2 < (start + 16))) {
 			if ((pos % 2) == 0) {
 				uint8_t previdx = ((pos - 1) / 2) % 8;
 				uint8_t idx = (pos / 2) % 8;
 				
-				//      for (uint8_t i = 0; i < 8; i++) {
-				//				setLED(i, 0, i == idx ? 1 : 0);
-				//      }
 				setLED(previdx, 0, 0);
 				setLED(idx, 0, 1);
-				
-				for (uint8_t i = 0; i < countof(tracks); i++) {
-					if (IS_BIT_SET(tracks[i], previdx)) {
-						MidiUart.sendNoteOn(60 + i, 0);
-					}
-					if (IS_BIT_SET(tracks[i], idx)) {
-						MidiUart.sendNoteOn(60 + i, 100);
-					}
-				}
 			}
 		}
 	}

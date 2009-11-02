@@ -12,6 +12,7 @@ using namespace std;
 #include "MonomeHost.h"
 #include "MonomeMidiPage.h"
 #include "MonomeMidiSeqPage.h"
+#include "MonomeSequencer.h"
 
 uint8_t standardDrumMapping[16] = {
   36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62
@@ -47,8 +48,11 @@ int main(int argc, const char *argv[]) {
 	MonomeHost monome(argv[3]);
 	monome.setup();
 
+	MonomeSequencer sequencer(16);
+	sequencer.setup();
+
 	MonomeMidiPage midiPage(&monome);
-	MonomeMidiSeqPage seqPage(&monome, 0), seqPage2(&monome, 16);
+	MonomeMidiSeqPage seqPage(&monome, &sequencer, 0), seqPage2(&monome, &sequencer, 16);
 	seqPage.setup();
 	seqPage2.setup();
 
