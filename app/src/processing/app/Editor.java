@@ -171,6 +171,7 @@ public class Editor extends JFrame implements RunnerListener {
           fileMenu.insert(examplesMenu, 3);
           sketchMenu.insert(importMenu, 4);
           toolsMenu.insert(boardsMenu, numTools);
+          toolsMenu.insert(midiMenu, numTools + 1);
           // toolsMenu.insert(serialMenu, numTools + 1);
         }
       });
@@ -660,10 +661,12 @@ public class Editor extends JFrame implements RunnerListener {
       midiInputMenuListener = new MidiInputMenuListener();
     if (midiOutputMenuListener == null)
       midiOutputMenuListener = new MidiOutputMenuListener();
-    if (midiMenu == null)
-      midiMenu = new JMenu("MIDI Ports");
-    populateMidiMenu();
-    menu.add(midiMenu);
+    
+      if (midiMenu == null) {
+          midiMenu = new JMenu("MIDI Ports");
+          populateMidiMenu();
+          menu.add(midiMenu);
+      }
     
     menu.addMenuListener(new MenuListener() {
       public void menuCanceled(MenuEvent e) {}
@@ -931,9 +934,6 @@ public class Editor extends JFrame implements RunnerListener {
     
     // midiMenuInitialized = true; // just to be quickeer XXX
     
-    if (midiMenuInitialized)
-      return;
-    
     midiMenu.removeAll();
     boolean empty = true;
     
@@ -981,7 +981,7 @@ public class Editor extends JFrame implements RunnerListener {
     }
     
     try {
-      // Thread.sleep(1000); // sleep to catch midi weirdness under macosx
+      Thread.sleep(1000); // sleep to catch midi weirdness under macosx
     } catch (Exception e) {
     }
     
@@ -1000,7 +1000,6 @@ public class Editor extends JFrame implements RunnerListener {
     
     midiMenu.add(midiInputMenu);
     midiMenu.add(midiOutputMenu);
-    
     
     midiMenu.setEnabled(true);
     midiMenuInitialized = true;
