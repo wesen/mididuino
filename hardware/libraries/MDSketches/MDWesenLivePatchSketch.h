@@ -80,15 +80,22 @@ public:
 			setPage(&page);
   }
 
+	virtual void hide() {
+		mdBreakdown.stopSupatrigga();
+		if (currentPage() == &breakPage) {
+			popPage(&breakPage);
+		}
+	}
+
   virtual void mute(bool pressed) {
     if (pressed) {
       muted = !muted;
       mdBreakdown.muted = muted;
       autoMDPage.muted = muted;
       if (muted) {
-	GUI.flash_strings_fill("LIVE PATCH", "MUTED");
+				GUI.flash_strings_fill("LIVE PATCH", "MUTED");
       } else {
-	GUI.flash_strings_fill("LIVE PATCH", "UNMUTED");
+				GUI.flash_strings_fill("LIVE PATCH", "UNMUTED");
       }
     }
   }

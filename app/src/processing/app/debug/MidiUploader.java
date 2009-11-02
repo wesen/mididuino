@@ -53,16 +53,17 @@ public class MidiUploader extends AvrdudeUploader {
     List commandDownloader = new ArrayList();
     commandDownloader.add("/mididuino/midi-send");
 		commandDownloader.add("-b");
-		String midiPort = Preferences.get("midi.port");
+		String inputPort = Preferences.get("midi.inputport");
+		String outputPort = Preferences.get("midi.outputport");
 		
 //		System.out.println("foobar " + Preferences.get("board") + " " + Preferences.get("boards." + Preferences.get("board") + ".upload.midiid"));
 		commandDownloader.add("-I" + Preferences.get("boards." + Preferences.get("board") + ".upload.midiid"));
-		commandDownloader.add("-i" + getMidiPortIndex(Preferences.get("midi.inputport")));
-		commandDownloader.add("-o" + getMidiPortIndex(Preferences.get("midi.outputport")));
+		commandDownloader.add("-i" + getMidiPortIndex(inputPort));
+		commandDownloader.add("-o" + getMidiPortIndex(outputPort));
 		commandDownloader.addAll(params);
 		
     if (Preferences.getBoolean("upload.verbose")) {
-			// do something
+      commandDownloader.add("-v");
     } else {
 			// do something
     }
