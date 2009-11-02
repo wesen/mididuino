@@ -9,7 +9,7 @@ LBASE_DIR=$(BASE_DIR)/hardware/libraries
 JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
 CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
-DIRS  = CommonTools Midi MidiTools GUI MD Elektron
+DIRS  = CommonTools Midi MidiTools GUI MD Elektron MNM
 LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../../host/MidiUart ../../host/GUI
 INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I../../host
 #EXCLUDE += %MidiClock.cpp
@@ -50,7 +50,7 @@ all: test
 test: main.host.o bitTests.host.o listTest.host.o \
       arpTest.host.o stackTest.host.o miscTest.host.o \
       midiTest.host.o callbackTest.host.o noteHandlerTest.host.o \
-      mdPatternTest.host.o dataEncoderTest.host.o \
+      mdPatternTest.host.o mnmPatternTest.host.o dataEncoderTest.host.o \
       $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 

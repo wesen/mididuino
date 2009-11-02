@@ -98,6 +98,9 @@ public:
 
   void init();
 
+	bool isTrackEmpty(uint8_t track);
+	bool isMidiTrackEmpty(uint8_t track);
+	
   bool isLockPatternEmpty(uint8_t idx);
   bool isLockPatternEmpty(uint8_t idx, uint64_t trigs);
   bool isParamLocked(uint8_t track, uint8_t param);

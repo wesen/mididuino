@@ -186,6 +186,21 @@ void MNMPattern::print() {
 }
 #endif
 
+bool MNMPattern::isTrackEmpty(uint8_t track) {
+	return ((ampTrigs[track] == 0) &&
+					(filterTrigs[track] == 0) &&
+					(lfoTrigs[track] == 0) &&
+					(offTrigs[track] == 0) &&
+					(triglessTrigs[track] == 0) &&
+					(chordTrigs[track] == 0));
+}
+
+bool MNMPattern::isMidiTrackEmpty(uint8_t track) {
+	return ((midiNoteOnTrigs[track] == 0) &&
+					(midiNoteOffTrigs[track] == 0) &&
+					(midiTriglessTrigs[track] == 0));
+}
+
 bool MNMPattern::isLockPatternEmpty(uint8_t idx) {
   for (int i = 0; i < 64; i++) {
     if (locks[idx][i] != 255)
