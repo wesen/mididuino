@@ -3,7 +3,7 @@ ARCHFLAGS = -arch i386 -arch ppc  -mmacosx-version-min=10.4
 #ARCHFLAGS = -arch i386 
 #ARCHFLAGS = -arch ppc
 #CFLAGS += -mno-cygwin
-CFLAGS += -W -Wall $(ARCHFLAGS)
+CFLAGS += -W -Wall $(ARCHFLAGS) -g
 #LDFLAGS += -lwinmm
 DLLTOOL = dlltool
 

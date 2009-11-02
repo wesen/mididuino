@@ -61,6 +61,7 @@ void midiSendShort(unsigned char status,
 void timer_callback(CFRunLoopTimerRef ref, void *info) {
   if (exitMainLoop)
     midiClose();
+	printf("callbacks: %d\n", callbacks);
   if (++callbacks > MAX_TIMEOUT_CALLBACKS)
     midiTimeout();
 }
@@ -73,7 +74,7 @@ void myReadProc(const MIDIPacketList *pktlist, void *refCon, void *connRefCon) {
     for (j = 0; j < pktlist->numPackets; j++) {
       callbacks = 0;
       for (i = 0; i < packet->length; i++) {
-	midiReceive(packet->data[i]);
+				midiReceive(packet->data[i]);
       }
 
       packet = MIDIPacketNext(packet);
@@ -144,16 +145,32 @@ void listOutputMidiDevices(void) {
 void midiInitialize(char *inputDeviceStr, char *outputDeviceStr) {
   int inputDevice = atoi(inputDeviceStr);
   int outputDevice = atoi(outputDeviceStr);
+	OSStatus ret;
   MIDIClientRef client = NULL;
-  MIDIClientCreate(CFSTR("MIDI Send"), NULL, NULL, &client);
-  MIDIOutputPortCreate(client, CFSTR("Output port"), &gOutPort);
+  ret = MIDIClientCreate(CFSTR("MIDI Send"), NULL, NULL, &client);
+	if (ret != 0) {
+		fprintf(stderr, "Could not create MIDI client\n");
+		exit(1);
+	}
+  ret = MIDIOutputPortCreate(client, CFSTR("Output port"), &gOutPort);
+	if (ret != 0) {
+		fprintf(stderr, "Could not create MIDI output port\n");
+		exit(1);
+	}
   gDest = MIDIGetDestination(outputDevice);
   MIDIPortRef inPort = NULL;
-  MIDIInputPortCreate(client, CFSTR("Input port"), myReadProc, NULL, &inPort);
-  
+  ret = MIDIInputPortCreate(client, CFSTR("Input port"), myReadProc, NULL, &inPort);
+	if (ret != 0) {
+		fprintf(stderr, "Could not create MIDI input port\n");
+		exit(1);
+	}
 
   MIDIEndpointRef src = MIDIGetSource(inputDevice);
-  MIDIPortConnectSource(inPort, src, NULL);
+  ret = MIDIPortConnectSource(inPort, src, NULL);
+	if (ret != 0) {
+		fprintf(stderr, "Could not connect to midi source\n");
+		exit(1);
+	}
 }
 
 void midiMainLoop(void) {
