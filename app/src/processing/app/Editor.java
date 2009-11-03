@@ -2296,9 +2296,13 @@ public class Editor extends JFrame implements RunnerListener {
 
     //SwingUtilities.invokeLater(new Runnable() {
     Thread t = new Thread(new Runnable() {
-        public void run() {
+      public void run() {
           try {
-            uploading = true;
+            if (uploading) {
+              return;
+            } else {
+              uploading = true;
+            }
           
             boolean success = sketch.exportApplet(new Target(
               Base.getHardwarePath() + File.separator + "cores",
@@ -2320,6 +2324,7 @@ public class Editor extends JFrame implements RunnerListener {
           toolbar.deactivate(EditorToolbar.EXPORT);
         }});
     t.start();
+//    t.run();
   }
 
 
