@@ -51,7 +51,7 @@ class MNMSysexDecoder : public DataDecoder {
 	uint8_t repeatByte;
 	
 public:
-	MNMSysexDecoder(uint8_t *_data, uint16_t _maxLen) {
+	MNMSysexDecoder(uint8_t *_data = NULL, uint16_t _maxLen = 0) {
 		init(_data, _maxLen);
 	}
 	

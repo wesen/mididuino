@@ -51,6 +51,7 @@ void MDSysexListenerClass::handleByte(uint8_t byte) {
 void MDSysexListenerClass::end() {
   if (!isMDMessage)
     return;
+
   switch (msgType) {
   case MD_STATUS_RESPONSE_ID:
     onStatusResponseCallbacks.call(MidiSysex.data[6], MidiSysex.data[7]);
