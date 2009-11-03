@@ -40,7 +40,6 @@ public:
 		return pack32(inw >> 32);
 	}
 
-	
   virtual uint16_t finish() {
     return 0;
   }

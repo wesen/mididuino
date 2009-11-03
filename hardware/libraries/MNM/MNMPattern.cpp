@@ -59,25 +59,9 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
 
-	uint16_t cksum = 0;
-	for (uint16_t i = 9 - 6; i < (len - 4); i++) {
-		cksum += data[i];
-	}
-	cksum &= 0x3FFF;
-	uint16_t realcksum = ElektronHelper::to16Bit7(data[len - 4], data[len - 3]);
-	if (cksum != realcksum) {
-#ifdef HOST_MIDIDUINO
-		printf("wrong checksum, %x should be %x\n", cksum, realcksum);
-#else
-		GUI.flash_string_fill("WRONG CKSUM");
-#endif
-		return false;
-	}
-
   uint8_t *udata = data + 3;
   origPosition = udata[0];
 
-	MNMSysexDecoder decoder(data + 0xA - 6, 74);
   for (int i = 0; i < 6; i++) {
     ampTrigs[i] = ElektronHelper::to64Bit(udata + 1 + i * 8);
     filterTrigs[i] = ElektronHelper::to64Bit(udata + 0x31 + i * 8);
@@ -156,6 +140,121 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   return true;
+}
+
+uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
+  uint8_t udata[0x2a7];
+
+  data[0] = 0xF0;
+  m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
+  data[6] = MNM_PATTERN_MESSAGE_ID;
+  data[7] = 0x05;
+  data[8] = 0x01;
+
+  uint16_t cksum = 0;
+  udata[0] = data[9] = origPosition;
+  cksum += data[9];
+
+  for (int i = 0; i < 6; i++) {
+    ElektronHelper::from64Bit(ampTrigs[i],          udata + 1 + 8 * i);
+    ElektronHelper::from64Bit(filterTrigs[i],       udata + 0x31 + 8 * i);
+    ElektronHelper::from64Bit(lfoTrigs[i],          udata + 0x61 + 8 * i);
+    ElektronHelper::from64Bit(offTrigs[i],          udata + 0x91 + 8 * i);
+    ElektronHelper::from64Bit(midiNoteOnTrigs[i],   udata + 0xc1 + 8 * i);
+    ElektronHelper::from64Bit(midiNoteOffTrigs[i],  udata + 0xf1 + 8 * i);
+    ElektronHelper::from64Bit(triglessTrigs[i],     udata + 0x121 + 8 * i);
+    ElektronHelper::from64Bit(chordTrigs[i],        udata + 0x151 + 8 * i);
+    ElektronHelper::from64Bit(midiTriglessTrigs[i], udata + 0x181 + 8 * i);
+    ElektronHelper::from64Bit(slidePatterns[i],        udata + 0x1b1 + 8 * i);
+    ElektronHelper::from64Bit(swingPatterns[i],        udata + 0x1e1 + 8 * i);
+    ElektronHelper::from64Bit(midiSlidePatterns[i],    udata + 0x211 + 8 * i);
+    ElektronHelper::from64Bit(midiSwingPatterns[i],    udata + 0x241 + 8 * i);
+    ElektronHelper::from64Bit(lockPatterns[i],      udata + 0x275 + 8 * i);
+  }
+  ElektronHelper::from32Bit(swingAmount, udata + 0x271);
+
+  MNMDataToSysexEncoder encoder(data + 10, len - 10);
+	encoder.pack(udata + 1, 0x2a5 - 1);
+  for (int i = 0; i < 6 ; i++) {
+    for (int j = 0; j < 64; j++) {
+      encoder.pack8(noteNBR[i][j]);
+    }
+  }
+
+  uint8_t *ptr = udata - 0x425;
+  ptr[0x425] = length;
+  ptr[0x426] = doubleTempo ? 1 : 0;
+  ptr[0x427] = kit;
+  ptr[0x428] = patternTranspose;
+  for (int i = 0; i < 6; i++) {
+    ptr[0x429 + i] = transpose[i].transpose;
+    ptr[0x42f + i] = transpose[i].scale;
+    ptr[0x435 + i] = transpose[i].key;
+
+    ptr[0x43b + i] = midiTranspose[i].transpose;
+    ptr[0x441 + i] = midiTranspose[i].scale;
+    ptr[0x447 + i] = midiTranspose[i].key;
+
+    ptr[0x44d + i] = arp[i].play;
+    ptr[0x453 + i] = arp[i].mode;
+    ptr[0x459 + i] = arp[i].octaveRange;
+    ptr[0x45f + i] = arp[i].multiplier;
+    ptr[0x465 + i] = arp[i].destination;
+    ptr[0x46b + i] = arp[i].length;
+    m_memcpy(&ptr[0x471 + i * 16], arp[i].pattern, 16);
+
+    ptr[0x4d1 + i] = midiArp[i].play;
+    ptr[0x4d7 + i] = midiArp[i].mode;
+    ptr[0x4dd + i] = midiArp[i].octaveRange;
+    ptr[0x4e3 + i] = midiArp[i].multiplier;
+    ptr[0x4e9 + i] = midiArp[i].length;
+    m_memcpy(&ptr[0x4ef + i * 16], midiArp[i].pattern, 16);
+  }
+  ElektronHelper::from16Bit(midiNotesUsed, ptr + 0x553);
+  ptr[0x555] = chordNotesUsed;
+  ptr[0x557] = locksUsed;
+
+  for (int i = 0; i < 4; i++) {
+    ptr[0x54f + i] = 0xFF;
+  }
+
+	encoder.pack(ptr + 0x425, 0x558 - 0x425);
+
+  for (int i = 0; i < 62; i++) {
+    for (int j = 0; j < 64; j++) {
+      encoder.pack8(locks[i][j]);
+    }
+  }
+  for (int i = 0; i < 400; i++) {
+    uint16_t x = ((uint16_t)midiNotes[i].note << 9) |
+      ((uint16_t)midiNotes[i].track << 6) | (midiNotes[i].position);
+    encoder.pack8(x >> 8);
+    encoder.pack8(x & 0xFF);
+  }
+  for (int i = 0; i < 192; i++) {
+    uint16_t x =
+			((uint16_t)chordNotes[i].note << 9) |
+			((uint16_t)chordNotes[i].track << 6) |
+			(chordNotes[i].position);
+    encoder.pack8(x >> 8);
+    encoder.pack8(x & 0xFF);
+  }
+
+  encoder.pack8(0xFF); // >??
+
+  uint16_t enclen = encoder.finish();
+  for (uint16_t i = 0; i < enclen; i++) {
+    //    printf("cksum: %.4x, data: %.2x\n", cksum, data[10 + i]);
+    cksum += data[10 + i];
+	}
+  
+  data[10 + enclen] = (cksum >> 7) & 0x7F;
+  data[10 + enclen + 1] = cksum & 0x7F;
+  data[10 + enclen + 2] = ((enclen + 5) >> 7) & 0x7F;
+  data[10 + enclen + 3] = (enclen + 5) & 0x7F;
+  data[10 + enclen + 2 + 2] = 0xF7;
+  
+  return enclen + 10 + sizeof(monomachine_sysex_hdr);
 }
 
 #ifdef HOST_MIDIDUINO
@@ -258,9 +357,13 @@ void MNMPattern::clearLockPattern(uint8_t lock) {
 void MNMPattern::cleanupLocks() {
   for (int i = 0; i < 64; i++) {
     if (lockTracks[i] != -1) {
-      if (isLockPatternEmpty(i, ampTrigs[lockTracks[i]])) { // trigs
+			uint8_t lockTrack = lockTracks[i];
+      if (isLockPatternEmpty(i, ampTrigs[lockTrack]) &&
+					isLockPatternEmpty(i, filterTrigs[lockTrack]) &&
+					isLockPatternEmpty(i, lfoTrigs[lockTrack]) &&
+					isLockPatternEmpty(i, triglessTrigs[lockTrack])) { // trigs
 				if (lockParams[i] != -1) {
-					paramLocks[lockTracks[i]][lockParams[i]] = -1;
+					paramLocks[lockTrack][lockParams[i]] = -1;
 				}
 				lockTracks[i] = -1;
 				lockParams[i] = -1;
@@ -279,9 +382,28 @@ void MNMPattern::clearTrack(uint8_t track) {
   if (track >= 6) {
     return;
   }
-  // clear trigs XXX
+	ampTrigs[track] = 0;
+	filterTrigs[track] = 0;
+	lfoTrigs[track] = 0;
+	offTrigs[track] = 0;
+	triglessTrigs[track] = 0;
+	chordTrigs[track] = 0;
+	slidePatterns[track] = 0;
+	// XXX	swingPatterns[track] = 0;
   clearTrackLocks(track);
 }
+
+void MNMPattern::clearMidiTrack(uint8_t track) {
+	if (track >= 6) {
+		return;
+	}
+	midiNoteOnTrigs[track] = 0;
+	midiNoteOffTrigs[track] = 0;
+	midiTriglessTrigs[track] = 0;
+	midiSlidePatterns[track] = 0;
+	// XXX	midiSwingPatterns[track] = 0;
+}
+ 
 
 void MNMPattern::clearParamLocks(uint8_t track, uint8_t param) {
   int8_t idx = paramLocks[track][param];
@@ -292,7 +414,7 @@ void MNMPattern::clearParamLocks(uint8_t track, uint8_t param) {
 }
 
 void MNMPattern::clearTrackLocks(uint8_t track) {
-  for (int i = 0; i < 62; i++) {
+  for (int i = 0; i < 72; i++) {
     clearParamLocks(track, i);
   }
 }
@@ -339,7 +461,7 @@ int8_t MNMPattern::getNextEmptyLock() {
 void MNMPattern::recalculateLockPatterns() {
   for (int track = 0; track < 6; track++) {
     lockPatterns[track] = 0;
-    for (int param = 0; param < 64; param++) {
+    for (int param = 0; param < 72; param++) {
       if (paramLocks[track][param] != -1) {
 				SET_BIT64(lockPatterns[track], param);
       }
@@ -370,7 +492,10 @@ void MNMPattern::clearLock(uint8_t track, uint8_t trig, uint8_t param) {
     return;
   locks[idx][trig] = 255;
 
-  if (isLockPatternEmpty(idx, ampTrigs[track])) {
+  if (isLockPatternEmpty(idx, ampTrigs[track]) && 
+			isLockPatternEmpty(idx, filterTrigs[track]) &&
+			isLockPatternEmpty(idx, lfoTrigs[track]) &&
+			isLockPatternEmpty(idx, triglessTrigs[track])) { // trigs
     paramLocks[track][param] = -1;
     lockTracks[idx] = -1;
     lockParams[idx] = -1;
@@ -384,121 +509,3 @@ uint8_t MNMPattern::getLock(uint8_t track, uint8_t trig, uint8_t param) {
   return locks[idx][trig];
 }
 
-uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
-  uint8_t udata[0x2a7];
-
-  data[0] = 0xF0;
-  m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
-  data[6] = MNM_PATTERN_MESSAGE_ID;
-  data[7] = 0x05;
-  data[8] = 0x01;
-
-  uint16_t cksum = 0;
-  udata[0] = data[9] = origPosition;
-  cksum += data[9];
-
-  for (int i = 0; i < 6; i++) {
-    ElektronHelper::from64Bit(ampTrigs[i],          udata + 1 + 8 * i);
-    ElektronHelper::from64Bit(filterTrigs[i],       udata + 0x31 + 8 * i);
-    ElektronHelper::from64Bit(lfoTrigs[i],          udata + 0x61 + 8 * i);
-    ElektronHelper::from64Bit(offTrigs[i],          udata + 0x91 + 8 * i);
-    ElektronHelper::from64Bit(midiNoteOnTrigs[i],   udata + 0xc1 + 8 * i);
-    ElektronHelper::from64Bit(midiNoteOffTrigs[i],  udata + 0xf1 + 8 * i);
-    ElektronHelper::from64Bit(triglessTrigs[i],     udata + 0x121 + 8 * i);
-    ElektronHelper::from64Bit(chordTrigs[i],        udata + 0x151 + 8 * i);
-    ElektronHelper::from64Bit(midiTriglessTrigs[i], udata + 0x181 + 8 * i);
-    ElektronHelper::from64Bit(slidePatterns[i],        udata + 0x1b1 + 8 * i);
-    ElektronHelper::from64Bit(swingPatterns[i],        udata + 0x1e1 + 8 * i);
-    ElektronHelper::from64Bit(midiSlidePatterns[i],    udata + 0x211 + 8 * i);
-    ElektronHelper::from64Bit(midiSwingPatterns[i],    udata + 0x241 + 8 * i);
-    ElektronHelper::from64Bit(lockPatterns[i],      udata + 0x275 + 8 * i);
-  }
-  ElektronHelper::from32Bit(swingAmount, udata + 0x271);
-
-  MNMDataToSysexEncoder encoder(data + 10, len - 10);
-  for (int i = 1; i < 0x2a5; i++) {
-    encoder.pack8(udata[i]);
-  }
-  for (int i = 0; i < 6 ; i++) {
-    for (int j = 0; j < 64; j++) {
-      encoder.pack8(noteNBR[i][j]);
-    }
-  }
-
-  uint8_t *ptr = udata - 0x425;
-  ptr[0x425] = length;
-  ptr[0x426] = doubleTempo ? 1 : 0;
-  ptr[0x427] = kit;
-  ptr[0x428] = patternTranspose;
-  for (int i = 0; i < 6; i++) {
-    ptr[0x429 + i] = transpose[i].transpose;
-    ptr[0x42f + i] = transpose[i].scale;
-    ptr[0x435 + i] = transpose[i].key;
-
-    ptr[0x43b + i] = midiTranspose[i].transpose;
-    ptr[0x441 + i] = midiTranspose[i].scale;
-    ptr[0x447 + i] = midiTranspose[i].key;
-
-    ptr[0x44d + i] = arp[i].play;
-    ptr[0x453 + i] = arp[i].mode;
-    ptr[0x459 + i] = arp[i].octaveRange;
-    ptr[0x45f + i] = arp[i].multiplier;
-    ptr[0x465 + i] = arp[i].destination;
-    ptr[0x46b + i] = arp[i].length;
-    m_memcpy(&ptr[0x471 + i * 16], arp[i].pattern, 16);
-
-    ptr[0x4d1 + i] = midiArp[i].play;
-    ptr[0x4d7 + i] = midiArp[i].mode;
-    ptr[0x4dd + i] = midiArp[i].octaveRange;
-    ptr[0x4e3 + i] = midiArp[i].multiplier;
-    ptr[0x4e9 + i] = midiArp[i].length;
-    m_memcpy(&ptr[0x4ef + i * 16], midiArp[i].pattern, 16);
-  }
-  ElektronHelper::from16Bit(midiNotesUsed, ptr + 0x553);
-  ptr[0x555] = chordNotesUsed;
-  ptr[0x557] = locksUsed;
-
-  for (int i = 0; i < 4; i++) {
-    ptr[0x54f + i] = 0xFF;
-  }
-  
-  for (int i = 0x425; i < 0x558; i++) {
-    encoder.pack8(ptr[i]);
-  }
-
-  for (int i = 0; i < 62; i++) {
-    for (int j = 0; j < 64; j++) {
-      encoder.pack8(locks[i][j]);
-    }
-  }
-  for (int i = 0; i < 400; i++) {
-    uint16_t x = ((uint16_t)midiNotes[i].note << 9) |
-      ((uint16_t)midiNotes[i].track << 6) | (midiNotes[i].position);
-    encoder.pack8(x >> 8);
-    encoder.pack8(x & 0xFF);
-  }
-  for (int i = 0; i < 192; i++) {
-    uint16_t x =
-			((uint16_t)chordNotes[i].note << 9) |
-			((uint16_t)chordNotes[i].track << 6) |
-			(chordNotes[i].position);
-    encoder.pack8(x >> 8);
-    encoder.pack8(x & 0xFF);
-  }
-
-  encoder.pack8(0xFF); // >??
-
-  uint16_t enclen = encoder.finish();
-  for (uint16_t i = 0; i < enclen; i++) {
-    //    printf("cksum: %.4x, data: %.2x\n", cksum, data[10 + i]);
-    cksum += data[10 + i];
-	}
-  
-  data[10 + enclen] = (cksum >> 7) & 0x7F;
-  data[10 + enclen + 1] = cksum & 0x7F;
-  data[10 + enclen + 2] = ((enclen + 5) >> 7) & 0x7F;
-  data[10 + enclen + 3] = (enclen + 5) & 0x7F;
-  data[10 + enclen + 2 + 2] = 0xF7;
-  
-  return enclen + 10 + sizeof(monomachine_sysex_hdr);
-}

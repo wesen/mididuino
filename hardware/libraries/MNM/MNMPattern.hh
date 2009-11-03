@@ -109,6 +109,7 @@ public:
 
   void clearPattern();
   void clearTrack(uint8_t track);
+	void clearMidiTrack(uint8_t track);
 
   void clearParamLocks(uint8_t track, uint8_t param);
   void clearTrackLocks(uint8_t track);

@@ -30,53 +30,41 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
       msgType = byte;
       switch (byte) {
       case MNM_STATUS_RESPONSE_ID:
-	// MidiSysex.startRecord();
-	break;
+				// MidiSysex.startRecord();
+				break;
 	
       case MNM_GLOBAL_MESSAGE_ID:
-	MidiSysex.resetRecord();
-	isMNMEncodedMessage = true;
-	break;
-	
       case MNM_KIT_MESSAGE_ID:
-	MidiSysex.resetRecord();
-	isMNMEncodedMessage = true;
-	break;
-	
       case MNM_PATTERN_MESSAGE_ID:
-	MidiSysex.resetRecord();
-	isMNMEncodedMessage = true;
-	break;
-	
       case MNM_SONG_MESSAGE_ID:
-	MidiSysex.resetRecord();
-	isMNMEncodedMessage = true;
-	break;
+				MidiSysex.resetRecord();
+				isMNMEncodedMessage = true;
+				break;
       }
     }
 
     if (isMNMEncodedMessage) {
       if (MidiSysex.len >= sizeof(monomachine_sysex_hdr)) {
-	if (MidiSysex.len == 9) {
-	  encoder.init(MidiSysex.recordBuf + MidiSysex.recordLen,
-		       MidiSysex.maxRecordLen - MidiSysex.recordLen);
-	}
-	if (MidiSysex.len < 9) {
-	  if (MidiSysex.len == 8) {
-	    msgCksum = byte;
-	    msgLen++;
-	  }
-	  MidiSysex.recordByte(byte);
-	} else {
-	  if (sysexCirc.size() == 4 && byte != 0xF7) {
-	    uint8_t c = sysexCirc.get(3);
-	    msgCksum += c;
-	    msgLen++;
-	    //	    printf("_pack: %x, byte %x\n", c, byte);
-	    encoder.pack8(c);
-	  }
-	  sysexCirc.put(byte);
-	}
+				if (MidiSysex.len == 9) {
+					encoder.init(MidiSysex.recordBuf + MidiSysex.recordLen,
+											 MidiSysex.maxRecordLen - MidiSysex.recordLen);
+				}
+				if (MidiSysex.len < 9) {
+					if (MidiSysex.len == 8) {
+						msgCksum = byte;
+						msgLen++;
+					}
+					MidiSysex.recordByte(byte);
+				} else {
+					if (sysexCirc.size() == 4 && byte != 0xF7) {
+						uint8_t c = sysexCirc.get(3);
+						msgCksum += c;
+						msgLen++;
+						//	    printf("_pack: %x, byte %x\n", c, byte);
+						encoder.pack8(c);
+					}
+					sysexCirc.put(byte);
+				}
       }
     }
   }

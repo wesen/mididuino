@@ -92,5 +92,3 @@ TEST_F (MNMDataBothFixture, MNMDataBoth16Bit) {
 		CHECK_EQUAL(i, (uint16_t)tmp);
 	}
 }
-
-

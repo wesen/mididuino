@@ -325,7 +325,6 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx) {
   return true;
 }
 
-
 bool MDPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
   for (int i = 0; i < 64; i++) {
     if (locks[idx][i] != 255 && IS_BIT_SET64(trigs, i))
@@ -362,6 +361,7 @@ void MDPattern::clearTrack(uint8_t track) {
   for (int i = 0; i < 64; i++) {
     clearTrig(track, i);
   }
+	// XXX swing and slide
   clearTrackLocks(track);
 }
 

@@ -8,30 +8,31 @@ void MNMDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
   lastByte = 0;
   lastCnt = 0;
   isFirstByte = true;
-	if ((_sysex != NULL) && (_sysexLen >= 1)) {
-		ptr[0] = 0;
-	}
 }
 
 bool MNMDataToSysexEncoder::encode7Bit(uint8_t inb) {
   uint8_t msb = inb >> 7;
   uint8_t c = inb & 0x7F;
+	if ((ptr + cnt7 + 1) >= (data + maxLen)) {
+		return false;
+	}
+	if (cnt7 == 0) {
+		ptr[0] = 0;
+	}
   ptr[0] |= msb << (6 - cnt7);
   ptr[cnt7 + 1] = c;
+	
   if (++cnt7 == 7) {
     retLen += 8;
     ptr += 8;
-    if (ptr >= (data + maxLen - 8)) {
-      return false;
-    }
-    ptr[0] = 0;
     cnt7 = 0;
   }
+	//	printf("retLen: %d\n", retLen);
   return true;
 }
 
 bool MNMDataToSysexEncoder::pack8(uint8_t inb) {
-  //  printf("patck: %x\n", inb);
+	//	printf("patck: %x\n", inb);
   if (isFirstByte) {
     lastByte = inb;
     lastCnt = 1;
