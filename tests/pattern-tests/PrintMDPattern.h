@@ -17,7 +17,7 @@ class PrintMDPattern : public MDPattern {
   }
 
   void printLocks(int track) {
-    printf("lockpattern: %lx\n", lockPatterns[track]);
+    printf("lockpattern: %llx\n", lockPatterns[track]);
 
     for (int param = 0; param < 24; param++) {
       if (isParamLocked(track, param)) {

@@ -139,7 +139,7 @@ uint16_t MNMGlobal::toSysex(uint8_t *data, uint16_t len) {
 
   MNMDataToSysexEncoder encoder(data + 10, len - 10);
   for (int i = 1; i < 0x109; i++) {
-    encoder.pack(udata[i]);
+    encoder.pack8(udata[i]);
   }
   uint16_t enclen = encoder.finish();
   for (uint16_t i = 0; i < enclen; i++) {
@@ -291,7 +291,7 @@ uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
 
   MNMDataToSysexEncoder encoder(data + 10, len - 10);
   for (int i = 1; i < 699; i++) {
-    encoder.pack(udata[i]);
+    encoder.pack8(udata[i]);
   }
   uint16_t enclen = encoder.finish();
   for (uint16_t i = 0; i < enclen; i++) {

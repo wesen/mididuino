@@ -22,7 +22,7 @@ TEST_F (MDPatternFixture, MDPatternTestInit) {
 }
 
 TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
-	MDPattern p2; 
+	MDPattern p2;
 	uint8_t buf[8192], buf2[8192]; 
 	uint16_t len = pattern.toSysex(buf, sizeof(buf));         
 	bool ret = (p2).fromSysex(buf + 6, len - 7);          

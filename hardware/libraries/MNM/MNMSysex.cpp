@@ -73,7 +73,7 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
 	    msgCksum += c;
 	    msgLen++;
 	    //	    printf("_pack: %x, byte %x\n", c, byte);
-	    encoder.pack(c);
+	    encoder.pack8(c);
 	  }
 	  sysexCirc.put(byte);
 	}

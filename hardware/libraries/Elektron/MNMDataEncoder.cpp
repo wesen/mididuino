@@ -8,6 +8,9 @@ void MNMDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
   lastByte = 0;
   lastCnt = 0;
   isFirstByte = true;
+	if ((_sysex != NULL) && (_sysexLen >= 1)) {
+		ptr[0] = 0;
+	}
 }
 
 bool MNMDataToSysexEncoder::encode7Bit(uint8_t inb) {
@@ -27,7 +30,7 @@ bool MNMDataToSysexEncoder::encode7Bit(uint8_t inb) {
   return true;
 }
 
-bool MNMDataToSysexEncoder::pack(uint8_t inb) {
+bool MNMDataToSysexEncoder::pack8(uint8_t inb) {
   //  printf("patck: %x\n", inb);
   if (isFirstByte) {
     lastByte = inb;
@@ -83,7 +86,7 @@ void MNMSysexToDataEncoder::init(uint8_t *_data, uint16_t _maxLen) {
   retLen = 0;
 }
 
-bool MNMSysexToDataEncoder::pack(uint8_t inb) {
+bool MNMSysexToDataEncoder::pack8(uint8_t inb) {
   //  printf("pack: %x\n", inb);
   if ((cnt % 8) == 0) {
     bits = inb;
@@ -134,4 +137,50 @@ uint16_t MNMSysexToDataEncoder::finish() {
     return 0;
   }
   return retLen;
+}
+
+void MNMSysexDecoder::init(uint8_t *_data, uint16_t _maxLen) {
+	DataDecoder::init(_data, _maxLen);
+	cnt7 = 0;
+	cnt = 0;
+	repeatCount = 0;
+	repeatByte = 0;
+}
+
+bool MNMSysexDecoder::getNextByte(uint8_t *c) {
+	if ((cnt % 8) == 0) {
+		bits = *(ptr++);
+		cnt++;
+	}
+	bits <<= 1;
+	*c = *(ptr++) | (bits & 0x80);
+	cnt++;
+
+	return true;
+}
+
+bool MNMSysexDecoder::get8(uint8_t *c) {
+	uint8_t byte;
+
+ again:
+	if (repeatCount > 0) {
+		repeatCount--;
+		*c = repeatByte;
+		return true;
+	}
+
+	if (!getNextByte(&byte)) {
+		return false;
+	}
+
+	if (IS_BIT_SET(byte, 7)) {
+		repeatCount = byte & 0x7F;
+		if (!getNextByte(&repeatByte)) {
+			return false;
+		}
+		goto again;
+	} else {
+		*c = byte;
+		return true;
+	}
 }

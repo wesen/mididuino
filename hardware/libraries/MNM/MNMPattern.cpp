@@ -53,12 +53,31 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
   if (len < (0x1978 + 3)) {
 #ifdef HOST_MIDIDUINO
     fprintf(stderr, "wrong len, %d should be %d bytes\n", len, 0x1978 + 3);
+#else
+		GUI.flash_string_fill("WRONG LENGTH");
 #endif
     return false;
   }
 
+	uint16_t cksum = 0;
+	for (uint16_t i = 9 - 6; i < (len - 4); i++) {
+		cksum += data[i];
+	}
+	cksum &= 0x3FFF;
+	uint16_t realcksum = ElektronHelper::to16Bit7(data[len - 4], data[len - 3]);
+	if (cksum != realcksum) {
+#ifdef HOST_MIDIDUINO
+		printf("wrong checksum, %x should be %x\n", cksum, realcksum);
+#else
+		GUI.flash_string_fill("WRONG CKSUM");
+#endif
+		return false;
+	}
+
   uint8_t *udata = data + 3;
   origPosition = udata[0];
+
+	MNMSysexDecoder decoder(data + 0xA - 6, 74);
   for (int i = 0; i < 6; i++) {
     ampTrigs[i] = ElektronHelper::to64Bit(udata + 1 + i * 8);
     filterTrigs[i] = ElektronHelper::to64Bit(udata + 0x31 + i * 8);
@@ -128,10 +147,10 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 64; j++) {
       if (IS_BIT_SET64(lockPatterns[i], j)) {
-	paramLocks[i][j] = numRows;
-	lockTracks[numRows] = i;
-	lockParams[numRows] = j;
-	numRows++;
+				paramLocks[i][j] = numRows;
+				lockTracks[numRows] = i;
+				lockParams[numRows] = j;
+				numRows++;
       }
     }
   }
@@ -240,11 +259,11 @@ void MNMPattern::cleanupLocks() {
   for (int i = 0; i < 64; i++) {
     if (lockTracks[i] != -1) {
       if (isLockPatternEmpty(i, ampTrigs[lockTracks[i]])) { // trigs
-	if (lockParams[i] != -1) {
-	  paramLocks[lockTracks[i]][lockParams[i]] = -1;
-	}
-	lockTracks[i] = -1;
-	lockParams[i] = -1;
+				if (lockParams[i] != -1) {
+					paramLocks[lockTracks[i]][lockParams[i]] = -1;
+				}
+				lockTracks[i] = -1;
+				lockParams[i] = -1;
       }
     } else {
       lockParams[i] = -1;
@@ -279,8 +298,8 @@ void MNMPattern::clearTrackLocks(uint8_t track) {
 }
 
 void MNMPattern::clearTrig(uint8_t track, uint8_t trig,
-			   bool ampTrig, bool filterTrig, bool lfoTrig,
-			   bool triglessTrig, bool chordTrig) {
+													 bool ampTrig, bool filterTrig, bool lfoTrig,
+													 bool triglessTrig, bool chordTrig) {
   if (ampTrig)
     CLEAR_BIT64(ampTrigs[track], trig);
   if (filterTrig)
@@ -294,8 +313,8 @@ void MNMPattern::clearTrig(uint8_t track, uint8_t trig,
 }
 
 void MNMPattern::setTrig(uint8_t track, uint8_t trig,
-			 bool ampTrig, bool filterTrig, bool lfoTrig,
-			 bool triglessTrig, bool chordTrig) {
+												 bool ampTrig, bool filterTrig, bool lfoTrig,
+												 bool triglessTrig, bool chordTrig) {
   if (ampTrig)
     SET_BIT64(ampTrigs[track], trig);
   if (filterTrig)
@@ -322,7 +341,7 @@ void MNMPattern::recalculateLockPatterns() {
     lockPatterns[track] = 0;
     for (int param = 0; param < 64; param++) {
       if (paramLocks[track][param] != -1) {
-	SET_BIT64(lockPatterns[track], param);
+				SET_BIT64(lockPatterns[track], param);
       }
     }
   }
@@ -398,11 +417,11 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 
   MNMDataToSysexEncoder encoder(data + 10, len - 10);
   for (int i = 1; i < 0x2a5; i++) {
-    encoder.pack(udata[i]);
+    encoder.pack8(udata[i]);
   }
   for (int i = 0; i < 6 ; i++) {
     for (int j = 0; j < 64; j++) {
-      encoder.pack(noteNBR[i][j]);
+      encoder.pack8(noteNBR[i][j]);
     }
   }
 
@@ -444,33 +463,36 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
   }
   
   for (int i = 0x425; i < 0x558; i++) {
-    encoder.pack(ptr[i]);
+    encoder.pack8(ptr[i]);
   }
 
   for (int i = 0; i < 62; i++) {
     for (int j = 0; j < 64; j++) {
-      encoder.pack(locks[i][j]);
+      encoder.pack8(locks[i][j]);
     }
   }
   for (int i = 0; i < 400; i++) {
     uint16_t x = ((uint16_t)midiNotes[i].note << 9) |
       ((uint16_t)midiNotes[i].track << 6) | (midiNotes[i].position);
-    encoder.pack(x >> 8);
-    encoder.pack(x & 0xFF);
+    encoder.pack8(x >> 8);
+    encoder.pack8(x & 0xFF);
   }
   for (int i = 0; i < 192; i++) {
-    uint16_t x = ((uint16_t)chordNotes[i].note << 9) | ((uint16_t)chordNotes[i].track << 6) | (chordNotes[i].position);
-    encoder.pack(x >> 8);
-    encoder.pack(x & 0xFF);
+    uint16_t x =
+			((uint16_t)chordNotes[i].note << 9) |
+			((uint16_t)chordNotes[i].track << 6) |
+			(chordNotes[i].position);
+    encoder.pack8(x >> 8);
+    encoder.pack8(x & 0xFF);
   }
 
-  encoder.pack(0xFF); // >??
+  encoder.pack8(0xFF); // >??
 
   uint16_t enclen = encoder.finish();
   for (uint16_t i = 0; i < enclen; i++) {
     //    printf("cksum: %.4x, data: %.2x\n", cksum, data[10 + i]);
     cksum += data[10 + i];
- }
+	}
   
   data[10 + enclen] = (cksum >> 7) & 0x7F;
   data[10 + enclen + 1] = cksum & 0x7F;

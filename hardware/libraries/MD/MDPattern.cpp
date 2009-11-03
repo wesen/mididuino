@@ -82,7 +82,6 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 #else
     GUI.flash_string_fill("WRONG CKSUM");
 #endif
-    // wrong checksum
     return false;
   }
     

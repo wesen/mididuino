@@ -152,3 +152,4 @@ TEST_F (MDDataBothFixture, MDDataBoth16Bit) {
 		CHECK_EQUAL(i, (uint16_t)tmp);
 	}
 }
+
