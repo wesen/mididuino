@@ -45,8 +45,8 @@ class MonomeSequencer : public ClockCallback {
 	void triggerOffTrack(uint8_t track, uint8_t step) {
 		if (!isTrackTrig(track, step) && (tracksTriggered[track])) {
 			tracksTriggered[track] = false;
-			//			MidiUart.sendNoteOn(basePitch + track, 0); // keine noten fuer haye
-			MidiUart.sendCC(2, basePitch + track, 0);
+			MidiUart.sendNoteOn(basePitch + track, 0); // keine noten fuer haye
+			//MidiUart.sendCC(2, basePitch + track, 0);
 		}
 	}
 
@@ -54,8 +54,8 @@ class MonomeSequencer : public ClockCallback {
 		if (isTrackTrig(track, step) && !tracksMuted[track]) {
 			if (!tracksTriggered[track]) {
 				tracksTriggered[track] = true;
-				//				MidiUart.sendNoteOn(basePitch + track, 100); // keine noten fuer haye
-				MidiUart.sendCC(2, basePitch + track, 127);
+				MidiUart.sendNoteOn(basePitch + track, 100); // keine noten fuer haye
+				// MidiUart.sendCC(2, basePitch + track, 127);
 			}
 		} else {
 			triggerOffTrack(track, step);

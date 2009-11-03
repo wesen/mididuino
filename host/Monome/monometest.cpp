@@ -8,6 +8,8 @@ using namespace std;
 #include "WProgram.h"
 #include "MidiUartHost.h"
 
+#include "MonomeStraightPage.h"
+
 #include "Monome.h"
 #include "MonomeHost.h"
 #include "MonomeMidiPage.h"
@@ -34,6 +36,13 @@ void clearTrack(uint8_t track) {
 	}
 }	
 
+bool handleMonomeEvent(monome_event_t *evt) {
+	if (evt->y == 7) {
+		MidiUart.sendNoteOn(15, evt->x, evt->state ? 100 : 0);
+	}
+	return false;
+}
+
 int main(int argc, const char *argv[]) {
 	int input = -1;
 	int output = -1;
@@ -52,6 +61,7 @@ int main(int argc, const char *argv[]) {
 	}
 	MidiClock.mode = MidiClock.EXTERNAL_MIDI;
 	MidiClock.start();
+	MidiUart.currentChannel = 2;
 	
 	MonomeHost monome(argv[3]);
 	monome.setup();
@@ -65,13 +75,21 @@ int main(int argc, const char *argv[]) {
 	seqPage.setup();
 	seqPage2.setup();
 
+	MonomeStraightPage paintPage1(&monome, 3);
+	MonomeStraightPage paintPage2(&monome, 4);
+	MonomeStraightPage paintPage3(&monome, 5);
+	MonomeStraightPage paintPage4(&monome, 6);
+
 	sequencer.setup(); // hack add sequencer as last in callback list
 
-	MonomePageSwitcher switcher(&monome, &midiPage, &seqPage, &seqPage2);
+	MonomePageSwitcher switcher(&monome,
+															&midiPage, &seqPage, &seqPage2,
+															&paintPage1, &paintPage2, &paintPage3, &paintPage4);
 	gSwitcher = &switcher;
 	switcher.setup();
 	switcher.setPage(0);
 	monome.setBuffer();
+	monome.addEventHandler(handleMonomeEvent);
 
 	for (;;) {
 		MidiUart.runLoop();
