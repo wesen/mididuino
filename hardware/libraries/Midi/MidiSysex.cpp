@@ -45,8 +45,8 @@ bool MidiSysexClass::isListenerActive(MidiSysexListenerClass *listener) {
     return true;
   if (sysexLongId) {
     if (recvIds[0] == listener->ids[0] &&
-	recvIds[1] == listener->ids[1] &&
-	recvIds[2] == listener->ids[2])
+				recvIds[1] == listener->ids[1] &&
+				recvIds[2] == listener->ids[2])
       return true;
     else
       return false;
@@ -109,6 +109,7 @@ void MidiSysexClass::handleByte(uint8_t byte) {
 
   for (int i = 0; i < NUM_SYSEX_SLAVES; i++) {
     if (isListenerActive(listeners[i])) {
+			MidiUart.sendNoteOn(i, byte);
       listeners[i]->handleByte(byte);
     }
   }
@@ -129,14 +130,6 @@ bool MidiSysexClass::recordByte(uint8_t c) {
   }
 }
 
-#if 0
-static uint8_t sysexBuf[SYSEX_BUF_SIZE];
-static uint8_t sysexBuf2[SYSEX_BUF_SIZE];
-
-MidiSysexClass MidiSysex(sysexBuf, sizeof(sysexBuf));
-MidiSysexClass MidiSysex2(sysexBuf2, sizeof(sysexBuf2));
-#endif
-
 MididuinoSysexListenerClass::MididuinoSysexListenerClass() 
 	: MidiSysexListenerClass() {
   ids[0] = MIDIDUINO_SYSEX_VENDOR_1;
@@ -146,7 +139,6 @@ MididuinoSysexListenerClass::MididuinoSysexListenerClass()
 
 void MididuinoSysexListenerClass::handleByte(uint8_t byte) {
   if (sysex->len == 3 && byte == CMD_START_BOOTLOADER) {
-    //      LCD.line1_fill((char *)"BOOTLOADER");
 #ifdef MIDIDUINO
     start_bootloader();
 #endif
