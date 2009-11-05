@@ -122,6 +122,9 @@ class MDClass {
   uint8_t getBlockingStatus(uint8_t type, uint16_t timeout);
   uint8_t getCurrentKit(uint16_t timeout);
   uint8_t getCurrentPattern(uint16_t timeout);
+
+	/* check sysex */
+	static bool checkSysexChecksum(uint8_t *data, uint16_t len);
 };
 
 extern MDClass MD;

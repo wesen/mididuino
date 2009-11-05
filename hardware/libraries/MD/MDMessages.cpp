@@ -3,20 +3,29 @@
 #include "helpers.h"
 #include "MDParams.hh"
 
+#include "MD.h"
+
+bool MDClass::checkSysexChecksum(uint8_t *data, uint16_t len) {
+  uint16_t cksum = 0;
+  for (int i = 9 - 6; i < len - 4; i++) {
+    cksum += data[i];
+  }
+  cksum &= 0x3FFF;
+  if (cksum != ElektronHelper::to16Bit7(data[len - 4], data[len - 3])) {
+    // wrong checksum
+    return false;
+  }
+	return true;
+}
+
 // #include "GUI.h"
 bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
-  if (len != 0xC5 - 7)  {
+  if (len != 0xC4 - 6)  {
     // wrong length 
     return false;
   }
 
-  uint16_t cksum = 0;
-  for (int i = 9 - 6; i < 0xC0 - 6; i++) {
-    cksum += data[i];
-  }
-  cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit7(data[0xc0 - 6], data[0xc1 - 6])) {
-    // wrong checksum
+	if (!MDClass::checkSysexChecksum(data, len)) {
     return false;
   }
 
