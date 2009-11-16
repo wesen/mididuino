@@ -36,7 +36,7 @@ bool compareMonoSysex(uint8_t *buf, uint8_t *buf2) {
 	decoder.get(buftmp + 1, len - 10);
 	MNMSysexDecoder decoder2(buf2 + 10,  - 10);
 	decoder2.get(buftmp2 + 1, len - 10);
-	for (uint16_t i = 0; i < len - 10; i++) {
+	for (uint16_t i = 1; i < len - 10; i++) {
 		if (buftmp[i] != buftmp2[i]) {
 			printf("mono sysex different at 0x%x, %x != %x\n", i, buftmp[i], buftmp2[i]);
 			return false;
@@ -74,6 +74,7 @@ TEST_F (MNMPatternFixture, MNMPatternEmptyToFromSysex) {
 	MNMPattern p2;
 	uint8_t buf[8192], buf2[8192];
 	uint16_t len = pattern.toSysex(buf, sizeof(buf));
+	//	dumpMonoSysex(buf, 0x2a5);
 
 	bool ret = p2.fromSysex(buf + 6, len - 7);
 	CHECK(ret);

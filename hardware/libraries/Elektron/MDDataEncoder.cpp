@@ -7,12 +7,14 @@ void MDDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
 	retLen = 0;
 }
 
-bool MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
+DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
   uint8_t msb = inb >> 7;
   uint8_t c = inb & 0x7F;
-	if ((ptr + cnt7 + 1) >= (data + maxLen)) {
-		return false;
-	}
+
+#ifdef DATA_ENCODER_CHECKING
+	DATA_ENCODER_CHECK((ptr + cnt7 + 1) < (data + maxLen));
+#endif
+
 	if (cnt7 == 0) {
 		ptr[0] = 0;
 	}
@@ -23,11 +25,13 @@ bool MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
     ptr += 8;
     cnt7 = 0;
   }
-  return true;
+
+	DATA_ENCODER_TRUE();
 }
 
-bool MDDataToSysexEncoder::pack8(uint8_t inb) {
-	return encode7Bit(inb);
+DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::pack8(uint8_t inb) {
+	DATA_ENCODER_CHECK(encode7Bit(inb));
+	DATA_ENCODER_TRUE();
 }
 
 uint16_t MDDataToSysexEncoder::finish() {
@@ -41,7 +45,7 @@ void MDSysexToDataEncoder::init(uint8_t *_data, uint16_t _maxLen) {
 	retLen = 0;
 }
 
-bool MDSysexToDataEncoder::pack8(uint8_t inb) {
+DATA_ENCODER_RETURN_TYPE MDSysexToDataEncoder::pack8(uint8_t inb) {
 	if ((cnt % 8) == 0) {
 		bits = inb;
 	} else {
@@ -51,25 +55,30 @@ bool MDSysexToDataEncoder::pack8(uint8_t inb) {
 	cnt++;
 
 	if (cnt7 == 7) {
-		return unpack8Bit();
+		DATA_ENCODER_CHECK(unpack8Bit());
 	}
-	return true;
+	DATA_ENCODER_TRUE();
 }
 
-bool MDSysexToDataEncoder::unpack8Bit() {
+DATA_ENCODER_RETURN_TYPE MDSysexToDataEncoder::unpack8Bit() {
 	for (uint8_t i = 0; i < cnt7; i++) {
 		*(ptr++) = tmpData[i];
 		retLen++;
 	}
 	cnt7 = 0;
-	return true;
+	DATA_ENCODER_TRUE();
 }
 
 uint16_t MDSysexToDataEncoder::finish() {
+#ifdef DATA_ENCODER_CHECKING
 	if (!unpack8Bit())
 		return 0;
 	else
 		return retLen;
+#else
+	unpack8Bit();
+	return retLen;
+#endif
 }
 
 void MDSysexDecoder::init(uint8_t *_data, uint16_t _maxLen) {
@@ -78,7 +87,7 @@ void MDSysexDecoder::init(uint8_t *_data, uint16_t _maxLen) {
   cnt = 0;
 }
 
-bool MDSysexDecoder::get8(uint8_t *c) {
+DATA_ENCODER_RETURN_TYPE MDSysexDecoder::get8(uint8_t *c) {
 	if ((cnt % 8) == 0) {
 		bits = *(ptr++);
 		cnt++;
@@ -87,5 +96,5 @@ bool MDSysexDecoder::get8(uint8_t *c) {
 	*c = *(ptr++) | (bits & 0x80);
 	cnt++;
 
-	return true;
+	DATA_ENCODER_TRUE();
 }

@@ -40,7 +40,7 @@ public:
   static uint64_t to64Bit(uint8_t *b);
   static void from64Bit(uint64_t num, uint8_t *b);
 	static bool checkSysexChecksum(uint8_t *data, uint16_t len);
-	static bool calculateSysexChecksum(uint8_t *data, uint16_t len);
+	static void calculateSysexChecksum(uint8_t *data, uint16_t len);
 };
 
 #include "MNMDataEncoder.hh"

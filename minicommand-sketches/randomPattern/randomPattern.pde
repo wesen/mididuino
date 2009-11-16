@@ -3,7 +3,7 @@
 #include <MDWesenLivePatchSketch.h>
 
 MDPatternEuclidSketch sketch;
-MDWesenLivePatchSketch sketch2;
+// MDWesenLivePatchSketch sketch2;
 
 void setup() {
   initMDTask();

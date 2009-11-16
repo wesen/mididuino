@@ -112,6 +112,7 @@ extern "C" {
 
 
 void m_memcpy(void *dst, void *src, uint16_t cnt);
+void m_memset(void *dst, uint16_t cnt, uint8_t elt);
 void m_strncpy(void *dst, const char *src, uint16_t cnt);
 void m_strncpy_fill(void *dst, const char *src, uint16_t cnt);
 void m_memcpy_p(void *dst, PGM_P src, uint16_t cnt);

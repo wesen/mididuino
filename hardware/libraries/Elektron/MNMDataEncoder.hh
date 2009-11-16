@@ -17,9 +17,9 @@ public:
   }
 
   virtual void init(uint8_t *_sysex, uint16_t _sysexLen);
-  bool encode7Bit(uint8_t inb);
-  virtual bool pack8(uint8_t inb);
-  bool packLastByte();
+  DATA_ENCODER_RETURN_TYPE encode7Bit(uint8_t inb);
+  virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb);
+  DATA_ENCODER_RETURN_TYPE packLastByte();
   virtual uint16_t finish();
 };
 
@@ -37,8 +37,8 @@ public:
   }
 
   virtual void init(uint8_t *_data, uint16_t _maxLen);
-  virtual bool pack8(uint8_t inb);
-  bool unpack8Bit();
+  virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb);
+  DATA_ENCODER_RETURN_TYPE unpack8Bit();
   virtual uint16_t finish();
 };
 
@@ -56,8 +56,8 @@ public:
 	}
 	
 	virtual void init(uint8_t *_data, uint16_t _maxLen);
-	virtual bool get8(uint8_t *c);
-	virtual bool getNextByte(uint8_t *c);
+	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c);
+	virtual DATA_ENCODER_RETURN_TYPE getNextByte(uint8_t *c);
 };
 
 #endif /* MNM_DATA_ENCODER_H__ */

@@ -13,43 +13,29 @@
 // #include "GUI.h"
 
 void MDPattern::init() {
-  for (int i = 0; i < 16; i++) {
-    for (int j = 0; j < 24; j++) {
-      paramLocks[i][j] = -1;
-    }
-  }
-
   numRows = 0;
-  for (int i = 0; i < 64; i++) {
-    lockTracks[i] = -1;
-    lockParams[i] = -1;
-    for (int j = 0; j < 64; j++) {
-      locks[i][j] = 255;
-    }
-  }
 
-  for (int i = 0; i < 16; i++) {
-    trigPatterns[i] = 0;
-    lockPatterns[i] = 0;
-    accentPatterns[i] = 0;
-    slidePatterns[i] = 0;
-    swingPatterns[i] = 0;
-  }
+	m_memclr(this, sizeof(MDPattern));
 
-  accentPattern = 0;
-  slidePattern = 0;
-  swingPattern = 0;
-  accentAmount = 0;
+	m_memset(lockTracks, sizeof(lockTracks), -1);
+	m_memset(lockParams, sizeof(lockParams), -1);
+	m_memset(locks, sizeof(locks), -1);
+	m_memset(paramLocks, sizeof(paramLocks), -1);
+
+	//  accentPattern = 0;
+	slidePattern = 0;
+	swingPattern = 0;
+	//  accentAmount = 0;
   accentEditAll = 1;
   swingEditAll = 1;
   slideEditAll = 1;
-	doubleTempo = 0;
+	//	doubleTempo = 0;
 
   patternLength = 16;
   swingAmount = 50 << 14;
-  origPosition = 0;
-  kit = 0;
-  scale = 0;
+	//  origPosition = 0;
+	//  kit = 0;
+	//  scale = 0;
 }
 
 bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
@@ -64,17 +50,14 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
 
-  if (len == (0x1521 - 6)) {
-    isExtraPattern = true;
-  } else {
-    isExtraPattern = false;
-  }
+	isExtraPattern = (len == (0x1521 - 6));
   
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
     return false;
   }
 
-  origPosition = data[9 - 6];
+	uint8_t *ptr = data + 3;
+  origPosition = *ptr;
 	MDSysexDecoder decoder(data + 0xA - 6, 74);
 	decoder.get32(trigPatterns, 16);
 
@@ -87,12 +70,13 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 	decoder.get32(&swingPattern);
 	decoder.get32(&swingAmount);
 
-  accentAmount = data[0xB1 - 6];
-  patternLength = data[0xB2 - 6];
-  doubleTempo = (data[0xb3 - 6] == 1);
-  scale = data[0xb4 - 6];
-  kit = data[0xb5 - 6];
-  numLockedRows = data[0xb6 - 6];
+	ptr = data + 0xb1 - 6;
+  accentAmount = *(ptr++);
+  patternLength = *(ptr++);
+  doubleTempo = (*(ptr++) == 1);
+  scale = *(ptr++);
+  kit = *(ptr++);
+  numLockedRows = *(ptr++);
 
 	decoder.init(data + 0xb7 - 6, 2341);
 	for (uint8_t i = 0; i < 64; i++) {
@@ -101,13 +85,11 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 
 	decoder.init(data + 0x9DC - 6, 234);
 	{
-		uint32_t tmp;
-		decoder.get32(&tmp);
-		accentEditAll = (tmp == 1);
-		decoder.get32(&tmp);
-		slideEditAll = (tmp == 1);
-		decoder.get32(&tmp);
-		swingEditAll = (tmp == 1);
+		uint32_t tmp[3];
+		decoder.get32(tmp, 3);
+		accentEditAll = (tmp[0] == 1);
+		slideEditAll = (tmp[1] == 1);
+		swingEditAll = (tmp[2] == 1);
 	}
 	decoder.get32(accentPatterns, 16);
 	decoder.get32(slidePatterns, 16);
@@ -126,24 +108,16 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 
   if (isExtraPattern) {
 		decoder.init(data + 0xac6 - 6, 2647);
-    for (int i = 0; i < 16; i++) {
-			decoder.get32hi(trigPatterns + i);
-    }
+		decoder.get32hi(trigPatterns, 16);
 		decoder.get32hi(&accentPattern);
 		decoder.get32hi(&slidePattern);
 		decoder.get32hi(&swingPattern);
 		for (uint8_t i = 0; i < 64; i++) {
 			decoder.get(locks[i] + 32, 32);
 		}
-		for (int i = 0; i < 16; i++) {
-			decoder.get32hi(accentPatterns + i);
-		}
-		for (int i = 0; i < 16; i++) {
-			decoder.get32hi(slidePatterns + i);
-		}
-		for (int i = 0; i < 16; i++) {
-			decoder.get32hi(swingPatterns + i);
-		}
+		decoder.get32hi(accentPatterns, 16);
+		decoder.get32hi(slidePatterns, 16);
+		decoder.get32hi(swingPatterns, 16);
   }
 
   return true;

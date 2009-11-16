@@ -40,24 +40,14 @@ uint16_t ElektronHelper::MDSysexToData(uint8_t *sysex, uint8_t *data, uint16_t l
 uint16_t ElektronHelper::MNMDataToSysex(uint8_t *data, uint8_t *sysex,
 					uint16_t len, uint16_t sysexLen) {
   MNMDataToSysexEncoder encoder(sysex, sysexLen);
-  for (uint16_t i = 0; i < len; i++) {
-    if (!encoder.pack8(data[i]))
-      return 0;
-  }
+	encoder.pack(data, len);
   return encoder.finish();
 }
 
 uint16_t ElektronHelper::MNMSysexToData(uint8_t *sysex, uint8_t *data,
 					uint16_t len, uint16_t maxLen) {
   MNMSysexToDataEncoder encoder(data, maxLen);
-  for (uint16_t i = 0; i < len; i++) {
-    if (!encoder.pack8(sysex[i])) {
-#ifdef HOST_MIDIDUINO
-      fprintf(stderr, "no space left at byte %d\n", i);
-#endif
-      return 0;
-    }
-  }
+	encoder.pack(sysex, len);
   return encoder.finish();
 }
 
@@ -132,7 +122,7 @@ bool ElektronHelper::checkSysexChecksum(uint8_t *data, uint16_t len) {
 	return true;
 }
 
-bool ElektronHelper::calculateSysexChecksum(uint8_t *data, uint16_t len) {
+void ElektronHelper::calculateSysexChecksum(uint8_t *data, uint16_t len) {
 	data[0] = 0xF0;
   uint16_t checksum = 0;
   for (int i = 9; i < len; i++)

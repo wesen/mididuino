@@ -91,6 +91,13 @@ void m_memclr(void *dst, uint16_t cnt) {
   }
 }
 
+void m_memset(void *dst, uint16_t cnt, uint8_t elt) {
+  while (cnt) {
+    *((uint8_t *)dst++) = elt;
+    cnt--;
+  }
+}
+
 void m_str16cpy_fill(void *dst, const char *src) {
   m_strncpy_fill(dst, src, 16);
 }
