@@ -8,7 +8,11 @@
 
 void CCEncoderHandle(Encoder *enc) {
   CCEncoder *ccEnc = (CCEncoder *)enc;
-  MidiUart.sendCC(ccEnc->getChannel(), ccEnc->getCC(), ccEnc->getValue());
+	uint8_t channel = ccEnc->getChannel();
+	uint8_t cc = ccEnc->getCC();
+	uint8_t value = ccEnc->getValue();
+	
+  MidiUart.sendCC(channel, cc, value);
 }
 
 void VarRangeEncoderHandle(Encoder *enc) {

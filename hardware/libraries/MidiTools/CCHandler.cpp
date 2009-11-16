@@ -22,8 +22,8 @@ void CCHandler::onCCCallback(uint8_t *msg) {
   cc.value = msg[2];
 
 #ifdef DEBUG_CCHANDLER
-    printf("size: %d, channel: %d, cc: %d, value: %d\n",
-	   incomingCCs.size(), cc.channel, cc.cc, cc.value);
+	printf("size: %d, channel: %d, cc: %d, value: %d\n",
+				 incomingCCs.size(), cc.channel, cc.cc, cc.value);
 #endif
   
   bool found = false;
@@ -31,7 +31,7 @@ void CCHandler::onCCCallback(uint8_t *msg) {
     incoming_cc_t *cc2 = incomingCCs.getp(i);
 #ifdef DEBUG_CCHANDLER
     printf("i: %d, channel: %d, cc: %d, value: %d\n",
-	   i, cc2->channel, cc2->cc, cc2->value);
+					 i, cc2->channel, cc2->cc, cc2->value);
 #endif
     
     if (cc2->channel == cc.channel && cc2->cc == cc.cc) {
@@ -46,14 +46,14 @@ void CCHandler::onCCCallback(uint8_t *msg) {
       /* swap to top */
       //      incoming_cc_t *topcc = incomingCCs.getp(incomingCCs.size() - 1);
       for (int j = i; j >= 1; j--) {
-	incoming_cc_t *botcc = incomingCCs.getp(j);
-	incoming_cc_t *topcc = incomingCCs.getp(j-1);
-	botcc->value = topcc->value;
-	botcc->channel = topcc->channel;
-	botcc->cc = topcc->cc;
-	topcc->value = cc.value;
-	topcc->cc = cc.cc;
-	topcc->channel = cc.channel;
+				incoming_cc_t *botcc = incomingCCs.getp(j);
+				incoming_cc_t *topcc = incomingCCs.getp(j-1);
+				botcc->value = topcc->value;
+				botcc->channel = topcc->channel;
+				botcc->cc = topcc->cc;
+				topcc->value = cc.value;
+				topcc->cc = cc.cc;
+				topcc->channel = cc.channel;
       }
       break;
     }
@@ -63,7 +63,7 @@ void CCHandler::onCCCallback(uint8_t *msg) {
     printf("before, start: %d, count: %d\n", incomingCCs.start, incomingCCs.count);
     for (int i = 0; i < countof(incomingCCs.buf); i++) {
       printf("%d: channel: %d, cc: %d\n", i,
-	     incomingCCs.buf[i].channel, incomingCCs.buf[i].cc);
+						 incomingCCs.buf[i].channel, incomingCCs.buf[i].cc);
     }
 #endif
 
@@ -73,7 +73,7 @@ void CCHandler::onCCCallback(uint8_t *msg) {
     printf("after, start: %d, count: %d\n", incomingCCs.start, incomingCCs.count);
     for (int i = 0; i < countof(incomingCCs.buf); i++) {
       printf("%d: channel: %d, cc: %d\n", i,
-	     incomingCCs.buf[i].channel, incomingCCs.buf[i].cc);
+						 incomingCCs.buf[i].channel, incomingCCs.buf[i].cc);
     }
 #endif
   }
@@ -83,7 +83,7 @@ void CCHandler::onCCCallback(uint8_t *msg) {
   for (int i = 0; i < incomingCCs.size(); i++) {
     incoming_cc_t *cc2 = incomingCCs.getp(i);
     printf("i: %d, channel: %d, cc: %d, value: %d\n",
-	   i, cc2->channel, cc2->cc, cc2->value);
+					 i, cc2->channel, cc2->cc, cc2->value);
   }
   printf("\n\n");
 #endif
@@ -99,8 +99,8 @@ void CCHandler::onCCCallback(uint8_t *msg) {
   for (int i = 0; i < encoders.size; i++) {
     if (encoders.arr[i] != NULL) {
       if (encoders.arr[i]->getChannel() == cc.channel &&
-	  encoders.arr[i]->getCC() == cc.cc) {
-	encoders.arr[i]->setValue(cc.value);
+					encoders.arr[i]->getCC() == cc.cc) {
+				encoders.arr[i]->setValue(cc.value);
       }
     }
   }
@@ -114,8 +114,8 @@ void CCHandler::onOutgoingCCCallback(uint8_t *msg) {
   for (int i = 0; i < encoders.size; i++) {
     if (encoders.arr[i] != NULL) {
       if (encoders.arr[i]->getChannel() == channel &&
-	  encoders.arr[i]->getCC() == cc) {
-	encoders.arr[i]->setValue(value);
+					encoders.arr[i]->getCC() == cc) {
+				encoders.arr[i]->setValue(value);
       }
     }
   }

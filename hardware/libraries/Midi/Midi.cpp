@@ -51,7 +51,12 @@ void MidiClass::handleByte(uint8_t byte) {
       case MIDI_START:
 				MidiClock.handleMidiStart();
 				break;
+
+      case MIDI_CONTINUE:
+				MidiClock.handleMidiContinue();
+				break;
 	
+				
       case MIDI_STOP:
 				MidiClock.handleMidiStop();
 				break;
@@ -70,7 +75,6 @@ void MidiClass::handleByte(uint8_t byte) {
 
   if (!midiActive)
     return;
-
 
   switch (in_state) {
   case midi_ignore_message:
@@ -151,7 +155,7 @@ void MidiClass::handleByte(uint8_t byte) {
 		
     if (callback < 7) {
       midiCallbacks[callback].call(msg);
-    } else if (msg[0] == MIDI_SONG_POSITION_PTR) {
+    } else if (last_status == MIDI_SONG_POSITION_PTR) {
 #ifndef HOST_MIDIDUINO
       MidiClock.handleSongPositionPtr(msg);
 #endif

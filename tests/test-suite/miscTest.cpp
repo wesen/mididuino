@@ -28,3 +28,35 @@ TEST (interpolate) {
     CHECK_EQUAL(128 - i, interpolate_8(128, 0, i));
   }
 }
+
+struct PrintfFixture {
+	PrintfFixture() {
+		for (uint8_t i = 0; i < sizeof(buf); i++) {
+			buf[i] = 0;
+		}
+	}
+	char buf[128];
+};
+
+TEST_F (PrintfFixture, snprintf) {
+	m_snprintf(buf, sizeof(buf), "foo");
+	CHECK(!strcmp("foo", buf));
+
+	m_snprintf(buf, 2, "foo");
+	CHECK(!strcmp("f", buf));
+
+	m_snprintf(buf, sizeof(buf), "foo %b", 5);
+	CHECK(!strcmp("foo 005", buf));
+
+	m_snprintf(buf, sizeof(buf), "foo %B", 10000);
+	CHECK(!strcmp("foo 10000", buf));
+
+	m_snprintf(buf, sizeof(buf), "foo %x", 0xFF);
+	CHECK(!strcmp("foo ff", buf));
+
+	m_snprintf(buf, sizeof(buf), "foo %X", 0xFF);
+	CHECK(!strcmp("foo 00ff", buf));
+
+	m_snprintf(buf, sizeof(buf), "foo %s", "foo");
+	CHECK(!strcmp("foo foo", buf));
+}

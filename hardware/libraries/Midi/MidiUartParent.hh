@@ -180,6 +180,11 @@ public:
   }
 
   void sendNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
+		if ((channel >= 16) ||
+				(note >= 128) ||
+				(velocity >= 128))
+			return;
+
     uint8_t msg[3] = {
       MIDI_NOTE_ON | channel,
       note,
@@ -190,6 +195,11 @@ public:
   }
 
   void sendNoteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
+		if ((channel >= 16) ||
+				(note >= 128) ||
+				(velocity >= 128))
+			return;
+
     uint8_t msg[3] = {
       MIDI_NOTE_OFF | channel,
       note,
@@ -200,7 +210,12 @@ public:
   }
 
   void sendCC(uint8_t channel, uint8_t cc, uint8_t value) {
-    uint8_t msg[3] = {
+		if ((channel >= 16) ||
+				(cc >= 128) ||
+				(value >= 128))
+			return;
+
+	uint8_t msg[3] = {
       MIDI_CONTROL_CHANGE | channel,
       cc,
       value
@@ -210,14 +225,27 @@ public:
   }
 
   void sendProgramChange(uint8_t channel, uint8_t program) {
+		if ((channel >= 16) ||
+				(program >= 128))
+			return;
+
     sendMessage(MIDI_PROGRAM_CHANGE | channel, program);
   }
 
   void sendPolyKeyPressure(uint8_t channel, uint8_t note, uint8_t pressure) {
+		if ((channel >= 16) ||
+				(note >= 128) ||
+				(pressure >= 128))
+			return;
+
     sendMessage(MIDI_AFTER_TOUCH | channel, note, pressure);
   }
 
   void sendChannelPressure(uint8_t channel, uint8_t pressure) {
+		if ((channel >= 16) ||
+				(pressure >= 128))
+			return;
+
     sendMessage(MIDI_CHANNEL_PRESSURE | channel, pressure);
   }
 
@@ -266,6 +294,15 @@ public:
 		sendString(data, m_strlen(data));
 	}
 	void sendString(const char *data, uint16_t cnt);
+
+	void printfString(const char *fmt, ...) {
+		va_list lp;
+		va_start(lp, fmt);
+		char buf[128];
+		uint16_t len = m_vsnprintf(buf, sizeof(buf), fmt, lp);
+		va_end(lp);
+		sendString(buf, len);
+	}
 
 #ifdef HOST_MIDIDUINO
   virtual ~MidiUartParent() {

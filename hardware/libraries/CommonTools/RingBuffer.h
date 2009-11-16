@@ -20,6 +20,7 @@ class CRingBuffer {
   C peek() volatile;
   bool isEmpty() volatile;
   bool isFull() volatile;
+	T size() volatile;
 };
 
 template <int N, class T = uint8_t>
@@ -48,6 +49,14 @@ template <class C, int N, class T >
   buf[wr] = c;
   wr = RB_INC(wr);
   return true;
+}
+
+template <class C, int N, class T> T CRingBuffer<C, N, T>::size() volatile {
+	if (wr >= rd) {
+		return wr - rd;
+	} else {
+		return 256 << (sizeof(T) - 1) - rd + wr;
+	}
 }
 
 template <class C, int N, class T>

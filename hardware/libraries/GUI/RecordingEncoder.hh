@@ -15,7 +15,6 @@ public:
     initRecordingEncoder(_realEnc);
   }
 
-
   void initRecordingEncoder(Encoder *_realEnc) {
     realEnc = _realEnc;
     recording = false;

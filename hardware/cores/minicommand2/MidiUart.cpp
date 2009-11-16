@@ -105,6 +105,10 @@ SIGNAL(USART0_RX_vect) {
       MidiClock.handleMidiStop();
       break;
 
+		case MIDI_CONTINUE:
+			MidiClock.handleMidiContinue();
+			break;
+
     default:
       MidiUart.rxRb.put(c);
       break;
@@ -112,10 +116,10 @@ SIGNAL(USART0_RX_vect) {
   } else {
     MidiUart.rxRb.put(c);
 
-#if 0
+#if 1
     // show overflow debug
     if (MidiUart.rxRb.overflow) {
-      setLed();
+      setLed2();
     }
 #endif
     

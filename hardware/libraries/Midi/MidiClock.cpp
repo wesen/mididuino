@@ -28,7 +28,6 @@ void MidiClockClass::init() {
   div16th_counter = indiv16th_counter = 0;
   mod6_counter = inmod6_counter = 0;
   pll_x = 200;
-  counter = 10000;
   isInit = false;
 }
 
@@ -45,15 +44,23 @@ void MidiClockClass::handleMidiStart() {
     MidiUart.sendRaw(MIDI_START);
   init();
   state = STARTING;
-  outdiv96th_counter = 0;
-  counter = 10000;
 }
 
 void MidiClockClass::handleMidiStop() {
   state = PAUSED;
   if (transmit)
     MidiUart.sendRaw(MIDI_STOP);
-  
+}
+
+
+void MidiClockClass::handleMidiContinue() {
+  if (transmit)
+    MidiUart.sendRaw(MIDI_CONTINUE);
+  state = STARTING;
+
+  counter = 10000;
+  rx_clock = rx_last_clock = 0;
+  isInit = false;
 }
 
 void MidiClockClass::start() {
@@ -94,22 +101,36 @@ void MidiClockClass::setTempo(uint16_t _tempo) {
 
 void MidiClockClass::handleSongPositionPtr(uint8_t *msg) {
   if (mode == EXTERNAL || mode == EXTERNAL_UART2) {
+		if (transmit) {
+			MidiUart.puts(msg, 3);
+		}
+		
     uint16_t ptr = (msg[1] & 0x7F) | ((msg[2] & 0x7F) << 7);
     USE_LOCK();
     SET_LOCK();
-    indiv96th_counter = ptr;
-    indiv32th_counter = ptr / 3;
-    indiv16th_counter = ptr / 6;
-    inmod6_counter = indiv96th_counter % 6;
+		//		MidiUart.printfString("SONG POS %x %x %X", msg[1], msg[2], ptr);
+		//		MidiUart.printfString("16 BEF %X", (uint16_t)div16th_counter);
+    outdiv96th_counter = div96th_counter = indiv96th_counter = ptr * 6;
+    div32th_counter = indiv32th_counter = ptr * 2;
+    div16th_counter = indiv16th_counter = ptr;
+
+    on16Callbacks.call(div16th_counter);
+    on32Callbacks.call(div32th_counter);
+
+    mod6_counter = inmod6_counter = 0;
     CLEAR_LOCK();
   }
 }
 
 void MidiClockClass::setSongPositionPtr(uint16_t pos) {
-  div96th_counter = pos;
-  div32th_counter = pos / 3;
-  div16th_counter = pos / 6;
-  mod6_counter = pos % 6;
+  div96th_counter = pos * 6;
+  div32th_counter = pos * 2;
+  div16th_counter = pos;
+  mod6_counter = 0;
+
+	on16Callbacks.call(div16th_counter);
+	on32Callbacks.call(div32th_counter);
+	
   if (transmit) {
     uint8_t msg[3] = { MIDI_SONG_POSITION_PTR, 0, 0 };
     msg[1] = pos & 0x7F;
@@ -185,33 +206,27 @@ void MidiClockClass::handleImmediateClock() {
 
   if (state == STARTING) {
     state = STARTED;
-  }
+  } else if (state == STARTED) {
+		div96th_counter++;
+		mod6_counter++;
+		if (mod6_counter == 6) {
+			mod6_counter = 0;
+			div16th_counter++;
+			div32th_counter++;
+		} else if (mod6_counter == 3) {
+			div32th_counter++;
+		}
+	}
 
-  if (state != STARTED)
-    return;
-  
-  if (mod6_counter == 5) {
-    div16th_counter++;
-    div32th_counter++;
-  }
-
+	if (state != STARTED)
+		return;
   
   if (div16th_counter % 4 == 0) {
     setLed();
   } else {
     clearLed();
   }
-
   
-  if (mod6_counter == 2) {
-    div32th_counter++;
-  }
-  
-  div96th_counter++;
-  mod6_counter++;
-  if (mod6_counter == 6)
-    mod6_counter = 0;
-
   static bool inCallback = false;
   if (inCallback) {
     return;
@@ -225,11 +240,11 @@ void MidiClockClass::handleImmediateClock() {
 
   //    on96Callbacks.call();
   
-  if (_mod6_counter == 5) {
+  if (mod6_counter == 0) {
     on16Callbacks.call(div16th_counter);
     on32Callbacks.call(div32th_counter);
   }
-  if (_mod6_counter == 2) {
+  if (mod6_counter == 3) {
     on32Callbacks.call(div32th_counter);
   }
   
@@ -256,20 +271,21 @@ void MidiClockClass::handleClock() {
   rx_last_clock = rx_clock;
   rx_clock = my_clock;
 
-  if (inmod6_counter == 5) {
-    indiv16th_counter++;
-    indiv32th_counter++;
-  }
+	if (state == STARTING) {
+		state = STARTED;
+	} else {
+		indiv96th_counter++;
+		inmod6_counter++;
+		if (inmod6_counter == 6) {
+			inmod6_counter = 0;
+			indiv16th_counter++;
+			indiv32th_counter++;
+		} else if (inmod6_counter == 3) {
+			indiv32th_counter++;
+		}
+	}
   
-  if (inmod6_counter == 2) {
-    indiv32th_counter++;
-  }
-  
-  indiv96th_counter++;
-  inmod6_counter++;
-  if (inmod6_counter == 6)
-    inmod6_counter = 0;
-
+	
   static uint16_t last_phase_add;
 #ifdef DEBUG_MIDI_CLOCK
   GUI.setLine(GUI.LINE1);
@@ -307,10 +323,6 @@ void MidiClockClass::handleClock() {
     }
   }
 
-  if (state == STARTING && indiv96th_counter >= 2) {
-    state = STARTED;
-  }
-
   //  clearLed();
   
 }
@@ -338,13 +350,13 @@ void MidiClockClass::handleTimerInt()  {
 #endif
 
     if (inIRQ) {
-      setLed2();
+			//      setLed2();
       return;
     } else {
-      clearLed2();
+			//      clearLed2();
       inIRQ = true;
     }
-  
+
     uint8_t _mod6_counter = mod6_counter;
     
     if (mod6_counter == 5) {
@@ -407,11 +419,11 @@ void MidiClockClass::handleTimerInt()  {
 #endif
       
     
-    if (_mod6_counter == 5) {
+    if (mod6_counter == 0) {
       on16Callbacks.call(div16th_counter);
       on32Callbacks.call(div32th_counter);
     }
-    if (_mod6_counter == 2) {
+    if (mod6_counter == 3) {
       on32Callbacks.call(div32th_counter);
     }
 

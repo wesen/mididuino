@@ -118,6 +118,7 @@ class MidiClockClass {
   void updateClockPhase();
   void updateClockInterval();
   void handleMidiStart();
+  void handleMidiContinue();
   void handleMidiStop();
   void handleTimerInt();
   void handleSongPositionPtr(uint8_t *msg);

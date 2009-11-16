@@ -5,6 +5,8 @@
 #include <util/delay.h>
 #endif
 
+#include <stdarg.h>
+
 #define _BV32(i) (uint32_t)((uint32_t)(1UL << i))
 
   /** Bit-level access and test macros. **/
@@ -109,6 +111,9 @@ extern "C" {
 #define delayMicroseconds(us)
 #endif
 
+
+uint16_t m_snprintf(char *dst, uint16_t len, const char *fmt, ...);
+	uint16_t m_vsnprintf(char *dst, uint16_t len, const char *fmt, va_list lp);
 
 void m_memcpy(void *dst, void *src, uint16_t cnt);
 void m_memset(void *dst, uint16_t cnt, uint8_t elt);

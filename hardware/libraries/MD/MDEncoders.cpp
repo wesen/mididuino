@@ -33,9 +33,6 @@ uint8_t MDEncoder::getCC() {
 }
 
 uint8_t MDEncoder::getChannel() {
-  if (MD.loadedGlobal == false || MD.global.baseChannel == 127)
-    return 127;
-  
   uint8_t channel = track >> 2;
   return MD.global.baseChannel + channel;
 }
