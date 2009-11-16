@@ -22,7 +22,7 @@ public:
     ptr = data;
   }
 
-	virtual DATA_ENCODER_RETURN_TYPE pack(uint8_t *inb, uint16_t len) {
+	DATA_ENCODER_RETURN_TYPE pack(uint8_t *inb, uint16_t len) {
 		for (uint16_t i = 0; i < len; i++) {
 			if (!pack8(inb[i]))
 				return false;
@@ -33,20 +33,20 @@ public:
   virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb) {
     return false;
   }
-	virtual DATA_ENCODER_RETURN_TYPE pack16(uint16_t inw) {
+	DATA_ENCODER_RETURN_TYPE pack16(uint16_t inw) {
 		return pack8((inw >> 8) & 0xFF) && 
 			pack8(inw & 0xFF);
 		
 	}
 
-	virtual DATA_ENCODER_RETURN_TYPE pack32(uint32_t inw) {
+	DATA_ENCODER_RETURN_TYPE pack32(uint32_t inw) {
 		return pack8((inw >> 24) & 0xFF) &&
 			pack8((inw >> 16) & 0xFF) &&
 			pack8((inw >> 8) & 0xFF) &&
 			pack8(inw & 0xFF);
 	}
 
-	virtual DATA_ENCODER_RETURN_TYPE pack32(uint32_t *addr, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE pack32(uint32_t *addr, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!pack32(addr[i]))
 				return false;
@@ -54,7 +54,7 @@ public:
 		return true;
 	}
 
-	virtual DATA_ENCODER_RETURN_TYPE pack32(uint64_t *addr, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE pack32(uint64_t *addr, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!pack32(addr[i]))
 				return false;
@@ -62,12 +62,12 @@ public:
 		return true;
 	}
 
-	virtual DATA_ENCODER_RETURN_TYPE pack32hi(uint64_t inw) {
+	DATA_ENCODER_RETURN_TYPE pack32hi(uint64_t inw) {
 		return pack32(inw >> 32);
 	}
 
 
-	virtual DATA_ENCODER_RETURN_TYPE pack32hi(uint64_t *addr, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE pack32hi(uint64_t *addr, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!pack32hi(addr[i]))
 				return false;
@@ -75,11 +75,11 @@ public:
 		return true;
 	}
 
-	virtual DATA_ENCODER_RETURN_TYPE pack64(uint64_t inw) {
+	DATA_ENCODER_RETURN_TYPE pack64(uint64_t inw) {
 		return pack32(inw & 0xFFFFFFFF) && pack32hi(inw);
 	}
 
-	virtual DATA_ENCODER_RETURN_TYPE pack64(uint64_t *addr, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE pack64(uint64_t *addr, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!pack64(addr[i]))
 				return false;
@@ -113,7 +113,7 @@ public:
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c) {
 		return false;
 	}
-	virtual DATA_ENCODER_RETURN_TYPE get16(uint16_t *c) {
+	DATA_ENCODER_RETURN_TYPE get16(uint16_t *c) {
 		uint8_t b1, b2;
 		bool ret = get8(&b1) && get8(&b2);
 		if (ret) {
@@ -121,7 +121,7 @@ public:
 		}
 		return ret;
 	}
-	virtual DATA_ENCODER_RETURN_TYPE get32(uint32_t *c) {
+	DATA_ENCODER_RETURN_TYPE get32(uint32_t *c) {
 		uint16_t b1, b2;
 		bool ret = get16(&b1) && get16(&b2);
 		if (ret) {
@@ -129,14 +129,14 @@ public:
 		}
 		return ret;
 	}
-	virtual DATA_ENCODER_RETURN_TYPE get32(uint32_t *c, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE get32(uint32_t *c, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!get32(&c[i]))
 				return false;
 		}
 		return true;
 	}
-	virtual DATA_ENCODER_RETURN_TYPE get32(uint64_t *c) {
+	DATA_ENCODER_RETURN_TYPE get32(uint64_t *c) {
 		uint32_t c2;
 		if (!get32(&c2)) {
 			return false;
@@ -144,14 +144,14 @@ public:
 		*c = c2;
 		return true;
 	}
-	virtual DATA_ENCODER_RETURN_TYPE get32(uint64_t *c, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE get32(uint64_t *c, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!get32(&c[i]))
 				return false;
 		}
 		return true;
 	}
-	virtual DATA_ENCODER_RETURN_TYPE get32hi(uint64_t *c) {
+	DATA_ENCODER_RETURN_TYPE get32hi(uint64_t *c) {
 		uint32_t c2;
 		if (!get32(&c2)) {
 			return false;
@@ -159,7 +159,7 @@ public:
 		*c |= ((uint64_t)c2) << 32;
 		return true;
 	}
-	virtual DATA_ENCODER_RETURN_TYPE get32hi(uint64_t *c, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE get32hi(uint64_t *c, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!get32hi(&c[i]))
 				return false;
@@ -168,11 +168,11 @@ public:
 	}
 	
 
-	virtual DATA_ENCODER_RETURN_TYPE get64(uint64_t *c) {
+	DATA_ENCODER_RETURN_TYPE get64(uint64_t *c) {
 		return get32(c) && get32hi(c);
 	}
 
-	virtual DATA_ENCODER_RETURN_TYPE get64(uint64_t *c, uint16_t cnt) {
+	DATA_ENCODER_RETURN_TYPE get64(uint64_t *c, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!get64(&c[i]))
 				return false;
@@ -180,7 +180,7 @@ public:
 		return true;
 	}
 	
-	virtual uint16_t get(uint8_t *data, uint16_t len) {
+	uint16_t get(uint8_t *data, uint16_t len) {
 		uint16_t i;
 		for (i = 0; i < len; i++) {
 			if (!get8(data + i))
