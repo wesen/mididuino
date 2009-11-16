@@ -1,0 +1,1 @@
+Midi Controller firmware allowing to quickly midi learn the last 4 moved parameters, and to record knob movements.

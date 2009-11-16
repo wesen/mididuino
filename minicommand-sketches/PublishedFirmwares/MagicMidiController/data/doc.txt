@@ -1,0 +1,50 @@
+MagicMidiController
+
+This is a firmware providing "magic" MIDI learning functionalities for
+normal MIDI devices (not MachineDrum or MonoMachine specific). The
+magic MIDI learn functionality allows the user to quickly MIDI learn
+the last 4 moved MD parameters. It also allows for the recording and
+overdubbing of knob movements synced to the MIDI tempo.
+
+The firmware provides 4 automagic pages. To switch from one page to
+another, hold down Button1 (top left), and press one of the 4 encoders
+to switch to the corresponding page (P0 to P3).
+
+New feature: magic learning. Every page (P0 to P3) is a simple
+controller page with 4 encoders. After switching on, these four
+encoders are not assigned. Move some parameters on the connected MIDI
+device, and then press Button2 (the bottom left button). The
+MiniCommand will MIDI learn the last 4 moved parameters and display
+their channel and CC numbers (in hexadecimal and starting from 0, so
+for example channel 1 CC 30 is going to be 01E, channel 5 CC 72 is
+going to be 448). This way, you can move parameters on the connected
+device, then quickly assign these on the MC, and switch to another
+page or track on the connected device while still being able to tweak
+the previous parameters. This is incredibly useful when playing live:
+you discover a nice sound combo, but want to modify something else
+without losing the ability to tweak the previous sound.
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which messages on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+
+New feature: knob movement recording. When MIDI sync is enabled, you
+can record knob movements for each of the 4 encoders. Make sure that
+the sync is running (the left LED is blinking), hold down Button3
+(bottom right), and turn the encoder while Button3 is held down. This
+will record the knob movements as long as the button is held down (and
+for a duration of 2 bars). When you release the button, the recorded
+sequence is played back. You can overwrite the recorded movement by
+holding down Button3 again, and moving the knob. This way, you can
+easily evolve the recorded sequences. To clear a sequence, hold down
+Button4 (top right), and press the corresponding encoder. This will
+clear the recorded sequence. The recorded sequences are also cleared
+when a new parameter has been assigned to one of the encoders. To
+clear all the recorded sequences, hold down Button4 (top right), and
+press Button1 (top left). This will clear all the recorded sequences
+on all pages.
+

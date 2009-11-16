@@ -1,0 +1,49 @@
+MDMonsterNew
+
+This is the upgraded monster firmware. It contains the Arpeggiator firmware,
+the MDWesenLivePatch firmware, and the MDPitchEuclid firmware.
+
+The first page shown is a clever firmware select page. Each encoder
+corresponds to a firmware:
+- first encoder: MDArpeggiator,
+- second encoder: MDWesenLivePatch
+- third encoder: MDPitchEuclid
+
+Pressing the encoder selects the firmware, and it is usable as it
+would be in normal mode. Holding down all 4 buttons returns to the
+selection page (this key combination is just for testing, I will try
+to come up with a better one).
+
+The selection page allows for a number of additional feature.
+
+Button1 (top left) + Encoder -> Mute On/Off
+Arp -> mute arp
+Euclid -> mute euclid
+
+Button2 (bottom left) + Encoder -> Special Function
+LivePatch -> Supatrigga
+Euclid -> randomize
+
+Button3 (bottom right) + Encoder-> Show Temporary Page 1
+Arp -> Arp Page 1 (TRK SELECT etc...)
+LivePatch -> Delay Page 1
+Euclid -> Euclid Page 1
+
+Button4 (bottom left) + Encoder -> Show Temporary Page 2
+Arp -> Arp Page 2
+LivePatch -> Breakdown
+Euclid -> Euclid Page 2
+
+----------------------------------------------------------
+
+Configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which messages on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). MonoMachine Sysex messages won't be merged correctly (for
+now).
+
+
+
+

@@ -1,0 +1,1 @@
+This version of the Euclid bassline generator stores the generated pattern directly as param locks into the Machinedrum. No more hassle trying to record param locks. Should now be mostly bugfixed and works with 64 step patterns.

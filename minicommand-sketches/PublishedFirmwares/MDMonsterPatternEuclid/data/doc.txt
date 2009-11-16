@@ -1,0 +1,2 @@
+Monster firmware combining MDWesenLivePatch and the Euclid pattern 
+generation tool for the machinedrum.

@@ -1,0 +1,1 @@
+New Monster firmware: merges MDWesenLivePatch, MDArpeggiator, MDPitchEuclid

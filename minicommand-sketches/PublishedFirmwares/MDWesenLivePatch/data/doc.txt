@@ -1,0 +1,125 @@
+MDWesenLivePatch
+
+This is the firmware Wesen uses when playing live. Its features are: -
+direct control of the Master Delay effect, - direct control of the
+RAM-P1 machine (filter and SRR) - slicing and repeating parts of the
+resampled pattern - "magic" MIDI learn function to quickly learn last
+4 moved MD parameters - recording and overdubbing of knob movements
+
+New feature: configuration of sync and merging. Hold down Button1 (top
+left) and then switch the MiniCommand ON. CLK selects the input port
+(IN1 or IN2), SND activates sending out of the clock on the MIDI
+Output, and MRG selects which messages on the second MIDI input will
+be merged into the output stream (CC, NOTE or SYX
+messages). 
+
+A note about MIDI sync: MIDI clock sync is necessary for the
+slicing/repetition and the knob movement part to work. For this, the
+MC needs to be synced to the clock of the MachineDrum. The simplest
+way to achieve this is to configure the MD to send SYNC information on
+its output. In the GLOBAL edit menu, select SYNC and set TEMPO IN to
+INTERNAL, CTRL IN to OFF, TEMPO OUT to ON and CTRL OUT to ON. On the
+MiniCommand, set CLK (in the configuration menu at startup) to
+IN1. When START is pressed on the MachineDrum, the left LED should
+blink synchronized to the tempo. Alternatively, if you are using
+multiple synthesizers and sequencers, you can connect the clock source
+to the second input of the MidiCommand, and select IN2 in the sync
+configuration menu, and set SND to ON. This will duplicate the clock
+and send it to the MachineDrum. On the MachineDrum, set TEMPO IN to
+EXTERNAL and CTRL IN to ON. This way, you can easily chain a lot of
+synthesizers. For example, we use 3 MachineDrums and 1 MonoMachine
+with 4 MiniCommands on stage. Each MiniCommand is connected directly
+to the sequencer it controls. The first MachineDrum generates the
+tempo, and in order to start the chain, TEMPO IN is set to INTERNAL,
+CTRL IN is set to OFF, TEMPO OUT to ON and CTRL OUT to ON. The first
+MiniCommand is set to CLK: IN1 *and* SND: ON. This way, the clock of
+the MachineDrum is set again to the MachineDrum, and available on the
+THRU output of the MD. This THRU is then connected to the IN2 of the
+next MiniCommand, which is configured to CLK: IN2, and SND: ON. The
+clock is sent to the MachineDrum the second MiniCommand controls, and
+is again available at the THRU output. From there, it is sent to the
+IN2 of the next MiniCommand, etc...
+
+New feature: automatic detection of global and kit. When connecting
+the MC to the MachineDrum (both input and output), it will detect the
+loaded GLOBAL settings and the loaded KIT. It will flash "LOADED KIT"
+followed by the KIT name. This allows the MC to use the current
+channel settings and the configured triggers for each track (set in
+GLOBAL -> MAP EDITOR). It will reload the kit automatically every 3
+seconds, and detect changes of GLOBAL and KITs. However, it won't
+detect if the currently used GLOBAL has been modified, you need to
+switch to another GLOBAL and then back to reload a GLOBAL. This is a
+good way to detect if the MC is connected correctly. If it doesn't
+load the KIT automatically, either IN or OUT is not connected
+correctly.
+
+New feature: automatic detection of a RAM-P1 track. The
+MDWesenLivePatch firmware assumes that resampling of the currently
+playing firmware is done with RAM-R1 and RAM-P1, and detects the track
+of the first RAM-P1 machine in the current track.
+
+New feature: modified page switching. To switch pages in the
+MDWesenLivePatch firmware, hold down Button1 (upper left) and press
+one of the encoders. The name of the corresponding page is shown above
+the encoder: DL1 (first delay control page), DL2 (second delay control
+page), RAM (automatic control of the RAM-P1 track if one is present in
+the currently loaded KIT) and AUT (automagic learning page).
+
+New feature: magic learning. The fourth page is a simple controller
+page with 4 encoders. After switching on, these four encoders are not
+assigned. Move some parameters on the MachineDrum, switch to the "AUT"
+page and then press Button2 (the bottom left button). The MiniCommand
+will MIDI learn the last 4 moved parameters and display their
+names. This way, you can move parameters on the MD, then quickly
+assign these on the MC, and switch to another page or track on the MD
+while still being able to tweak the previous parameters. This is
+incredibly useful when playing live: you discover a nice sound combo,
+but want to modify something else without losing the ability to tweak
+the previous sound.
+
+New feature: knob movement recording. On the "AUT" page, and when MIDI
+sync is enabled, you can record knob movements for each of the 4
+encoders. Make sure that the sync is running (the left LED is
+blinking), hold down Button3 (bottom right), and turn the encoder
+while Button3 is held down. This will record the knob movements as
+long as the button is held down (and for a duration of 2 bars). When
+you release the button, the recorded sequence is played back. You can
+overwrite the recorded movement by holding down Button3 again, and
+moving the knob. This way, you can easily evolve the recorded
+sequences. To clear a sequence, hold down Button4 (top right), and
+press the corresponding encoder. This will clear the recorded
+sequence. The recorded sequences are also cleared when the KIT on the
+MachineDrum is changed, or where a new parameter has been assigned to
+one of the encoders. Due to the Button3 and Button4 being used to
+control the recording, the breakdown functionality is not accessible
+on the "AUT" page.
+
+A very useful feature of the MDWesenLivePatch is the ability to
+control the playback of a P1 machine. This functionality is most
+useful when recording complete loops into the RAM-P1 machine (by
+triggering RAM-R1 on the first step of a pattern). The settings for
+the recording are a bit tricky to set, these are the one Wesen uses:
+
+RAM-R1 settings: MLEV: 24, MBAL: 0, LEN: 127, RATE: 127 RAM-P1
+settings: PTCH: 0, DEC: 127, HOLD: 127
+
+Make sure you have enough sample RAM left to not deteriorate the
+quality of the recordings too much. Once the RAM-R1 has triggered and
+recorded two bars, mute the RAM-R1 and unmute the RAM-P1 track. The
+MiniCommand will then trigger the RAM-P1 on the first step of the
+pattern, thus playing back the recorded version.
+
+The breakdown functionality is available in the "DL1", "DL2" and "RAM"
+pages. Hold down Button3 (bottom right) to enable the SupaTrigga
+mode. As long as the button is pressed, the playback of the recorded
+loop is randomly permutated and cutup (on beat boundaries). Due to the
+way the MachineDrum plays back samples, there may be clicks on higher
+beat boundaries.
+
+By holding down Button4 (top right), the control page for the
+breakdown functionality is displayed. This allows to shorten the
+playback loop by retriggering the RAM-P1 machine. SPD sets how often
+the loop is retriggered, and BRK selects when there is some variation
+in the retriggering. The loop is cut up as long as Button4 is held
+down. The breakdown can be made "sticky" by pressing Button1 (top
+left) when the breakdown page is active.

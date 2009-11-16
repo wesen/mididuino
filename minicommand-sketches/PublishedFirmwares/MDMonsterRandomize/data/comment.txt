@@ -1,0 +1,1 @@
+Monster firmware with MDArpeggiator, MDWesenLivePatch, MDPitchEuclid and MDRandomizer. Good fun!

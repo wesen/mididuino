@@ -7,29 +7,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import name.cs.csutils.CSUtils;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.config.PropertySetter;
-
-import com.ruinwesen.patch.metadata.DefaultPatchMetadata;
-import com.ruinwesen.patch.metadata.PatchMetadata;
+import com.ruinwesen.patch.metadata.*;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.DeviceId;
 import com.ruinwesen.patch.metadata.PatchMetadataIDInfo.EnvironmentId;
-import com.ruinwesen.patchmanager.client.PatchManager;
-import com.ruinwesen.patchmanager.client.protocol.Auth;
-import com.ruinwesen.patchmanager.client.protocol.PatchSource;
-import com.ruinwesen.patchmanager.client.protocol.ProtocolException;
-import com.ruinwesen.patchmanager.client.protocol.Request;
-import com.ruinwesen.patchmanager.client.protocol.RequestApprovePatch;
-import com.ruinwesen.patchmanager.client.protocol.RequestDeletePatch;
-import com.ruinwesen.patchmanager.client.protocol.RequestGetPatchSourceList;
-import com.ruinwesen.patchmanager.client.protocol.RequestGetServerInfo;
-import com.ruinwesen.patchmanager.client.protocol.RequestStorePatch;
-import com.ruinwesen.patchmanager.client.protocol.Response;
+import com.ruinwesen.patchmanager.client.*;
+import com.ruinwesen.patchmanager.client.protocol.*;
+
+import name.cs.csutils.*;
+
 import com.ruinwesen.patchmanager.swing.tasks.DeletePatchTask;
+
 
 public class CLIUtil {
 
@@ -39,6 +26,8 @@ public class CLIUtil {
 		PatchMetadata meta = new DefaultPatchMetadata();
 		meta.setTitle(title);
 		meta.setAuthor(auth.getUsername());
+		System.out.println("tags: " + tags);
+		meta.setTags(Tagset.parseTags(tags));
 		
 		meta.setComment(comment);
 		meta.setDeviceId(new DeviceId(deviceId));
@@ -46,6 +35,7 @@ public class CLIUtil {
 
 		File tmpPatchFile = File.createTempFile("patch-upload", ".tmp");
 		tmpPatchFile.deleteOnExit();
+		System.out.println("uploading " + tmpPatchFile);
 		
 		try {
 			File mididataFile = new File(filename);
@@ -59,7 +49,7 @@ public class CLIUtil {
 						documentationText = new String(os.toByteArray());  
 					}
 				} catch (IOException ex) {
-					// ignore
+						ex.printStackTrace();
 				}
 			}
 
@@ -162,6 +152,11 @@ public class CLIUtil {
 		String deviceId = "minicommand";
 		String title = null;
 
+		if (args.length == 0) {
+			usage();
+			return;
+		}
+		
 		int optind = 0;
 		for (optind = 0; optind < args.length; optind++) {
 			if (args[optind].equals("-username")) {
@@ -188,6 +183,7 @@ public class CLIUtil {
 			}
 		}
 
+		//		System.out.println("action " + action);
 		patchmanager = new PatchManager(null);
 		Auth auth = new Auth(username, password);
 
