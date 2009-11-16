@@ -293,6 +293,86 @@ void GuiClass::put_p_string(PGM_P str) {
   put_p_string_at(0, str);
 }
 
+void GuiClass::printf(const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	put_string(buf);
+	va_end(lp);
+}
+
+void GuiClass::printf_fill(const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	put_string_fill(buf);
+	va_end(lp);
+}
+
+void GuiClass::printf_at(uint8_t idx, const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	put_string_at(idx, buf);
+	va_end(lp);
+}
+
+void GuiClass::printf_at_fill(uint8_t idx, const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	put_string_at_fill(idx, buf);
+	va_end(lp);
+}
+
+void GuiClass::flash_printf(const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	flash_string(buf);
+	va_end(lp);
+}
+
+void GuiClass::flash_printf_fill(const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	flash_string_fill(buf);
+	va_end(lp);
+}
+
+void GuiClass::flash_printf_at(uint8_t idx, const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	flash_string_at(idx, buf);
+	va_end(lp);
+}
+
+void GuiClass::flash_printf_at_fill(uint8_t idx, const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+
+	char buf[17];
+	m_vsnprintf(buf, sizeof(buf), fmt, lp);
+	flash_string_at_fill(idx, buf);
+	va_end(lp);
+}
+
 void GuiClass::clearLine() {
   for (uint8_t i = 0; i < sizeof(lines[0].data); i++)
     lines[curLine].data[i] = ' ';

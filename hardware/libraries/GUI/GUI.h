@@ -105,6 +105,11 @@ class GuiClass {
   void put_string_at_fill(uint8_t idx, const char *str);
   void put_p_string_at_fill(uint8_t idx, PGM_P str);
 
+	void printf(const char *fmt, ...);
+	void printf_fill(const char *fmt, ...);
+	void printf_at(uint8_t idx, const char *fmt, ...);
+	void printf_at_fill(uint8_t idx, const char *fmt, ...);
+
   void flash(uint16_t duration = DEFAULT_FLASH_DURATION);
   void flash_put_value(uint8_t idx, uint8_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
@@ -143,7 +148,12 @@ class GuiClass {
   void flash_p_strings_fill(PGM_P str1, PGM_P str2,
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
   
-  
+	void flash_printf(const char *fmt, ...);
+	void flash_printf_fill(const char *fmt, ...);
+	void flash_printf_at(uint8_t idx, const char *fmt, ...);
+	void flash_printf_at_fill(uint8_t idx, const char *fmt, ...);
+
+	
   void setLine(const uint8_t line) { curLine = line; }
   void clearLine();
   void clearFlashLine();
