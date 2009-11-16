@@ -17,19 +17,19 @@ public:
 	uint8_t getPosition() { return origPosition; }
 	void    setPosition(uint8_t _pos) { origPosition = _pos; }
 
+	/* SUPER IMPORTANT DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES */
+
   uint64_t ampTrigs[6];
   uint64_t filterTrigs[6];
   uint64_t lfoTrigs[6];
   uint64_t offTrigs[6];
-  uint64_t triglessTrigs[6];
-  uint64_t chordTrigs[6];
-
-  uint64_t slidePatterns[6];
-  uint64_t swingPatterns[6];
-
   uint64_t midiNoteOnTrigs[6];
   uint64_t midiNoteOffTrigs[6];
+  uint64_t triglessTrigs[6];
+  uint64_t chordTrigs[6];
   uint64_t midiTriglessTrigs[6];
+  uint64_t slidePatterns[6];
+  uint64_t swingPatterns[6];
   uint64_t midiSlidePatterns[6];
   uint64_t midiSwingPatterns[6];
 
@@ -38,20 +38,10 @@ public:
   uint8_t noteNBR[6][64];
 
   uint8_t patternLength;
-
-	uint8_t getLength() { return patternLength; }
-	void    setLength(uint8_t _len) { patternLength = _len; }
-	
   uint8_t doubleTempo;
-
-	uint8_t unused[5];
-
   uint8_t kit;
-	uint8_t getKit() { return kit; }
-	void    setKit(uint8_t _kit) { kit = _kit; }
-	
   int8_t patternTranspose;
-  
+
   static const uint8_t TRANSPOSE_CHROMATIC = 0;
   static const uint8_t TRANSPOSE_MAJOR = 1;
   static const uint8_t TRANSPOSE_MINOR = 2;
@@ -90,9 +80,21 @@ public:
   uint8_t midiArpMultiplier[6];
   uint8_t midiArpLength[6];
   uint8_t midiArpPattern[6][16];
+
+	uint8_t getKit() { return kit; }
+	void    setKit(uint8_t _kit) { kit = _kit; }
 	
+
+	uint8_t getLength() { return patternLength; }
+	void    setLength(uint8_t _len) { patternLength = _len; }
+	
+
+	uint8_t unused[4];
+
   uint16_t midiNotesUsed;
   uint8_t chordNotesUsed;
+
+	uint8_t unused2;
 
   uint8_t locksUsed;
   uint8_t numRows;

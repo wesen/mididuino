@@ -68,7 +68,8 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
   origPosition = data[3];
 	MNMSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
 
-	decoder.get64(ampTrigs, 6);
+	decoder.get64(ampTrigs, 6 * 13);
+	/*
 	decoder.get64(filterTrigs, 6);
 	decoder.get64(lfoTrigs, 6);
 	decoder.get64(offTrigs, 6);
@@ -81,43 +82,52 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
 	decoder.get64(swingPatterns, 6);
 	decoder.get64(midiSlidePatterns, 6);
 	decoder.get64(midiSwingPatterns, 6);
+	*/
 
 	decoder.get32(&swingAmount);
 
 	decoder.get64(lockPatterns, 6);
-	decoder.get((uint8_t *)noteNBR, 6 * 64);
+	decoder.get((uint8_t *)noteNBR, (6 * 64 + 4) + (6 * 6) + (6 * (6 + 16)) + (6 * (5 + 16)));
+	/*
 	decoder.get8(&patternLength);
 	decoder.get8(&doubleTempo);
 	decoder.get8(&kit);
 	decoder.get8((uint8_t *)&patternTranspose);
+	*/
 
-	decoder.get((uint8_t *)transpose, 6);
-	decoder.get(scale, 6);
-	decoder.get(key, 6);
-	decoder.get((uint8_t *)midiTranspose, 6);
-	decoder.get(midiScale, 6);
-	decoder.get(midiKey, 6);
+	//	decoder.get((uint8_t *)transpose, 6 * 6);
+	/*
+		decoder.get(scale, 6);
+		decoder.get(key, 6);
+		decoder.get((uint8_t *)midiTranspose, 6);
+		decoder.get(midiScale, 6);
+		decoder.get(midiKey, 6);
+	*/
 
-	decoder.get(arpPlay, 6);
+	//	decoder.get(arpPlay, 6 * (6 + 16));
+	/*
 	decoder.get(arpMode, 6);
 	decoder.get(arpOctaveRange, 6);
 	decoder.get(arpMultiplier, 6);
 	decoder.get(arpDestination, 6);
 	decoder.get(arpLength, 6);
 	decoder.get((uint8_t *)arpPattern, 6 * 16);
-
-	decoder.get(midiArpPlay, 6);
+	*/
+	
+	//	decoder.get(midiArpPlay, 6 * (5 + 16));
+	/*
 	decoder.get(midiArpMode, 6);
 	decoder.get(midiArpOctaveRange, 6);
 	decoder.get(midiArpMultiplier, 6);
 	decoder.get(midiArpLength, 6);
 	decoder.get((uint8_t *)midiArpPattern, 6 * 16);
+	*/
 
 	decoder.get(unused, 4);
 
 	decoder.get16(&midiNotesUsed);
 	decoder.get8(&chordNotesUsed);
-	decoder.get8(unused + 4);
+	decoder.get8(&unused2);
 	decoder.get8(&locksUsed);
 	decoder.get((uint8_t *)locks, 62 * 64);
 
@@ -176,7 +186,8 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 
 	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
 
-	encoder.pack64(ampTrigs, 6);
+	encoder.pack64(ampTrigs, 6 * 13);
+	/*
 	encoder.pack64(filterTrigs, 6);
 	encoder.pack64(lfoTrigs, 6);
 	encoder.pack64(offTrigs, 6);
@@ -189,11 +200,13 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack64(swingPatterns, 6);
 	encoder.pack64(midiSlidePatterns, 6);
 	encoder.pack64(midiSwingPatterns, 6);
-
+	*/
+	
 	encoder.pack32(swingAmount);
 
 	encoder.pack64(lockPatterns, 6);
-	encoder.pack((uint8_t *)noteNBR, 6 * 64);
+	encoder.pack((uint8_t *)noteNBR, (6 * 64 + 4) + (6 * 6) + (6 * (6 + 16)) + (6 * (5 + 16)));
+	/*
 	encoder.pack8(patternLength);
 	encoder.pack8(doubleTempo);
 	encoder.pack8(kit);
@@ -221,11 +234,12 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack(midiArpLength, 6);
 	encoder.pack((uint8_t *)midiArpPattern, 6 * 16);
 
+	*/
 	encoder.pack(unused, 4);
 
 	encoder.pack16(midiNotesUsed);
 	encoder.pack8(chordNotesUsed);
-	encoder.pack8(unused[4]);
+	encoder.pack8(unused2);
 	encoder.pack8(locksUsed);
 
 	uint8_t lockIdx = 0;
