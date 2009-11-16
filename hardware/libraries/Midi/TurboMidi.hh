@@ -12,17 +12,17 @@
 #define TURBOMIDI_SPEED_TEST_MASTER_2      0x16
 #define TURBOMIDI_SPEED_RESULT_SLAVE_2     0x17
 
-#define TURBOMIDI_SPEED_1x    1
-#define TURBOMIDI_SPEED_2x    2
-#define TURBOMIDI_SPEED_3_33x 3
-#define TURBOMIDI_SPEED_4x    4
-#define TURBOMIDI_SPEED_5x    5
-#define TURBOMIDI_SPEED_6_66x 6
-#define TURBOMIDI_SPEED_8x    7
-#define TURBOMIDI_SPEED_10x   8
-#define TURBOMIDI_SPEED_13_3x 9
-#define TURBOMIDI_SPEED_16x   10
-#define TURBOMIDI_SPEED_20x   11
+#define TURBOMIDI_SPEED_1x    0
+#define TURBOMIDI_SPEED_2x    1
+#define TURBOMIDI_SPEED_3_33x 2
+#define TURBOMIDI_SPEED_4x    3
+#define TURBOMIDI_SPEED_5x    4
+#define TURBOMIDI_SPEED_6_66x 5
+#define TURBOMIDI_SPEED_8x    6
+#define TURBOMIDI_SPEED_10x   7
+#define TURBOMIDI_SPEED_13_3x 8
+#define TURBOMIDI_SPEED_16x   9
+#define TURBOMIDI_SPEED_20x   10
 
 class TurboMidiSysexListenerClass : public MidiSysexListenerClass {
 public:
@@ -34,6 +34,10 @@ public:
 	virtual void start() { isGenericMessage = false; }
 	virtual void end();
 
+	void    setup() {
+		MidiSysex.addSysexListener(this);
+	}
+		
 	void    setupTurboMidiSlave();
 
 	bool    sendSpeedRequest();
@@ -46,10 +50,10 @@ public:
 	void    sendSpeedTest1Result();
 	void    sendSpeedTest2Result();
 
-	void    startTurboMidi();
+	bool    startTurboMidi();
 	void    stopTurboMidi();
 
-	static uint32_t tmSpeeds[11];
+	static uint32_t tmSpeeds[12];
 	
 	uint8_t currentSpeed;
 
@@ -61,8 +65,8 @@ public:
 	static const uint16_t speeds =
 		_BV(TURBOMIDI_SPEED_1x)
 		| _BV(TURBOMIDI_SPEED_2x)
-		//		| _BV(TURBOMIDI_SPEED_3_33x)
-		//		| _BV(TURBOMIDI_SPEED_4x)
+		| _BV(TURBOMIDI_SPEED_3_33x)
+		| _BV(TURBOMIDI_SPEED_4x)
 		//		| _BV(TURBOMIDI_SPEED_5x)
 		//		| _BV(TURBOMIDI_SPEED_6_66x)
 		//		| _BV(TURBOMIDI_SPEED_8x)
@@ -71,8 +75,8 @@ public:
 	static const uint16_t certifiedSpeeds =
 		_BV(TURBOMIDI_SPEED_1x)
 		| _BV(TURBOMIDI_SPEED_2x)
-		//		| _BV(TURBOMIDI_SPEED_3_33x)
-		//		| _BV(TURBOMIDI_SPEED_4x) 
+		| _BV(TURBOMIDI_SPEED_3_33x)
+		| _BV(TURBOMIDI_SPEED_4x) 
 		//		| _BV(TURBOMIDI_SPEED_5x)
 		//		| _BV(TURBOMIDI_SPEED_6_66x)
 		//		| _BV(TURBOMIDI_SPEED_8x)
@@ -115,6 +119,6 @@ public:
 #endif
 };
 
-extern TurboMidiSysexListenerClass TurboMidiSysex;
+extern TurboMidiSysexListenerClass TurboMidi;
 
 #endif /* TURBOMIDI_H__ */
