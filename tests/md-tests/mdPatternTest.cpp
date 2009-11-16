@@ -4,7 +4,6 @@
 #include "WProgram.h"
 #include <MD.h>
 
-<<<<<<< HEAD
 #include "hexdump.hh"
 #include "../pattern-tests/PrintMDPattern.h"
 
