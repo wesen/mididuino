@@ -366,7 +366,7 @@ void MDClass::requestGlobal(uint8_t global) {
 
 bool MDClass::checkParamSettings() {
   if (loadedGlobal) {
-    return (MD.global.baseChannel >= 0) && (MD.global.baseChannel <= 12);
+    return (MD.global.baseChannel <= 12);
   } else {
     return false;
   }

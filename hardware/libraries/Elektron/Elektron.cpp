@@ -39,14 +39,14 @@ uint16_t ElektronHelper::MDSysexToData(uint8_t *sysex, uint8_t *data, uint16_t l
 
 uint16_t ElektronHelper::MNMDataToSysex(uint8_t *data, uint8_t *sysex,
 					uint16_t len, uint16_t sysexLen) {
-  MNMDataToSysexEncoder encoder(sysex, sysexLen);
+  MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(sysex, sysexLen));
 	encoder.pack(data, len);
   return encoder.finish();
 }
 
 uint16_t ElektronHelper::MNMSysexToData(uint8_t *sysex, uint8_t *data,
 					uint16_t len, uint16_t maxLen) {
-  MNMSysexToDataEncoder encoder(data, maxLen);
+  MNMSysexToDataEncoder encoder(DATA_ENCODER_INIT(data, maxLen));
 	encoder.pack(sysex, len);
   return encoder.finish();
 }

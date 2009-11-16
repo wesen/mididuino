@@ -1,8 +1,8 @@
 #include "Elektron.hh"
 #include "MNMDataEncoder.hh"
 
-void MNMDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
-  DataEncoder::init(_sysex, _sysexLen);
+void MNMDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen)) {
+  DataEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen));
   cnt7 = 0;
   retLen = 0;
   lastByte = 0;
@@ -83,8 +83,8 @@ uint16_t MNMDataToSysexEncoder::finish() {
 #endif
 }
 
-void MNMSysexToDataEncoder::init(uint8_t *_data, uint16_t _maxLen) {
-  DataEncoder::init(_data, _maxLen);
+void MNMSysexToDataEncoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
+  DataEncoder::init(DATA_ENCODER_INIT(_data, _maxLen));
   cnt7 = 0;
   repeat = 0;
   cnt = 0;
@@ -115,13 +115,17 @@ DATA_ENCODER_RETURN_TYPE MNMSysexToDataEncoder::unpack8Bit() {
       if (tmpData[i] & 0x80) {
 				repeat = tmpData[i] & 0x7F;
       } else {
+#ifdef DATA_ENCODER_CHECKING
 				DATA_ENCODER_CHECK(retLen <= maxLen);
+#endif
 				*(ptr++) = tmpData[i];
 				retLen++;
       }
     } else {
       for (uint8_t j = 0; j < repeat; j++) {
+#ifdef DATA_ENCODER_CHECKING
 				DATA_ENCODER_CHECK(retLen <= maxLen);
+#endif
 				*(ptr++) = tmpData[i];
 				retLen++;
       }
@@ -146,8 +150,8 @@ uint16_t MNMSysexToDataEncoder::finish() {
 	
 }
 
-void MNMSysexDecoder::init(uint8_t *_data, uint16_t _maxLen) {
-	DataDecoder::init(_data, _maxLen);
+void MNMSysexDecoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
+	DataDecoder::init(DATA_ENCODER_INIT(_data, _maxLen));
 	cnt7 = 0;
 	cnt = 0;
 	repeatCount = 0;

@@ -58,13 +58,13 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 
 	uint8_t *ptr = data + 3;
   origPosition = *ptr;
-	MDSysexDecoder decoder(data + 0xA - 6, 74);
+	MDSysexDecoder decoder(DATA_ENCODER_INIT(data + 0xA - 6, 74));
 	decoder.get32(trigPatterns, 16);
 
-	decoder.init(data + 0x54 - 6, 74);
+	decoder.init(DATA_ENCODER_INIT(data + 0x54 - 6, 74));
 	decoder.get32(lockPatterns, 16);
 
-	decoder.init(data + 0x9e - 6, 19);
+	decoder.init(DATA_ENCODER_INIT(data + 0x9e - 6, 19));
 	decoder.get32(&accentPattern);
 	decoder.get32(&slidePattern);
 	decoder.get32(&swingPattern);
@@ -78,12 +78,12 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   kit = *(ptr++);
   numLockedRows = *(ptr++);
 
-	decoder.init(data + 0xb7 - 6, 2341);
+	decoder.init(DATA_ENCODER_INIT(data + 0xb7 - 6, 2341));
 	for (uint8_t i = 0; i < 64; i++) {
 		decoder.get(locks[i], 32);
 	}
 
-	decoder.init(data + 0x9DC - 6, 234);
+	decoder.init(DATA_ENCODER_INIT(data + 0x9DC - 6, 234));
 	{
 		uint32_t tmp[3];
 		decoder.get32(tmp, 3);
@@ -107,7 +107,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   if (isExtraPattern) {
-		decoder.init(data + 0xac6 - 6, 2647);
+		decoder.init(DATA_ENCODER_INIT(data + 0xac6 - 6, 2647));
 		decoder.get32hi(trigPatterns, 16);
 		decoder.get32hi(&accentPattern);
 		decoder.get32hi(&slidePattern);
@@ -124,11 +124,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 }
 
 uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
-	if (patternLength > 32) {
-		isExtraPattern = true;
-	} else {
-		isExtraPattern = false;
-	}
+	isExtraPattern = patternLength > 32;
 
 	cleanupLocks();
   recalculateLockPatterns();
@@ -143,15 +139,15 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   data[8] = 0x01;
   data[9] = origPosition;
 	
-	MDDataToSysexEncoder encoder(data + 10, 74);
+	MDDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, 74));
 	encoder.pack32(trigPatterns, 16);
 	encoder.finish();
 
-	encoder.init(data + 0x54, 74);
+	encoder.init(DATA_ENCODER_INIT(data + 0x54, 74));
 	encoder.pack32(lockPatterns, 16);
 	encoder.finish();
 
-	encoder.init(data + 0x9e, 19);
+	encoder.init(DATA_ENCODER_INIT(data + 0x9e, 19));
 	encoder.pack32(accentPattern);
 	encoder.pack32(slidePattern);
 	encoder.pack32(swingPattern);
@@ -167,7 +163,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
   uint16_t cnt = 0;
 
-	encoder.init(data + 0xB7, 2341);
+	encoder.init(DATA_ENCODER_INIT(data + 0xB7, 2341));
 	uint8_t lockData[64][32];
 	m_memclr(lockData, 64 * 32);
 
@@ -185,7 +181,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack((uint8_t *)lockData, 64 * 32);
 	encoder.finish();
   
-	encoder.init(data + 0x9dc, 234);
+	encoder.init(DATA_ENCODER_INIT(data + 0x9dc, 234));
 	encoder.pack32(accentEditAll ? 1 : 0);
 	encoder.pack32(slideEditAll ? 1 : 0);
   encoder.pack32(swingEditAll ? 1 : 0);
@@ -197,7 +193,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.finish();
 
 	if (isExtraPattern) {
-		encoder.init(data + 0xac6, 2647);
+		encoder.init(DATA_ENCODER_INIT(data + 0xac6, 2647));
 		for (int i = 0; i < 16; i++) {
 			encoder.pack32hi(trigPatterns[i]);
 		}

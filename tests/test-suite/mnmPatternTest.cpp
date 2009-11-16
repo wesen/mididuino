@@ -23,7 +23,7 @@ TEST_F (MNMPatternFixture, MNMPatternTestInit) {
 
 void dumpMonoSysex(uint8_t *buf, uint16_t len) {
 	uint8_t buftmp[8192];
-	MNMSysexDecoder decoder(buf + 10, len - 10);
+	MNMSysexDecoder decoder(DATA_ENCODER_INIT(buf + 10, len - 10));
 	decoder.get(buftmp + 1, len - 10);
 	hexdump(buftmp, len - 9);
 }
@@ -32,9 +32,9 @@ bool compareMonoSysex(uint8_t *buf, uint8_t *buf2) {
 	uint8_t buftmp[8192];
 	uint8_t buftmp2[8192];
 	uint16_t len = 0x1978;
-	MNMSysexDecoder decoder(buf + 10, len - 10);
+	MNMSysexDecoder decoder(DATA_ENCODER_INIT(buf + 10, len - 10));
 	decoder.get(buftmp + 1, len - 10);
-	MNMSysexDecoder decoder2(buf2 + 10,  - 10);
+	MNMSysexDecoder decoder2(DATA_ENCODER_INIT(buf2 + 10,  - 10));
 	decoder2.get(buftmp2 + 1, len - 10);
 	for (uint16_t i = 1; i < len - 10; i++) {
 		if (buftmp[i] != buftmp2[i]) {

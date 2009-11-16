@@ -6,17 +6,17 @@
 #define DATA_ENCODER_TRUE()  return
 #define DATA_ENCODER_FALSE() return
 
+#define DATA_ENCODER_INIT(data, length) data
+
 #define DATA_ENCODER_UNCHECKING 1
 
 class DataEncoder {
 public:
   uint8_t *data;
   uint8_t *ptr;
-  uint16_t maxLen;
 
-  virtual void init(uint8_t *_data, uint16_t _maxLen) {
+  virtual void init(uint8_t *_data) {
     data = _data;
-    maxLen = _maxLen;
     ptr = data;
   }
 
@@ -57,6 +57,13 @@ virtual DATA_ENCODER_RETURN_TYPE pack16(uint16_t inw) {
 		pack32(inw >> 32);
 	}
 
+	virtual DATA_ENCODER_RETURN_TYPE pack32hi(uint64_t *addr, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			pack32hi(addr[i]);
+		}
+	}
+	
+	
 	virtual DATA_ENCODER_RETURN_TYPE pack64(uint64_t inw) {
 		pack32(inw & 0xFFFFFFFF);
 		pack32hi(inw);
@@ -80,14 +87,12 @@ class DataDecoder {
 public:
 	uint8_t *data;
 	uint8_t *ptr;
-	uint16_t maxLen;
 
 	DataDecoder() {
 	}
 
-	virtual void init(uint8_t *_data, uint16_t _maxLen) {
+	virtual void init(uint8_t *_data) {
 		data = _data;
-		maxLen = _maxLen;
 		ptr = data;
 	}
 

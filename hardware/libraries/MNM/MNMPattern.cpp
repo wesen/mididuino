@@ -56,7 +56,7 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   origPosition = data[3];
-	MNMSysexDecoder decoder(data + 4, len - 4);
+	MNMSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
 
 	decoder.get64(ampTrigs, 6);
 	decoder.get64(filterTrigs, 6);
@@ -154,7 +154,7 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
   data[8] = 0x01;
   data[9] = origPosition;
 
-	MNMDataToSysexEncoder encoder(data + 10, len - 10);
+	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
 
 	encoder.pack64(ampTrigs, 6);
 	encoder.pack64(filterTrigs, 6);

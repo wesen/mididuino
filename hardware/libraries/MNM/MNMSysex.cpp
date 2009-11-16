@@ -46,8 +46,8 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
     if (isMNMEncodedMessage) {
       if (MidiSysex.len >= sizeof(monomachine_sysex_hdr)) {
 				if (MidiSysex.len == 9) {
-					encoder.init(MidiSysex.recordBuf + MidiSysex.recordLen,
-											 MidiSysex.maxRecordLen - MidiSysex.recordLen);
+					encoder.init(DATA_ENCODER_INIT(MidiSysex.recordBuf + MidiSysex.recordLen,
+																				 MidiSysex.maxRecordLen - MidiSysex.recordLen));
 				}
 				if (MidiSysex.len < 9) {
 					if (MidiSysex.len == 8) {

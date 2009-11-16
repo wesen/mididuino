@@ -6,6 +6,8 @@
 #define DATA_ENCODER_TRUE() { return true; }
 #define DATA_ENCODER_FALSE() { return true; }
 
+#define DATA_ENCODER_INIT(data, length) data, length
+
 #define DATA_ENCODER_CHECKING 1
 
 class DataEncoder {
@@ -62,6 +64,15 @@ public:
 
 	virtual DATA_ENCODER_RETURN_TYPE pack32hi(uint64_t inw) {
 		return pack32(inw >> 32);
+	}
+
+
+	virtual DATA_ENCODER_RETURN_TYPE pack32hi(uint64_t *addr, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!pack32hi(addr[i]))
+				return false;
+		}
+		return true;
 	}
 
 	virtual DATA_ENCODER_RETURN_TYPE pack64(uint64_t inw) {

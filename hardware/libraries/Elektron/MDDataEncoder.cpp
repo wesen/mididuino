@@ -1,8 +1,8 @@
 #include "Elektron.hh"
 #include "MDDataEncoder.hh"
 
-void MDDataToSysexEncoder::init(uint8_t *_sysex, uint16_t _sysexLen) {
-	DataEncoder::init(_sysex, _sysexLen);
+void MDDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen)) {
+	DataEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen));
 	cnt7 = 0;
 	retLen = 0;
 }
@@ -38,8 +38,8 @@ uint16_t MDDataToSysexEncoder::finish() {
 	return retLen + ((cnt7 > 0) ? (cnt7 + 1) : 0);
 }
 
-void MDSysexToDataEncoder::init(uint8_t *_data, uint16_t _maxLen) {
-	DataEncoder::init(_data, _maxLen);
+void MDSysexToDataEncoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
+	DataEncoder::init(DATA_ENCODER_INIT(_data, _maxLen));
 	cnt7 = 0;
   cnt = 0;
 	retLen = 0;
@@ -81,8 +81,8 @@ uint16_t MDSysexToDataEncoder::finish() {
 #endif
 }
 
-void MDSysexDecoder::init(uint8_t *_data, uint16_t _maxLen) {
-	DataDecoder::init(_data, _maxLen);
+ void MDSysexDecoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
+	 DataDecoder::init(DATA_ENCODER_INIT(_data, _maxLen));
 	cnt7 = 0;
   cnt = 0;
 }

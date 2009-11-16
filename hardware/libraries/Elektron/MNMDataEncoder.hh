@@ -12,11 +12,11 @@ class MNMDataToSysexEncoder : public DataEncoder {
   bool isFirstByte;
   
 public:
-  MNMDataToSysexEncoder(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0) {
-    init(_sysex, _sysexLen);
+  MNMDataToSysexEncoder(DATA_ENCODER_INIT(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0)) {
+    init(DATA_ENCODER_INIT(_sysex, _sysexLen));
   }
 
-  virtual void init(uint8_t *_sysex, uint16_t _sysexLen);
+  virtual void init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen));
   DATA_ENCODER_RETURN_TYPE encode7Bit(uint8_t inb);
   virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb);
   DATA_ENCODER_RETURN_TYPE packLastByte();
@@ -32,11 +32,11 @@ public:
   uint8_t bits;
   uint8_t tmpData[7];
   
-  MNMSysexToDataEncoder(uint8_t *_data = NULL, uint16_t _maxLen = 0) {
-    init(_data, _maxLen);
+  MNMSysexToDataEncoder(DATA_ENCODER_INIT(uint8_t *_data = NULL, uint16_t _maxLen = 0)) {
+    init(DATA_ENCODER_INIT(_data, _maxLen));
   }
 
-  virtual void init(uint8_t *_data, uint16_t _maxLen);
+  virtual void init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen));
   virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb);
   DATA_ENCODER_RETURN_TYPE unpack8Bit();
   virtual uint16_t finish();
@@ -51,11 +51,11 @@ class MNMSysexDecoder : public DataDecoder {
 	uint8_t repeatByte;
 	
 public:
-	MNMSysexDecoder(uint8_t *_data = NULL, uint16_t _maxLen = 0) {
-		init(_data, _maxLen);
+	MNMSysexDecoder(DATA_ENCODER_INIT(uint8_t *_data = NULL, uint16_t _maxLen = 0)) {
+		init(DATA_ENCODER_INIT(_data, _maxLen));
 	}
 	
-	virtual void init(uint8_t *_data, uint16_t _maxLen);
+	virtual void init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen));
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c);
 	virtual DATA_ENCODER_RETURN_TYPE getNextByte(uint8_t *c);
 };

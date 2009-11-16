@@ -21,13 +21,6 @@ CLASSPATH = $(subst jar ,jar$(SEPARATOR),$(wildcard $(BASE_DIR)/lib/*.jar) $(wil
 
 PDEFILES=$(wildcard $(PDEDIR)/*.pde)
 
-CFLAGS += -Os -w -fno-exceptions -ffunction-sections -fdata-sections -mmcu=$(AVR_ARCH) -DF_CPU=$(F_CPU)
-CFLAGS += -Wl,--section-start=.bss=0x802000,--defsym=__heap_end=0x80ffff
-CFLAGS += -mcall-prologues -funsigned-char -funsigned-bitfields -fshort-enums -fpack-struct -Wall -Werror 
-CFLAGS += -fno-default-inline -nostdinc++ -fno-rtti -fno-implement-inlines 
-CFLAGS += --param inline-call-cost=2 -finline-limit=3 -fno-inline-small-functions
-CFLAGS += -fno-tree-scev-cprop -fsplit-wide-types
-
 CFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$(BASE_DIR)" --board $(CORE) --print-c-flags)
 CXXFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler  --dir "$(BASE_DIR)" --board $(CORE) --print-cxx-flags)
 CLDFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$(BASE_DIR)" --board $(CORE) --print-ld-flags)

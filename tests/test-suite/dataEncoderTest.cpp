@@ -17,7 +17,7 @@ struct MDDataToSysexFixture {
 
 TEST_F (MDDataToSysexFixture, MDDataToSysexByte) {
 	uint8_t data[16];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(0));
 	uint16_t len = encoder.finish();
 	CHECK_EQUAL(2, len);
@@ -27,7 +27,7 @@ TEST_F (MDDataToSysexFixture, MDDataToSysexByte) {
 
 TEST_F (MDDataToSysexFixture, MDDataToSysexByteHigh) {
 	uint8_t data[16];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(128));
 	uint16_t len = encoder.finish();
 	CHECK_EQUAL(2, len);
@@ -37,7 +37,7 @@ TEST_F (MDDataToSysexFixture, MDDataToSysexByteHigh) {
 
 TEST_F (MDDataToSysexFixture, MDDataToSysexBytes) {
 	uint8_t data[16];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	for (uint8_t i = 0; i < 7; i++) {
 		CHECK_DATA_ENCODE(encoder.pack8(128));
 	}
@@ -52,14 +52,14 @@ TEST_F (MDDataToSysexFixture, MDDataToSysexBytes) {
 #ifdef DATA_ENCODER_CHECKING
 TEST_F (MDDataToSysexFixture, MDDataTestOverflow) {
 	uint8_t data[2];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(0));
 	CHECK_DATA_ENCODE_NOT(encoder.pack8(0));
 }
 
 TEST_F (MDDataToSysexFixture, MDDataTestOverflow2) {
 	uint8_t data[8];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(0));
 	CHECK_DATA_ENCODE(encoder.pack8(1));
 	CHECK_DATA_ENCODE(encoder.pack8(2));
@@ -73,7 +73,7 @@ TEST_F (MDDataToSysexFixture, MDDataTestOverflow2) {
 
 TEST_F (MDDataToSysexFixture, MDDataToSysex32Bit) {
 	uint8_t data[16];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	uint32_t tmp = 0x00;
 	CHECK_DATA_ENCODE(encoder.pack32(tmp));
 	uint16_t len = encoder.finish();
@@ -87,7 +87,7 @@ TEST_F (MDDataToSysexFixture, MDDataToSysex32Bit) {
 
 TEST_F (MDDataToSysexFixture, MDDataToSysex32Bit2) {
 	uint8_t data[16];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	uint32_t tmp = 0x01;
 	encoder.pack32(tmp);
 	uint16_t len = encoder.finish();
@@ -106,13 +106,13 @@ struct MDDataBothFixture {
 
 TEST_F (MDDataBothFixture, MDDataBoth8Bit) {
 	uint8_t data[1024];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	for (uint16_t i = 0; i < 512; i++) {
 		CHECK_DATA_ENCODE(encoder.pack8(i & 0xFF));
 	}
 	uint16_t len = encoder.finish();
 
-	decoder.init(data, len);
+	decoder.init(DATA_ENCODER_INIT(data, len));
 	for (uint16_t i = 0; i < 512; i++) {
 		uint8_t tmp;
 		CHECK_DATA_ENCODE(decoder.get8(&tmp));
@@ -122,20 +122,20 @@ TEST_F (MDDataBothFixture, MDDataBoth8Bit) {
 
 TEST_F (MDDataBothFixture, MDDataBoth8BitMore) {
 	uint8_t data[65000];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	for (uint16_t i = 0; i < 55000; i++) {
 		CHECK_DATA_ENCODE(encoder.pack8(i & 0xFF));
 	}
 	uint16_t len = encoder.finish();
 
-	decoder.init(data, len);
+	decoder.init(DATA_ENCODER_INIT(data, len));
 	for (uint16_t i = 0; i < 55000; i++) {
 		uint8_t tmp;
 		CHECK_DATA_ENCODE(decoder.get8(&tmp));
 		if (tmp != (i & 0xFF)) {
 			printf("error at %d\n", i);
-			printf("%p, %p: %d\n", encoder.data + encoder.maxLen - 8, encoder.ptr,
-						 encoder.data + encoder.maxLen - 8 - encoder.ptr);
+			//			printf("%p, %p: %d\n", encoder.data + encoder.maxLen - 8, encoder.ptr,
+			//						 encoder.data + encoder.maxLen - 8 - encoder.ptr);
 		}
 		CHECK_EQUAL(i & 0xFF, (int)tmp);
 	}
@@ -144,7 +144,7 @@ TEST_F (MDDataBothFixture, MDDataBoth8BitMore) {
 
 TEST_F (MDDataBothFixture, MDDataBoth16Bit) {
 	uint8_t data[8192];
-	encoder.init(data, countof(data));
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	uint16_t cnt = 1024;
 	uint16_t start = 0;
 	for (uint16_t i = start; i < start + cnt; i++) {
@@ -152,7 +152,7 @@ TEST_F (MDDataBothFixture, MDDataBoth16Bit) {
 	}
 	uint16_t len = encoder.finish();
 
-	decoder.init(data, len);
+	decoder.init(DATA_ENCODER_INIT(data, len));
 	for (uint16_t i = start; i < start + cnt; i++) {
 		uint16_t tmp;
 		CHECK_DATA_ENCODE(decoder.get16(&tmp));

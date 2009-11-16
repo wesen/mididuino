@@ -137,7 +137,7 @@ uint16_t MNMGlobal::toSysex(uint8_t *data, uint16_t len) {
   }
   ElektronHelper::from32Bit(baseFreq, udata + 0x105);
 
-  MNMDataToSysexEncoder encoder(data + 10, len - 10);
+  MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
   for (int i = 1; i < 0x109; i++) {
     encoder.pack8(udata[i]);
   }
@@ -289,7 +289,7 @@ uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
   udata[0x2b9] = splitKey;
   udata[0x2ba] = splitRange;
 
-  MNMDataToSysexEncoder encoder(data + 10, len - 10);
+  MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
   for (int i = 1; i < 699; i++) {
     encoder.pack8(udata[i]);
   }
