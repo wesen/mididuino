@@ -117,6 +117,9 @@ ISR(TIMER2_OVF_vect) {
     MidiUart.resetRunningStatus();
     lastRunningStatusReset = slowclock;
   }
+
+	MidiUart.tickActiveSense();
+	MidiUart2.tickActiveSense();
   
   //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
 

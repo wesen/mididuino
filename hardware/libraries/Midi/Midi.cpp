@@ -57,13 +57,20 @@ void MidiClass::handleByte(uint8_t byte) {
 				break;
       }
     }
+
     CLEAR_LOCK();
 #endif
+
+		if (byte == MIDI_ACTIVE_SENSE) {
+			uart->recvActiveSenseTimer = 0;
+		}
+		
     return;
   }
 
   if (!midiActive)
     return;
+
 
   switch (in_state) {
   case midi_ignore_message:

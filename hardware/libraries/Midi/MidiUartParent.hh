@@ -10,13 +10,44 @@ public:
   uint8_t running_status;
   uint8_t currentChannel;
   bool useRunningStatus;
+	uint16_t sendActiveSenseTimer;
+	uint16_t sendActiveSenseTimeout;
+	uint16_t recvActiveSenseTimer;
+	bool activeSenseEnabled;
   
   MidiUartParent() {
     useRunningStatus = false;
     running_status = 0;
     currentChannel = 0x0;
+		activeSenseEnabled = 0;
+		recvActiveSenseTimer = 0;
+		sendActiveSenseTimer = 0;
   }
 
+	void setActiveSenseTimer(uint16_t timeout) {
+		if (timeout == 0) {
+			activeSenseEnabled = false;
+		} else {
+			activeSenseEnabled = true;
+			sendActiveSenseTimer = 0;
+			sendActiveSenseTimeout = timeout;
+		}
+	}
+
+	void tickActiveSense() {
+		if (recvActiveSenseTimer < 65535) {
+			recvActiveSenseTimer++;
+		}
+		if (activeSenseEnabled) {
+			if (sendActiveSenseTimer == 0) {
+				putc(MIDI_ACTIVE_SENSE);
+				sendActiveSenseTimer = sendActiveSenseTimeout;
+			} else {
+				sendActiveSenseTimer--;
+			}
+		}
+	}
+	
   virtual void initSerial() {
     running_status = 0;
   }
