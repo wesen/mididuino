@@ -3,8 +3,8 @@
 
 void MDDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen)) {
 	DataEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen));
-	cnt7 = 0;
 	retLen = 0;
+	start7Bit();
 }
 
 DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
@@ -30,12 +30,17 @@ DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
 }
 
 DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::pack8(uint8_t inb) {
-	DATA_ENCODER_CHECK(encode7Bit(inb));
+	if (in7Bit) {
+		DATA_ENCODER_CHECK(encode7Bit(inb));
+	} else {
+#ifdef DATA_ENCODER_CHECKING
+		DATA_ENCODER_CHECK((ptr + 1) < (data + maxLen));
+#endif
+		*(ptr++) = inb;
+		cnt7++;
+		retLen++;
+	}
 	DATA_ENCODER_TRUE();
-}
-
-uint16_t MDDataToSysexEncoder::finish() {
-	return retLen + ((cnt7 > 0) ? (cnt7 + 1) : 0);
 }
 
 void MDSysexToDataEncoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {

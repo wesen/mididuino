@@ -6,16 +6,38 @@
 class MDDataToSysexEncoder : public DataEncoder {
   uint16_t retLen;
   uint16_t cnt7;
+	bool in7Bit;
 
 public:
 	MDDataToSysexEncoder(DATA_ENCODER_INIT(uint8_t *_sysex = NULL, uint16_t _sysexLen = 0)) {
 		init(DATA_ENCODER_INIT(_sysex, _sysexLen));
 	}
 
+	void start7Bit() {
+		in7Bit = true;
+		cnt7 = 0;
+	}
+
+	void stop7Bit() {
+		finish();
+		in7Bit = false;
+		cnt7 = 0;
+	}
+
+	void reset() {
+		finish();
+		start7Bit();
+	}
+	
 	virtual void init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen));
 	DATA_ENCODER_RETURN_TYPE encode7Bit(uint8_t inb);
 	virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb);
-	virtual uint16_t finish();
+	virtual uint16_t finish() {
+		uint8_t inc = ((cnt7 > 0) ? (cnt7 + 1) : 0);
+		ptr += inc;
+		retLen += inc;
+		return retLen;
+	}
 };
 
 class MDSysexToDataEncoder : public DataEncoder {
