@@ -130,6 +130,21 @@ public:
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c) {
 		return false;
 	}
+
+	virtual DATA_ENCODER_RETURN_TYPE skip8() {
+		uint8_t b;
+		return get8(&b);
+	}
+
+	virtual DATA_ENCODER_RETURN_TYPE skip(uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!skip8()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	DATA_ENCODER_RETURN_TYPE get16(uint16_t *c) {
 		uint8_t b1, b2;
 		bool ret = get8(&b1) && get8(&b2);

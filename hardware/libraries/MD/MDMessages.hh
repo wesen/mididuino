@@ -65,6 +65,18 @@ public:
   uint8_t muteGroup;
 };
 
+class MDKitShort {
+public:
+	uint8_t origPosition;
+	char name[17];
+	uint8_t models[16];
+
+	MDKitShort() {
+	}
+	
+	bool fromSysex(uint8_t *sysex, uint16_t len);
+};
+
 class MDKit {
 public:
   uint8_t origPosition;

@@ -110,6 +110,32 @@ uint16_t MDGlobal::toSysex(uint8_t *data, uint16_t len) {
   return 0xC5;
 }
 
+bool MDKitShort::fromSysex(uint8_t *data, uint16_t len) {
+  if (len != (0x4d1 - 7)) {
+    //    GUI.flash_strings_fill("WRONG LEN", "");
+    //    GUI.setLine(GUI.LINE2);
+    //    GUI.flash_put_value16(0, len);
+    return false;
+  }
+
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+    return false;
+  }
+
+  origPosition = data[9 - 6];
+  m_memcpy(name, (char *)data + 0xA - 6, 16);
+
+  uint8_t data2[16 * 36];
+  uint8_t *ptr = data2;
+  ElektronHelper::ElektronSysexToData(data + 0x1aa - 6, data2, 74);
+  for (int i = 0; i < 16; i++) {
+    models[i] = ElektronHelper::to32Bit(ptr);
+    ptr += 4;
+  }
+
+	return true;
+}
+
 bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
   if (len != (0x4d1 - 7)) {
     //    GUI.flash_strings_fill("WRONG LEN", "");

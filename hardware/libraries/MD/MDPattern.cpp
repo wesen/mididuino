@@ -40,6 +40,40 @@ void MDPattern::clearPattern() {
 	//	scale = 0;
 }
 
+bool MDPatternShort::fromSysex(uint8_t *data, uint16_t len) {
+  if ((len != (0xACA - 6)) && (len != (0x1521 - 6)))  {
+    return false;
+  }
+
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+    return false;
+  }
+
+  origPosition = data[3];
+
+	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 0xA - 6, 74));
+	decoder.skip(16 * 4);
+
+	decoder.start7Bit();
+	decoder.skip(16 * 4);
+
+	decoder.start7Bit();
+	decoder.skip(16 * 4);
+	/*
+	accentPattern = decoder.gget32();
+	slidePattern  = decoder.gget32();
+	swingPattern  = decoder.gget32();
+	swingAmount   = decoder.gget32();
+	*/
+	decoder.stop7Bit();
+
+	decoder.skip8();
+	decoder.get8(&patternLength);
+	decoder.skip(2);
+	decoder.get8(&kit);
+	return true;
+}
+
 bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   init();
   

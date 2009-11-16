@@ -4,6 +4,18 @@
 #include <inttypes.h>
 #include "ElektronPattern.hh"
 
+class MDPatternShort {
+public:
+	uint8_t origPosition;
+	uint8_t kit;
+	uint8_t patternLength;
+
+	MDPatternShort() {
+	}
+
+	bool fromSysex(uint8_t *sysex, uint16_t len);
+};
+
 class MDPattern : public ElektronPattern {
 public:
   uint8_t origPosition;

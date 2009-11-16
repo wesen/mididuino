@@ -112,6 +112,17 @@ public:
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c) {
 	}
 
+	virtual DATA_ENCODER_RETURN_TYPE skip8() {
+		uint8_t b;
+		get8(&b);
+	}
+
+	virtual DATA_ENCODER_RETURN_TYPE skip(uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			skip8();
+		}
+	}	
+
 	DATA_ENCODER_RETURN_TYPE get16(uint16_t *c) {
 		uint8_t b1, b2;
 		get8(&b1);

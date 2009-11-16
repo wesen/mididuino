@@ -386,7 +386,7 @@ public:
   uint8_t value;
   bool received;
 
-  BlockCurrentStatusCallback(uint8_t _type) {
+  BlockCurrentStatusCallback(uint8_t _type = 0) {
     type = _type;
     received = false;
     value = 255;
@@ -398,6 +398,10 @@ public:
       received = true;
     }
   }
+
+	void onSysexReceived() {
+		received = true;
+	}
 };
 
 uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
@@ -416,7 +420,25 @@ uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
 
   return cb.value;
 }
-  
+
+#if 0
+uint8_t MDClass::getBlockingKit(uint8_t type, uint16_t timeout) {
+  uint16_t start_clock = read_slowclock();
+  uint16_t current_clock = start_clock;;
+  BlockCurrentStatusCallback cb(type);
+
+  MDSysexListener.addOnStatusResponseCallback
+    (&cb, (md_status_callback_ptr_t)&BlockCurrentStatusCallback::onStatusResponseCallback);
+  MD.sendRequest(MD_STATUS_REQUEST_ID, type);
+  do {
+    current_clock = read_slowclock();
+    handleIncomingMidi();
+  } while ((clock_diff(start_clock, current_clock) < timeout) && !cb.received);
+  MDSysexListener.removeOnStatusResponseCallback(&cb);
+
+  return cb.value;
+}
+#endif
 
 uint8_t MDClass::getCurrentKit(uint16_t timeout) {
   uint8_t value = getBlockingStatus(MD_CURRENT_KIT_REQUEST, timeout);
