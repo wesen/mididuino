@@ -9,9 +9,6 @@
 
 #include <stdio.h>
 
-MidiUartOSXClass MidiUart;
-MidiClass Midi, Midi2;
-
 char *file = NULL;
 
 void hexDump(uint8_t *data, uint16_t len) {
