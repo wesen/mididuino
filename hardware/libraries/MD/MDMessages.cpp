@@ -15,6 +15,19 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
     return false;
   }
+	return true;
+}
+
+// #include "GUI.h"
+bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
+  if (len != 0xC4 - 6)  {
+    // wrong length 
+    return false;
+  }
+
+	if (!MDClass::checkSysexChecksum(data, len)) {
+    return false;
+  }
 
   origPosition = data[9 - 6];
   for (int i = 0; i < 16; i++) {

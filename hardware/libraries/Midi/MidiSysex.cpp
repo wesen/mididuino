@@ -109,7 +109,6 @@ void MidiSysexClass::handleByte(uint8_t byte) {
 
   for (int i = 0; i < NUM_SYSEX_SLAVES; i++) {
     if (isListenerActive(listeners[i])) {
-			MidiUart.sendNoteOn(i, byte);
       listeners[i]->handleByte(byte);
     }
   }

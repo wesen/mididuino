@@ -21,8 +21,6 @@
 #define NOTE_B_FLAT  10
 #define NOTE_B       11
 
-extern uint8_t minorScale[12];
-extern uint8_t majorScale[12];
 uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
 void getNotePitch(uint8_t pitch, char *name);
 

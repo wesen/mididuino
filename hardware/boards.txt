@@ -26,7 +26,7 @@ mididuino.build.flags=
 minicommand2.name=Minicommand2 1.1 (atmega64 16 Mhz + SRAM)
 
 minicommand2.upload.protocol=midisend
-minicommand2.upload.maximum_size=57344
+minicommand2.upload.maximum_size=61000
 minicommand2.upload.speed=19200
 minicommand2.upload.midiid=0x41
 
@@ -49,7 +49,7 @@ minicommand2.build.flags=-Wl,--section-start=.bss=0x802000,--defsym=__heap_end=0
 monojoystick.name=Monojoystick 1.1 (atmega64 16 Mhz + SRAM)
 
 monojoystick.upload.protocol=midisend
-monojoystick.upload.maximum_size=57344
+monojoystick.upload.maximum_size=61000
 monojoystick.upload.speed=19200
 monojoystick.upload.midiid=0x43
 

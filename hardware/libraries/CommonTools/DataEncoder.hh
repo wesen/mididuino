@@ -20,6 +20,7 @@ public:
 		}
 		return true;
 	}
+	
   virtual bool pack8(uint8_t inb) {
     return false;
   }
@@ -110,12 +111,26 @@ public:
 		}
 		return ret;
 	}
+	virtual bool get32(uint32_t *c, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!get32(&c[i]))
+				return false;
+		}
+		return true;
+	}
 	virtual bool get32(uint64_t *c) {
 		uint32_t c2;
 		if (!get32(&c2)) {
 			return false;
 		}
 		*c = c2;
+		return true;
+	}
+	virtual bool get32(uint64_t *c, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!get32(&c[i]))
+				return false;
+		}
 		return true;
 	}
 	virtual bool get32hi(uint64_t *c) {
