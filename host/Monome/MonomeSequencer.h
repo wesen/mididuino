@@ -89,9 +89,9 @@ class MonomeSequencer : public ClockCallback {
 		uint8_t step = (pos / 2) % len;
 		uint8_t step2 = step % 4;
 		if (step2 == 0) {
-			MidiUart.sendNoteOn(65, 100);
+			MidiUart.sendNoteOn(40, 100);
 		} else if (step2 == 2) {
-			MidiUart.sendNoteOn(65, 0);
+			MidiUart.sendNoteOn(40, 0);
 		}
 		
 		//		printf("step %d\n", step);

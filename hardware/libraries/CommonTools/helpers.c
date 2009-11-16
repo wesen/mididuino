@@ -213,3 +213,25 @@ uint8_t interpolate_8(uint8_t start, uint8_t end, uint8_t amount) {
   int diff = (end - start);
   return start + ((diff * amount) >> 7);
 }
+
+#ifdef HOST_MIDIDUINO
+void hexdump(uint8_t *data, uint16_t len) {
+  uint8_t cnt = 0;
+	uint16_t i;
+  for (i = 0; i < len; i++) {
+    printf("%.2x ", data[i]);
+    cnt++;
+    if (cnt == 8) {
+      printf(" ");
+    }
+    if (cnt == 16) {
+      printf("\n");
+      cnt = 0;
+    }
+  }
+  if (cnt != 0) {
+    printf("\n");
+  }
+}
+
+#endif

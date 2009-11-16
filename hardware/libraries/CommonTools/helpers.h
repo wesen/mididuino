@@ -132,11 +132,17 @@ extern volatile uint16_t clock;
 extern volatile uint16_t slowclock;
 #endif
 
+#ifdef HOST_MIDIDUINO
+	void hexdump(uint8_t *data, uint16_t len);
+#endif
+	
+
 uint16_t clock_diff(uint16_t old_clock, uint16_t new_clock);
 uint8_t u_limit_value(uint8_t value, int8_t encoder, uint8_t min, uint8_t max);
 int limit_value(int value, int encoder, int min, int max);
 
 uint8_t interpolate_8(uint8_t start, uint8_t end, uint8_t amount);
+
 
 #ifdef __cplusplus
 }

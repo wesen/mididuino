@@ -53,6 +53,7 @@ TEST_F (MNMDataBothFixture, MNMDataBoth8Bit) {
 	}
 }
 
+
 TEST_F (MNMDataBothFixture, MNMDataBoth8BitMore) {
 	uint8_t data[65000];
 	encoder.init(data, countof(data));
@@ -92,3 +93,38 @@ TEST_F (MNMDataBothFixture, MNMDataBoth16Bit) {
 		CHECK_EQUAL(i, (uint16_t)tmp);
 	}
 }
+
+TEST_F (MNMDataBothFixture, MNMDataBoth32Bit) {
+	uint8_t data[65535];
+	encoder.init(data, countof(data));
+	for (uint32_t i = 0; i < 512; i++) {
+		CHECK(encoder.pack32(i));
+	}
+	uint32_t len = encoder.finish();
+
+	decoder.init(data, len);
+	for (uint32_t i = 0; i < 512; i++) {
+		uint32_t tmp;
+		CHECK(decoder.get32(&tmp));
+		CHECK_EQUAL(i, tmp);
+	}
+}
+
+
+TEST_F (MNMDataBothFixture, MNMDataBoth64Bit) {
+	uint8_t data[65535];
+	encoder.init(data, countof(data));
+	for (uint64_t i = 0; i < 512; i++) {
+		CHECK(encoder.pack64(i));
+	}
+	uint64_t len = encoder.finish();
+
+	decoder.init(data, len);
+	for (uint64_t i = 0; i < 512; i++) {
+		uint64_t tmp;
+		CHECK(decoder.get64(&tmp));
+		CHECK_EQUAL(i, tmp);
+	}
+}
+
+

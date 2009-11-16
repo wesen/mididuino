@@ -50,79 +50,77 @@ void MNMPattern::init() {
 }
 
 bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
-  if (len < (0x1978 + 3)) {
-#ifdef HOST_MIDIDUINO
-    fprintf(stderr, "wrong len, %d should be %d bytes\n", len, 0x1978 + 3);
-#else
-		GUI.flash_string_fill("WRONG LENGTH");
-#endif
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
     return false;
   }
 
   uint8_t *udata = data + 3;
   origPosition = udata[0];
+	MNMSysexDecoder decoder(data + 4, len - 4);
 
-  for (int i = 0; i < 6; i++) {
-    ampTrigs[i] = ElektronHelper::to64Bit(udata + 1 + i * 8);
-    filterTrigs[i] = ElektronHelper::to64Bit(udata + 0x31 + i * 8);
-    lfoTrigs[i] = ElektronHelper::to64Bit(udata + 0x61 + i * 8);
-    offTrigs[i] = ElektronHelper::to64Bit(udata + 0x91 + i * 8);
-    triglessTrigs[i] = ElektronHelper::to64Bit(udata + 0x121 + i * 8);
-    chordTrigs[i] = ElektronHelper::to64Bit(udata + 0x151 + i * 8);
-    slidePatterns[i] = ElektronHelper::to64Bit(udata + 0x1b1 + i * 8);
-    swingPatterns[i] = ElektronHelper::to64Bit(udata + 0x1e1 + i * 8);
+	decoder.get64(ampTrigs, 6);
+	decoder.get64(filterTrigs, 6);
+	decoder.get64(lfoTrigs, 6);
+	decoder.get64(offTrigs, 6);
+	decoder.get64(midiNoteOnTrigs, 6);
+	decoder.get64(midiNoteOffTrigs, 6);
+	decoder.get64(triglessTrigs, 6);
+	decoder.get64(chordTrigs, 6);
+	decoder.get64(midiTriglessTrigs, 6);
+	decoder.get64(slidePatterns, 6);
+	decoder.get64(swingPatterns, 6);
+	decoder.get64(midiSlidePatterns, 6);
+	decoder.get64(midiSwingPatterns, 6);
 
-    midiTriglessTrigs[i] = ElektronHelper::to64Bit(udata + 0x181 + i * 8);
-    midiNoteOnTrigs[i] = ElektronHelper::to64Bit(udata + 0xc1 + i * 8);
-    midiNoteOffTrigs[i] = ElektronHelper::to64Bit(udata + 0xf1 + i * 8);
-    midiSlidePatterns[i] = ElektronHelper::to64Bit(udata + 0x211 + i * 8);
-    midiSwingPatterns[i] = ElektronHelper::to64Bit(udata + 0x241 + i * 8);
+	decoder.get32(&swingAmount);
 
-    lockPatterns[i] = ElektronHelper::to64Bit(udata + 0x275 + i * 8);
+	decoder.get64(lockPatterns, 6);
+	decoder.get((uint8_t *)noteNBR, 6 * 64);
+	decoder.get8(&length);
+	decoder.get8(&doubleTempo);
+	decoder.get8(&kit);
+	decoder.get8((uint8_t *)&patternTranspose);
 
-    m_memcpy(noteNBR[i], udata + 0x2a5 + i * 64, 64);
+	decoder.get((uint8_t *)transpose, 6);
+	decoder.get(scale, 6);
+	decoder.get(key, 6);
+	decoder.get((uint8_t *)midiTranspose, 6);
+	decoder.get(midiScale, 6);
+	decoder.get(midiKey, 6);
 
-    transpose[i].transpose = udata[0x429 + i];
-    transpose[i].scale = udata[0x42f + i];
-    transpose[i].key = udata[0x435 + i];
+	decoder.get(arpPlay, 6);
+	decoder.get(arpMode, 6);
+	decoder.get(arpOctaveRange, 6);
+	decoder.get(arpMultiplier, 6);
+	decoder.get(arpDestination, 6);
+	decoder.get(arpLength, 6);
+	decoder.get((uint8_t *)arpPattern, 6 * 16);
 
-    midiTranspose[i].transpose = udata[0x43b + i];
-    midiTranspose[i].scale = udata[0x441 + i];
-    midiTranspose[i].key = udata[0x447 + i];
+	decoder.get(midiArpPlay, 6);
+	decoder.get(midiArpMode, 6);
+	decoder.get(midiArpOctaveRange, 6);
+	decoder.get(midiArpMultiplier, 6);
+	decoder.get(midiArpLength, 6);
+	decoder.get((uint8_t *)midiArpPattern, 6 * 16);
 
-    arp[i].play = udata[0x44d + i];
-    arp[i].mode = udata[0x453 + i];
-    arp[i].octaveRange = udata[0x459 + i];
-    arp[i].multiplier = udata[0x45f + i];
-    arp[i].destination = udata[0x465 + i];
-    arp[i].length = udata[0x46b + i];
+	uint8_t unused[4];
+	decoder.get(unused, 4);
 
-    m_memcpy(arp[i].pattern, &udata[0x471 + i * 16], 16);
+	decoder.get16(&midiNotesUsed);
+	decoder.get8(&chordNotesUsed);
+	decoder.get8(unused);
+	decoder.get8(&locksUsed);
 
-    midiArp[i].play = udata[0x4d1 + i];
-    midiArp[i].mode = udata[0x4d7 + i];
-    midiArp[i].octaveRange = udata[0x4dd + i];
-    midiArp[i].multiplier = udata[0x4e3 + i];
-    midiArp[i].length = udata[0x4e9 + i];
-    m_memcpy(midiArp[i].pattern, &udata[0x4ef + i * 16], 16);
-  }
-  swingAmount = ElektronHelper::to32Bit(udata + 0x271);
-  length = udata[0x425];
-  doubleTempo = (udata[0x426] == 1);
-  kit = udata[0x427];
-  patternTranspose = udata[0x428];
-  midiNotesUsed = ElektronHelper::to16Bit(udata[0x553], udata[0x554]);
-  chordNotesUsed = udata[0x555];
-  locksUsed = udata[0x557];
-  m_memcpy(locks, udata + 0x558, 62 * 64);
   for (int i = 0; i < 400; i++) {
-    uint16_t l = ElektronHelper::to16Bit(udata[0x14d8 + i * 2], udata[0x14d8 + i * 2 + 1]);
+    uint16_t l;
+		decoder.get16(&l);
     midiNotes[i].note = ((l >> 9) & 0x7f);
     midiNotes[i].track = (l >> 6) & 0x7;
     midiNotes[i].position = l & 0x3f;
   }
   for (int i = 0; i < 384; i++) {
-    uint16_t l = ElektronHelper::to16Bit(udata[0x17f8 + i * 2], udata[0x17f8 + i * 2 + 1]);
+    uint16_t l;
+		decoder.get16(&l);
     chordNotes[i].note = ((l >> 9) & 0x7f);
     chordNotes[i].track = (l >> 6) & 0x7;
     chordNotes[i].position = l & 0x3f;
@@ -155,75 +153,76 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
   udata[0] = data[9] = origPosition;
   cksum += data[9];
 
-  for (int i = 0; i < 6; i++) {
-    ElektronHelper::from64Bit(ampTrigs[i],          udata + 1 + 8 * i);
-    ElektronHelper::from64Bit(filterTrigs[i],       udata + 0x31 + 8 * i);
-    ElektronHelper::from64Bit(lfoTrigs[i],          udata + 0x61 + 8 * i);
-    ElektronHelper::from64Bit(offTrigs[i],          udata + 0x91 + 8 * i);
-    ElektronHelper::from64Bit(midiNoteOnTrigs[i],   udata + 0xc1 + 8 * i);
-    ElektronHelper::from64Bit(midiNoteOffTrigs[i],  udata + 0xf1 + 8 * i);
-    ElektronHelper::from64Bit(triglessTrigs[i],     udata + 0x121 + 8 * i);
-    ElektronHelper::from64Bit(chordTrigs[i],        udata + 0x151 + 8 * i);
-    ElektronHelper::from64Bit(midiTriglessTrigs[i], udata + 0x181 + 8 * i);
-    ElektronHelper::from64Bit(slidePatterns[i],        udata + 0x1b1 + 8 * i);
-    ElektronHelper::from64Bit(swingPatterns[i],        udata + 0x1e1 + 8 * i);
-    ElektronHelper::from64Bit(midiSlidePatterns[i],    udata + 0x211 + 8 * i);
-    ElektronHelper::from64Bit(midiSwingPatterns[i],    udata + 0x241 + 8 * i);
-    ElektronHelper::from64Bit(lockPatterns[i],      udata + 0x275 + 8 * i);
+	MNMDataToSysexEncoder encoder(data + 10, len - 10);
+
+	encoder.pack64(ampTrigs, 6);
+	encoder.pack64(filterTrigs, 6);
+	encoder.pack64(lfoTrigs, 6);
+	encoder.pack64(offTrigs, 6);
+	encoder.pack64(midiNoteOnTrigs, 6);
+	encoder.pack64(midiNoteOffTrigs, 6);
+	encoder.pack64(triglessTrigs, 6);
+	encoder.pack64(chordTrigs, 6);
+	encoder.pack64(midiTriglessTrigs, 6);
+	encoder.pack64(slidePatterns, 6);
+	encoder.pack64(swingPatterns, 6);
+	encoder.pack64(midiSlidePatterns, 6);
+	encoder.pack64(midiSwingPatterns, 6);
+
+	encoder.pack32(swingAmount);
+
+	encoder.pack64(lockPatterns, 6);
+	encoder.pack((uint8_t *)noteNBR, 6 * 64);
+	encoder.pack8(length);
+	encoder.pack8(doubleTempo);
+	encoder.pack8(kit);
+	encoder.pack8(patternTranspose);
+
+	encoder.pack((uint8_t *)transpose, 6);
+	encoder.pack(scale, 6);
+	encoder.pack(key, 6);
+	encoder.pack((uint8_t *)midiTranspose, 6);
+	encoder.pack(midiScale, 6);
+	encoder.pack(midiKey, 6);
+
+	encoder.pack(arpPlay, 6);
+	encoder.pack(arpMode, 6);
+	encoder.pack(arpOctaveRange, 6);
+	encoder.pack(arpMultiplier, 6);
+	encoder.pack(arpDestination, 6);
+	encoder.pack(arpLength, 6);
+	encoder.pack((uint8_t *)arpPattern, 6 * 16);
+
+	encoder.pack(midiArpPlay, 6);
+	encoder.pack(midiArpMode, 6);
+	encoder.pack(midiArpOctaveRange, 6);
+	encoder.pack(midiArpMultiplier, 6);
+	encoder.pack(midiArpLength, 6);
+	encoder.pack((uint8_t *)midiArpPattern, 6 * 16);
+
+	uint8_t unused[4];
+	encoder.pack(unused, 4);
+
+	encoder.pack16(midiNotesUsed);
+	encoder.pack8(chordNotesUsed);
+	encoder.pack8(unused[0]);
+	encoder.pack8(locksUsed);
+
+	encoder.pack((uint8_t *)locks, 62 * 64);
+
+  for (int i = 0; i < 400; i++) {
+    uint16_t l;
+		encoder.pack16(l);
+    midiNotes[i].note = ((l >> 9) & 0x7f);
+    midiNotes[i].track = (l >> 6) & 0x7;
+    midiNotes[i].position = l & 0x3f;
   }
-  ElektronHelper::from32Bit(swingAmount, udata + 0x271);
-
-  MNMDataToSysexEncoder encoder(data + 10, len - 10);
-	encoder.pack(udata + 1, 0x2a5 - 1);
-  for (int i = 0; i < 6 ; i++) {
-    for (int j = 0; j < 64; j++) {
-      encoder.pack8(noteNBR[i][j]);
-    }
-  }
-
-  uint8_t *ptr = udata - 0x425;
-  ptr[0x425] = length;
-  ptr[0x426] = doubleTempo ? 1 : 0;
-  ptr[0x427] = kit;
-  ptr[0x428] = patternTranspose;
-  for (int i = 0; i < 6; i++) {
-    ptr[0x429 + i] = transpose[i].transpose;
-    ptr[0x42f + i] = transpose[i].scale;
-    ptr[0x435 + i] = transpose[i].key;
-
-    ptr[0x43b + i] = midiTranspose[i].transpose;
-    ptr[0x441 + i] = midiTranspose[i].scale;
-    ptr[0x447 + i] = midiTranspose[i].key;
-
-    ptr[0x44d + i] = arp[i].play;
-    ptr[0x453 + i] = arp[i].mode;
-    ptr[0x459 + i] = arp[i].octaveRange;
-    ptr[0x45f + i] = arp[i].multiplier;
-    ptr[0x465 + i] = arp[i].destination;
-    ptr[0x46b + i] = arp[i].length;
-    m_memcpy(&ptr[0x471 + i * 16], arp[i].pattern, 16);
-
-    ptr[0x4d1 + i] = midiArp[i].play;
-    ptr[0x4d7 + i] = midiArp[i].mode;
-    ptr[0x4dd + i] = midiArp[i].octaveRange;
-    ptr[0x4e3 + i] = midiArp[i].multiplier;
-    ptr[0x4e9 + i] = midiArp[i].length;
-    m_memcpy(&ptr[0x4ef + i * 16], midiArp[i].pattern, 16);
-  }
-  ElektronHelper::from16Bit(midiNotesUsed, ptr + 0x553);
-  ptr[0x555] = chordNotesUsed;
-  ptr[0x557] = locksUsed;
-
-  for (int i = 0; i < 4; i++) {
-    ptr[0x54f + i] = 0xFF;
-  }
-
-	encoder.pack(ptr + 0x425, 0x558 - 0x425);
-
-  for (int i = 0; i < 62; i++) {
-    for (int j = 0; j < 64; j++) {
-      encoder.pack8(locks[i][j]);
-    }
+  for (int i = 0; i < 384; i++) {
+    uint16_t l;
+		encoder.pack16(l);
+    chordNotes[i].note = ((l >> 9) & 0x7f);
+    chordNotes[i].track = (l >> 6) & 0x7;
+    chordNotes[i].position = l & 0x3f;
   }
   for (int i = 0; i < 400; i++) {
     uint16_t x = ((uint16_t)midiNotes[i].note << 9) |
@@ -243,6 +242,7 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
   encoder.pack8(0xFF); // >??
 
   uint16_t enclen = encoder.finish();
+	hexdump(data + 10, enclen);
   for (uint16_t i = 0; i < enclen; i++) {
     //    printf("cksum: %.4x, data: %.2x\n", cksum, data[10 + i]);
     cksum += data[10 + i];

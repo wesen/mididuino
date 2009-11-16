@@ -5,34 +5,10 @@
 
 class MNMTranspose {
 public:
-  int8_t transpose;
-  
-  static const uint8_t TRANSPOSE_CHROMATIC = 0;
-  static const uint8_t TRANSPOSE_MAJOR = 1;
-  static const uint8_t TRANSPOSE_MINOR = 2;
-  static const uint8_t TRANSPOSE_FIXED = 3;
-  uint8_t scale;
-  uint8_t key;
 };
 
 class MNMArpeggiator {
 public:
-  static const uint8_t ARP_PLAY_TRUE = 0;
-  static const uint8_t ARP_PLAY_UP   = 1;
-  static const uint8_t ARP_PLAY_DOWN = 2;
-  static const uint8_t ARP_PLAY_CYCLIC = 3;
-  static const uint8_t ARP_PLAY_RND = 4;
-  uint8_t play;
-  static const uint8_t ARP_MODE_OFF = 0;
-  static const uint8_t ARP_MODE_KEY = 1;
-  static const uint8_t ARP_MODE_SID  = 2;
-  static const uint8_t ARP_MODE_ADD  = 3;
-  uint8_t mode;
-  uint8_t octaveRange;
-  uint8_t multiplier;
-  uint8_t destination;
-  uint8_t length;
-  uint8_t pattern[16];
 };
 
 typedef struct mnm_note_s {
@@ -66,17 +42,50 @@ public:
   uint8_t noteNBR[6][64];
 
   uint8_t length;
-  bool doubleTempo;
+  uint8_t doubleTempo;
 
   uint8_t kit;
   int8_t patternTranspose;
+  
+  static const uint8_t TRANSPOSE_CHROMATIC = 0;
+  static const uint8_t TRANSPOSE_MAJOR = 1;
+  static const uint8_t TRANSPOSE_MINOR = 2;
+  static const uint8_t TRANSPOSE_FIXED = 3;
 
-  MNMTranspose transpose[6];
-  MNMTranspose midiTranspose[6];
+  int8_t transpose[6];
+  uint8_t scale[6];
+  uint8_t key[6];
 
-  MNMArpeggiator arp[6];
-  MNMArpeggiator midiArp[6];
+  int8_t midiTranspose[6];
+  uint8_t midiScale[6];
+  uint8_t midiKey[6];
 
+  static const uint8_t ARP_PLAY_TRUE = 0;
+  static const uint8_t ARP_PLAY_UP   = 1;
+  static const uint8_t ARP_PLAY_DOWN = 2;
+  static const uint8_t ARP_PLAY_CYCLIC = 3;
+  static const uint8_t ARP_PLAY_RND = 4;
+
+  static const uint8_t ARP_MODE_OFF = 0;
+  static const uint8_t ARP_MODE_KEY = 1;
+  static const uint8_t ARP_MODE_SID  = 2;
+  static const uint8_t ARP_MODE_ADD  = 3;
+
+  uint8_t arpPlay[6];
+  uint8_t arpMode[6];
+  uint8_t arpOctaveRange[6];
+  uint8_t arpMultiplier[6];
+  uint8_t arpDestination[6];
+  uint8_t arpLength[6];
+  uint8_t arpPattern[6][16];
+
+	uint8_t midiArpPlay[6];
+  uint8_t midiArpMode[6];
+  uint8_t midiArpOctaveRange[6];
+  uint8_t midiArpMultiplier[6];
+  uint8_t midiArpLength[6];
+  uint8_t midiArpPattern[6][16];
+	
   uint16_t midiNotesUsed;
   uint8_t chordNotesUsed;
 

@@ -3,6 +3,8 @@
 #include "helpers.h"
 #include "MDParams.hh"
 
+#include "MD.h"
+
 // #include "GUI.h"
 bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
   if (len != 0xC5 - 7)  {
@@ -10,13 +12,7 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
 
-  uint16_t cksum = 0;
-  for (int i = 9 - 6; i < 0xC0 - 6; i++) {
-    cksum += data[i];
-  }
-  cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit7(data[0xc0 - 6], data[0xc1 - 6])) {
-    // wrong checksum
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
     return false;
   }
 
@@ -131,18 +127,11 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
     //    GUI.flash_put_value16(0, len);
     return false;
   }
-  
-  uint16_t cksum = 0;
-  for (int i = 9 - 6; i < 0x4CC - 6; i++) {
-    cksum += data[i];
-  }
-		
-  cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit7(data[0x4CC - 6], data[0x4CD - 6])) {
-    //    GUI.flash_strings_fill("CKSUM", "");
+
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
     return false;
   }
-		
+
   origPosition = data[9 - 6];
   m_memcpy(name, (char *)data + 0xA - 6, 16);
 
@@ -282,19 +271,13 @@ bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
   if (len < 0x1a - 7)
     return false;
 
-  numRows = (len - (0x1A - 7)) / 12;
-  uint16_t end = 0x1A + numRows * 12;
-  
-  uint16_t cksum = 0;
-  for (uint16_t i = 9 - 6; i < end - 6; i++) {
-    cksum += data[i];
-  }
-  cksum &= 0x3FFF;
-  if (cksum != ElektronHelper::to16Bit7(data[end - 6], data[end + 1 - 6])) {
-    // wrong checksum
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
     return false;
   }
 
+  numRows = (len - (0x1A - 7)) / 12;
+  uint16_t end = 0x1A + numRows * 12;
+  
   origPosition = data[9 - 6];
   m_memcpy(name, (char *)data + 0xA - 6, 16);
 

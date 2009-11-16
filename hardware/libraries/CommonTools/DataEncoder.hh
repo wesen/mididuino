@@ -36,10 +36,38 @@ public:
 			pack8(inw & 0xFF);
 	}
 
+	virtual bool pack32(uint32_t *addr, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!pack32(addr[i]))
+				return false;
+		}
+		return true;
+	}
+
+	virtual bool pack32(uint64_t *addr, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!pack32(addr[i]))
+				return false;
+		}
+		return true;
+	}
+
 	virtual bool pack32hi(uint64_t inw) {
 		return pack32(inw >> 32);
 	}
 
+	virtual bool pack64(uint64_t inw) {
+		return pack32(inw & 0xFFFFFFFF) && pack32hi(inw);
+	}
+
+	virtual bool pack64(uint64_t *addr, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!pack64(addr[i]))
+				return false;
+		}
+		return true;
+	}
+	
   virtual uint16_t finish() {
     return 0;
   }
@@ -98,6 +126,19 @@ public:
 		*c |= ((uint64_t)c2) << 32;
 		return true;
 	}
+
+	virtual bool get64(uint64_t *c) {
+		return get32(c) && get32hi(c);
+	}
+
+	virtual bool get64(uint64_t *c, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!get64(&c[i]))
+				return false;
+		}
+		return true;
+	}
+	
 	virtual uint16_t get(uint8_t *data, uint16_t len) {
 		uint16_t i;
 		for (i = 0; i < len; i++) {

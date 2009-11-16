@@ -69,19 +69,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
     isExtraPattern = false;
   }
   
-
-  uint16_t cksum = 0;
-  for (uint16_t i = 9 - 6; i < (len - 4); i++) {
-    cksum += data[i];
-  }
-  cksum &= 0x3FFF;
-	uint16_t realcksum = ElektronHelper::to16Bit7(data[len - 4], data[len - 3]);
-  if (cksum != realcksum) {
-#ifdef HOST_MIDIDUINO
-		printf("wrong checksum, %x should be %x\n", cksum, realcksum);
-#else
-    GUI.flash_string_fill("WRONG CKSUM");
-#endif
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
     return false;
   }
     

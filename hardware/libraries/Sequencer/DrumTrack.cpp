@@ -1,6 +1,5 @@
-#include "helpers.h"
-#include <MidiUart.h>
 #include "WProgram.h"
+#include "helpers.h"
 #include "DrumTrack.hh"
 
 bool DrumTrack::isHit(uint8_t pos) {
