@@ -83,18 +83,21 @@ uint16_t MDSysexToDataEncoder::finish() {
 
  void MDSysexDecoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
 	 DataDecoder::init(DATA_ENCODER_INIT(_data, _maxLen));
-	cnt7 = 0;
-  cnt = 0;
+	 start7Bit();
 }
 
 DATA_ENCODER_RETURN_TYPE MDSysexDecoder::get8(uint8_t *c) {
-	if ((cnt % 8) == 0) {
-		bits = *(ptr++);
-		cnt++;
+	if (in7Bit) {
+		if ((cnt7 % 8) == 0) {
+			bits = *(ptr++);
+			cnt7++;
+		}
+		bits <<= 1;
+		*c = *(ptr++) | (bits & 0x80);
+		cnt7++;
+	} else {
+		*c = *(ptr++);
 	}
-	bits <<= 1;
-	*c = *(ptr++) | (bits & 0x80);
-	cnt++;
 
 	DATA_ENCODER_TRUE();
 }

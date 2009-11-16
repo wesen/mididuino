@@ -56,49 +56,40 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
 
-	uint8_t *ptr = data + 3;
-  origPosition = *ptr;
+  origPosition = data[3];
 	MDSysexDecoder decoder(DATA_ENCODER_INIT(data + 0xA - 6, 74));
 	decoder.get32(trigPatterns, 16);
 
-	decoder.init(DATA_ENCODER_INIT(data + 0x54 - 6, 74));
+	decoder.start7Bit();
+	//	decoder.init(DATA_ENCODER_INIT(data + 0x54 - 6, 74));
 	decoder.get32(lockPatterns, 16);
 
-	decoder.init(DATA_ENCODER_INIT(data + 0x9e - 6, 19));
-
-#if 0
+	decoder.start7Bit();
+	//	decoder.init(DATA_ENCODER_INIT(data + 0x9e - 6, 19));
 	accentPattern = decoder.gget32();
 	slidePattern = decoder.gget32();
 	swingPattern = decoder.gget32();
 	swingAmount = decoder.gget32();
-#else
 
-		decoder.get32(&accentPattern);
-		decoder.get32(&slidePattern);
-		decoder.get32(&swingPattern);
-		decoder.get32(&swingAmount);
-#endif
+	decoder.stop7Bit();
+	accentAmount = decoder.gget8();
+	patternLength = decoder.gget8();
+	doubleTempo = decoder.gget8();
+	scale = decoder.gget8();
+	kit = decoder.gget8();
+	numLockedRows = decoder.gget8();
 
-	ptr = data + 0xb1 - 6;
-  accentAmount = *(ptr++);
-  patternLength = *(ptr++);
-  doubleTempo = (*(ptr++) == 1);
-  scale = *(ptr++);
-  kit = *(ptr++);
-  numLockedRows = *(ptr++);
-
-	decoder.init(DATA_ENCODER_INIT(data + 0xb7 - 6, 2341));
+	decoder.start7Bit();
+	//	decoder.init(DATA_ENCODER_INIT(data + 0xb7 - 6, 2341));
 	for (uint8_t i = 0; i < 64; i++) {
 		decoder.get(locks[i], 32);
 	}
 
-	decoder.init(DATA_ENCODER_INIT(data + 0x9DC - 6, 234));
+	decoder.start7Bit();
 	{
-		uint32_t tmp[3];
-		decoder.get32(tmp, 3);
-		accentEditAll = (tmp[0] == 1);
-		slideEditAll = (tmp[1] == 1);
-		swingEditAll = (tmp[2] == 1);
+		accentEditAll = decoder.gget32();
+		slideEditAll = decoder.gget32();
+		swingEditAll = decoder.gget32();
 	}
 	decoder.get32(accentPatterns, 16);
 	decoder.get32(slidePatterns, 16);
@@ -116,7 +107,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   if (isExtraPattern) {
-		decoder.init(DATA_ENCODER_INIT(data + 0xac6 - 6, 2647));
+		decoder.start7Bit();
 		decoder.get32hi(trigPatterns, 16);
 		decoder.get32hi(&accentPattern);
 		decoder.get32hi(&slidePattern);

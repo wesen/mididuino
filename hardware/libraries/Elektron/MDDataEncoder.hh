@@ -3,7 +3,6 @@
 
 #include "DataEncoder.hh"
 
-
 class MDDataToSysexEncoder : public DataEncoder {
   uint16_t retLen;
   uint16_t cnt7;
@@ -41,11 +40,20 @@ class MDSysexDecoder : public DataDecoder {
   uint8_t cnt7;
   uint8_t bits;
   uint8_t tmpData[7];
-	uint16_t cnt;
+	bool in7Bit;
 	
 public:
 	MDSysexDecoder(DATA_ENCODER_INIT(uint8_t *_data = NULL, uint16_t _maxLen = 0)) {
 		init(DATA_ENCODER_INIT(_data, _maxLen));
+	}
+
+	void start7Bit() {
+		in7Bit = true;
+		cnt7 = 0;
+	}
+
+	void stop7Bit() {
+		in7Bit = false;
 	}
 	
 	virtual void init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen));
