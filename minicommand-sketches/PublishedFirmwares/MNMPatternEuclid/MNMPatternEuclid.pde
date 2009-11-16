@@ -18,6 +18,6 @@ void setup() {
   sketch.setup();
   GUI.setSketch(&sketch);
 
-  initClockPage();
+//  initClockPage();
 }
 

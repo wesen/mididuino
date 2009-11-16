@@ -56,7 +56,14 @@ uint16_t ElektronDataToSysexEncoder::finish() {
 			checksum += ptr[i];
 		}
 	}
-	ptr += inc;
+	if (uart != NULL) {
+		for (uint8_t i = 0; i < inc; i++) {
+			uart->putc(ptr[i]);
+		}
+		ptr = data;
+	} else {
+		ptr += inc;
+	}
 	retLen += inc;
 	return retLen;
 }

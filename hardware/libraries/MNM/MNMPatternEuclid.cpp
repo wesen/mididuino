@@ -1,7 +1,5 @@
 #include "MNMPatternEuclid.h"
 
-static uint8_t patData[8192];
-
 MNMPatternEuclid::MNMPatternEuclid() : PitchEuclid() {
 	track.setEuclid(3, 8, 0);
 	randomizePitches();
@@ -19,10 +17,8 @@ void MNMPatternEuclid::makeTrack(uint8_t trackNum) {
 		}
 	}
 
-	uint16_t len = pattern.toSysex(patData, sizeof(patData));
-	patData[0] = 0xF0;
-	patData[len-1] = 0xF7;
-	MidiUart.puts(patData, len);
+	MNMDataToSysexEncoder encoder(&MidiUart);
+	pattern.toSysex(encoder);
 
 	char name[5];
 	MNM.getPatternName(pattern.origPosition, name);
