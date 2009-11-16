@@ -1,7 +1,7 @@
 #ifndef PRINT_MD_PATTERN_H__
 #define PRINT_MD_PATTERN_H__
 
-#include "MD.h"
+#include "MDPattern.hh"
 
 class PrintMDPattern : public MDPattern {
  public:

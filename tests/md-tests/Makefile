@@ -9,7 +9,7 @@ LBASE_DIR=$(BASE_DIR)/hardware/libraries
 JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
 CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
-DIRS  = CommonTools Midi MidiTools GUI MD Elektron
+DIRS  = CommonTools Midi MidiTools GUI MD Elektron Sequencer
 LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) \
 		../../host/MidiUart ../../host/GUI ../../host/Tools
 INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I../../host

@@ -2,12 +2,16 @@
 #define MDPATTERN_H__
 
 #include <inttypes.h>
-#include "helpers.h"
+#include "ElektronPattern.hh"
 
-class MDPattern {
+class MDPattern : public ElektronPattern {
 public:
-	// XXX don't change the declaration order of the variables
   uint8_t origPosition;
+
+	uint8_t getPosition() { return origPosition; }
+	void setPosition(uint8_t _pos) { origPosition = _pos; }
+
+	/* SUPER IMPORTANT DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES */
 
   uint64_t trigPatterns[16];
   uint32_t lockPatterns[16];
@@ -24,7 +28,12 @@ public:
 
   uint8_t kit;
   uint8_t numLockedRows; // unused
-  uint8_t locks[64][64];
+
+	uint8_t getKit() { return kit; }
+	void    setKit(uint8_t _kit) { kit = _kit; }
+
+	uint8_t getLength() { return patternLength; }
+	void    setLength(uint8_t _len) { patternLength = _len; }
 
   bool accentEditAll;
   bool slideEditAll;
@@ -35,37 +44,35 @@ public:
 
   uint8_t numRows;
   int8_t paramLocks[16][24];
-  int8_t lockTracks[64];
-  int8_t lockParams[64];
+	int8_t getLockIdx(uint8_t track, uint8_t param) {
+		return paramLocks[track][param];
+	}
+	void setLockIdx(uint8_t track, uint8_t param, int8_t value) {
+		paramLocks[track][param] = value;
+	}
 
   bool isExtraPattern;
 
-  MDPattern() {
+  MDPattern() : ElektronPattern() {
+		maxSteps = 64;
+		maxParams = 24;
+		maxTracks = 16;
+		maxLocks = 64;
+
     isExtraPattern = false;
+		init();
   }
 
   /* XXX TODO extra pattern 64 */
 
-  void init();
-  
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
 
-  bool isLockPatternEmpty(uint8_t idx);
-  bool isLockPatternEmpty(uint8_t idx, uint64_t trigs);
-
 	bool isTrackEmpty(uint8_t track);
 	
-  bool isParamLocked(uint8_t track, uint8_t param);
-  void clearLockPattern(uint8_t lock);
-  void cleanupLocks();
-
   void clearPattern();
   void clearTrack(uint8_t track);
   
-  void clearParamLocks(uint8_t track, uint8_t param);
-  void clearTrackLocks(uint8_t track);
-
   void clearTrig(uint8_t track, uint8_t trig);
   inline void setTrig(uint8_t track, uint8_t trig) {
 		SET_BIT64(trigPatterns[track], trig);
@@ -73,14 +80,9 @@ public:
 	inline bool isTrigSet(uint8_t track, uint8_t trig) {
 		return IS_BIT_SET64(trigPatterns[track], trig);
 	}
+	void setNote(uint8_t track, uint8_t step, uint8_t pitch);
 
-  int8_t getNextEmptyLock();
-  void recalculateLockPatterns();
-
-	static const uint8_t NO_LOCK = 255;
-  bool addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t value);
-  void clearLock(uint8_t track, uint8_t trig, uint8_t param);
-  uint8_t getLock(uint8_t track, uint8_t trig, uint8_t param);
+	virtual void recalculateLockPatterns();
 };
 
 #endif /* MDPATTERN_H__ */

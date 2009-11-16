@@ -1,14 +1,14 @@
 #include <CppUnitLite2.h>
 #include <TestResultStdErr.h>
 
+#include "WProgram.h"
 #include <MD.h>
 
 #include "../pattern-tests/PrintMDPattern.h"
 
 struct MDPatternFixture {
 	MDPatternFixture() {
-		pattern.init();
-		pattern2.init();
+		pattern.clearPattern();
 	}
 
 	MDPattern pattern;
@@ -137,7 +137,7 @@ TEST_F (MDPatternFixture, MDPatternSingleLock) {
 		CHECK_EQUAL(255, pattern.getLock(track, 0, 0));
 		pattern.setTrig(track, 0);
 		pattern.addLock(track, 0, 0, 100);
-		CHECK_EQUAL(100, pattern.getLock(track, 0, 0));
+		CHECK_EQUAL(100, (int)pattern.getLock(track, 0, 0));
 		bool ret = reimportSysex(&pattern);
 		CHECK(ret);
 		CHECK_EQUAL(100, (int)pattern.getLock(track, 0, 0));

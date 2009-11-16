@@ -84,10 +84,8 @@ public:
 	uint8_t getKit() { return kit; }
 	void    setKit(uint8_t _kit) { kit = _kit; }
 	
-
 	uint8_t getLength() { return patternLength; }
 	void    setLength(uint8_t _len) { patternLength = _len; }
-	
 
 	uint8_t unused[4];
 
@@ -109,7 +107,7 @@ public:
   mnm_note_t midiNotes[400];
   mnm_note_t chordNotes[192];
 
-  MNMPattern() {
+  MNMPattern() : ElektronPattern() {
 		maxSteps = 64;
 		maxParams = 64;
 		maxTracks = 6;
@@ -123,9 +121,6 @@ public:
 	bool isTrackEmpty(uint8_t track);
 	bool isMidiTrackEmpty(uint8_t track);
 	
-  bool isLockEmpty(uint8_t idx);
-  bool isLockEmpty(uint8_t idx, uint64_t trigs);
-
   void clearPattern();
   void clearTrack(uint8_t track);
 	void clearMidiTrack(uint8_t track);

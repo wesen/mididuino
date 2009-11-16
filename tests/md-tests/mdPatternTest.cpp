@@ -27,12 +27,14 @@ public:
 };
 
 int main(void) {
+	PrintMDPattern pattern;
+	pattern.print();
 	MDSysexListener.setup();
 	
 	MDHandler mdHandler;
 	MDSysexListener.addOnPatternMessageCallback(&mdHandler, (md_callback_ptr_t)&MDHandler::onMDPattern);
 	
-  MidiUart.init(3, 3);
+  MidiUart.init(0, 0);
 
 	MD.requestPattern(0);
 
