@@ -206,7 +206,7 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 
 	encoder.pack16(midiNotesUsed);
 	encoder.pack8(chordNotesUsed);
-	encoder.pack8(unused[0]);
+	encoder.pack8(0x00);
 	encoder.pack8(locksUsed);
 
 	encoder.pack((uint8_t *)locks, 62 * 64);

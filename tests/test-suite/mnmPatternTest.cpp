@@ -70,7 +70,6 @@ bool reimportSysex(MNMPattern *p) {
 }
 
 TEST_F (MNMPatternFixture, MNMPatternEmptyToFromSysex) {
-	pattern.init();
 	MNMPattern p2;
 	uint8_t buf[8192], buf2[8192];
 	uint16_t len = pattern.toSysex(buf, sizeof(buf));
@@ -127,3 +126,66 @@ TEST_F (MNMPatternFixture, MNMPatternEmptyToFromSysex) {
 		dumpMonoSysex(buf2, 0x2a5);
 	}
 }
+
+TEST_F (MNMPatternFixture, MNMPatternReadElektronPatternReimport) {
+	uint8_t buf[8192];
+	size_t len = readFile("syx/mnm-pat-full-a01.syx", buf, sizeof(buf));
+	CHECK(len != 0);
+	bool ret = pattern.fromSysex(buf + 6, len - 7);
+	CHECK(ret);
+
+	uint8_t buf2[8192];
+	uint16_t len2 = pattern.toSysex(buf2, sizeof(buf2));
+	//	dumpMonoSysex(buf, 0x2a5);
+
+	MNMPattern p2;
+	ret = p2.fromSysex(buf2 + 6, len2 - 7);
+	CHECK(ret);
+
+	ret = compareMonoSysex(buf, buf2);
+	CHECK(ret);
+	if (!ret) {
+		printf("old one\n");
+		dumpMonoSysex(buf, 0x2a5);
+		printf("new one\n");
+		dumpMonoSysex(buf2, 0x2a5);
+	}
+
+	CHECK_EQUAL(pattern.origPosition, (p2).origPosition);
+	CHECK_EQUAL(pattern.swingAmount, (p2).swingAmount);
+	CHECK_EQUAL(pattern.length, (p2).length);
+	CHECK_EQUAL(pattern.doubleTempo, (p2).doubleTempo);
+	CHECK_EQUAL(pattern.doubleTempo, (p2).doubleTempo);
+	CHECK_EQUAL(pattern.kit, (p2).kit);
+
+	for (uint8_t track = 0; track < 1; track++) {
+		CHECK_EQUAL(pattern.ampTrigs[track], (p2).ampTrigs[track]);
+		CHECK_EQUAL(pattern.filterTrigs[track], (p2).filterTrigs[track]);
+		CHECK_EQUAL(pattern.lfoTrigs[track], (p2).lfoTrigs[track]);
+		CHECK_EQUAL(pattern.offTrigs[track], (p2).offTrigs[track]);
+		CHECK_EQUAL(pattern.triglessTrigs[track], (p2).triglessTrigs[track]);
+		CHECK_EQUAL(pattern.chordTrigs[track], (p2).chordTrigs[track]);
+		CHECK_EQUAL(pattern.slidePatterns[track], (p2).slidePatterns[track]);
+		CHECK_EQUAL(pattern.swingPatterns[track], (p2).swingPatterns[track]);
+
+		CHECK_EQUAL(pattern.midiNoteOnTrigs[track], (p2).midiNoteOnTrigs[track]);
+		CHECK_EQUAL(pattern.midiNoteOffTrigs[track], (p2).midiNoteOffTrigs[track]);
+		CHECK_EQUAL(pattern.midiTriglessTrigs[track], (p2).midiTriglessTrigs[track]);
+		CHECK_EQUAL(pattern.midiSlidePatterns[track], (p2).midiSlidePatterns[track]);
+		CHECK_EQUAL(pattern.midiSwingPatterns[track], (p2).midiSwingPatterns[track]);
+
+		for (uint8_t param = 0; param < 1; param++) {
+			printf("param: %d\n", param);
+			CHECK_EQUAL(pattern.isParamLocked(track, param),
+									(p2).isParamLocked(track, param));
+			if (pattern.isParamLocked(track, param)) {
+				for (uint8_t step = 0; step < 64; step++) {
+					CHECK_EQUAL((int)pattern.getLock(track, step, param),
+											(int)(p2).getLock(track, step, param));
+				}
+			}
+		}
+	}
+
+}
+

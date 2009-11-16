@@ -6,7 +6,9 @@
 
 class MDPattern {
 public:
+	// XXX don't change the declaration order of the variables
   uint8_t origPosition;
+
   uint64_t trigPatterns[16];
   uint32_t lockPatterns[16];
 
@@ -14,10 +16,10 @@ public:
   uint64_t slidePattern;
   uint64_t swingPattern;
   uint64_t swingAmount;
+
   uint8_t accentAmount;
   uint8_t patternLength;
-
-  bool doubleTempo;
+  uint8_t doubleTempo;
   uint8_t scale;
 
   uint8_t kit;

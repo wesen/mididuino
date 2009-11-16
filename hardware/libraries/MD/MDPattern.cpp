@@ -64,18 +64,25 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 	decoder.get32(lockPatterns, 16);
 
 	decoder.start7Bit();
+	decoder.get32(&accentPattern, 4);
+#if 0
 	accentPattern = decoder.gget32();
 	slidePattern  = decoder.gget32();
 	swingPattern  = decoder.gget32();
 	swingAmount   = decoder.gget32();
+#endif
 
 	decoder.stop7Bit();
+	// XXX dependent on order
+	decoder.get(&accentAmount, 6);
+#if 0
 	accentAmount  = decoder.gget8();
 	patternLength = decoder.gget8();
 	doubleTempo   = decoder.gget8();
 	scale         = decoder.gget8();
 	kit           = decoder.gget8();
 	numLockedRows = decoder.gget8();
+#endif
 
 	decoder.start7Bit();
 	//	decoder.init(DATA_ENCODER_INIT(data + 0xb7 - 6, 2341));
@@ -84,14 +91,15 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 	}
 
 	decoder.start7Bit();
-	{
-		accentEditAll = decoder.gget32();
-		slideEditAll  = decoder.gget32();
-		swingEditAll  = decoder.gget32();
-	}
+	decoder.get32((uint32_t *)&accentEditAll, 3 + 16 * 3);
+#if 0
+	accentEditAll = decoder.gget32();
+	slideEditAll  = decoder.gget32();
+	swingEditAll  = decoder.gget32();
 	decoder.get32(accentPatterns, 16);
 	decoder.get32(slidePatterns, 16);
 	decoder.get32(swingPatterns, 16);
+#endif
 
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 24; j++) {
@@ -107,15 +115,15 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   if (isExtraPattern) {
 		decoder.start7Bit();
 		decoder.get32hi(trigPatterns, 16);
-		decoder.get32hi(&accentPattern);
-		decoder.get32hi(&slidePattern);
-		decoder.get32hi(&swingPattern);
+		decoder.get32hi(&accentPattern, 3);
+		//		decoder.get32hi(&slidePattern);
+		//		decoder.get32hi(&swingPattern);
 		for (uint8_t i = 0; i < 64; i++) {
 			decoder.get(locks[i] + 32, 32);
 		}
-		decoder.get32hi(accentPatterns, 16);
-		decoder.get32hi(slidePatterns, 16);
-		decoder.get32hi(swingPatterns, 16);
+		decoder.get32hi(accentPatterns, 16 * 3);
+		//		decoder.get32hi(slidePatterns, 16);
+		//		decoder.get32hi(swingPatterns, 16);
   }
 
   return true;
@@ -151,7 +159,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
 	encoder.pack8(accentAmount);
 	encoder.pack8(patternLength);
-	encoder.pack8(doubleTempo ? 1 : 0);
+	encoder.pack8(doubleTempo);
 	encoder.pack8(scale);
 	encoder.pack8(kit);
 	encoder.pack8(numLockedRows);
