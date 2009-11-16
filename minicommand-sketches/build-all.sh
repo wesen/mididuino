@@ -9,27 +9,35 @@ ORIG_DIR=`pwd`
 
 rm -f .failure .failed .succeeded
 
-find . -maxdepth 1 -type d | grep -v '^\.$' | grep -v '\.svn' | 
-while read i; do
-	PREVDIR=`pwd`
-	if [ -f "$i/$i.pde" ]
-	then 
-			echo
-			echo "Making $i"
-			cd "$i"
-			if make -f "$ORIG_DIR/Makefile" > /dev/null
-			then
-					echo "SUCCESS"
-					echo "$i" >> "$ORIG_DIR/.succeeded"
-			else
-					echo "FAILURE"
-					touch "$ORIG_DIR/.failure"
-					echo "$i" >> "$ORIG_DIR/.failed"
-		  fi
+touch .failed .succeeded
+
+FIRMWARE_DIRS=PublishedFirmwares
+
+for dir in $FIRMWARE_DIRS; do
+		find $dir -maxdepth 1 -type d | grep -v '^\.$' | grep -v '\.svn' |
+		while read i; do
+				FIRMWARE_NAME=`echo "$i" | sed -e s/.*\\\/\//`
+				echo "$FIRMWARE_NAME"
+				PREVDIR=`pwd`
+				if [ -f "$i/$FIRMWARE_NAME.pde" ]
+				then 
+						echo
+						echo "Making $i"
+						cd "$i"
+						if make -f "$ORIG_DIR/Makefile" > /dev/null
+						then
+								echo "SUCCESS"
+								echo "$i" >> "$ORIG_DIR/.succeeded"
+						else
+								echo "FAILURE"
+								touch "$ORIG_DIR/.failure"
+								echo "$i" >> "$ORIG_DIR/.failed"
+						fi
 	
-			make -f "$ORIG_DIR/Makefile" clean >/dev/null 2>&1
-			cd "$PREVDIR"
-	fi
+						make -f "$ORIG_DIR/Makefile" clean >/dev/null 2>&1
+						cd "$PREVDIR"
+				fi
+		done
 done
 
 echo
