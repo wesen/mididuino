@@ -3,8 +3,8 @@
 
 #include "WProgram.h"
 
-#define TURBOMIDI_SPEED_REQUEST 0x10
-#define TURBOMIDI_SPEED_ANSWER  0x11
+#define TURBOMIDI_SPEED_REQUEST            0x10
+#define TURBOMIDI_SPEED_ANSWER             0x11
 #define TURBOMIDI_SPEED_NEGOTIATION_MASTER 0x12
 #define TURBOMIDI_SPEED_ACK_SLAVE          0x13
 #define TURBOMIDI_SPEED_TEST_MASTER        0x14
@@ -35,10 +35,9 @@ public:
 	virtual void end();
 
 	void    setupTurboMidiSlave();
-	uint8_t getTurboMidiSpeed();
 
-	bool    requestTurboMidi();
-	void    requestSpeedNegotiation(uint8_t speed1, uint8_t speed2);
+	bool    sendSpeedRequest();
+	void    sendSpeedNegotiationRequest(uint8_t speed1, uint8_t speed2);
 	void    sendSpeedTest1(uint8_t speed1);
 	void    sendSpeedTest2(uint8_t speed2);
 
@@ -46,25 +45,41 @@ public:
 	void    sendSpeedNegotiationAck();
 	void    sendSpeedTest1Result();
 	void    sendSpeedTest2Result();
-	
+
+	void    startTurboMidi();
 	void    stopTurboMidi();
 
+	static uint32_t tmSpeeds[11];
+	
+	uint8_t currentSpeed;
+
+	void setSpeed(uint8_t speed);
+	
 	uint16_t slaveSpeeds;
 	uint16_t certifiedSlaveSpeeds;
 
 	static const uint16_t speeds =
-		_BV(TURBOMIDI_SPEED_1x) | _BV(TURBOMIDI_SPEED_2x) |
-		_BV(TURBOMIDI_SPEED_3_33x) | _BV(TURBOMIDI_SPEED_4x) |
-		_BV(TURBOMIDI_SPEED_5x) | _BV(TURBOMIDI_SPEED_6_66x) |
-		_BV(TURBOMIDI_SPEED_8x);
+		_BV(TURBOMIDI_SPEED_1x)
+		| _BV(TURBOMIDI_SPEED_2x)
+		//		| _BV(TURBOMIDI_SPEED_3_33x)
+		//		| _BV(TURBOMIDI_SPEED_4x)
+		//		| _BV(TURBOMIDI_SPEED_5x)
+		//		| _BV(TURBOMIDI_SPEED_6_66x)
+		//		| _BV(TURBOMIDI_SPEED_8x)
+		;
+
 	static const uint16_t certifiedSpeeds =
-		_BV(TURBOMIDI_SPEED_1x) | _BV(TURBOMIDI_SPEED_2x) |
-		_BV(TURBOMIDI_SPEED_3_33x) | _BV(TURBOMIDI_SPEED_4x) |
-		_BV(TURBOMIDI_SPEED_5x) | _BV(TURBOMIDI_SPEED_6_66x) |
-		_BV(TURBOMIDI_SPEED_8x);
+		_BV(TURBOMIDI_SPEED_1x)
+		| _BV(TURBOMIDI_SPEED_2x)
+		//		| _BV(TURBOMIDI_SPEED_3_33x)
+		//		| _BV(TURBOMIDI_SPEED_4x) 
+		//		| _BV(TURBOMIDI_SPEED_5x)
+		//		| _BV(TURBOMIDI_SPEED_6_66x)
+		//		| _BV(TURBOMIDI_SPEED_8x)
+		;
 		
 
-	enum {
+	typedef enum {
 		tm_state_normal = 0,
 
 		/* master states */
@@ -79,12 +94,20 @@ public:
 		tm_master_ok,
 
 		/* slave states */
+		tm_slave_req_answer_sent,
 		tm_slave_wait_speed_neg,
+		tm_slave_speed_ack_sent,
 		tm_slave_wait_test_1,
+		tm_slave_test_1_sent,
 		tm_slave_wait_test_2,
+		tm_slave_test_2_sent,
 		tm_slave_ok,
 		
-	} state;
+	} tm_state_t;
+
+	tm_state_t state;
+
+	bool    blockForState(tm_state_t state, uint16_t timeout = 3000);	
 	
 #ifdef HOST_MIDIDUINO
 	virtual ~TurboMidiSysexListenerClass() {

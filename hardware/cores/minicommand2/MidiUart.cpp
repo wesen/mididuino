@@ -29,10 +29,10 @@ MidiUartClass::MidiUartClass() : MidiUartParent() {
 
 void MidiUartClass::initSerial() {
   running_status = 0;
-  UBRR0H = (UART_BAUDRATE_REG >> 8);
-  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
-  //  UBRRH = 0;
-  //  UBRRL = 15;
+	setSpeed(31250);
+	
+	//  UBRR0H = (UART_BAUDRATE_REG >> 8);
+	//  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
 
   UCSR0C = (3<<UCSZ00); 
   
@@ -42,6 +42,20 @@ void MidiUartClass::initSerial() {
 #ifdef TX_IRQ
   UCSR0B |= _BV(TXCIE);
 #endif
+}
+
+void MidiUartClass::setSpeed(uint32_t speed) {
+#ifdef TX_IRQ
+	// empty TX buffer before switching speed
+	while (!txRb.isEmpty())
+		;
+#endif
+	
+	uint32_t cpu = (F_CPU / 16);
+	cpu /= speed;
+	cpu--;
+	UBRR0H = ((cpu >> 8) & 0xFF);
+	UBRR0L = (cpu & 0xFF);
 }
 
 void MidiUartClass::putc_immediate(uint8_t c) {
