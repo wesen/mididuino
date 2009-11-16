@@ -35,9 +35,9 @@ public:
 	uint8_t getLength() { return patternLength; }
 	void    setLength(uint8_t _len) { patternLength = _len; }
 
-  bool accentEditAll;
-  bool slideEditAll;
-  bool swingEditAll;
+  uint32_t accentEditAll;
+  uint32_t slideEditAll;
+  uint32_t swingEditAll;
   uint64_t accentPatterns[16];
   uint64_t slidePatterns[16];
   uint64_t swingPatterns[16];
