@@ -100,7 +100,6 @@ extern "C" {
 #define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
 
   long map(long x, long in_min, long in_max, long out_min, long out_max);
-
 #define delay(ms) _delay_ms(ms)
 #define delayMicroseconds(us) _delay_us(us)
 #endif

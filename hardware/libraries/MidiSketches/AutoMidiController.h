@@ -1,6 +1,7 @@
 #ifndef AUTO_MIDI_CONTROLLER_H__
 #define AUTO_MIDI_CONTROLLER_H__
 
+#include "WProgram.h"
 #include <CCHandler.h>
 #include <AutoEncoderPage.h>
 
@@ -10,6 +11,7 @@ class AutoMidiControllerSketch : public Sketch {
   SwitchPage switchPage;
   
   AutoMidiControllerSketch() {
+		delay(100);
   }
   
   void setup() {

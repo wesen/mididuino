@@ -7,6 +7,7 @@
 
 // template specialization of handleEvent
 
+#include <GUI.h>
 #include <CCHandler.h>
 
 template <typename EncoderType> 

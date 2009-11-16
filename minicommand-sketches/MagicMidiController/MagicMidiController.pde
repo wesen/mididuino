@@ -9,5 +9,3 @@ void setup() {
   initClockPage();
 }
 
-void loop() {
-}
