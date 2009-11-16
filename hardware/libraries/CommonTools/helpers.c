@@ -183,7 +183,7 @@ uint16_t clock_diff(uint16_t old_clock, uint16_t new_clock) {
   if (new_clock >= old_clock)
     return new_clock - old_clock;
   else
-    return new_clock + (65535 - old_clock);
+    return new_clock + (65536 - old_clock);
 }
 
 #ifdef MIDIDUINO

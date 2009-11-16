@@ -151,12 +151,12 @@ void MidiClockClass::updateClockInterval() {
       isInit = true;
     } else {
       uint32_t bla =
-	(((uint32_t)_interval * (uint32_t)pll_x) +
-	 (uint32_t)(256 - pll_x) * (uint32_t)diff_rx);
+				(((uint32_t)_interval * (uint32_t)pll_x) +
+				 (uint32_t)(256 - pll_x) * (uint32_t)diff_rx);
       //      uint8_t rem = bla & 0xFF;
       if (bla > 0xffff) {
-	// XXX stop
-	// clock weg
+				// XXX stop
+				// clock weg
       }
       bla >>= 8;
       new_interval = bla;
@@ -225,11 +225,11 @@ void MidiClockClass::handleImmediateClock() {
 
   //    on96Callbacks.call();
   
-  if (_mod6_counter == 0) {
+  if (_mod6_counter == 5) {
     on16Callbacks.call(div16th_counter);
     on32Callbacks.call(div32th_counter);
   }
-  if (_mod6_counter == 3) {
+  if (_mod6_counter == 2) {
     on32Callbacks.call(div32th_counter);
   }
   
@@ -281,28 +281,28 @@ void MidiClockClass::handleClock() {
       updateSmaller = true;
       uint16_t phase_add = rx_phase / 4;
       if (phase_add == 0) {
-	//	phase_add = rx_phase;
+				//	phase_add = rx_phase;
       }
       if (counter > phase_add) {
-	counter -= phase_add;
+				counter -= phase_add;
 	
 #ifdef DEBUG_MIDI_CLOCK
-	// something happens on brutal tempo jumps
-	if (phase_add > 200) {
-	  //	  GUI.flash_strings_fill("OHLA", "OHLA");
-	}
+				// something happens on brutal tempo jumps
+				if (phase_add > 200) {
+					//	  GUI.flash_strings_fill("OHLA", "OHLA");
+				}
 #endif
       }
       last_phase_add = phase_add;
     } else {
       updateSmaller = false;
       if (interval > rx_phase) {
-	uint16_t phase_add = (interval - rx_phase) / 4;
-	if (phase_add == 0) {
-	  //	  phase_add = (interval - rx_phase);
-	}
-	counter += phase_add;
-	last_phase_add = phase_add;
+				uint16_t phase_add = (interval - rx_phase) / 4;
+				if (phase_add == 0) {
+					//	  phase_add = (interval - rx_phase);
+				}
+				counter += phase_add;
+				last_phase_add = phase_add;
       }
     }
   }
@@ -325,6 +325,11 @@ void MidiClockClass::handleTimerInt()  {
   static bool inIRQ = false;
 
   //  sei();
+#ifdef HOST_MIDIDUINO
+	/* on the host, always trigger */
+	counter = 0;
+#endif
+	
   if (counter == 0) {
     counter = interval;
 
@@ -366,18 +371,18 @@ void MidiClockClass::handleTimerInt()  {
     if (transmit) {
       int len = (div96th_counter - outdiv96th_counter);
       for (int i = 0; i < len; i++) {
-	MidiUart.putc_immediate(MIDI_CLOCK);
-	outdiv96th_counter++;
+				MidiUart.putc_immediate(MIDI_CLOCK);
+				outdiv96th_counter++;
       }
     }
 
     if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
       if ((div96th_counter < indiv96th_counter) ||
-	  (div96th_counter > (indiv96th_counter + 1))) {
-	div96th_counter = indiv96th_counter;
-	div32th_counter = indiv32th_counter;
-	div16th_counter = indiv16th_counter;
-	mod6_counter = inmod6_counter;
+					(div96th_counter > (indiv96th_counter + 1))) {
+				div96th_counter = indiv96th_counter;
+				div32th_counter = indiv32th_counter;
+				div16th_counter = indiv16th_counter;
+				mod6_counter = inmod6_counter;
       }
     }
 
@@ -402,11 +407,11 @@ void MidiClockClass::handleTimerInt()  {
 #endif
       
     
-    if (_mod6_counter == 0) {
+    if (_mod6_counter == 5) {
       on16Callbacks.call(div16th_counter);
       on32Callbacks.call(div32th_counter);
     }
-    if (_mod6_counter == 3) {
+    if (_mod6_counter == 2) {
       on32Callbacks.call(div32th_counter);
     }
 

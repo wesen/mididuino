@@ -11,6 +11,3 @@ void setup() {
   GUI.setSketch(&sketch);
 }
 
-void loop() {
-}
-

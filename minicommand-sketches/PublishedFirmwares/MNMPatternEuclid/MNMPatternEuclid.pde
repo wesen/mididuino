@@ -2,22 +2,31 @@
 #include <MNM.h>
 #include <MidiEuclidSketch.h>
 #include <MNMPatternEuclidSketch.h>
+#include <MNMWesenLivePatchSketch.h>
 
 MNMPatternEuclidSketch sketch;
-// MDWesenLivePatchSketch sketch2;
+MNMWesenLivePatchSketch sketch2;
+SketchSwitchPage sketchSwitchPage(NULL, &sketch, &sketch2);
 
 void setup() {
   MNM.currentPattern = 0;
   initMNMTask();
   MNMTask.autoLoadKit = true;
   MNMTask.reloadGlobal = false;
-  MNMTask.autoLoadGlobal = false;
+  MNMTask.autoLoadGlobal = true;
   MNMTask.autoLoadPattern = true;
   MNMTask.verbose = false;
   
-  sketch.setup();
-  GUI.setSketch(&sketch);
+  sketch.setupMonster(true);
+  sketch2.setupMonster(true);
+  GUI.setSketch(&_defaultSketch);
+  GUI.setPage(&sketchSwitchPage);
+  GUI.addEventHandler(handleEvent);
 
-//  initClockPage();
+  initClockPage();
+}
+
+bool handleEvent(gui_event_t *event) {
+  return sketchSwitchPage.handleGlobalEvent(event);
 }
 
