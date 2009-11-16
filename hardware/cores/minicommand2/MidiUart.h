@@ -42,13 +42,14 @@ class MidiUartClass : public MidiUartParent {
 
 extern MidiUartClass MidiUart;
 
-class MidiUartClass2 : MidiUartClass {
+class MidiUartClass2 : public MidiUartParent {
   virtual void initSerial();
   
  public:
   MidiUartClass2();
   virtual bool avail();
   virtual uint8_t getc();
+
   volatile RingBuffer<RX_BUF_SIZE, RX_BUF_TYPE> rxRb;
 };
 

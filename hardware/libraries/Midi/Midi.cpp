@@ -19,7 +19,10 @@ const midi_parse_t midi_parse[] = {
   { 0, midi_ignore_message}
 };
 
-MidiClass::MidiClass(MidiUartParent *_uart) : midiSysex(sysexBuf, sizeof(sysexBuf)) {
+MidiClass::MidiClass(MidiUartParent *_uart, uint8_t *_sysexBuf, uint16_t _sysexBufLen)
+	: midiSysex(_sysexBuf, _sysexBufLen) {
+	sysexBuf = _sysexBuf;
+	sysexBufLen = _sysexBufLen;
   midiActive = true;
   uart = _uart;
   receiveChannel = 0xFF;

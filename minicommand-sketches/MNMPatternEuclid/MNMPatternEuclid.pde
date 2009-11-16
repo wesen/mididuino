@@ -1,3 +1,4 @@
+#include <MidiClockPage.h>
 #include <MNM.h>
 #include <MidiEuclidSketch.h>
 #include <MNMPatternEuclidSketch.h>
@@ -7,7 +8,6 @@ MNMPatternEuclidSketch sketch;
 
 void setup() {
   MNM.currentPattern = 0;
-
   initMNMTask();
   MNMTask.autoLoadKit = true;
   MNMTask.reloadGlobal = false;
@@ -17,8 +17,7 @@ void setup() {
   
   sketch.setup();
   GUI.setSketch(&sketch);
-}
 
-void loop() {
+  initClockPage();
 }
 

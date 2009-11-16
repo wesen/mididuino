@@ -126,8 +126,10 @@ ISR(TIMER2_OVF_vect) {
   //  CLEAR_BIT(OUTPUTPORT, OUTPUTPIN);
 }
 
-MidiClass Midi;
-MidiClass Midi2;
+uint8_t sysexBuf[8192];
+MidiClass Midi(&MidiUart, sysexBuf, sizeof(sysexBuf));
+uint8_t sysexBuf2[512];
+MidiClass Midi2(&MidiUart2, sysexBuf2, sizeof(sysexBuf2));
 
 void handleIncomingMidi() {
   while (MidiUart.avail()) {
@@ -182,3 +184,4 @@ int main(void) {
 void handleGui() {
   pollEventGUI();
 }
+

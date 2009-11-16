@@ -2,7 +2,7 @@
 #define WProgram_h
 
 #define MIDIDUINO 1
-#define SYSEX_BUF_SIZE 8192
+#define SYSEX_BUF_SIZE 6000
 //#define SYSEX_BUF_SIZE 128
 
 #ifdef __cplusplus

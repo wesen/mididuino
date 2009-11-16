@@ -46,8 +46,6 @@ class MidiClass {
 
   MidiUartParent *uart;
 
-  uint8_t sysexBuf[SYSEX_BUF_SIZE];
-
   uint8_t callback;
   //  midi_callback_t callbacks[7];
   CallbackVector1<MidiCallback, 8, uint8_t *> midiCallbacks[7];
@@ -60,7 +58,13 @@ class MidiClass {
   MidiSysexClass midiSysex;
   uint8_t receiveChannel;
 
-  MidiClass(MidiUartParent *_uart = NULL);
+	/*
+  uint8_t sysexBuf[SYSEX_BUF_SIZE];
+	*/
+	uint8_t *sysexBuf;
+	uint16_t sysexBufLen;
+
+  MidiClass(MidiUartParent *_uart = NULL, uint8_t *_sysexBuf = NULL, uint16_t _sysexBufLen = 0);
 
   void init();
   void handleByte(uint8_t c);
