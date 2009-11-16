@@ -113,7 +113,9 @@ uint8_t jump_to_main_program(void) {
     lcd_clear_line();
     lcd_line2();
     lcd_clear_line();
-    eeprom_write_word(START_MAIN_APP_ADDR, 1);
+		if (eeprom_read_word(START_MAIN_APP_ADDR) != 1) {
+			eeprom_write_word(START_MAIN_APP_ADDR, 1);
+		}
     jump_to_app();
     return 1;
   } else {
