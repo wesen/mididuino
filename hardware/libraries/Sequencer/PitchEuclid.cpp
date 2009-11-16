@@ -1,5 +1,32 @@
 #include "PitchEuclid.h"
 
+
+const scale_t *PitchEuclid::scales[PitchEuclid::NUM_SCALES] = {
+  &ionianScale,
+  &aeolianScale,
+  &bluesScale,
+  &majorPentatonicScale,
+  &majorMaj7Arp,
+  &majorMin7Arp,
+  &minorMin7Arp
+};
+
+PitchEuclid::PitchEuclid(scale_t *scale) : track(3, 8, 0) {
+	if (scale) {
+    currentScale = scale;
+	} else {
+		currentScale = (scale_t *)scales[0];
+	}
+	octaves = 0;
+	
+	pitches_len = 0;
+	pitches_idx = 0;
+	setPitchLength(4);
+	mdTrack = 0;
+	muted = false;
+	octaves = 0;
+}
+
 void PitchEuclid::setup() {
   MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&PitchEuclid::on16Callback);
 }

@@ -12,12 +12,14 @@ public:
   bool reloadKit;
   bool reloadGlobal;
   bool redisplay;
+	bool verbose;
 
   MNMTaskClass(uint16_t interval) : Task(interval) {
     redisplay = false;
     autoLoadKit = reloadKit = false;
     autoLoadGlobal = true;
     reloadGlobal = false;
+		verbose = true;
   }
 
   CallbackVector<MNMCallback, 8>kitChangeCallbacks;

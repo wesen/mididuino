@@ -88,6 +88,12 @@ void MNMTaskClass::onKitMessageCallback() {
   if (MNM.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
     MNM.loadedKit = true;
     kitChangeCallbacks.call();
+    if (verbose) {
+      GUI.setLine(GUI.LINE1);
+      GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+      GUI.setLine(GUI.LINE2);
+      GUI.flash_string_fill(MNM.kit.name);
+    }
   } else {
   }
 }

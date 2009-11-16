@@ -22,22 +22,15 @@ public:
   uint8_t octaves;
   uint8_t basePitch;
 
-  PitchEuclid(scale_t *scale) : 
-  track(3, 8, 0) {
-    currentScale = scale;
-    octaves = 0;
-
-    pitches_len = 0;
-    pitches_idx = 0;
-    setPitchLength(4);
-    mdTrack = 0;
-    muted = false;
-  }
+  PitchEuclid(scale_t *scale = NULL);
 
   void setup();
   void setPitchLength(uint8_t len);
   void randomizePitches();
   void on16Callback(uint32_t counter);
+
+	static const uint8_t NUM_SCALES = 7;
+	static const scale_t *scales[NUM_SCALES];
 };
 
 

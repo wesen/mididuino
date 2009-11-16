@@ -3,18 +3,6 @@
 
 #include <PitchEuclid.h>
 
-static scale_t *scales[] = {
-  &ionianScale,
-  &aeolianScale,
-  &bluesScale,
-  &majorPentatonicScale,
-  &majorMaj7Arp,
-  &majorMin7Arp,
-  &minorMin7Arp
-};
-
-PitchEuclid pitchEuclid(scales[0]);
-
 class PitchEuclidConfigPage1 : 
 public EncoderPage {
 public:
@@ -22,12 +10,14 @@ public:
   RangeEncoder pulseEncoder;
   RangeEncoder lengthEncoder;
   RangeEncoder offsetEncoder;
+	PitchEuclid *euclid;
 
-  PitchEuclidConfigPage1() :
+  PitchEuclidConfigPage1(PitchEuclid *_euclid) :
   pitchLengthEncoder(1, 32, "PTC", 4),
   pulseEncoder(1, 32, "PLS", 3),
   lengthEncoder(2, 32, "LEN", 8),
-  offsetEncoder(0, 32, "OFF", 0) {
+		offsetEncoder(0, 32, "OFF", 0),
+		euclid(_euclid) {
     encoders[0] = &pitchLengthEncoder;
     encoders[1] = &pulseEncoder;
     encoders[2] = &lengthEncoder;
@@ -36,11 +26,11 @@ public:
 
   void loop() {
     if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
-      pitchEuclid.track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(),
+      euclid->track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(),
       offsetEncoder.getValue());
     }
     if (pitchLengthEncoder.hasChanged()) {
-      pitchEuclid.setPitchLength(pitchLengthEncoder.getValue());
+      euclid->setPitchLength(pitchLengthEncoder.getValue());
     }
   }
 };
@@ -52,12 +42,14 @@ public:
   RangeEncoder scaleEncoder;
   RangeEncoder octavesEncoder;
   NotePitchEncoder basePitchEncoder;
+	PitchEuclid *euclid;
 
-  PitchEuclidConfigPage2() :
+  PitchEuclidConfigPage2(PitchEuclid *_euclid) :
   trackEncoder("TRK", 0),
-  scaleEncoder(0, countof(scales) - 1, "SCL", 0),
+		scaleEncoder(0, PitchEuclid::NUM_SCALES - 1, "SCL", 0),
   basePitchEncoder("BAS"),
-  octavesEncoder(0, 4, "OCT")
+		octavesEncoder(0, 4, "OCT"),
+		euclid(_euclid)
   {
     encoders[0] = &trackEncoder;
     encoders[3] = &basePitchEncoder;
@@ -67,18 +59,18 @@ public:
 
   void loop() {
     if (scaleEncoder.hasChanged()) {
-      pitchEuclid.currentScale = scales[scaleEncoder.getValue()];
-      pitchEuclid.randomizePitches();
+      euclid->currentScale = (scale_t *)PitchEuclid::scales[scaleEncoder.getValue()];
+      euclid->randomizePitches();
     }
     if (basePitchEncoder.hasChanged()) {
-      pitchEuclid.basePitch = basePitchEncoder.getValue();
+      euclid->basePitch = basePitchEncoder.getValue();
     }
     if (octavesEncoder.hasChanged()) {
-      pitchEuclid.octaves = octavesEncoder.getValue();
-      pitchEuclid.randomizePitches();
+      euclid->octaves = octavesEncoder.getValue();
+      euclid->randomizePitches();
     }
     if (trackEncoder.hasChanged()) {
-      pitchEuclid.mdTrack = trackEncoder.getValue();
+      euclid->mdTrack = trackEncoder.getValue();
     }
   }
 };
@@ -88,8 +80,9 @@ public Sketch, public ClockCallback {
 public:
   PitchEuclidConfigPage1 page1;
   PitchEuclidConfigPage2 page2;
+	PitchEuclid pitchEuclid;
 
-  PitchEuclidSketch() {
+ PitchEuclidSketch() : page1(&pitchEuclid), page2(&pitchEuclid) {
   }
 
   void setup() {

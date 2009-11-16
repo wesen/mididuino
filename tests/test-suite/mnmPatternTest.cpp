@@ -104,7 +104,7 @@ TEST_F (MNMPatternFixture, MNMPatternEmptyToFromSysex) {
 		CHECK_EQUAL(pattern.midiSwingPatterns[track], (p2).midiSwingPatterns[track]);
 
 		for (uint8_t param = 0; param < 1; param++) {
-			printf("param: %d\n", param);
+			//			printf("param: %d\n", param);
 			CHECK_EQUAL(pattern.isParamLocked(track, param),
 									(p2).isParamLocked(track, param));
 			if (pattern.isParamLocked(track, param)) {
@@ -177,7 +177,7 @@ TEST_F (MNMPatternFixture, MNMPatternReadElektronPatternReimport) {
 		CHECK_EQUAL(pattern.midiSwingPatterns[track], (p2).midiSwingPatterns[track]);
 
 		for (uint8_t param = 0; param < 1; param++) {
-			printf("param: %d\n", param);
+			//			printf("param: %d\n", param);
 			CHECK_EQUAL(pattern.isParamLocked(track, param),
 									(p2).isParamLocked(track, param));
 			if (pattern.isParamLocked(track, param)) {
