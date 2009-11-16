@@ -138,13 +138,13 @@ TEST_F (MNMPatternFixture, MNMPatternReadElektronPatternReimport) {
 
 	uint8_t buf2[8192];
 	uint16_t len2 = pattern.toSysex(buf2, sizeof(buf2));
+
+	ret = compareMonoSysex(buf, buf2);
+	CHECK(ret);
 	//	dumpMonoSysex(buf, 0x2a5);
 
 	MNMPattern p2;
 	ret = p2.fromSysex(buf2 + 6, len2 - 7);
-	CHECK(ret);
-
-	ret = compareMonoSysex(buf, buf2);
 	CHECK(ret);
 	if (!ret) {
 		printf("old one\n");
@@ -425,8 +425,12 @@ TEST_F (MNMPatternFixture, MNMLongPatternTrig) {
 	pattern.patternLength = 64;
 	pattern.setTrig(0, 32);
 	CHECK(pattern.isTrigSet(0, 32));
-
+	printf("trigset test before\n");
+	pattern.print();
+	
 	bool ret = reimportSysex(&pattern);
+	printf("trigset test after\n");
+	pattern.print();
 	CHECK(ret);
 	CHECK(pattern.isTrigSet(0, 32));
 }

@@ -48,7 +48,7 @@ mnmPatternTest: mnmPatternTest.host.o $(OBJS)
 
 
 clean:
-	- rm -f *.o mnmTest mnmPatternTest
+	- rm -f *.o mnmTest mnmPatternTest *.host.o
 
 libclean:
 	rm -rf $(OBJS)

@@ -4,8 +4,10 @@
 #include "DataEncoder.hh"
 
 class MNMDataToSysexEncoder : public DataEncoder {
+public:
   uint16_t retLen;
   uint16_t cnt7;
+	uint16_t totalCnt;
 
   uint8_t lastByte;
   uint8_t lastCnt;
@@ -31,6 +33,7 @@ public:
   uint16_t cnt;
   uint8_t bits;
   uint8_t tmpData[7];
+	uint16_t totalCnt;
   
   MNMSysexToDataEncoder(DATA_ENCODER_INIT(uint8_t *_data = NULL, uint16_t _maxLen = 0)) {
     init(DATA_ENCODER_INIT(_data, _maxLen));
@@ -43,12 +46,14 @@ public:
 };
 
 class MNMSysexDecoder : public DataDecoder {
+public:
   uint8_t cnt7;
   uint8_t bits;
   uint8_t tmpData[7];
 	uint16_t cnt;
 	uint8_t repeatCount;
 	uint8_t repeatByte;
+	uint16_t totalCnt;
 	
 public:
 	MNMSysexDecoder(DATA_ENCODER_INIT(uint8_t *_data = NULL, uint16_t _maxLen = 0)) {

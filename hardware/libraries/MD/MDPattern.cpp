@@ -146,7 +146,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
   data[8] = 0x01;
   data[9] = origPosition;
 	
-	MDDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, 74));
+	MDDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
 	encoder.pack32(trigPatterns, 16);
 	encoder.reset();
 	encoder.pack32(lockPatterns, 16);
@@ -172,8 +172,8 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 	m_memclr(lockData, 64 * 32);
 
 	uint8_t lockIdx = 0;
-  for (int track = 0; track < 16; track++) {
-    for (int param = 0; param < 24; param++) {
+  for (uint8_t track = 0; track < 16; track++) {
+    for (uint8_t param = 0; param < 24; param++) {
       int8_t lock = paramLocks[track][param];
       if (lock != -1) {
 				m_memcpy(lockData[lockIdx], locks[lock], 32);
@@ -197,7 +197,7 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
 	if (isExtraPattern) {
 		encoder.start7Bit();
-		for (int i = 0; i < 16; i++) {
+		for (uint8_t i = 0; i < 16; i++) {
 			encoder.pack32hi(trigPatterns[i]);
 		}
 		encoder.pack32hi(accentPattern);
@@ -206,8 +206,8 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 
 		lockIdx = 0;
 		m_memclr(lockData, 32 * 64);
-		for (int track = 0; track < 16; track++) {
-			for (int param = 0; param < 24; param++) {
+		for (uint8_t track = 0; track < 16; track++) {
+			for (uint8_t param = 0; param < 24; param++) {
 				int8_t lock = paramLocks[track][param];
 				if (lock != -1) {
 					
@@ -232,7 +232,7 @@ bool MDPattern::isTrackEmpty(uint8_t track) {
 }
 
 bool MDPattern::isLockPatternEmpty(uint8_t idx) {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     if (locks[idx][i] != 255)
       return false;
   }
@@ -240,7 +240,7 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx) {
 }
 
 bool MDPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     if (locks[idx][i] != 255 && IS_BIT_SET64(trigs, i))
       return false;
   }
@@ -249,7 +249,7 @@ bool MDPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
 }
 
 void MDPattern::cleanupLocks() {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     if (lockTracks[i] != -1) {
 			//			printf("checking lock %d for track %d and param %d\n", i, lockTracks[i], lockParams[i]);
       if (isLockPatternEmpty(i, trigPatterns[lockTracks[i]])) {
@@ -272,7 +272,7 @@ void MDPattern::clearPattern() {
 void MDPattern::clearTrack(uint8_t track) {
   if (track >= 16)
     return;
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     clearTrig(track, i);
   }
 	// XXX swing and slide
@@ -283,7 +283,7 @@ void MDPattern::clearLockPattern(uint8_t lock) {
   if (lock >= 64)
     return;
   
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     locks[lock][i] = 255;
   }
   if (lockTracks[lock] != -1 && lockParams[lock] != -1) {
@@ -306,20 +306,20 @@ void MDPattern::clearParamLocks(uint8_t track, uint8_t param) {
 }
 
 void MDPattern::clearTrackLocks(uint8_t track) {
-  for (int i = 0; i < 24; i++) {
+  for (uint8_t i = 0; i < 24; i++) {
     clearParamLocks(track, i);
   }
 }
 
 void MDPattern::clearTrig(uint8_t track, uint8_t trig) {
   CLEAR_BIT64(trigPatterns[track], trig);
-  for (int i = 0; i < 24; i++) {
+  for (uint8_t i = 0; i < 24; i++) {
     clearLock(track, trig, i);
   }
 }
 
 int8_t MDPattern::getNextEmptyLock() {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     if (lockTracks[i] == -1 && lockParams[i] == -1) {
       return i;
     }
@@ -336,7 +336,7 @@ bool MDPattern::addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t valu
     paramLocks[track][param] = idx;
     lockTracks[idx] = track;
     lockParams[idx] = param;
-    for (int i = 0; i < 64; i++) {
+    for (uint8_t i = 0; i < 64; i++) {
       locks[idx][i] = 255;
     }
   }
@@ -358,9 +358,9 @@ void MDPattern::clearLock(uint8_t track, uint8_t trig, uint8_t param) {
 }
 
 void MDPattern::recalculateLockPatterns() {
-  for (int track = 0; track < 16; track++) {
+  for (uint8_t track = 0; track < 16; track++) {
     lockPatterns[track] = 0;
-    for (int param = 0; param < 24; param++) {
+    for (uint8_t param = 0; param < 24; param++) {
       if (paramLocks[track][param] != -1) {
 				SET_BIT32(lockPatterns[track], param);
       }

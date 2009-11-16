@@ -72,7 +72,7 @@ static const uint8_t flashOffset[4] = {
 };
 
 void MNMTrackFlashEncoder::displayAt(int i) {
-  uint8_t track = getValue() + 1;
+  uint8_t track = getValue();
   GUI.setLine(GUI.LINE2);
   GUI.put_value(i, track + 1);
   redisplay = false;

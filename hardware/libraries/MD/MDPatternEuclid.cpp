@@ -1,6 +1,6 @@
 #include "MDPatternEuclid.h"
 
-uint8_t patData[5500];
+static uint8_t patData[5500];
 
 MDPatternEuclid::MDPatternEuclid() : MDPitchEuclid() {
 	track.setEuclid(3, 8, 0);

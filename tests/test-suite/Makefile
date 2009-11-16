@@ -52,7 +52,8 @@ test: main.host.o bitTests.host.o listTest.host.o \
       midiTest.host.o callbackTest.host.o noteHandlerTest.host.o \
 		  dataEncoderTest.host.o \
 			mnmDataEncoderTest.host.o \
-      mdPatternTest.host.o mnmPatternTest.host.o \
+      mdPatternTest.host.o\
+			mnmPatternTest.host.o \
       $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 

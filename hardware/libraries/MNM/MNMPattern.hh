@@ -44,6 +44,8 @@ public:
   uint8_t patternLength;
   uint8_t doubleTempo;
 
+	uint8_t unused[5];
+
   uint8_t kit;
   int8_t patternTranspose;
   
@@ -151,7 +153,7 @@ public:
     clearTrig(track, trig, true, true, true, true, true);
   }
   void setAllTrig(uint8_t track, uint8_t trig) {
-    setTrig(track, trig, true, true, true);
+    setTrig(track, trig, true, true, true, true);
   }
   void clearAmpTrig(uint8_t track, uint8_t trig) {
     clearTrig(track, trig, true);

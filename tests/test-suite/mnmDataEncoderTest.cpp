@@ -59,6 +59,40 @@ TEST_F (MNMDataBothFixture, MNMDataBoth8Bit) {
 }
 
 
+TEST_F (MNMDataBothFixture, MNMDataBoth8BitNull) {
+	uint8_t data[1024];
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
+	for (uint16_t i = 0; i < 512; i++) {
+		CHECK_DATA_ENCODE(encoder.pack8(0));
+	}
+	uint16_t len = encoder.finish();
+
+	decoder.init(DATA_ENCODER_INIT(data, len));
+	for (uint16_t i = 0; i < 512; i++) {
+		uint8_t tmp;
+		CHECK_DATA_ENCODE(decoder.get8(&tmp));
+		CHECK_EQUAL(0, (int)tmp);
+	}
+}
+
+TEST_F (MNMDataBothFixture, MNMDataBoth8BitFF) {
+	uint8_t data[1024];
+	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
+	for (uint16_t i = 0; i < 512; i++) {
+		CHECK_DATA_ENCODE(encoder.pack8(0xFF));
+	}
+	uint16_t len = encoder.finish();
+
+	decoder.init(DATA_ENCODER_INIT(data, len));
+	for (uint16_t i = 0; i < 512; i++) {
+		uint8_t tmp;
+		CHECK_DATA_ENCODE(decoder.get8(&tmp));
+		CHECK_EQUAL(0xFF, (int)tmp);
+	}
+}
+
+
+
 TEST_F (MNMDataBothFixture, MNMDataBoth8BitMore) {
 	uint8_t data[65000];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));

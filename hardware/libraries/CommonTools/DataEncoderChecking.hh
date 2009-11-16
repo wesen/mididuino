@@ -22,6 +22,10 @@ public:
     ptr = data;
   }
 
+	uint16_t getIdx() {
+		return ptr - data;
+	}
+
 	DATA_ENCODER_RETURN_TYPE pack(uint8_t *inb, uint16_t len) {
 		for (uint16_t i = 0; i < len; i++) {
 			if (!pack8(inb[i]))
@@ -29,7 +33,7 @@ public:
 		}
 		return true;
 	}
-	
+
   virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb) {
     return false;
   }
@@ -76,7 +80,7 @@ public:
 	}
 
 	DATA_ENCODER_RETURN_TYPE pack64(uint64_t inw) {
-		return pack32(inw & 0xFFFFFFFF) && pack32hi(inw);
+		return pack32hi(inw) && pack32(inw & 0xFFFFFFFF);
 	}
 
 	DATA_ENCODER_RETURN_TYPE pack64(uint64_t *addr, uint16_t cnt) {
@@ -110,6 +114,10 @@ public:
 		ptr = data;
 	}
 
+	uint16_t getIdx() {
+		return ptr - data;
+	}
+		
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c) {
 		return false;
 	}
@@ -169,7 +177,12 @@ public:
 	
 
 	DATA_ENCODER_RETURN_TYPE get64(uint64_t *c) {
-		return get32(c) && get32hi(c);
+		uint32_t c1, c2;
+		if (!(get32(&c1) && get32(&c2))) {
+			return false;
+		}
+		*c = ((uint64_t)c1 << 32) | c2;
+		return true;
 	}
 
 	DATA_ENCODER_RETURN_TYPE get64(uint64_t *c, uint16_t cnt) {
@@ -189,6 +202,30 @@ public:
 		return i;
 	}
 
+	uint8_t gget8() {
+		uint8_t b;
+		get8(&b);
+		return b;
+	}
+
+	uint16_t gget16() {
+		uint16_t a1 = ((uint16_t)gget8()) << 8;
+		uint8_t a2 = gget8();
+		return a1 | a2;
+	}
+	
+	uint32_t gget32() {
+		uint32_t a1 = ((uint32_t)gget16()) << 16;
+		uint16_t a2 = gget16();
+		return a1 | a2;
+	}
+	
+	uint64_t gget64() {
+		uint64_t a1 = ((uint64_t)gget32()) << 32;
+		uint32_t a2 = gget32();
+		return a1 | a2;
+	}
+	
 #ifdef HOST_MIDIDUINO
   virtual ~DataDecoder() { };
 #endif

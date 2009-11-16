@@ -9,6 +9,7 @@ class MNMTaskClass : public Task, public MNMCallback {
 public:
   bool autoLoadKit;
   bool autoLoadGlobal;
+  bool autoLoadPattern;
   bool reloadKit;
   bool reloadGlobal;
   bool redisplay;
@@ -18,6 +19,7 @@ public:
     redisplay = false;
     autoLoadKit = reloadKit = false;
     autoLoadGlobal = true;
+		autoLoadPattern = false;
     reloadGlobal = false;
 		verbose = true;
   }
@@ -71,9 +73,15 @@ public:
 	     bool reloadGlobal = true);
 
   virtual void run() {
-    MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_KIT_REQUEST);
-    MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_GLOBAL_SLOT_REQUEST);
-    MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_PATTERN_REQUEST);
+		if (autoLoadKit) {
+			MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_KIT_REQUEST);
+		}
+		if (autoLoadGlobal) {
+			MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_GLOBAL_SLOT_REQUEST);
+		}
+		if (autoLoadPattern) {
+			MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_PATTERN_REQUEST);
+		}
     MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_AUDIO_TRACK_REQUEST);
   }
 
