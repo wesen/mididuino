@@ -139,6 +139,16 @@ public class CLIUtil {
 	}
 
 	static PatchManager patchmanager = null;
+	
+	public static void usage() {
+		System.out.println("Usage: cliutil [-password password] [-username username] [-since date] [-tags \"tag1 tag2\"] [-doc docfile]");
+		System.out.println("[-device device] [-comment \"comment\"] [-title \"title\"] COMMAND");
+		System.out.println("COMMANDS:");
+		System.out.println("list: list all patches");
+		System.out.println("delete patchId: delete patch");
+		System.out.println("approve patchId: approve patch");
+		System.out.println("upload: upload file");
+	}
 
 	public static void main(String[] args) {
 		String username = null;
