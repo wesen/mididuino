@@ -27,8 +27,8 @@ typedef struct model_to_param_names_s {
 
 class ElektronHelper {
 public:
-  static uint16_t MDSysexToData(uint8_t *sysex, uint8_t *data, uint16_t len);
-  static uint16_t MDDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len);
+  static uint16_t ElektronSysexToData(uint8_t *sysex, uint8_t *data, uint16_t len);
+  static uint16_t ElektronDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len);
   static uint16_t MNMDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len, uint16_t maxLen);
   static uint16_t MNMSysexToData(uint8_t *sysex, uint8_t *data, uint16_t len, uint16_t maxLen);
   static uint16_t to16Bit7(uint8_t b1, uint8_t b2);
@@ -44,6 +44,6 @@ public:
 };
 
 #include "MNMDataEncoder.hh"
-#include "MDDataEncoder.hh"
+#include "ElektronDataEncoder.hh"
 
 #endif /* ELEKTRON_H__ */

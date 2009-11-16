@@ -1,7 +1,7 @@
 #include "Elektron.hh"
-#include "MDDataEncoder.hh"
+#include "ElektronDataEncoder.hh"
 
-void MDDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen),
+void ElektronDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen),
 																MidiUartParent *_uart) {
 	DataEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen));
 	uart = _uart;
@@ -16,28 +16,28 @@ void MDDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sys
 }
 
 
-void MDDataToSysexEncoder::start7Bit() {
+void ElektronDataToSysexEncoder::start7Bit() {
 	in7Bit = true;
 	cnt7 = 0;
 }
 
-void MDDataToSysexEncoder::stop7Bit() {
+void ElektronDataToSysexEncoder::stop7Bit() {
 	finish();
 	in7Bit = false;
 	cnt7 = 0;
 }
 
-void MDDataToSysexEncoder::reset() {
+void ElektronDataToSysexEncoder::reset() {
 	finish();
 	start7Bit();
 }
 
-void MDDataToSysexEncoder::startChecksum() {
+void ElektronDataToSysexEncoder::startChecksum() {
 	checksum = 0;
 	inChecksum = true;
 }
 
-void MDDataToSysexEncoder::finishChecksum() {
+void ElektronDataToSysexEncoder::finishChecksum() {
 	uint16_t len = retLen - 5;
 	inChecksum = false;
 	stop7Bit();
@@ -48,7 +48,7 @@ void MDDataToSysexEncoder::finishChecksum() {
 	pack8(0xF7);
 }
 
-uint16_t MDDataToSysexEncoder::finish() {
+uint16_t ElektronDataToSysexEncoder::finish() {
 	uint8_t inc = ((cnt7 > 0) ? (cnt7 + 1) : 0);
 	cnt7 = 0;
 	if (inChecksum) {
@@ -62,7 +62,7 @@ uint16_t MDDataToSysexEncoder::finish() {
 }
 
 
-DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
+DATA_ENCODER_RETURN_TYPE ElektronDataToSysexEncoder::encode7Bit(uint8_t inb) {
   uint8_t msb = inb >> 7;
   uint8_t c = inb & 0x7F;
 
@@ -96,7 +96,7 @@ DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::encode7Bit(uint8_t inb) {
 	DATA_ENCODER_TRUE();
 }
 
-DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::pack8(uint8_t inb) {
+DATA_ENCODER_RETURN_TYPE ElektronDataToSysexEncoder::pack8(uint8_t inb) {
 	if (in7Bit) {
 		DATA_ENCODER_CHECK(encode7Bit(inb));
 	} else {
@@ -116,14 +116,14 @@ DATA_ENCODER_RETURN_TYPE MDDataToSysexEncoder::pack8(uint8_t inb) {
 	DATA_ENCODER_TRUE();
 }
 
-void MDSysexToDataEncoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
+void ElektronSysexToDataEncoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
 	DataEncoder::init(DATA_ENCODER_INIT(_data, _maxLen));
 	cnt7 = 0;
   cnt = 0;
 	retLen = 0;
 }
 
-DATA_ENCODER_RETURN_TYPE MDSysexToDataEncoder::pack8(uint8_t inb) {
+DATA_ENCODER_RETURN_TYPE ElektronSysexToDataEncoder::pack8(uint8_t inb) {
 	if ((cnt % 8) == 0) {
 		bits = inb;
 	} else {
@@ -138,7 +138,7 @@ DATA_ENCODER_RETURN_TYPE MDSysexToDataEncoder::pack8(uint8_t inb) {
 	DATA_ENCODER_TRUE();
 }
 
-DATA_ENCODER_RETURN_TYPE MDSysexToDataEncoder::unpack8Bit() {
+DATA_ENCODER_RETURN_TYPE ElektronSysexToDataEncoder::unpack8Bit() {
 	for (uint8_t i = 0; i < cnt7; i++) {
 		*(ptr++) = tmpData[i];
 		retLen++;
@@ -147,7 +147,7 @@ DATA_ENCODER_RETURN_TYPE MDSysexToDataEncoder::unpack8Bit() {
 	DATA_ENCODER_TRUE();
 }
 
-uint16_t MDSysexToDataEncoder::finish() {
+uint16_t ElektronSysexToDataEncoder::finish() {
 #ifdef DATA_ENCODER_CHECKING
 	if (!unpack8Bit())
 		return 0;
@@ -159,12 +159,12 @@ uint16_t MDSysexToDataEncoder::finish() {
 #endif
 }
 
- void MDSysexDecoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
+ void ElektronSysexDecoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
 	 DataDecoder::init(DATA_ENCODER_INIT(_data, _maxLen));
 	 start7Bit();
 }
 
-DATA_ENCODER_RETURN_TYPE MDSysexDecoder::get8(uint8_t *c) {
+DATA_ENCODER_RETURN_TYPE ElektronSysexDecoder::get8(uint8_t *c) {
 	if (in7Bit) {
 		if ((cnt7 % 8) == 0) {
 			bits = *(ptr++);

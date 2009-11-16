@@ -1,6 +1,6 @@
 #include "Elektron.hh"
 
-uint16_t ElektronHelper::MDDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len) {
+uint16_t ElektronHelper::ElektronDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len) {
   uint16_t retlen = 0;
   uint16_t cnt;
   uint16_t cnt7 = 0;
@@ -22,7 +22,7 @@ uint16_t ElektronHelper::MDDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t l
   return retlen + cnt7 + (cnt7 != 0 ? 1 : 0);
 }
 
-uint16_t ElektronHelper::MDSysexToData(uint8_t *sysex, uint8_t *data, uint16_t len) {
+uint16_t ElektronHelper::ElektronSysexToData(uint8_t *sysex, uint8_t *data, uint16_t len) {
   uint16_t cnt;
   uint16_t cnt2 = 0;
   uint16_t bits = 0;

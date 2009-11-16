@@ -1,7 +1,5 @@
 #include "MDPatternEuclid.h"
 
-static uint8_t patData[5500];
-
 MDPatternEuclid::MDPatternEuclid() : MDPitchEuclid() {
 	track.setEuclid(3, 8, 0);
 	randomizePitches();
@@ -22,8 +20,8 @@ void MDPatternEuclid::makeTrack(uint8_t trackNum) {
 			}
 		}
 	}
-	uint16_t len = pattern.toSysex(patData, sizeof(patData));
-	MidiUart.sendRaw(patData, len);
+	ElektronDataToSysexEncoder encoder(&MidiUart);
+	pattern.toSysex(encoder);
   
 	char name[5];
 	MD.getPatternName(pattern.origPosition, name);

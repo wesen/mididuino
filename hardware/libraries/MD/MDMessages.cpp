@@ -20,7 +20,7 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
     drumRouting[i] = data[0xA - 6 + i];
   }
   
-  ElektronHelper::MDSysexToData(data + 0x1A - 6, keyMap, 147);
+  ElektronHelper::ElektronSysexToData(data + 0x1A - 6, keyMap, 147);
   baseChannel = data[0xAD - 6];
   tempo = (data[0xAF - 6] << 7) | data[0xB0 - 6];
   extendedMode = (data[0xB1 - 6] == 1);
@@ -73,7 +73,7 @@ uint16_t MDGlobal::toSysex(uint8_t *data, uint16_t len) {
       keyMap[drumMapping[i]] = i;
     }
   }
-  ElektronHelper::MDDataToSysex(keyMap, data + 0x1A, 128);
+  ElektronHelper::ElektronDataToSysex(keyMap, data + 0x1A, 128);
   data[0xAd] = baseChannel;
   data[0xAe] = 0;
   data[0xAF] = (uint8_t)((tempo >> 7) & 0x7F);
@@ -137,7 +137,7 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
 
   uint8_t data2[16 * 36];
   uint8_t *ptr = data2;
-  ElektronHelper::MDSysexToData(data + 0x1aa - 6, data2, 74);
+  ElektronHelper::ElektronSysexToData(data + 0x1aa - 6, data2, 74);
   for (int i = 0; i < 16; i++) {
     machines[i].model = ElektronHelper::to32Bit(ptr);
     ptr += 4;
@@ -145,7 +145,7 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   ptr = data2;
-  ElektronHelper::MDSysexToData(data + 0x1f4 - 6, data2, 659);
+  ElektronHelper::ElektronSysexToData(data + 0x1f4 - 6, data2, 659);
   for (int i = 0; i < 16; i++) {
     machines[i].lfo.destinationTrack = ptr[0];
     machines[i].lfo.destinationParam = ptr[1];
@@ -166,7 +166,7 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   ptr = data2;
-  ElektronHelper::MDSysexToData(data + 0x4a7 - 6, data2, 37);
+  ElektronHelper::ElektronSysexToData(data + 0x4a7 - 6, data2, 37);
   for (int i = 0; i < 16; i++) {
     machines[i].trigGroup = ptr[i * 2];
     machines[i].muteGroup = ptr[i * 2 + 1];
@@ -213,7 +213,7 @@ uint16_t MDKit::toSysex(uint8_t *data, uint16_t len) {
     ElektronHelper::from32Bit(machines[i].model, ptr);
     ptr += 4;
   }
-  ElektronHelper::MDDataToSysex(data2, data + 0x1AA, 16 * 4);
+  ElektronHelper::ElektronDataToSysex(data2, data + 0x1AA, 16 * 4);
 
   ptr = data2;
   for (int i = 0; i < 16; i++) {
@@ -227,7 +227,7 @@ uint16_t MDKit::toSysex(uint8_t *data, uint16_t len) {
     }
     ptr += 36;
   }
-  ElektronHelper::MDDataToSysex(data2, data + 0x1F4, 16 * 36);
+  ElektronHelper::ElektronDataToSysex(data2, data + 0x1F4, 16 * 36);
 		
   for (int i = 0; i < 8; i++) {
     data[0x487 + i] = reverb[i];
@@ -242,7 +242,7 @@ uint16_t MDKit::toSysex(uint8_t *data, uint16_t len) {
     ptr[i*2+1] = machines[i].muteGroup;
     ptr += 2;
   }
-  ElektronHelper::MDDataToSysex(data2, data + 0x4a7, 32);
+  ElektronHelper::ElektronDataToSysex(data2, data + 0x4a7, 32);
 	ElektronHelper::calculateSysexChecksum(data, 0x4cc);
 
   return 0x4d1;
@@ -265,7 +265,7 @@ bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
   uint8_t data2[10];
   uint8_t *ptr = data + 0x1A - 6;
   for (int i = 0; i < numRows; i++) {
-    ElektronHelper::MDSysexToData(ptr, data2, 12);
+    ElektronHelper::ElektronSysexToData(ptr, data2, 12);
     rows[i].pattern = data2[0];
     rows[i].kit = data2[1];
     rows[i].loopTimes = data2[2];
@@ -312,7 +312,7 @@ uint16_t MDSong::toSysex(uint8_t *data, uint16_t len) {
     ElektronHelper::from16Bit(rows[i].tempo, data2 + 6);
     data2[8] = rows[i].startPosition;
     data2[9] = rows[i].endPosition;
-    ElektronHelper::MDDataToSysex(data2, ptr, 10);
+    ElektronHelper::ElektronDataToSysex(data2, ptr, 10);
     ptr += 12;
   }
 

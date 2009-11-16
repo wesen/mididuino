@@ -59,7 +59,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   origPosition = data[3];
-	MDSysexDecoder decoder(DATA_ENCODER_INIT(data + 0xA - 6, 74));
+	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 0xA - 6, 74));
 	decoder.get32(trigPatterns, 16);
 
 	decoder.start7Bit();
@@ -133,16 +133,25 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 }
 
 uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
+	ElektronDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
+
+	isExtraPattern = patternLength > 32;
+	uint16_t sysexLength = isExtraPattern ? 0x151d : 0xac6;
+
+  if (len < (sysexLength + 5))
+    return 0;
+
+	return toSysex(encoder);
+}
+
+uint16_t MDPattern::toSysex(ElektronDataToSysexEncoder &encoder) {
 	isExtraPattern = patternLength > 32;
 
 	cleanupLocks();
   recalculateLockPatterns();
 
 	uint16_t sysexLength = isExtraPattern ? 0x151d : 0xac6;
-  if (len < (sysexLength + 5))
-    return 0;
 
-	MDDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
 	encoder.stop7Bit();
 	encoder.pack8(0xF0);
 	encoder.pack(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));

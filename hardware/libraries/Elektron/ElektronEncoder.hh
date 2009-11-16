@@ -1,4 +1,0 @@
-#ifndef ELEKTRON_ENCODER_H__
-#define ELEKTRON_ENCODER_H__
-
-#endif /* ELEKTRON_ENCODER_H__ */

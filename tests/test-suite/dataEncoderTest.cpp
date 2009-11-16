@@ -11,11 +11,11 @@
 #define CHECK_DATA_ENCODE_NOT(encode) { encode; }
 #endif
 
-struct MDDataToSysexFixture {
-	MDDataToSysexEncoder encoder;
+struct ElektronDataToSysexFixture {
+	ElektronDataToSysexEncoder encoder;
 };
 
-TEST_F (MDDataToSysexFixture, MDDataToSysexByte) {
+TEST_F (ElektronDataToSysexFixture, ElektronDataToSysexByte) {
 	uint8_t data[16];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(0));
@@ -25,7 +25,7 @@ TEST_F (MDDataToSysexFixture, MDDataToSysexByte) {
 	CHECK_EQUAL(0, (int)data[1]);
 }
 
-TEST_F (MDDataToSysexFixture, MDDataToSysexByteHigh) {
+TEST_F (ElektronDataToSysexFixture, ElektronDataToSysexByteHigh) {
 	uint8_t data[16];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(128));
@@ -35,7 +35,7 @@ TEST_F (MDDataToSysexFixture, MDDataToSysexByteHigh) {
 	CHECK_EQUAL(0, (int)data[1]);
 }
 
-TEST_F (MDDataToSysexFixture, MDDataToSysexBytes) {
+TEST_F (ElektronDataToSysexFixture, ElektronDataToSysexBytes) {
 	uint8_t data[16];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	for (uint8_t i = 0; i < 7; i++) {
@@ -50,14 +50,14 @@ TEST_F (MDDataToSysexFixture, MDDataToSysexBytes) {
 }
 
 #ifdef DATA_ENCODER_CHECKING
-TEST_F (MDDataToSysexFixture, MDDataTestOverflow) {
+TEST_F (ElektronDataToSysexFixture, ElektronDataTestOverflow) {
 	uint8_t data[2];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(0));
 	CHECK_DATA_ENCODE_NOT(encoder.pack8(0));
 }
 
-TEST_F (MDDataToSysexFixture, MDDataTestOverflow2) {
+TEST_F (ElektronDataToSysexFixture, ElektronDataTestOverflow2) {
 	uint8_t data[8];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	CHECK_DATA_ENCODE(encoder.pack8(0));
@@ -71,7 +71,7 @@ TEST_F (MDDataToSysexFixture, MDDataTestOverflow2) {
 }
 #endif
 
-TEST_F (MDDataToSysexFixture, MDDataToSysex32Bit) {
+TEST_F (ElektronDataToSysexFixture, ElektronDataToSysex32Bit) {
 	uint8_t data[16];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	uint32_t tmp = 0x00;
@@ -85,7 +85,7 @@ TEST_F (MDDataToSysexFixture, MDDataToSysex32Bit) {
 	CHECK_EQUAL(0, (int)data[4]);
 }
 
-TEST_F (MDDataToSysexFixture, MDDataToSysex32Bit2) {
+TEST_F (ElektronDataToSysexFixture, ElektronDataToSysex32Bit2) {
 	uint8_t data[16];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	uint32_t tmp = 0x01;
@@ -99,12 +99,12 @@ TEST_F (MDDataToSysexFixture, MDDataToSysex32Bit2) {
 	CHECK_EQUAL(1, (int)data[4]);
 }
 
-struct MDDataBothFixture {
-	MDDataToSysexEncoder encoder;
-	MDSysexDecoder decoder;
+struct ElektronDataBothFixture {
+	ElektronDataToSysexEncoder encoder;
+	ElektronSysexDecoder decoder;
 };
 
-TEST_F (MDDataBothFixture, MDDataBoth8Bit) {
+TEST_F (ElektronDataBothFixture, ElektronDataBoth8Bit) {
 	uint8_t data[1024];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	for (uint16_t i = 0; i < 512; i++) {
@@ -120,7 +120,7 @@ TEST_F (MDDataBothFixture, MDDataBoth8Bit) {
 	}
 }
 
-TEST_F (MDDataBothFixture, MDDataBoth8BitMore) {
+TEST_F (ElektronDataBothFixture, ElektronDataBoth8BitMore) {
 	uint8_t data[65000];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	for (uint16_t i = 0; i < 55000; i++) {
@@ -142,7 +142,7 @@ TEST_F (MDDataBothFixture, MDDataBoth8BitMore) {
 }
 
 
-TEST_F (MDDataBothFixture, MDDataBoth16Bit) {
+TEST_F (ElektronDataBothFixture, ElektronDataBoth16Bit) {
 	uint8_t data[8192];
 	encoder.init(DATA_ENCODER_INIT(data, countof(data)));
 	uint16_t cnt = 1024;
