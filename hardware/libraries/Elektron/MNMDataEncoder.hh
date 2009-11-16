@@ -8,6 +8,8 @@ public:
   uint16_t retLen;
   uint16_t cnt7;
 	uint16_t totalCnt;
+	uint16_t checksum;
+	bool inChecksum;
 
   uint8_t lastByte;
   uint8_t lastCnt;
