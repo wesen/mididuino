@@ -61,6 +61,6 @@ public:
 #endif
 };
 
-extern TurboMidiSysexListenerClass TurboMidiSysexListener;
+extern TurboMidiSysexListenerClass TurboMidiSysex;
 
 #endif /* TURBOMIDI_H__ */

@@ -27,6 +27,30 @@ typedef struct tuning_s {
 } tuning_t;
 
 
+class MDBlockCurrentStatusCallback : public MDCallback {
+public:
+  uint8_t type;
+  uint8_t value;
+  bool received;
+
+  MDBlockCurrentStatusCallback(uint8_t _type = 0) {
+    type = _type;
+    received = false;
+    value = 255;
+  }
+
+  void onStatusResponseCallback(uint8_t _type, uint8_t param) {
+    if (type == _type) {
+      value = param;
+      received = true;
+    }
+  }
+
+	void onSysexReceived() {
+		received = true;
+	}
+};
+
 class MDClass {
  public:
   MDClass();
@@ -119,7 +143,12 @@ class MDClass {
   bool checkClockSettings();
 
   /* requests */
-  uint8_t getBlockingStatus(uint8_t type, uint16_t timeout);
+	bool waitBlocking(MDBlockCurrentStatusCallback *cb, uint16_t timeout = 3000);
+  uint8_t getBlockingStatus(uint8_t type, uint16_t timeout = 3000);
+  bool getBlockingKit(uint8_t kit, uint16_t timeout = 3000);
+  bool getBlockingPattern(uint8_t pattern, uint16_t timeout = 3000);
+  bool getBlockingSong(uint8_t song, uint16_t timeout = 3000);
+  bool getBlockingGlobal(uint8_t global, uint16_t timeout = 3000);
   uint8_t getCurrentKit(uint16_t timeout);
   uint8_t getCurrentPattern(uint16_t timeout);
 };

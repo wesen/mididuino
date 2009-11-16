@@ -21,7 +21,7 @@ void MDSysexListenerClass::handleByte(uint8_t byte) {
     }
     return;
   }
-  
+
   if (isMDMessage && MidiSysex.len == sizeof(machinedrum_sysex_hdr)) {
     msgType = byte;
     switch (byte) {

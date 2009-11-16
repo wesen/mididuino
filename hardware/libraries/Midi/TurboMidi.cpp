@@ -57,3 +57,7 @@ void TurboMidiSysexListenerClass::end() {
 		break;
 	}
 }
+
+bool TurboMidiSysexListenerClass::requestTurboMidi() {
+	
+}

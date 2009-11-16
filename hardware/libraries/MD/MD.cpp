@@ -382,65 +382,64 @@ bool MDClass::checkClockSettings() {
   return false;
 }
 
-class BlockCurrentStatusCallback : public MDCallback {
-public:
-  uint8_t type;
-  uint8_t value;
-  bool received;
+bool MDClass::waitBlocking(MDBlockCurrentStatusCallback *cb, uint16_t timeout) {	
+  uint16_t start_clock = read_slowclock();
+  uint16_t current_clock = start_clock;
+  do {
+    current_clock = read_slowclock();
+    handleIncomingMidi();
+		GUI.display();
+  } while ((clock_diff(start_clock, current_clock) < timeout) && !cb->received);
+	return cb->received;
+}
 
-  BlockCurrentStatusCallback(uint8_t _type = 0) {
-    type = _type;
-    received = false;
-    value = 255;
-  }
-
-  void onStatusResponseCallback(uint8_t _type, uint8_t param) {
-    if (type == _type) {
-      value = param;
-      received = true;
-    }
-  }
-
-	void onSysexReceived() {
-		received = true;
-	}
-};
 
 uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
-  uint16_t start_clock = read_slowclock();
-  uint16_t current_clock = start_clock;;
-  BlockCurrentStatusCallback cb(type);
+  MDBlockCurrentStatusCallback cb(type);
 
   MDSysexListener.addOnStatusResponseCallback
-    (&cb, (md_status_callback_ptr_t)&BlockCurrentStatusCallback::onStatusResponseCallback);
+    (&cb, (md_status_callback_ptr_t)&MDBlockCurrentStatusCallback::onStatusResponseCallback);
   MD.sendRequest(MD_STATUS_REQUEST_ID, type);
-  do {
-    current_clock = read_slowclock();
-    handleIncomingMidi();
-  } while ((clock_diff(start_clock, current_clock) < timeout) && !cb.received);
+
+	bool ret = waitBlocking(&cb, timeout);
+	
   MDSysexListener.removeOnStatusResponseCallback(&cb);
 
   return cb.value;
 }
 
-#if 0
-uint8_t MDClass::getBlockingKit(uint8_t type, uint16_t timeout) {
-  uint16_t start_clock = read_slowclock();
-  uint16_t current_clock = start_clock;;
-  BlockCurrentStatusCallback cb(type);
+bool MDClass::getBlockingKit(uint8_t kit, uint16_t timeout) {
+  MDBlockCurrentStatusCallback cb;
+  MDSysexListener.addOnKitMessageCallback(&cb,
+																					(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+  MD.requestKit(kit);
+	bool ret = waitBlocking(&cb, timeout);
+  MDSysexListener.removeOnKitMessageCallback(&cb);
 
-  MDSysexListener.addOnStatusResponseCallback
-    (&cb, (md_status_callback_ptr_t)&BlockCurrentStatusCallback::onStatusResponseCallback);
-  MD.sendRequest(MD_STATUS_REQUEST_ID, type);
-  do {
-    current_clock = read_slowclock();
-    handleIncomingMidi();
-  } while ((clock_diff(start_clock, current_clock) < timeout) && !cb.received);
-  MDSysexListener.removeOnStatusResponseCallback(&cb);
-
-  return cb.value;
+  return ret;
 }
-#endif
+
+bool MDClass::getBlockingPattern(uint8_t pattern, uint16_t timeout) {
+  MDBlockCurrentStatusCallback cb;
+  MDSysexListener.addOnPatternMessageCallback(&cb,
+																					(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+  MD.requestPattern(pattern);
+	bool ret = waitBlocking(&cb, timeout);
+  MDSysexListener.removeOnPatternMessageCallback(&cb);
+
+  return ret;
+}
+
+bool MDClass::getBlockingGlobal(uint8_t global, uint16_t timeout) {
+  MDBlockCurrentStatusCallback cb;
+  MDSysexListener.addOnGlobalMessageCallback(&cb,
+																					(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+  MD.requestGlobal(global);
+	bool ret = waitBlocking(&cb, timeout);
+  MDSysexListener.removeOnGlobalMessageCallback(&cb);
+
+  return ret;
+}
 
 uint8_t MDClass::getCurrentKit(uint16_t timeout) {
   uint8_t value = getBlockingStatus(MD_CURRENT_KIT_REQUEST, timeout);

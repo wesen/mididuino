@@ -134,33 +134,33 @@ void GuiClass::display() {
       uint16_t clock = read_slowclock();
       uint16_t diff = clock_diff(lines[i].flashTimer, clock);
       if (diff > lines[i].duration) {
-	lines[i].changed = true;
-	lines[i].flashActive = false;
+				lines[i].changed = true;
+				lines[i].flashActive = false;
       }
       if (lines[i].flashChanged) {
-	for (int j = 0; j < 16; j++) {
-	  if (lines[i].flash[j] == 0) {
-	    lines[i].flash[j] = ' ';
-	  }
-	}
+				for (int j = 0; j < 16; j++) {
+					if (lines[i].flash[j] == 0) {
+						lines[i].flash[j] = ' ';
+					}
+				}
 #ifdef HOST_MIDIDUINO
-	printf("%s\n", lines[i].flash);
+				printf("%s\n", lines[i].flash);
 #else
-	LCD.goLine(i);
-	LCD.puts(lines[i].flash);
+				LCD.goLine(i);
+				LCD.puts(lines[i].flash);
 #endif
-	lines[i].flashChanged = false;
+				lines[i].flashChanged = false;
       }
     }
 
     if (lines[i].changed && !lines[i].flashActive) {
       for (int j = 0; j < 16; j++) {
-	if (lines[i].data[j] == 0) {
-	  lines[i].data[j] = ' ';
-	}
+				if (lines[i].data[j] == 0) {
+					lines[i].data[j] = ' ';
+				}
       }
 #ifdef HOST_MIDIDUINO
-	printf("%s\n", lines[i].data);
+			printf("%s\n", lines[i].data);
 #else
       LCD.goLine(i);
       LCD.puts(lines[i].data);

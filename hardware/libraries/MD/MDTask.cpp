@@ -34,9 +34,9 @@ void MDTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
     if (MD.currentKit != value) {
       MD.currentKit = value;
       if (autoLoadKit) {
-	MD.requestKit(MD.currentKit);
+				MD.requestKit(MD.currentKit);
       } else {
-	kitChangeCallbacks.call();
+				kitChangeCallbacks.call();
       }
     }
     if (reloadKit) {
@@ -49,9 +49,9 @@ void MDTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
     if (MD.currentGlobal != value) {
       MD.currentGlobal = value;
       if (autoLoadGlobal) {
-	MD.requestGlobal(MD.currentGlobal);
+				MD.requestGlobal(MD.currentGlobal);
       } else {
-	globalChangeCallbacks.call();
+				globalChangeCallbacks.call();
       }
     }
     if (reloadGlobal) {
