@@ -1,59 +1,39 @@
 #include "Elektron.hh"
+#include "ElektronDataEncoder.hh"
 #include "MNMDataEncoder.hh"
 
-void MNMDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen)) {
-  DataEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen));
-  cnt7 = 0;
-  retLen = 0;
+void MNMDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen), MidiUartParent *_uart)
+{
+  ElektronDataToSysexEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen), _uart);
   lastByte = 0;
   lastCnt = 0;
   isFirstByte = true;
-	totalCnt = 0;
-}
-
-DATA_ENCODER_RETURN_TYPE MNMDataToSysexEncoder::encode7Bit(uint8_t inb) {
-  uint8_t msb = inb >> 7;
-  uint8_t c = inb & 0x7F;
-
-#ifdef DATA_ENCODER_CHECKING
-	DATA_ENCODER_CHECK((ptr + cnt7 + 1) < (data + maxLen));
-#endif
-	
-	if (cnt7 == 0) {
-		ptr[0] = 0;
-	}
-  ptr[0] |= msb << (6 - cnt7);
-  ptr[cnt7 + 1] = c;
-	
-  if (++cnt7 == 7) {
-    retLen += 8;
-    ptr += 8;
-    cnt7 = 0;
-  }
-
-	DATA_ENCODER_TRUE();
 }
 
 DATA_ENCODER_RETURN_TYPE MNMDataToSysexEncoder::pack8(uint8_t inb) {
 	//	printf("patck: %x\n", inb);
 	totalCnt++;
-  if (isFirstByte) {
-    lastByte = inb;
-    lastCnt = 1;
-    isFirstByte = false;
-		DATA_ENCODER_TRUE();
-  } else {
-    if (inb == lastByte) {
-      lastCnt++;
-      if (lastCnt == 127) {
+	if (in7Bit) {
+		if (isFirstByte) {
+			lastByte = inb;
+			lastCnt = 1;
+			isFirstByte = false;
+			DATA_ENCODER_TRUE();
+		} else {
+			if (inb == lastByte) {
+				lastCnt++;
+				if (lastCnt == 127) {
+					DATA_ENCODER_CHECK(packLastByte());
+				}
+			} else {
 				DATA_ENCODER_CHECK(packLastByte());
-      }
-    } else {
-			DATA_ENCODER_CHECK(packLastByte());
-      lastByte = inb;
-      lastCnt = 1;
-    }
-  }
+				lastByte = inb;
+				lastCnt = 1;
+			}
+		}
+	} else {
+		ElektronDataToSysexEncoder::pack8(inb);
+	}
 
 	DATA_ENCODER_TRUE();
 }
@@ -61,11 +41,11 @@ DATA_ENCODER_RETURN_TYPE MNMDataToSysexEncoder::pack8(uint8_t inb) {
 DATA_ENCODER_RETURN_TYPE MNMDataToSysexEncoder::packLastByte() {
   if (lastCnt > 0) {
     if ((lastCnt == 1) && !(lastByte & 0x80)) {
-			DATA_ENCODER_CHECK(encode7Bit(lastByte));
+			DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(lastByte));
       lastCnt = 0;
     } else {
-			DATA_ENCODER_CHECK(encode7Bit(0x80 | lastCnt));
-      DATA_ENCODER_CHECK(encode7Bit(lastByte));
+			DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(0x80 | lastCnt));
+      DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(lastByte));
       lastCnt = 0;
     }
 	}
@@ -78,19 +58,16 @@ uint16_t MNMDataToSysexEncoder::finish() {
   if (!packLastByte())
     return 0;
   else
-    return retLen + ((cnt7 > 0) ? (cnt7 + 1) : 0);
+		return ElektronDataToSysexEncoder::finish();
 #else
 	packLastByte();
-	return retLen + ((cnt7 > 0) ? (cnt7 + 1) : 0);
+	ElektronDataToSysexEncoder::finish();
 #endif
 }
 
 void MNMSysexToDataEncoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
-  DataEncoder::init(DATA_ENCODER_INIT(_data, _maxLen));
-  cnt7 = 0;
+  ElektronSysexToDataEncoder::init(DATA_ENCODER_INIT(_data, _maxLen));
   repeat = 0;
-  cnt = 0;
-  retLen = 0;
 	totalCnt = 0;
 }
 

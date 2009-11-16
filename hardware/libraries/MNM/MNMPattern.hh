@@ -2,6 +2,7 @@
 #define MNMPATTERN_H__
 
 #include <inttypes.h>
+#include "MNMDataEncoder.hh"
 #include "ElektronPattern.hh"
 
 typedef struct mnm_note_s {
@@ -117,6 +118,7 @@ public:
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+	uint16_t toSysex(MNMDataToSysexEncoder &encoder);
 	
 	bool isTrackEmpty(uint8_t track);
 	bool isMidiTrackEmpty(uint8_t track);

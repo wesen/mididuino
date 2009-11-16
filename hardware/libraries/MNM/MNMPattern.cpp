@@ -174,17 +174,25 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
 #endif
 
 uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
+	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
+
+	return toSysex(encoder);
+}
+
+uint16_t MNMPattern::toSysex(MNMDataToSysexEncoder &encoder) {
 	cleanupLocks();
 	recalculateLockPatterns();
-	
-  m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
-	
-  data[6] = MNM_PATTERN_MESSAGE_ID;
-  data[7] = 0x05;
-  data[8] = 0x01;
-  data[9] = origPosition;
 
-	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
+	encoder.stop7Bit();
+	encoder.pack8(0xF0);
+	encoder.pack(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
+	encoder.pack8(MNM_PATTERN_MESSAGE_ID);
+	encoder.pack8(0x05);
+	encoder.pack8(0x01);
+
+	encoder.startChecksum();
+	encoder.pack8(origPosition);
+	encoder.start7Bit();
 
 	encoder.pack64(ampTrigs, 6 * 13);
 	/*
@@ -271,9 +279,9 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack8(0xff);
 	
   uint16_t enclen = encoder.finish();
-	ElektronHelper::calculateSysexChecksum(data, enclen + 10);
+	encoder.finishChecksum();
 
-  return enclen + 10 + 5;
+  return enclen + 5;
 }
 
 #ifdef HOST_MIDIDUINO

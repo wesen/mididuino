@@ -6,6 +6,7 @@
 #include "DataEncoder.hh"
 
 class ElektronDataToSysexEncoder : public DataEncoder {
+protected:
   uint16_t retLen;
   uint16_t cnt7;
 	bool in7Bit;
@@ -37,6 +38,7 @@ public:
 };
 
 class ElektronSysexToDataEncoder : public DataEncoder {
+protected:
   uint16_t retLen;
   uint8_t cnt7;
   uint8_t bits;
