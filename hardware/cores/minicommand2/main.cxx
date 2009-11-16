@@ -52,12 +52,13 @@ void init(void) {
 }
 
 
-void (*jump_to_boot)(void) = (void(*)(void))0xF000;
+void (*jump_to_boot)(void) = (void(*)(void))0xFF11;
 
 void start_bootloader(void) {
   cli();
   eeprom_write_word(START_MAIN_APP_ADDR, 0);
-  jump_to_boot();
+	wdt_enable(WDTO_30MS); 
+	while(1) {};
 }
 
 void setup();
