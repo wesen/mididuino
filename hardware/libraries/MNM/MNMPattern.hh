@@ -41,7 +41,7 @@ public:
   uint64_t lockPatterns[6];
   uint8_t noteNBR[6][64];
 
-  uint8_t length;
+  uint8_t patternLength;
   uint8_t doubleTempo;
 
   uint8_t kit;
@@ -125,12 +125,28 @@ public:
   void clearTrackLocks(uint8_t track);
 
   void clearTrig(uint8_t track, uint8_t trig,
-		 bool ampTrig = false, bool filterTrig = false, bool lfoTrig = false,
+		 bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
 		 bool triglessTrig = false, bool chordTrig = false);
+	void clearTrig(uint8_t track, uint8_t trig) {
+		clearAmpTrig(track, trig);
+	}
   void setTrig(uint8_t track, uint8_t trig,
-	       bool ampTrig = false, bool filterTrig = false, bool lfoTrig = false,
+	       bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
 	       bool triglessTrig = false, bool chordTrig = false);
 
+	void setTrig(uint8_t track, uint8_t trig) {
+		setAmpTrig(track, trig);
+	}
+
+  bool isTrigSet(uint8_t track, uint8_t trig,
+	       bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
+	       bool triglessTrig = false, bool chordTrig = false);
+
+	bool isTrigSet(uint8_t track, uint8_t trig) {
+		return isAmpTrigSet(track, trig);
+	}
+
+	
   void clearAllTrig(uint8_t track, uint8_t trig) {
     clearTrig(track, trig, true, true, true, true, true);
   }
@@ -143,6 +159,9 @@ public:
   void setAmpTrig(uint8_t track, uint8_t trig) {
     setTrig(track, trig, true);
   }
+	bool isAmpTrigSet(uint8_t track, uint8_t trig) {
+		return IS_BIT_SET64(ampTrigs[track], trig);
+	}
   void clearFilterTrig(uint8_t track, uint8_t trig) {
     clearTrig(track, trig, false, true);
   }

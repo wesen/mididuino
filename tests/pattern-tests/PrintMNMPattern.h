@@ -6,7 +6,7 @@
 class PrintMNMPattern : public MNMPattern {
  public:
 	void printTrigs(uint64_t trigs) {
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < patternLength; i++) {
 			if (IS_BIT_SET64(trigs, i)) {
 				printf("X  ");
 			} else {
@@ -23,7 +23,7 @@ class PrintMNMPattern : public MNMPattern {
 			if (isParamLocked(track, param)) {
 				printf("P%.2d (idx: %d): ", param, paramLocks[track][param]);
 
-				for (int i = 0; i < length; i++) {
+				for (int i = 0; i < patternLength; i++) {
 					uint8_t lock = getLock(track, i, param);
 					if (lock != 255) {
 						printf("%.3d ", lock);

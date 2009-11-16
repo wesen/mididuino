@@ -101,6 +101,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 	decoder.get32(swingPatterns, 16);
 #endif
 
+	numRows = 0;
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 24; j++) {
       if (IS_BIT_SET32(lockPatterns[i], j)) {
