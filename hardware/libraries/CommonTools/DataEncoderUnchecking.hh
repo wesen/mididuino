@@ -98,7 +98,7 @@ public:
 
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c) {
 	}
-	
+
 	DATA_ENCODER_RETURN_TYPE get16(uint16_t *c) {
 		uint8_t b1, b2;
 		get8(&b1);
@@ -147,6 +147,30 @@ public:
 		for (uint16_t i = 0; i < cnt; i++) {
 			get64(&c[i]);
 		}
+	}
+
+	uint8_t gget8() {
+		uint8_t b;
+		get8(&b);
+		return b;
+	}
+
+	uint16_t gget16() {
+		uint16_t a1 = ((uint16_t)gget8()) << 8;
+		uint8_t a2 = gget8();
+		return a1 | a2;
+	}
+	
+	uint32_t gget32() {
+		uint32_t a1 = ((uint32_t)gget16()) << 16;
+		uint16_t a2 = gget16();
+		return a1 | a2;
+	}
+	
+	uint64_t gget64() {
+		uint64_t a1 = ((uint64_t)gget32()) << 32;
+		uint32_t a2 = gget32();
+		return a1 | a2;
 	}
 	
 	uint16_t get(uint8_t *data, uint16_t len) {

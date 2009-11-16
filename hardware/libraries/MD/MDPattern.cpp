@@ -65,10 +65,19 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
 	decoder.get32(lockPatterns, 16);
 
 	decoder.init(DATA_ENCODER_INIT(data + 0x9e - 6, 19));
-	decoder.get32(&accentPattern);
-	decoder.get32(&slidePattern);
-	decoder.get32(&swingPattern);
-	decoder.get32(&swingAmount);
+
+#if 0
+	accentPattern = decoder.gget32();
+	slidePattern = decoder.gget32();
+	swingPattern = decoder.gget32();
+	swingAmount = decoder.gget32();
+#else
+
+		decoder.get32(&accentPattern);
+		decoder.get32(&slidePattern);
+		decoder.get32(&swingPattern);
+		decoder.get32(&swingAmount);
+#endif
 
 	ptr = data + 0xb1 - 6;
   accentAmount = *(ptr++);
