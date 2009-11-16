@@ -7,22 +7,32 @@
 #include "MNMParams.hh"
 
 void MNMPattern::init() {
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 64; j++) {
+  for (uint8_t i = 0; i < 6; i++) {
+    for (uint8_t j = 0; j < 64; j++) {
       paramLocks[i][j] = -1;
 			noteNBR[i][j] = -1;
     }
   }
   locksUsed = 0;
-  for (int i = 0; i < 62; i++) {
+  for (uint8_t i = 0; i < 62; i++) {
     lockTracks[i] = -1;
     lockParams[i] = -1;
-    for (int j = 0; j < 64; j++) {
+    for (uint8_t j = 0; j < 64; j++) {
       locks[i][j] = 255;
     }
   }
+	for (uint16_t i = 0; i < countof(midiNotes); i++) {
+		midiNotes[i].track = 0;
+		midiNotes[i].position = 0;
+		midiNotes[i].note = 0;
+	}
+	for (uint8_t i = 0; i < countof(chordNotes); i++) {
+		chordNotes[i].track = 0;
+		chordNotes[i].position = 0;
+		chordNotes[i].note = 0;
+	}
 
-  for (int i = 0; i < 6; i++) {
+  for (uint8_t i = 0; i < 6; i++) {
     ampTrigs[i] = 0;
     filterTrigs[i] = 0;
     lfoTrigs[i] = 0;
@@ -30,13 +40,13 @@ void MNMPattern::init() {
     triglessTrigs[i] = 0;
     chordTrigs[i] = 0;
     slidePatterns[i] = 0;
-    swingPatterns[i] = 0xaaaaaaaa;
+    swingPatterns[i] = 0xaaaaaaaaaaaaaaaaULL;
 
     midiNoteOnTrigs[i] = 0;
     midiNoteOffTrigs[i] = 0;
     midiTriglessTrigs[i] = 0;
     midiSlidePatterns[i] = 0;
-    midiSwingPatterns[i] = 0xaaaaaaaa;
+    midiSwingPatterns[i] = 0xaaaaaaaaaaaaaaaaULL;
 
     lockPatterns[i] = 0;
   }
@@ -111,14 +121,14 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
 	decoder.get8(&locksUsed);
 	decoder.get((uint8_t *)locks, 62 * 64);
 
-  for (int i = 0; i < 400; i++) {
+  for (uint16_t i = 0; i < 400; i++) {
     uint16_t l;
 		decoder.get16(&l);
     midiNotes[i].note = ((l >> 9) & 0x7f);
     midiNotes[i].track = (l >> 6) & 0x7;
     midiNotes[i].position = l & 0x3f;
   }
-  for (int i = 0; i < 192; i++) {
+  for (uint8_t i = 0; i < 192; i++) {
     uint16_t l;
 		decoder.get16(&l);
     chordNotes[i].note = ((l >> 9) & 0x7f);
@@ -130,8 +140,8 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
 	decoder.get8(&foobar);
 
 	numRows = 0;
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 64; j++) {
+  for (uint8_t i = 0; i < 6; i++) {
+    for (uint8_t j = 0; j < 64; j++) {
       if (IS_BIT_SET64(lockPatterns[i], j)) {
 				//				printf("lock track %d param %d to lock idx %d\n", i, j, numRows);
 				paramLocks[i][j] = numRows;
@@ -150,15 +160,12 @@ bool MNMPattern::fromSysex(uint8_t *data, uint16_t len) {
 #ifdef HOST_MIDIDUINO
 #define DEBUG(note, vel)
 #else
-#define DEBUG(note, vel) MidiUart.sendNoteOn(note, vel); delay(300); delay(300);
+#define DEBUG(note, vel) MidiUart.sendNoteOn(note, vel); delay(30);
 #endif
 
 uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
-	DEBUG(10, 0);
 	cleanupLocks();
-	DEBUG(10, 10);
 	recalculateLockPatterns();
-	DEBUG(10, 20);
 	
   m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
 	
@@ -168,7 +175,6 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
   data[9] = origPosition;
 
 	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
-	encoder.totalCnt++;
 
 	encoder.pack64(ampTrigs, 6);
 	encoder.pack64(filterTrigs, 6);
@@ -184,8 +190,6 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack64(midiSlidePatterns, 6);
 	encoder.pack64(midiSwingPatterns, 6);
 
-	DEBUG(10, 30);
-	
 	encoder.pack32(swingAmount);
 
 	encoder.pack64(lockPatterns, 6);
@@ -210,8 +214,6 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack(arpLength, 6);
 	encoder.pack((uint8_t *)arpPattern, 6 * 16);
 
-	DEBUG(10, 40);
-	
 	encoder.pack(midiArpPlay, 6);
 	encoder.pack(midiArpMode, 6);
 	encoder.pack(midiArpOctaveRange, 6);
@@ -226,27 +228,25 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack8(unused[4]);
 	encoder.pack8(locksUsed);
 
-	uint8_t lockData[62][64];
 	uint8_t lockIdx = 0;
-	m_memset(lockData, 62 * 64, 0xFF);
-	for (int track = 0; track < 6; track++) {
-		for (int param = 0; param < 64; param++) {
+	for (uint8_t track = 0; track < 6; track++) {
+		for (uint8_t param = 0; param < 64; param++) {
 			int8_t lock = paramLocks[track][param];
-			if (lock != -1) {
-				m_memcpy(lockData[lockIdx], locks[lock], 64);
+			if ((lock != -1) && (lockIdx < 62)) {
+				encoder.pack(locks[lock], 64);
 				lockIdx++;
 			}
 		}
 	}
-	encoder.pack((uint8_t *)lockData, 62 * 64);
+	encoder.fill8(0xFF, (62 - lockIdx) * 64);
 
-  for (int i = 0; i < 400; i++) {
+  for (uint16_t i = 0; i < countof(midiNotes); i++) {
     uint16_t x = ((uint16_t)midiNotes[i].note << 9) |
       ((uint16_t)midiNotes[i].track << 6) | (midiNotes[i].position);
 		encoder.pack16(x);
   }
-	
-  for (int i = 0; i < 192; i++) {
+
+  for (uint8_t i = 0; i < countof(chordNotes); i++) {
     uint16_t x =
 			((uint16_t)chordNotes[i].note << 9) |
 			((uint16_t)chordNotes[i].track << 6) |
@@ -265,7 +265,7 @@ uint16_t MNMPattern::toSysex(uint8_t *data, uint16_t len) {
 #ifdef HOST_MIDIDUINO
 
 void print64(uint64_t trigs, uint8_t length) {
-  for (int i = 0; i < length; i++) {
+  for (uint8_t i = 0; i < length; i++) {
     if (IS_BIT_SET64(trigs, i)) {
       printf("X  ");
     } else {
@@ -276,12 +276,12 @@ void print64(uint64_t trigs, uint8_t length) {
 }
 
 void MNMPattern::print() {
-  for (int i = 0; i < 6; i++) {
+  for (uint8_t i = 0; i < 6; i++) {
     printf("track %d\n", i);
     printf("amp     : ");
 		printf("%llx\n", ampTrigs[i]);
     print64(ampTrigs[i], patternLength);
-    for (int j = 0; j < patternLength; j++) {
+    for (uint8_t j = 0; j < patternLength; j++) {
       printf("%.2d ", noteNBR[i][j]);
     }
     printf("\n");
@@ -298,16 +298,16 @@ void MNMPattern::print() {
     printf("locks   : ");
     print64(lockPatterns[i], patternLength);
 		printf("lockIdx : ");
-    for (int j = 0; j < 64; j++) {
+    for (uint8_t j = 0; j < 64; j++) {
 			if (isParamLocked(i, j)) {
 				printf("%d: %.d ", j, paramLocks[i][j]);
 			}
     }
 		printf("\n");
-		for (int j = 0; j < 64; j++) {
+		for (uint8_t j = 0; j < 64; j++) {
 			if (isParamLocked(i, j)) {
 				printf("lock %d : ", j);
-				for (int step = 0; step < patternLength; step++) {
+				for (uint8_t step = 0; step < patternLength; step++) {
 					printf("%.3d ", getLock(i, step, j));
 				}
 				printf("\n");
@@ -316,7 +316,7 @@ void MNMPattern::print() {
     printf("\n");
 		
   }
-  for (int i = 0; i < 6; i++) {
+  for (uint8_t i = 0; i < 6; i++) {
     printf("midi track %d\n", i);
     printf("note on  : ");
     print64(midiNoteOnTrigs[i], patternLength);
@@ -344,7 +344,7 @@ bool MNMPattern::isMidiTrackEmpty(uint8_t track) {
 }
 
 bool MNMPattern::isLockPatternEmpty(uint8_t idx) {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     if (locks[idx][i] != 255)
       return false;
   }
@@ -352,7 +352,7 @@ bool MNMPattern::isLockPatternEmpty(uint8_t idx) {
 }
 
 bool MNMPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     if (locks[idx][i] != 255 || !IS_BIT_SET64(trigs, i))
       return false;
   }
@@ -368,7 +368,7 @@ void MNMPattern::clearLockPattern(uint8_t lock) {
   if (lock >= 62)
     return;
 
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     locks[lock][i] = 255;
   }
   if (lockTracks[lock] != -1 && lockParams[lock] != -1) {
@@ -379,7 +379,7 @@ void MNMPattern::clearLockPattern(uint8_t lock) {
 }
 
 void MNMPattern::cleanupLocks() {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     if (lockTracks[i] != -1) {
 			uint8_t lockTrack = lockTracks[i];
       if (isLockPatternEmpty(i, ampTrigs[lockTrack]) &&
@@ -438,7 +438,7 @@ void MNMPattern::clearParamLocks(uint8_t track, uint8_t param) {
 }
 
 void MNMPattern::clearTrackLocks(uint8_t track) {
-  for (int i = 0; i < 64; i++) {
+  for (uint8_t i = 0; i < 64; i++) {
     clearParamLocks(track, i);
   }
 }
@@ -474,7 +474,7 @@ void MNMPattern::setTrig(uint8_t track, uint8_t trig,
 }
 
 int8_t MNMPattern::getNextEmptyLock() {
-  for (int i = 0; i < 62; i++) {
+  for (uint8_t i = 0; i < 62; i++) {
     if (lockTracks[i] == -1 && lockParams[i] == -1) {
       return i;
     }
@@ -483,9 +483,9 @@ int8_t MNMPattern::getNextEmptyLock() {
 }
 
 void MNMPattern::recalculateLockPatterns() {
-  for (int track = 0; track < 6; track++) {
+  for (uint8_t track = 0; track < 6; track++) {
     lockPatterns[track] = 0;
-    for (int param = 0; param < 64; param++) {
+    for (uint8_t param = 0; param < 64; param++) {
       if (paramLocks[track][param] != -1) {
 				SET_BIT64(lockPatterns[track], param);
       }
@@ -502,7 +502,7 @@ bool MNMPattern::addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t val
     paramLocks[track][param] = idx;
     lockTracks[idx] = track;
     lockParams[idx] = param;
-    for (int i = 0; i < 64; i++) {
+    for (uint8_t i = 0; i < 64; i++) {
       locks[idx][i] = 255;
     }
   }

@@ -32,7 +32,7 @@ endif
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
 
-all: mnmPatternTest
+all: mnmPatternTest mnmPatternTestFile
 
 %.host.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -46,9 +46,12 @@ mnmTest: mnmTest.host.o $(OBJS)
 mnmPatternTest: mnmPatternTest.host.o $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^
 
+mnmPatternTestFile: mnmPatternTestFile.host.o $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $^
+
 
 clean:
-	- rm -f *.o mnmTest mnmPatternTest *.host.o
+	- rm -f *.o mnmTest mnmPatternTest mnmPatternTestFile *.host.o
 
 libclean:
 	rm -rf $(OBJS)

@@ -62,7 +62,7 @@ public:
 	//	sprintf(foobar, "avr-addr2line -e %s -f %x", file, addr);
 	//	//	printf("%s\n", foobar);
 	//	system(foobar);
-	printf("%x\n", addr);
+				printf("%x\n", addr);
       }
     }
     fflush(stdout);

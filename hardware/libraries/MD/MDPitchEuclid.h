@@ -8,7 +8,7 @@
 class MDPitchEuclid {
  public:
 	EuclidDrumTrack track;
-	const scale_t *currentScale;
+	const oscale_t *currentScale;
 	
 	uint8_t pitches[32];
 	uint8_t pitches_len;

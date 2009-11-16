@@ -33,6 +33,12 @@ public:
   virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb) {
   }
 
+	DATA_ENCODER_RETURN_TYPE fill8(uint8_t inb, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			pack8(inb);
+		}
+	}
+	
 	DATA_ENCODER_RETURN_TYPE pack16(uint16_t inw) {
 		pack8((inw >> 8) & 0xFF);
 		pack8(inw & 0xFF);

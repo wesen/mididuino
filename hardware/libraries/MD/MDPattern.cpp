@@ -165,24 +165,19 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 	encoder.pack8(kit);
 	encoder.pack8(numLockedRows);
 
-  uint16_t cnt = 0;
-
 	encoder.start7Bit();
-	uint8_t lockData[64][32];
-	m_memclr(lockData, 64 * 32);
 
 	uint8_t lockIdx = 0;
   for (uint8_t track = 0; track < 16; track++) {
     for (uint8_t param = 0; param < 24; param++) {
       int8_t lock = paramLocks[track][param];
-      if (lock != -1) {
-				m_memcpy(lockData[lockIdx], locks[lock], 32);
+      if ((lock != -1) && (lockIdx < 64)) {
+				encoder.pack(locks[lock], 32);
 				lockIdx++;
-				cnt++;
       }
     }
   }
-	encoder.pack((uint8_t *)lockData, 64 * 32);
+	encoder.fill8(0xFF, 32 * (64 - lockIdx));
 	encoder.reset();
 
 	encoder.pack32(accentEditAll ? 1 : 0);
@@ -205,19 +200,16 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 		encoder.pack32hi(swingPattern);
 
 		lockIdx = 0;
-		m_memclr(lockData, 32 * 64);
 		for (uint8_t track = 0; track < 16; track++) {
 			for (uint8_t param = 0; param < 24; param++) {
 				int8_t lock = paramLocks[track][param];
-				if (lock != -1) {
-					
-					m_memcpy(lockData[lockIdx], locks[lock] + 32, 32);
+				if ((lock != -1) && (lockIdx < 64)) {
+					encoder.pack(locks[lock] + 32, 32);
 					lockIdx++;
-					cnt++;
 				}
 			}
 		}
-		encoder.pack((uint8_t *)lockData, 64 * 32);
+		encoder.fill8(0xFF, 32 * (64 - lockIdx));
 		encoder.finish();
 	}
 

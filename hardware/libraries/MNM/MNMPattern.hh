@@ -133,11 +133,11 @@ public:
 		clearAmpTrig(track, trig);
 	}
   void setTrig(uint8_t track, uint8_t trig,
-	       bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
-	       bool triglessTrig = false, bool chordTrig = false);
-
+							 bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
+							 bool triglessTrig = false, bool chordTrig = false);
+	
 	void setTrig(uint8_t track, uint8_t trig) {
-		setAmpTrig(track, trig);
+		setTrig(track, trig, true, true, true, true);
 	}
 
   bool isTrigSet(uint8_t track, uint8_t trig,

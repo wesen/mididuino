@@ -37,6 +37,15 @@ public:
   virtual DATA_ENCODER_RETURN_TYPE pack8(uint8_t inb) {
     return false;
   }
+
+	DATA_ENCODER_RETURN_TYPE fill8(uint8_t inb, uint16_t cnt) {
+		for (uint16_t i = 0; i < cnt; i++) {
+			if (!pack8(inb))
+				return false;
+		}
+		return true;
+	}
+	
 	DATA_ENCODER_RETURN_TYPE pack16(uint16_t inw) {
 		return pack8((inw >> 8) & 0xFF) && 
 			pack8(inw & 0xFF);
