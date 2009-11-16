@@ -425,12 +425,14 @@ TEST_F (MNMPatternFixture, MNMLongPatternTrig) {
 	pattern.patternLength = 64;
 	pattern.setTrig(0, 32);
 	CHECK(pattern.isTrigSet(0, 32));
-	printf("trigset test before\n");
-	pattern.print();
+
+	// printf("trigset test before\n");
+	//	pattern.print();
+	
 	
 	bool ret = reimportSysex(&pattern);
-	printf("trigset test after\n");
-	pattern.print();
+	//	printf("trigset test after\n");
+	//	pattern.print();
 	CHECK(ret);
 	CHECK(pattern.isTrigSet(0, 32));
 }

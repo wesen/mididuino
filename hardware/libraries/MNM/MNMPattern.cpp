@@ -6,7 +6,7 @@
 #include "MNMPattern.hh"
 #include "MNMParams.hh"
 
-void MNMPattern::init() {
+void MNMPattern::clearPattern() {
   for (uint8_t i = 0; i < 6; i++) {
     for (uint8_t j = 0; j < 64; j++) {
       paramLocks[i][j] = -1;
@@ -343,65 +343,6 @@ bool MNMPattern::isMidiTrackEmpty(uint8_t track) {
 					(midiTriglessTrigs[track] == 0));
 }
 
-bool MNMPattern::isLockPatternEmpty(uint8_t idx) {
-  for (uint8_t i = 0; i < 64; i++) {
-    if (locks[idx][i] != 255)
-      return false;
-  }
-  return true;
-}
-
-bool MNMPattern::isLockPatternEmpty(uint8_t idx, uint64_t trigs) {
-  for (uint8_t i = 0; i < 64; i++) {
-    if (locks[idx][i] != 255 || !IS_BIT_SET64(trigs, i))
-      return false;
-  }
-
-  return true;
-}
-
-bool MNMPattern::isParamLocked(uint8_t track, uint8_t param) {
-  return paramLocks[track][param] != -1;
-}
-
-void MNMPattern::clearLockPattern(uint8_t lock) {
-  if (lock >= 62)
-    return;
-
-  for (uint8_t i = 0; i < 64; i++) {
-    locks[lock][i] = 255;
-  }
-  if (lockTracks[lock] != -1 && lockParams[lock] != -1) {
-    paramLocks[lockTracks[lock]][lockParams[lock]] = -1;
-  }
-  lockTracks[lock] = -1;
-  lockParams[lock] = -1;
-}
-
-void MNMPattern::cleanupLocks() {
-  for (uint8_t i = 0; i < 64; i++) {
-    if (lockTracks[i] != -1) {
-			uint8_t lockTrack = lockTracks[i];
-      if (isLockPatternEmpty(i, ampTrigs[lockTrack]) &&
-					isLockPatternEmpty(i, filterTrigs[lockTrack]) &&
-					isLockPatternEmpty(i, lfoTrigs[lockTrack]) &&
-					isLockPatternEmpty(i, triglessTrigs[lockTrack])) { // trigs
-				if (lockParams[i] != -1) {
-					paramLocks[lockTrack][lockParams[i]] = -1;
-				}
-				lockTracks[i] = -1;
-				lockParams[i] = -1;
-      }
-    } else {
-      lockParams[i] = -1;
-    }
-  }
-}
-
-void MNMPattern::clearPattern() {
-  init();
-}
-
 void MNMPattern::clearTrack(uint8_t track) {
   if (track >= 6) {
     return;
@@ -428,21 +369,6 @@ void MNMPattern::clearMidiTrack(uint8_t track) {
 	// XXX	midiSwingPatterns[track] = 0;
 }
  
-
-void MNMPattern::clearParamLocks(uint8_t track, uint8_t param) {
-  int8_t idx = paramLocks[track][param];
-  if (idx != -1) {
-    clearLockPattern(idx);
-    paramLocks[track][param] = -1;
-  }
-}
-
-void MNMPattern::clearTrackLocks(uint8_t track) {
-  for (uint8_t i = 0; i < 64; i++) {
-    clearParamLocks(track, i);
-  }
-}
-
 void MNMPattern::clearTrig(uint8_t track, uint8_t trig,
 													 bool ampTrig, bool filterTrig, bool lfoTrig,
 													 bool triglessTrig, bool chordTrig) {
@@ -473,13 +399,9 @@ void MNMPattern::setTrig(uint8_t track, uint8_t trig,
     SET_BIT64(chordTrigs[track], trig);
 }
 
-int8_t MNMPattern::getNextEmptyLock() {
-  for (uint8_t i = 0; i < 62; i++) {
-    if (lockTracks[i] == -1 && lockParams[i] == -1) {
-      return i;
-    }
-  }
-  return -1;
+void MNMPattern::setNote(uint8_t track, uint8_t step, uint8_t pitch) {
+	setTrig(track, step);
+	noteNBR[track][step] = pitch;
 }
 
 void MNMPattern::recalculateLockPatterns() {
@@ -491,45 +413,5 @@ void MNMPattern::recalculateLockPatterns() {
       }
     }
   }
-}
-
-bool MNMPattern::addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t value) {
-  int8_t idx = paramLocks[track][param];
-  if (idx == -1) {
-    idx = getNextEmptyLock();
-    if (idx == -1)
-      return false;
-    paramLocks[track][param] = idx;
-    lockTracks[idx] = track;
-    lockParams[idx] = param;
-    for (uint8_t i = 0; i < 64; i++) {
-      locks[idx][i] = 255;
-    }
-  }
-  locks[idx][trig] = value;
-  return true;
-}
-
-void MNMPattern::clearLock(uint8_t track, uint8_t trig, uint8_t param) {
-  int8_t idx = paramLocks[track][param];
-  if (idx == -1)
-    return;
-  locks[idx][trig] = 255;
-
-  if (isLockPatternEmpty(idx, ampTrigs[track]) && 
-			isLockPatternEmpty(idx, filterTrigs[track]) &&
-			isLockPatternEmpty(idx, lfoTrigs[track]) &&
-			isLockPatternEmpty(idx, triglessTrigs[track])) { // trigs
-    paramLocks[track][param] = -1;
-    lockTracks[idx] = -1;
-    lockParams[idx] = -1;
-  }
-}
-
-uint8_t MNMPattern::getLock(uint8_t track, uint8_t trig, uint8_t param) {
-  int8_t idx = paramLocks[track][param];
-  if (idx == -1)
-    return 255;
-  return locks[idx][trig];
 }
 

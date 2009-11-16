@@ -2,14 +2,7 @@
 #define MNMPATTERN_H__
 
 #include <inttypes.h>
-
-class MNMTranspose {
-public:
-};
-
-class MNMArpeggiator {
-public:
-};
+#include "ElektronPattern.hh"
 
 typedef struct mnm_note_s {
   unsigned note : 7;
@@ -17,9 +10,12 @@ typedef struct mnm_note_s {
   unsigned position : 6;
 } mnm_note_t;
 
-class MNMPattern {
+class MNMPattern : public ElektronPattern {
 public:
   uint8_t origPosition;
+
+	uint8_t getPosition() { return origPosition; }
+	void    setPosition(uint8_t _pos) { origPosition = _pos; }
 
   uint64_t ampTrigs[6];
   uint64_t filterTrigs[6];
@@ -42,11 +38,18 @@ public:
   uint8_t noteNBR[6][64];
 
   uint8_t patternLength;
+
+	uint8_t getLength() { return patternLength; }
+	void    setLength(uint8_t _len) { patternLength = _len; }
+	
   uint8_t doubleTempo;
 
 	uint8_t unused[5];
 
   uint8_t kit;
+	uint8_t getKit() { return kit; }
+	void    setKit(uint8_t _kit) { kit = _kit; }
+	
   int8_t patternTranspose;
   
   static const uint8_t TRANSPOSE_CHROMATIC = 0;
@@ -93,44 +96,43 @@ public:
 
   uint8_t locksUsed;
   uint8_t numRows;
-  uint8_t locks[62][64];
   int8_t paramLocks[6][64];
-  int8_t lockTracks[62];
-  int8_t lockParams[62];
+	int8_t getLockIdx(uint8_t track, uint8_t param) {
+		return paramLocks[track][param];
+	}
+	void   setLockIdx(uint8_t track, uint8_t param, int8_t value) {
+		paramLocks[track][param] = value;
+	}
   
   mnm_note_t midiNotes[400];
   mnm_note_t chordNotes[192];
 
   MNMPattern() {
+		maxSteps = 64;
+		maxParams = 64;
+		maxTracks = 6;
+		maxLocks = 62;
 		init();
   }
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-
-  void init();
-
+	
 	bool isTrackEmpty(uint8_t track);
 	bool isMidiTrackEmpty(uint8_t track);
 	
-  bool isLockPatternEmpty(uint8_t idx);
-  bool isLockPatternEmpty(uint8_t idx, uint64_t trigs);
-  bool isParamLocked(uint8_t track, uint8_t param);
-  void clearLockPattern(uint8_t lock);
-  void cleanupLocks();
+  bool isLockEmpty(uint8_t idx);
+  bool isLockEmpty(uint8_t idx, uint64_t trigs);
 
   void clearPattern();
   void clearTrack(uint8_t track);
 	void clearMidiTrack(uint8_t track);
 
-  void clearParamLocks(uint8_t track, uint8_t param);
-  void clearTrackLocks(uint8_t track);
-
   void clearTrig(uint8_t track, uint8_t trig,
-		 bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
-		 bool triglessTrig = false, bool chordTrig = false);
+								 bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
+								 bool triglessTrig = false, bool chordTrig = false);
 	void clearTrig(uint8_t track, uint8_t trig) {
-		clearAmpTrig(track, trig);
+		clearTrig(track, trig, true, true, true, true);
 	}
   void setTrig(uint8_t track, uint8_t trig,
 							 bool ampTrig, bool filterTrig = false, bool lfoTrig = false,
@@ -195,10 +197,6 @@ public:
   void setNote(uint8_t track, uint8_t step, uint8_t note);
   void setChordNote(uint8_t track, uint8_t step, uint8_t note);
   void clearChordNote(uint8_t track, uint8_t step, uint8_t note);
-
-  bool addLock(uint8_t track, uint8_t trig, uint8_t param, uint8_t value);
-  void clearLock(uint8_t track, uint8_t trig, uint8_t param);
-  uint8_t getLock(uint8_t track, uint8_t trig, uint8_t param);
 
 #ifdef HOST_MIDIDUINO
   void print();
