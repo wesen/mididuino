@@ -87,6 +87,8 @@ typedef enum {
 #define CMD_SAVE_PAGE          0x14
 #define CMD_SET_FLASH          0x15
 
+#define CMD_STRING             0x30
+
 // typedef void (*midi_callback_t)(uint8_t *msg);
 
 #endif /* MIDI_COMMON_H__ */

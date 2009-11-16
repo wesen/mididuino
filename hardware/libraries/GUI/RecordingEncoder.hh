@@ -90,7 +90,7 @@ int RecordingEncoder<N>::update(encoder_t *enc) {
   if (recording) {
     if (!recordChanged) {
       if (enc->normal != 0 || enc->button != 0) {
-	recordChanged = true;
+				recordChanged = true;
       }
     }
     if (recordChanged) {

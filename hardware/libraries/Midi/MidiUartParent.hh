@@ -82,16 +82,18 @@ public:
   void sendCommandByte(uint8_t byte) {
     if (MIDI_IS_REALTIME_STATUS_BYTE(byte) || MIDI_IS_SYSCOMMON_STATUS_BYTE(byte)) {
       if (!MIDI_IS_REALTIME_STATUS_BYTE(byte)) {
-	running_status = 0;
-      }
-      putc_immediate(byte);
+				running_status = 0;
+				putc(byte);
+      } else {
+				putc_immediate(byte);
+			}
     } else {
       if (useRunningStatus) {
-	if (running_status != byte) 
-	  putc(byte);
-	running_status = byte;
+				if (running_status != byte) 
+					putc(byte);
+				running_status = byte;
       } else {
-	putc(byte);
+				putc(byte);
       }
     }
   }
@@ -249,9 +251,9 @@ public:
   }
 
   virtual void sendSysex(uint8_t *data, uint8_t cnt) {
-    sendCommandByte(0xF7);
-    puts(data, cnt);
     sendCommandByte(0xF0);
+    puts(data, cnt);
+    sendCommandByte(0xF7);
   }
   inline void sendRaw(uint8_t *msg, uint16_t cnt) {
     puts(msg, cnt);
@@ -259,6 +261,11 @@ public:
   inline void sendRaw(uint8_t byte) {
     putc(byte);
   }
+
+	void sendString(const char *data) {
+		sendString(data, m_strlen(data));
+	}
+	void sendString(const char *data, uint16_t cnt);
 
 #ifdef HOST_MIDIDUINO
   virtual ~MidiUartParent() {
