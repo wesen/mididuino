@@ -132,5 +132,18 @@ bool ElektronHelper::checkSysexChecksum(uint8_t *data, uint16_t len) {
 	return true;
 }
 
+bool ElektronHelper::calculateSysexChecksum(uint8_t *data, uint16_t len) {
+	data[0] = 0xF0;
+  uint16_t checksum = 0;
+  for (int i = 9; i < len; i++)
+    checksum += data[i];
+  data[len] = (uint8_t)((checksum >> 7) & 0x7F);
+  data[len + 1] = (uint8_t)(checksum & 0x7F);
+  uint16_t length = len + 5 - 7 - 3;
+  data[len + 2] = (uint8_t)((length >> 7) &0x7F);
+  data[len + 3 ] = (uint8_t)(length & 0x7F);
+  data[len + 4] = 0xF7;
+}
+
 /* Encoders */
 

@@ -92,14 +92,15 @@ public:
   uint8_t locksUsed;
   uint8_t numRows;
   uint8_t locks[62][64];
-  int8_t paramLocks[6][72];
-  int8_t lockTracks[64];
-  int8_t lockParams[64];
+  int8_t paramLocks[6][64];
+  int8_t lockTracks[62];
+  int8_t lockParams[62];
   
   mnm_note_t midiNotes[400];
   mnm_note_t chordNotes[192];
 
   MNMPattern() {
+		init();
   }
   
   bool fromSysex(uint8_t *sysex, uint16_t len);

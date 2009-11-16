@@ -156,29 +156,23 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 		isExtraPattern = false;
 	}
 
+	cleanupLocks();
+  recalculateLockPatterns();
+
 	uint16_t sysexLength = isExtraPattern ? 0x151d : 0xac6;
-	
   if (len < (sysexLength + 5))
     return 0;
 
-  m_memclr(data, sysexLength + 5);
-  
-  data[0] = 0xF0;
   m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-
   data[6] = MD_PATTERN_MESSAGE_ID;
   data[7] = 0x03; // version
   data[8] = 0x01;
   data[9] = origPosition;
-
-	MDDataToSysexEncoder encoder(data + 0xA, 74);
 	
+	MDDataToSysexEncoder encoder(data + 10, 74);
 	encoder.pack32(trigPatterns, 16);
 	encoder.finish();
 
-	cleanupLocks();
-  recalculateLockPatterns();
-	
 	encoder.init(data + 0x54, 74);
 	encoder.pack32(lockPatterns, 16);
 	encoder.finish();
@@ -253,16 +247,8 @@ uint16_t MDPattern::toSysex(uint8_t *data, uint16_t len) {
 		encoder.pack((uint8_t *)lockData, 64 * 32);
 		encoder.finish();
 	}
-	
-  uint16_t checksum = 0;
-  for (int i = 9; i < sysexLength; i++)
-    checksum += data[i];
-  data[sysexLength] = (uint8_t)((checksum >> 7) & 0x7F);
-  data[sysexLength + 1] = (uint8_t)(checksum & 0x7F);
-  uint16_t length = sysexLength + 5 - 7 - 3;
-  data[sysexLength + 2] = (uint8_t)((length >> 7) &0x7F);
-  data[sysexLength + 3 ] = (uint8_t)(length & 0x7F);
-  data[sysexLength + 4] = 0xF7;
+
+	ElektronHelper::calculateSysexChecksum(data, sysexLength);
 
   return sysexLength + 5;
 }

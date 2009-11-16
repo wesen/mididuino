@@ -219,6 +219,9 @@ void hexdump(uint8_t *data, uint16_t len) {
   uint8_t cnt = 0;
 	uint16_t i;
   for (i = 0; i < len; i++) {
+		if (cnt == 0) {
+			printf("%.4x: ", i);
+		}
     printf("%.2x ", data[i]);
     cnt++;
     if (cnt == 8) {

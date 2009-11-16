@@ -59,12 +59,11 @@ uint16_t MDGlobal::toSysex(uint8_t *data, uint16_t len) {
   if (len < 0xC5)
     return 0;
   
-  data[0] = 0xF0;
   m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-
   data[6] = MD_GLOBAL_MESSAGE_ID;
   data[7] = 0x05; // version
   data[8] = 0x01;
+
   data[9] = origPosition;
   for (int i = 0; i < 16; i++){
     data[0xA + i] = drumRouting[i];
@@ -105,16 +104,8 @@ uint16_t MDGlobal::toSysex(uint8_t *data, uint16_t len) {
 
   data[0xBE] = programChange;
   data[0xBF] = trigMode;
-		
-  uint16_t checksum = 0;
-  for (int i = 9; i < 0xC0; i++)
-    checksum += data[i];
-  data[0xC0] = (uint8_t)((checksum >> 7) & 0x7F);
-  data[0xC1] = (uint8_t)(checksum & 0x7F);
-  uint16_t length = 0xC5 - 7 - 3;
-  data[0xC2] = (uint8_t)((length >> 7) &0x7F);
-  data[0xC3] = (uint8_t)(length & 0x7F);
-  data[0xC4] = 0xF7;
+
+	ElektronHelper::calculateSysexChecksum(data, 0xC0);
 
   return 0xC5;
 }
@@ -252,16 +243,7 @@ uint16_t MDKit::toSysex(uint8_t *data, uint16_t len) {
     ptr += 2;
   }
   ElektronHelper::MDDataToSysex(data2, data + 0x4a7, 32);
-
-  int checksum = 0;
-  for (int i = 9; i <  0x4cc; i++)
-    checksum += data[i];
-  data[0x4cc] = (uint8_t)((checksum >> 7) & 0x7F);
-  data[0x4cd] = (uint8_t)(checksum & 0x7F);
-  int length = 0x4d1 - 10;
-  data[0x4ce] = (uint8_t)((length >> 7) &0x7F);
-  data[0x4cf] = (uint8_t)(length & 0x7F);
-  data[0x4d0] = 0xF7;
+	ElektronHelper::calculateSysexChecksum(data, 0x4cc);
 
   return 0x4d1;
 }
@@ -335,15 +317,9 @@ uint16_t MDSong::toSysex(uint8_t *data, uint16_t len) {
   }
 
   int end = 0x1A + 12 * numRows;
-  int checksum = 0;
-  for (int i = 9; i <  end; i++)
-    checksum += data[i];
-  data[end] = (uint8_t)((checksum >> 7) & 0x7F);
-  data[end + 1] = (uint8_t)(checksum & 0x7F);
+
+	ElektronHelper::calculateSysexChecksum(data, end);
   int length = 0x1F + 12 * numRows - 10;
-  data[end + 2] = (uint8_t)((length >> 7) &0x7F);
-  data[end + 3] = (uint8_t)(length & 0x7F);
-  data[end + 4] = 0xF7;
 
   return length + 10;
 }
