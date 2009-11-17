@@ -1,0 +1,72 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Optima-Regular;\f1\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\fi560\sl288\slmult1\sb160\ql\qnatural\pardirnatural
+
+\f0\fs26 \cf0 The Mididuino framework provides the building blocks for exciting and innovative MIDI controller firmwares. The framework can be divided into three major building blocks: the GUI system, the MIDI system, and the synthesizer specific modules. \
+
+\b \
+The GUI System
+\b0 \
+The GUI system controls everything that has to do with displaying information on the 2x16 character display and the 2 LEDs of the Minicommand, and handling the physical inputs (4 buttons and 4 encoders with pushbutton functionality). It provides 2 major abstractions called 
+\b Pages
+\b0 , which is similar to a \'93window\'94 on a computer. A Page displays information on the screen, and interprets user actions (button presses and encoder movements). It is similar to a controller in the standard Model/View/Controller design paradigm. Multiple pages can be grouped into a 
+\b Sketch
+\b0 , which is a complete controller \'93program\'94. The GUI system provides an event handling mechanism for handling button presses, and interprets encoder movements by mapping the four physical encoders to virtual encoders. \
+The GUI system provides a number of standard virtual encoder classes (for example the 
+\b CCEncoder
+\b0  class that sends CC messages, the 
+\b EnumEncoder
+\b0  class that selects between a list of different values, the 
+\b CharEncoder
+\b0  class to enter names, the 
+\b NotePitchEncoder
+\b0  class to select midi pitches, and many more) and a number of standard pages (for example the 
+\b EncoderPage 
+\b0 class, which displays and handles up to four encoders, or the 
+\b SwitchPage
+\b0  and 
+\b EncoderSwitchPage
+\b0  classes, which allow the user to switch between other pages, or the 
+\b SketchSwitchPage
+\b0  class which allows the user to select and configure different sketches, a bit like a launcher menu on a normal computer).
+\f1 \uc0\u8232 
+\f0 \
+
+\b The MIDI System
+\b0 \
+The MIDI system controls both sending and receiving MIDI messages, as well as handling MIDI clock synchronization. It is intimately linked to the hardware 
+\b UARTs
+\b0  used to receive and send MIDI messages. 
+\b UART
+\b0  (universal asynchronous receiver/transmitter) is a fancy name for a serial interface. MIDI itself is a serial interface running at 31250 (that means it can send 3125 bytes per second), with one cable used to send messages (the MIDI OUT port) and one cable used to receive messages (the MIDI IN port). The Minicommand controller features two MIDI inputs and one MIDI output. In the Mididuino framework, the 
+\b MidiUart 
+\b0 object is used to represent the sending part of the 
+\b UART
+\b0 . It provides a huge number of methods to send either individual bytes or complete MIDI messages such as Note On, Note Off, Controller Change, Program Change, NRPNs, PitchWheel messages, and even Sysex. The receiving part of the 
+\b UART
+\b0  is represented by the 
+\b Midi
+\b0  and 
+\b Midi2
+\b0  objects, which handle incoming MIDI messages, decode them (handling all the quirks of MIDI such as running status, realtime messages, sysex messages, etc\'85). Once a message is decoded, registered callback methods are called allowing the running 
+\b firmware
+\b0  to react.\
+The MIDI system provides an elaborate way to handle and decode sysex messages by using 
+\b MidiSysexListener
+\b0  objects, which can react on the start, end and aborting of a MIDI sysex message, and record incoming Sysex messages. Furthermore, a data encoding and decoding framework is provided, which can be used to decode 8-bit data encoding in the 7-bit allowed by MIDI. This data encoding and decoding framework is used to decode the complex messages sent out by the MachineDrum and the MonoMachine (where data is even further compressed).\
+The MIDI system also provides useful helpers such as the 
+\b CCHandler
+\b0 , which reacts on both incoming and outgoing MIDI CC messages. The 
+\b CCHandler
+\b0  is used to provide simple MIDI learn functionality, as well as moving different virtual encoders linked to the same CC channel and number. Another helper provided by the MIDI system is the 
+\b Merger
+\b0 , which can be configured to merge MIDI messages coming in on the second input onto the main MIDI output. It handles all standard MIDI messages, as well as Sysex messages.\
+Finally, but not least, the MIDI system provides a simple framework to handle MIDI clock synchronization. It can synchronize to an internal clock, or to a MIDI clock coming in on either one of the MIDI ports. Furthermore, it can merge incoming clock onto the outgoing MIDI port. The 
+\b MidiClock
+\b0  class can be used to register callback handlers on every 16th or 32nd tick, and provides counters for the current song position in 96th, 32nd and 16th ticks.\
+\
+
+\b Synthesizer specific modules\
+
+\b0 The real beauty of the Minicommand lies in its flexibility. This flexibility can be used to build MIDI controller applications that are very specifically tailored to a certain synthesizer. Classes to interface with the Elektron MachineDrum and the Elektron MonoMachine are provided, which provide access to every function available on these devices over MIDI. This goes further than just controlling aspects. For example, the Mididuino framework provides parsers and classes for all the Sysex backup messages, allowing for the modification, generation and saving of Kits, Patterns, Songs and Global settings. It also provides lookup tables to map standard MIDI pitches to the pitch settings for individual sound generators on the MachineDrum, allowing you to play standard melodies using for example an FM-synthesized clap.}

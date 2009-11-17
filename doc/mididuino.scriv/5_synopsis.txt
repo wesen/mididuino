@@ -1,0 +1,4 @@
+Mididuino Environment
+Makefiles
+Uploading
+Patch Manager

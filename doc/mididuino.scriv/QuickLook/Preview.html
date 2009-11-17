@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.11">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 16.0px Courier; background-color: #dde3eb}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Courier; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Courier}
+</style>
+</head>
+<body>
+<p class="p1"><b>• Mididuino overview</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Introduction</b></p>
+<p class="p3">The Minicommand is a fully opensource MIDI controller: both the hardware design and the software running on it are completely free and available online. Furthermore, it makes the task of writing new firmwares even easier by providing an extensive programming framework covering areas such as MIDI, GUI design, access to Elektron synthesizers, interfacing with the internal storage. Firmwares are written using a modified version of the Arduino editor, which allows you to upload new firmwares to the ...</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Terms</b></p>
+<p class="p3">Sketch</p>
+<p class="p3">Firmware</p>
+<p class="p3">Library</p>
+<p class="p3">Object</p>
+<p class="p3">Class</p>
+<p class="p3">UART</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Components</b></p>
+<p class="p3">GUI</p>
+<p class="p3">MIDI Stack</p>
+<p class="p3">MachineDrum/Monomachine</p>
+<p class="p3">Tools</p>
+<p class="p3">Pages</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Getting Started</b></p>
+<p class="p3">Mididuino Environment</p>
+<p class="p3">Makefiles</p>
+<p class="p3">Uploading</p>
+<p class="p3">Patch Manager</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Programming Language</b></p>
+<p class="p3">The Mididuino framework is written in C++, which is a widely used programming language. However, embedded firmwares (programs running on a dedicated piece of hardware, usually on a smaller processor) are usually programmed in C. The decision to choose C++ as the main programming language was made so that it would be easier to write custom firmwares while reusing a big amount of the code of the framework.<span class="Apple-converted-space">  </span>C++ is an object oriented programming language, allowing the programmer to describe common ...</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• The Mididuino editor</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Documentation structure</b></p>
+<p class="p1"><b>Documentation structure</b></p>
+<p class="p3">Reference</p>
+<p class="p3">Tutorials</p>
+<p class="p3">Walkthrough firmwares</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Tutorials</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Introduction</b></p>
+<p class="p3">In this chapter, several simple examples of firmwares for the Minicommand will be shown and explained, showcasing different parts of the framework. These simple tutorial firmwares are included with the Mididuino framework, and can be used as a basis for more complicated firmwares.</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Printing to the screen</b></p>
+<p class="p3">In this first tutorial, we are going to write the Mididuino equivalent of the ubiquitous Hello World example. All this firmware does is show “HELLO WORLD” on the Minicommand screen. This example shows two fundamental elements of a Mididuino sketch.<span class="Apple-converted-space">  </span>The first is the setup() function, which gets called once at the start of the firmware (that is, when the Minicommand is turned on). Due to cleverness in the Mididuino framework, you don’t need to define that function if it is empty. You just need to...</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Reacting to button presses</b></p>
+<p class="p3">In this second sketch, we are going to react to button presses by the user. The buttons are regularly polled by the framework (2000 times per second to be precise), reading in if a button is pressed “down” or is in its default “up” state. The state of a button can be read by using the BUTTON_DOWN() and BUTTON_UP() macros, and giving them the identifier for a button. These identifiers are Buttons.BUTTON1 (top left), Buttons.BUTTON2 (bottom left), Buttons.BUTTON3 (bottom right), Buttons.BUTTON4 (t...</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Making a page</b></p>
+<p class="p3">In this tutorial, we are getting a step nearer to writing a useful firmware for the Minicommand. This firmware shows two very important elements of the Mididuino framework: the Page class and its child the EncoderPage, and the Encoder class and its child the RangeEncoder.<span class="Apple-converted-space">  </span>The Page class is the fundamental building block of more complex firmwares. It groups together four encoders and the code to display and handle them. This allows all the relevant functionality for a firmware (or a part of a fi...</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Sending MIDI</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Receiving MIDI</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Accessing the Machinedrum</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Sequencing</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Handling CCs</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Autorecording</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Firmwares</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MagicMidiController</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MDWesenLivePatch</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MDPitchEuclid</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• General</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Callbacks</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Helpers</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Loop</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Timers</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• GUI</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• GUI</b></p>
+<p class="p3">Displaying information Flashing information Adding event handlers Handling pages and sketches Adding tasks<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">  </span>void setSketch(Sketch *_sketch);</p>
+<p class="p3"><span class="Apple-converted-space">  </span>void setPage(Page *page);</p>
+<p class="p3"><span class="Apple-converted-space">  </span>void pushPage(Page *page);</p>
+<p class="p3"><span class="Apple-converted-space">  </span>void popPage();</p>
+<p class="p3"><span class="Apple-converted-space">  </span>Page *currentPage();</p>
+<p class="p3"><span class="Apple-converted-space">  </span>void popPage(Page *page);</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p3"><span class="Apple-converted-space">  </span>void addEventHandler(event_handler_t handler) {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>eventHandlers.add(handler);</p>
+<p class="p3"><span class="Apple-converted-space">  </span>}</p>
+<p class="p3"><span class="Apple-converted-space">  </span>void removeEventHandler(event_handler_t handler) {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>eventHandlers.remove(handler);</p>
+<p class="p3"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p3"><span class="Apple-converted-space">  </span>void addTask(Task *task) {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>tasks.add(task);...</p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Page</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Events</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Sketch</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Tasks</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MIDI</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MidiUart</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Midi Parser</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Sysex</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Clock</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MidiTools</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Scales</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Sequencer</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Arpeggiator</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Euclid</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• CCHandler</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Merger</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MidiClockPage</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Tools</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• AutoRecording</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Elektron</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• DataEncoders</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MD</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MD</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Kit</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Global</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Song</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Pattern</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• MNM</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Debugging</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Profiler</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Sysex printing</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Internals</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Interrupts</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Clock</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Uart buffers</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Data structures</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Sysex uploading / bootloader</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Glossary</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Glossary</b></p>
+<p class="p3">Arduino Atmel AVR Button C C++ Class Display Elektron Encoder Firmware GUI MachineDrum Macro Memory Mididuino MIDI Minicommand MonoMachine Object Page Pointer Program Memory Sketch Volatile Memory<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1"><b>• Programming Glossary</b></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+</body>
+</html>

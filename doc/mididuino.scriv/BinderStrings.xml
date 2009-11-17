@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>11</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>In this tutorial, we are getting a step nearer to writing a useful firmware for the Minicommand. This firmware shows two very important elements of the Mididuino framework: the Page class and its child the EncoderPage, and the Encoder class and its child the RangeEncoder. 
+The Page class is the fundamental building block of more complex firmwares. It groups together four encoders and the code to display and handle them. This allows all the relevant functionality for a firmware (or a part of a firmware) to be grouped inside a class and thus easily reused. For example, already available pages in the Mididuino framework are a four encoder MIDI controller (with MIDI learn), an arpeggiator, or even more utilitarian page like a page that allows to switch between other pages, or a page to configure MIDI clock settings.
+The EncoderPage is a very simple page that just displays and updates four encoders. These encoders can be</string>
+		<key>Title</key>
+		<string>Making a page</string>
+	</dict>
+	<key>15</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>The Minicommand is a fully opensource MIDI controller: both the hardware design and the software running on it are completely free and available online. Furthermore, it makes the task of writing new firmwares even easier by providing an extensive programming framework covering areas such as MIDI, GUI design, access to Elektron synthesizers, interfacing with the internal storage. Firmwares are written using a modified version of the Arduino editor, which allows you to upload new firmwares to the controller directly over MIDI.
+This manual describes the different functionality provided by the framework, by providing:
+- a programming reference, describing the API of each module,
+- tutorials describing how to write different useful firmwares,
+- a walkthrough through existing (and rather complex) firmwares, describing the design and implementation rationale behind them,
+- an in-depth description of technical challenges encountered along the way, hoping to explain some of the design and implementation decisions that were made.
+In this manual, we use the word “Minicommand” to refer to the actual MIDI controller by Ruin &amp; Wesen, available at http://ruinwesen.com/digital . This is the main platform on which the framework runs. The words “Mididuino framework” (which sadly is slightly confusing) refers to the framework itself. It is not based on Arduino, as all the code is completely separate from the libraries and cores of the Arduino project. However, the Minicommand uses an AVR ATmega64 microcontroller, which is similar to the one used on the different Arduino boards. However, the Minicommand provides 64 kB additional memory, meaning that the full-featured framework won’t run on a plain Arduino board. A stripped down version of the Mididuino framework is available as an add-on library for Arduino-014 at http://ruinwesen.com/mididuino . The “Mididuino editor” is a modified version of the Arduino editor, which compiles firmwares using the Mididuino framework, and uploads them to the target device over MIDI. The Mididuino editor also features a few internal extensions allowing for a better integration of complex library dependencies, as they are present in the Mididuino framework.
+We use the masculine form of “programmer” and “user” in the rest of this book, out of commodity, and hope that a female reader will make the appropriate adjustments.</string>
+		<key>Title</key>
+		<string>Introduction</string>
+	</dict>
+	<key>16</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string>Sketch
+Firmware
+Library
+Object
+Class
+UART</string>
+		<key>Text</key>
+		<string>Some terms used in this manual have a special meaning.
+A Firmware is the name for a program that runs on the Minicommand. It stands for the complete program that is uploaded as a hex file. A firmware can comprise multiple sketches (see Sketch below). This distinction is a bit confusing because in Arduino (and in the Mididuino editor), Sketch is often used to refer to a complete program. This is because it is customary for Minicommand firmwares to group together different functionalities (which are available as standalone sketches) into big firmwares called monster firmwares. As it is, a Sketch in the Mididuino framework is a class representing a MIDI controller functionality that works as standalone as well. A firmware refers to an actual program that can be downloaded to the device as a hex file.
+A Sketch is a MIDI controller “program”. For example, a sketch could be an arpeggiator, or a standard MIDI controller sending CC messages when an encoder is turned. A Sketch often is made out of different Pages. In the Mididuino framework, a Sketch is a class with a well-defined interface. Different Sketches can be grouped together into a single firmware which is called a monster firmware.
+A Page is a class in the Mididuino framework and represent a single view on the controller display. It controls the displaying of information, and how button presses and encoder movements are to be interpreted. For example, a Page could display the value of four encoders sending out CC values. A Page can also be used to control four parameters of an arpeggiator. More specific Pages are for example a Page used to switch between different other Pages (a bit like a menu on a computer), or a modal page asking for confirmation (Yes/No).</string>
+		<key>Title</key>
+		<string>Terms</string>
+	</dict>
+	<key>24</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>Displaying information
+Flashing information
+Adding event handlers
+Handling pages and sketches
+Adding tasks
+  void setSketch(Sketch *_sketch);  void setPage(Page *page);  void pushPage(Page *page);  void popPage();  Page *currentPage();  void popPage(Page *page);    void addEventHandler(event_handler_t handler) {    eventHandlers.add(handler);  }  void removeEventHandler(event_handler_t handler) {    eventHandlers.remove(handler);  }  void addTask(Task *task) {    tasks.add(task);  }  void removeTask(Task *task) {    tasks.remove(task);  }  void update();  void display();  void redisplay();#ifdef GUI_NUM_ENCODERS  static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;#endif  static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;    void put_value(uint8_t idx, uint8_t value);  void put_value(uint8_t idx, int value);  void put_value16(uint8_t idx, uint16_t value);  void put_valuex(uint8_t idx, uint8_t value);  void put_value_at(uint8_t idx, uint8_t value);  void put_value_at(uint8_t idx, int value);  void put_value16_at(uint8_t idx, uint16_t value);  void put_valuex_at(uint8_t idx, uint8_t value);  void put_string(uint8_t idx, const char *str);  void put_p_string(uint8_t idx, PGM_P str);  void put_string(const char *str);  void put_p_string(PGM_P str);  void put_string_fill(uint8_t idx, const char *str);  void put_string_fill(const char *str);  void put_p_string_fill(uint8_t idx, PGM_P str);  void put_p_string_fill(PGM_P str);  void put_string_at(uint8_t idx, const char *str);  void put_p_string_at(uint8_t idx, PGM_P str);  void put_string_at_fill(uint8_t idx, const char *str);  void put_p_string_at_fill(uint8_t idx, PGM_P str);	void printf(const char *fmt, ...);	void printf_fill(const char *fmt, ...);	void printf_at(uint8_t idx, const char *fmt, ...);	void printf_at_fill(uint8_t idx, const char *fmt, ...);  void flash(uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value16(uint8_t idx, uint16_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_valuex(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value_at(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value16_at(uint8_t idx, uint16_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_valuex_at(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string(const char *str,		    uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string(PGM_P str,		      uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_fill(const char *str,			 uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_fill(PGM_P str,			   uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_at(uint8_t idx, const char *str,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_at(uint8_t idx, PGM_P str,			 uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_at_fill(uint8_t idx, const char *str,			    uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_at_fill(uint8_t idx, PGM_P str,			      uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_clear(const char *str,			  uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_clear(const char *str,			    uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_strings_fill(const char *str1, const char *str2,			  uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_strings_fill(PGM_P str1, PGM_P str2,			    uint16_t duration = DEFAULT_FLASH_DURATION);  	void flash_printf(const char *fmt, ...);	void flash_printf_fill(const char *fmt, ...);	void flash_printf_at(uint8_t idx, const char *fmt, ...);	void flash_printf_at_fill(uint8_t idx, const char *fmt, ...);	  void setLine(const uint8_t line) { curLine = line; }  void clearLine();  void clearFlashLine();  void clearFlash(uint16_t duration = DEFAULT_FLASH_DURATION);</string>
+		<key>Title</key>
+		<string>GUI</string>
+	</dict>
+	<key>4</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string>GUI
+MIDI Stack
+MachineDrum/Monomachine
+Tools
+Pages</string>
+		<key>Text</key>
+		<string>The Mididuino framework provides the building blocks for exciting and innovative MIDI controller firmwares. The framework can be divided into three major building blocks: the GUI system, the MIDI system, and the synthesizer specific modules. 
+
+The GUI System
+The GUI system controls everything that has to do with displaying information on the 2x16 character display and the 2 LEDs of the Minicommand, and handling the physical inputs (4 buttons and 4 encoders with pushbutton functionality). It provides 2 major abstractions called Pages, which is similar to a “window” on a computer. A Page displays information on the screen, and interprets user actions (button presses and encoder movements). It is similar to a controller in the standard Model/View/Controller design paradigm. Multiple pages can be grouped into a Sketch, which is a complete controller “program”. The GUI system provides an event handling mechanism for handling button presses, and interprets encoder movements by mapping the four physical encoders to virtual encoders. 
+The GUI system provides a number of standard virtual encoder classes (for example the CCEncoder class that sends CC messages, the EnumEncoder class that selects between a list of different values, the CharEncoder class to enter names, the NotePitchEncoder class to select midi pitches, and many more) and a number of standard pages (for example the EncoderPage class, which displays and handles up to four encoders, or the SwitchPage and EncoderSwitchPage classes, which allow the user to switch between other pages, or the SketchSwitchPage class which allows the user to select and configure different sketches, a bit like a launcher menu on a normal computer). 
+The MIDI System
+The MIDI system controls both sending and receiving MIDI messages, as well as handling MIDI clock synchronization. It is intimately linked to the hardware UARTs used to receive and send MIDI messages. UART (universal asynchronous receiver/transmitter) is a fancy name for a serial interface. MIDI itself is a serial interface running at 31250 (that means it can send 3125 bytes per second), with one cable used to send messages (the MIDI OUT port) and one cable used to receive messages (the MIDI IN port). The Minicommand controller features two MIDI inputs and one MIDI output. In the Mididuino framework, the MidiUart object is used to represent the sending part of the UART. It provides a huge number of methods to send either individual bytes or complete MIDI messages such as Note On, Note Off, Controller Change, Program Change, NRPNs, PitchWheel messages, and even Sysex. The receiving part of the UART is represented by the Midi and Midi2 objects, which handle incoming MIDI messages, decode them (handling all the quirks of MIDI such as running status, realtime messages, sysex messages, etc…). Once a message is decoded, registered callback methods are called allowing the running firmware to react.
+The MIDI system provides an elaborate way to handle and decode sysex messages by using MidiSysexListener objects, which can react on the start, end and aborting of a MIDI sysex message, and record incoming Sysex messages. Furthermore, a data encoding and decoding framework is provided, which can be used to decode 8-bit data encoding in the 7-bit allowed by MIDI. This data encoding and decoding framework is used to decode the complex messages sent out by the MachineDrum and the MonoMachine (where data is even further compressed).
+The MIDI system also provides useful helpers such as the CCHandler, which reacts on both incoming and outgoing MIDI CC messages. The CCHandler is used to provide simple MIDI learn functionality, as well as moving different virtual encoders linked to the same CC channel and number. Another helper provided by the MIDI system is the Merger, which can be configured to merge MIDI messages coming in on the second input onto the main MIDI output. It handles all standard MIDI messages, as well as Sysex messages.
+Finally, but not least, the MIDI system provides a simple framework to handle MIDI clock synchronization. It can synchronize to an internal clock, or to a MIDI clock coming in on either one of the MIDI ports. Furthermore, it can merge incoming clock onto the outgoing MIDI port. The MidiClock class can be used to register callback handlers on every 16th or 32nd tick, and provides counters for the current song position in 96th, 32nd and 16th ticks.
+
+Synthesizer specific modules
+The real beauty of the Minicommand lies in its flexibility. This flexibility can be used to build MIDI controller applications that are very specifically tailored to a certain synthesizer. Classes to interface with the Elektron MachineDrum and the Elektron MonoMachine are provided, which provide access to every function available on these devices over MIDI. This goes further than just controlling aspects. For example, the Mididuino framework provides parsers and classes for all the Sysex backup messages, allowing for the modification, generation and saving of Kits, Patterns, Songs and Global settings. It also provides lookup tables to map standard MIDI pitches to the pitch settings for individual sound generators on the MachineDrum, allowing you to play standard melodies using for example an FM-synthesized clap.</string>
+		<key>Title</key>
+		<string>Components</string>
+	</dict>
+	<key>5</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string>Mididuino Environment
+Makefiles
+Uploading
+Patch Manager</string>
+		<key>Text</key>
+		<string>There are two programs available to upload new firmwares on the MiniCommand controller. The first one is geared towards users, and is called the Patch Manager, while the second one is used to develop new firmwares and is called the Mididuino editor.
+
+The Patch Manager
+The Patch Manager connects to the Ruin &amp; Wesen website and checks if new firmwares are available. It then downloads these firmwares and presents them in an easy to browse list. Each firmware comes with its documentation, and has a list of tags describing its functionality. The Patch Manager can be downloaded at http://ruinwesen.com/minicommand .
+
+￼
+
+Connect the MiniCommand to your computer by connecting both the MIDI IN (the leftmost connector) and the MIDI OUT (the middle connector). Select the patch you want to upload, and press Send Patch. Select the interface to which your MiniCommand is connected, and press “Send”. Sometimes, refreshing the MIDI ports takes a while, so wait for about 30 seconds if your interface doesn’t show up (on MacOSX, this can be “fixed” by deleting unused MIDI devices from the “Audio Midi Setup” utility). The MiniCommand will switch into the bootloader mode (displaying “BOOTLOADER” on its display), and the firmware will be uploaded over sysex. As MIDI is quite slow, this can take up to a minute. If the MiniCommand doesn’t switch to the bootloader mode automatically, it can be forced into bootloader mode by holding the topright button down while switching the device on.
+
+The Mididuino Editor
+The Mididuino editor is a modified version of the Arduino editor used to develop firmwares for the Minicommand. It can be downloaded from http://ruinwesen.com/minicommand , the current version that is described in this document is “mididuino 018”. It comes with the current development version of the Mididuino framework. To get started with the Mididuino, you need to select the correct development board in the Tools menu. The board for the Minicommand is called “Minicommand2”. Connect the Minicommand to your computer by connecting both the MIDI IN and the MIDI OUT port. Then, select the correct ports in the Tools menu of the Mididuino editor.
+
+￼
+
+Included with the Mididuino editor is the source code for all the published firmwares, as well as the source code of all the tutorials described in this document. To open one of these files, select it in File -&gt; Examples. Once the file is opened, you can compile it by pressing the “Play” button (or Apple-R on Macosx or Ctrl-R on windows/linux). Once the firmware compiles fine (errors are shown in the lower log part of the editor), the firmware can be uploaded by pressing “Upload” button (arrow to the right, or Apple-U / Ctrl-U). This will transmit the firmware over MIDI like the Patch Manager does. The device should switch into the bootloader mode. If it doesn’t, it can manually be put into the bootloader mode by holding the topright button down while switching the device on.</string>
+		<key>Title</key>
+		<string>Getting Started</string>
+	</dict>
+	<key>7</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string>Reference
+Tutorials
+Walkthrough firmwares</string>
+		<key>Text</key>
+		<string></string>
+		<key>Title</key>
+		<string>Documentation structure
+Documentation structure</string>
+	</dict>
+	<key>72</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>In this chapter, several simple examples of firmwares for the Minicommand will be shown and explained, showcasing different parts of the framework. These simple tutorial firmwares are included with the Mididuino framework, and can be used as a basis for more complicated firmwares.</string>
+		<key>Title</key>
+		<string>Introduction</string>
+	</dict>
+	<key>73</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>The Mididuino framework is written in C++, which is a widely used programming language. However, embedded firmwares (programs running on a dedicated piece of hardware, usually on a smaller processor) are usually programmed in C. The decision to choose C++ as the main programming language was made so that it would be easier to write custom firmwares while reusing a big amount of the code of the framework. 
+C++ is an object oriented programming language, allowing the programmer to describe common functionality inside constructs called “classes”. These classes can then be instantiated into specific objects. For example, the RangeEncoder class of the Mididuino framework describes how to handle a range limited encoder (with a minimum and maximum value). This functionality is written only once, but multiple objects of the RangeEncoder class can be instantiated, so that multiple range-limited encoders can be used in a firmware. 
+Furthermore, the object orientation allows us to inherit functionality. For example, all the access to the actual hardware is not written into the RangeEncoder class, but rather written in the base Encoder class (alongside other functionality such as setting the name of an encoder, and standard methods of accessing, displaying, refreshing and updating an encoder). This inheritance concept allows the programmer to extend existing classes to make them fit his needs. This is used most commonly while writing firmwares to implement custom Page classes and custom Sketch classes. A library of common pages and sketches is provided in the framework itself, allowing the programmer to use pages out of the official firmwares.
+A class consist of data and methods. Data is used to store values for each instance of the class (for example, an Encoder object stores its value), while methods are functions containing the class’ functionality. A special method is the constructor method, which is called when an instance of a class is created. The constructor method is used to initialize the data of the class, and maybe carry out further calculations. A similar method is the destructor method, which is called when an instance of a class is destroyed. Due to the constraints of the Mididuino platform (see below), destructors are almost never used in the Mididuino framework.
+Because the Mididuino framework runs on a pretty small platform (the microcontroller used is an 8-bit processor running at 16 Mhz, with 64 kB of code space and 64 kB of RAM), only a subset of C++ is used. Virtual inheritance (which allows a subclass to function as a class higher up its inheritance hierarchy) is used sparingly, as it adds a function pointer table for each class, and an indirection during method calls. Dynamic allocation is never used, instead all used objects are either allocated on the stack or statically. Templates are used sparingly for basic data structures. Template use leads to code size increases, which is the scarcest resource for Mididuino firmwares (and is one of the main targets for future improvements to the framework).</string>
+		<key>Title</key>
+		<string>Programming Language</string>
+	</dict>
+	<key>75</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>In this second sketch, we are going to react to button presses by the user. The buttons are regularly polled by the framework (2000 times per second to be precise), reading in if a button is pressed “down” or is in its default “up” state. The state of a button can be read by using the BUTTON_DOWN() and BUTTON_UP() macros, and giving them the identifier for a button. These identifiers are Buttons.BUTTON1 (top left), Buttons.BUTTON2 (bottom left), Buttons.BUTTON3 (bottom right), Buttons.BUTTON4 (top right) and Buttons.ENCODER1 (leftmost encoder) to Buttons.ENCODER4 (rightmost encoder). The encoders also function as push-buttons, and the BUTTON_DOWN() and BUTTON_UP() macros can be used as with normal buttons.
+In this first firmware example, we are polling the state of the buttons in a function called loop() and displaying it on screen. Like setup(), the loop() function is part of the “standard” structure of a sketch. It is called over and over by the framework as long as the firmware is running. This can be used to do calculations or react on user interaction. Most of the time however, the loop() function is not used, as the user interaction is handled inside Page objects (see the #XXX# Page and Sketch tutorial).
+Another method of the GUI object that is shown in this firmware is the setLine() method. It is used to select on which line of the screen the following data has to be displayed. It wasn’t used in the first firmware because we were only writing one string on the first line. In this firmware, we display the name of the firmware on the first line, and displaying the button status on the second line.
+
+void setup() {
+  GUI.setLine(GUI.LINE1);
+  GUI.put_string_fill("BUTTON TEST");
+}
+
+void loop() {
+  GUI.setLine(GUI.LINE2);
+  if (BUTTON_DOWN(Buttons.BUTTON1)) {
+    GUI.put_string_fill("DOWN");
+  } 
+  else {
+    GUI.put_string_fill("UP");
+  }
+}
+
+
+However, most of the time, we are not interested in the state of a button, but rather if it was pressed (going from “up” to “down”) or released (going from “down” to “up”). Rather than leaving the polling of these events (comparing the old state of the button to the new state and recognizing transitions), the Mididuino frameworks uses an event-based system. These events are created when polling the button, and are stored in a queue. This queue is then processed, and for each event, an event handler is called. GUI events are automatically passed to active Pages (see the tutorial about creating a page), and to the function handleEvent(). Like the setup() function, this function only needs to be defined if it is used. For more details about event handlers and processing button presses, check the #XXX# Interrupts section in the #XXX# Internals chapter.
+The handleEvent() is given an event of the type gui_event_t as argument, and is expected to return a boolean value (true or false). If the handleEvent() recognizes the event and processes it, it returns true to signal the framework that the event has been handled and doesn’t need further processing. This can be useful when multiple pages are active (on top of one another), or a general functionality needs to be made available for the whole firmware (for example pressing all four buttons to return to the sketch selection page).
+In this second firmware, we use the handleEvent() function to recognize button presses and releases. We use the macro EVENT_PRESSED() to recognize if a button was pressed, and EVENT_RELEASED() to recognize if a button was released. We return true from the handleEvent() function when the first button was either pressed or released. In other cases, we do not handle the event and return false.
+
+void setup() {
+  GUI.setLine(GUI.LINE1);
+  GUI.put_string_fill("BUTTONS TEST 2");
+}
+
+bool handleEvent(gui_event_t *evt) {
+  GUI.setLine(GUI.LINE2);
+  if (EVENT_PRESSED(evt, Buttons.BUTTON1)) {
+    GUI.flash_string_fill("PRESSED");
+    return true;
+  }
+  if (EVENT_RELEASED(evt, Buttons.BUTTON1)) {
+    GUI.flash_string_fill("RELEASED");
+    return true;
+  }
+  
+  return false;
+}
+</string>
+		<key>Title</key>
+		<string>Reacting to button presses</string>
+	</dict>
+	<key>76</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>Arduino
+Atmel
+AVR
+Button
+C
+C++
+Class
+Display
+Elektron
+Encoder
+Firmware
+GUI
+MachineDrum
+Macro
+Memory
+Mididuino
+MIDI
+Minicommand
+MonoMachine
+Object
+Page
+Pointer
+Program Memory
+Sketch
+Volatile Memory
+</string>
+		<key>Title</key>
+		<string>Glossary</string>
+	</dict>
+	<key>9</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>In this first tutorial, we are going to write the Mididuino equivalent of the ubiquitous Hello World example. All this firmware does is show “HELLO WORLD” on the Minicommand screen. This example shows two fundamental elements of a Mididuino sketch. 
+The first is the setup() function, which gets called once at the start of the firmware (that is, when the Minicommand is turned on). Due to cleverness in the Mididuino framework, you don’t need to define that function if it is empty. You just need to define it if you want to do something during the initialisation (basically, setting up the components of the sketch and showing the first active page).
+The second element is the GUI object. This object provides a big amount of functionality to access the 2x16 character display. In this script, we use the put_string_fill method of the GUI object to display a string. The _fill means that the method call will clear the rest of the line after printing the “HELLO WORLD” message. There is a big amount of methods related to displaying information on the screen, be it as a static message or as a flashing message (disappearing after some amount of time).
+
+void setup() {
+  GUI.put_string_fill("HELLO WORLD");
+}</string>
+		<key>Title</key>
+		<string>Printing to the screen</string>
+	</dict>
+</dict>
+</plist>

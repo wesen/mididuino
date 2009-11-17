@@ -1,0 +1,47 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
+{\fonttbl\f0\fswiss\fcharset0 Optima-Regular;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\fi560\sl288\slmult1\sb160\ql\qnatural\pardirnatural
+
+\f0\fs26 \cf0 Some terms used in this manual have a special meaning.\
+A 
+\b Firmware
+\b0  is the name for a program that runs on the Minicommand. It stands for the complete program that is uploaded as a hex file. A firmware can comprise multiple sketches (see 
+\b Sketch
+\b0  below). This distinction is a bit confusing because in Arduino (and in the Mididuino editor), 
+\b Sketch
+\b0  is often used to refer to a complete program. This is because it is customary for Minicommand firmwares to group together different functionalities (which are available as standalone sketches) into big firmwares called 
+\b monster firmwares
+\b0 . As it is, a 
+\b Sketch 
+\b0 in the Mididuino framework is a class representing a MIDI controller functionality that works as standalone as well. A 
+\b firmware
+\b0  refers to an actual program that can be downloaded to the device as a hex file.\
+A 
+\b Sketch
+\b0  is a MIDI controller \'93program\'94. For example, a sketch could be an arpeggiator, or a standard MIDI controller sending CC messages when an encoder is turned. A 
+\b Sketch
+\b0  often is made out of different 
+\b Pages
+\b0 . In the Mididuino framework, a 
+\b Sketch
+\b0  is a class with a well-defined interface. Different 
+\b Sketches 
+\b0 can be grouped together into a single firmware which is called a 
+\b monster firmware
+\b0 .\
+A 
+\b Page
+\b0  is a class in the Mididuino framework and represent a single view on the controller display. It controls the displaying of information, and how button presses and encoder movements are to be interpreted. For example, a 
+\b Page
+\b0  could display the value of four encoders sending out CC values. A 
+\b Page
+\b0  can also be used to control four parameters of an arpeggiator. More specific 
+\b Pages
+\b0  are for example a 
+\b Page
+\b0  used to switch between different other 
+\b Pages
+\b0  (a bit like a menu on a computer), or a 
+\b modal page
+\b0  asking for confirmation (Yes/No).}
