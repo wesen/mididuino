@@ -1,16 +1,17 @@
 void setup() {
+  GUI.setLine(GUI.LINE1);
+  GUI.put_string_fill("BUTTONS TEST 2");
 }
 
-void loop() {
-	GUI.updatePage();
-	GUI.update();
+bool handleEvent(gui_event_t *evt) {
+  GUI.setLine(GUI.LINE2);
+  if (EVENT_PRESSED(evt, Buttons.BUTTON1)) {
+    GUI.flash_string_fill("PRESSED");
+  }
+  if (EVENT_RELEASED(evt, Buttons.BUTTON1)) {
+    GUI.flash_string_fill("RELEASED");
+  }
+  
+  return true;
 }
 
-void handleGui() {
-	if (BUTTON_PRESSED(Buttons.BUTTON1)) {
-		GUI.put_string_fill("PRESSED");
-	}
-	if (BUTTON_RELEASED(Buttons.BUTTON1)) {
-		GUI.put_string_fill("RELEASED");
-	}
-}

@@ -155,6 +155,16 @@ void MidiClass::handleByte(uint8_t byte) {
 		
     if (callback < 7) {
       midiCallbacks[callback].call(msg);
+#if 0
+			Vector<midi_callback_func_t, 4> *vec = midiCallbackFunctions + callback;
+			for (int i = 0; i < vec->size; i++) {
+				MidiUart.printfString("callback %b, vec %b", callback, i);
+				if (vec->arr[i] != NULL) {
+					MidiUart.printfString("not empty");
+					(vec->arr[i])(msg);
+				}
+			}
+#endif
     } else if (last_status == MIDI_SONG_POSITION_PTR) {
 #ifndef HOST_MIDIDUINO
       MidiClock.handleSongPositionPtr(msg);

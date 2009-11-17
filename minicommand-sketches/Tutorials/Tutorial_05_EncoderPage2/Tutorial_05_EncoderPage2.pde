@@ -7,18 +7,18 @@ EncoderPage page(&param1, &param2);
 EncoderPage page2(&param3, &param4, &param2);
 
 void setup() {
-	GUI.setPage(&page);
+  GUI.setPage(&page);
 }
 
-void loop() {
-	GUI.updatePage();
-	GUI.update();
+bool handleEvent(gui_event_t *evt) {
+  if (EVENT_PRESSED(evt, Buttons.BUTTON1)) {
+    GUI.setPage(&page);
+    return true;
+  } else if (EVENT_PRESSED(evt, Buttons.BUTTON2)) {
+    GUI.setPage(&page2);
+    return true;
+  }
+  
+  return false;
 }
 
-void handleGui() {
-	if (BUTTON_PRESSED(Buttons.BUTTON1)) {
-		GUI.setPage(&page);
-	} else if (BUTTON_PRESSED(Buttons.BUTTON2)) {
-		GUI.setPage(&page2);
-	}
-}

@@ -6,9 +6,9 @@ MNMPatternEuclid::MNMPatternEuclid() : PitchEuclid() {
 }
 
 void MNMPatternEuclid::makeTrack(uint8_t trackNum) {
-	pattern.clearTrack(trackNum);
+	//	pattern.clearTrack(trackNum);
 	for (uint8_t i = 0; i < pattern.patternLength; i++) {
-		if (track.isHit(i)) {
+		if (track.isHit(i) && !pattern.isTrigSet(trackNum, i)) {
 			pattern.setTrig(trackNum, i);
 			uint8_t pitch = basePitch + pitches[pitches_idx];
 			pitches_idx = (pitches_idx + 1) % pitches_len;

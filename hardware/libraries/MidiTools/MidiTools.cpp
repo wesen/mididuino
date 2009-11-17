@@ -45,14 +45,3 @@ void getNotePitch(uint8_t pitch, char *name) {
   }
 }
 
-uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale) {
-  uint8_t scaleRoot;
-  if (pitch < root) {
-    scaleRoot = 12 + pitch - root;
-  } else {
-    scaleRoot = pitch - root;
-  }
-  uint8_t octave = scaleRoot / 12;
-  scaleRoot %= 12;
-  return octave * 12 + root + scale[scaleRoot];
-}

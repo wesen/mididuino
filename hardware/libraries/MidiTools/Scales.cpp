@@ -11,6 +11,23 @@ uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves) {
   }
 }
 
+uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale) {
+  uint8_t scaleRoot;
+  if (pitch < root) {
+    scaleRoot = 12 + pitch - root;
+  } else {
+    scaleRoot = pitch - root;
+  }
+  uint8_t octave = scaleRoot / 12;
+  scaleRoot %= 12;
+  return octave * 12 + root + scale[scaleRoot];
+}
+
+uint8_t invMajorScale[12] = {
+  0, 0, 2, 4, 4, 5, 7, 7, 7, 9, 9, 11
+};
+
+
 /* greek modes */
 scale_t ionianScale = {
   7,

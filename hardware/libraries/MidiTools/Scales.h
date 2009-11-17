@@ -11,6 +11,8 @@ typedef struct scale_s {
 #define majorScale ionianScale
 #define minorScale aeolianScale
 
+extern uint8_t invMajorScale[12];
+
 extern scale_t ionianScale;
 extern scale_t dorianScale;
 extern scale_t phrygianScale;
@@ -54,5 +56,6 @@ extern scale_t minorMaj7Arp9;
 extern scale_t minorMaj7ArpMin9;
 
 uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves = 0);
+uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
 
 #endif /* SCALES_H__ */

@@ -15,16 +15,3 @@ void loop() {
   }
 }
 
-bool handleEvent(gui_event_t *evt) {
-  if (EVENT_PRESSED(evt, Buttons.BUTTON1)) {
-    MidiUart.sendNoteOn(1, 100);
-    return true;
-  }
-  if (EVENT_RELEASED(evt, Buttons.BUTTON1)) {
-    MidiUart.sendNoteOff(1);
-    return true;
-  }
-  
-  return false;
-}
-

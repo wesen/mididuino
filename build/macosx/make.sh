@@ -47,7 +47,9 @@ else
   cp -X ../../app/lib/oro.jar "$RESOURCES/"
 
 #  echo Copying examples...
-#  cp -r ../shared/examples "$RESOURCES/"
+	mkdir "$RESOURCES/examples/"
+	cp -r ../../minicommand-sketches/PublishedFirmwares "$RESOURCES/examples/"
+	cp -r ../../minicommand-sketches/Tutorials "$RESOURCES/examples/"
 
 #  echo Extracting reference...
 #  unzip -q -d "$RESOURCES/" ../shared/reference.zip

@@ -161,6 +161,10 @@ void __mainInnerLoop(bool callLoop) {
   }
 }
 
+void setupEventHandlers();
+void setupMidiCallbacks();
+void setupClockCallbacks();
+
 int main(void) {
   delay(100);
   init();
@@ -177,6 +181,9 @@ int main(void) {
 
   OUTPUTDDR |= _BV(OUTPUTPIN);
   setup();
+	setupEventHandlers();
+	setupMidiCallbacks();
+	setupClockCallbacks();
   sei();
 
   for (;;) {

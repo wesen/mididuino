@@ -71,11 +71,11 @@ class MidiClass {
 
 #ifdef HOST_MIDIDUINO
   void addOnMessageCallback(MidiCallback *obj,
-			    void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+														void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
     messageCallback.add(obj, func);
   }
   void removeOnMessageCallback(MidiCallback *obj,
-			    void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+															 void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
     messageCallback.remove(obj, func);
   }
   void removeOnMessageCallback(MidiCallback *obj) {
