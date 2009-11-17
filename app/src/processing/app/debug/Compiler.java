@@ -524,6 +524,44 @@ public class Compiler implements MessageConsumer {
     return baseCommandCompilerCPP;
   }
   
+  static public List getLibraries(String path, Target target) {
+    List result = new ArrayList();
+    try {
+      Sketch sketch = new Sketch(null, path);
+      sketch.preprocess("/tmp/build",  target);
+      
+      Vector<Library> libraries = new Vector();
+      LibraryManager libraryManager = new LibraryManager(); 
+      for (File file : sketch.getImportedLibraries()) {
+        String item = file.getName();
+        libraryManager.addLibrary(libraries, libraryManager.get(item), true);
+      }
+
+      String prefLibs = Preferences.get("boards." + Preferences.get("board") + ".build.libraries");
+      if (prefLibs != null) {
+        String []boardLibraries  = prefLibs.trim().split("\\s+");
+        for (String item : boardLibraries) {
+          libraryManager.addLibrary(libraries, libraryManager.get(item), true);
+        }
+      } 
+      
+
+
+      for (Library library : libraries) {
+        String path2 = library.getFolder().getAbsolutePath();
+        result.add(path2);
+      }
+      
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (RunnerException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return result;
+  }
+  
   static private List getCommandConvertObject(String avrBasePath, String sourceName) {
     return new ArrayList(Arrays.asList(new String[] {
           avrBasePath + "avr-objcopy",
@@ -785,9 +823,22 @@ public class Compiler implements MessageConsumer {
         break;
       }
     }
-
-    Preferences.initBoards(mididuinoDir);
+    
+    String hardwarePath = (mididuinoDir != null ? mididuinoDir : System.getProperty("user.dir")) + File.separator + "hardware";
+    Base.init(mididuinoDir);
+    Target target = null;
+        Preferences.initBoards(mididuinoDir);
     Preferences.set("board", board);
+    try {
+      target = new Target(hardwarePath  + File.separator + "cores",
+                               Preferences.get("boards." + Preferences.get("board") + ".build.core"));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  
+
+
     if (args.length > i) {
       if (args[i].equals("--print-c-flags")) {
         printList = Compiler.getCompilerFlags();
@@ -795,7 +846,10 @@ public class Compiler implements MessageConsumer {
         printList = Compiler.getCompilerFlags();
       } else if (args[i].equals("--print-ld-flags")) {
         printList = Compiler.getLinkerFlags();
+      } else if (args[i].equals("--libraries")) {
+        printList = Compiler.getLibraries(args[i+1], target);
       }
+      
     }
     
     for(int j = 0; j < printList.size(); j++) {

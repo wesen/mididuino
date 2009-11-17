@@ -258,14 +258,22 @@ public class LibraryManager {
   }
 
   public void addLibrary(Vector libraries, Library library) {
+    addLibrary(libraries, library, false);
+  }
+  
+  public void addLibrary(Vector libraries, Library library, boolean quiet) {
     if (!libraries.contains(library)) {
       libraries.add(library);
-      System.out.println("Adding library " + library.getName());
+      if (!quiet) {
+        System.out.println("Adding library " + library.getName());
+      }
       String depends[] = library.getDepends();
       for (int bla = 0; bla < depends.length; bla++) {
         Library dependLibrary = get(depends[bla]);
         if (!libraries.contains(dependLibrary)) {
-          System.out.println("adding depended on library " + dependLibrary.getName());
+          if (!quiet) {
+            System.out.println("adding depended on library " + dependLibrary.getName());
+          }
           addLibrary(libraries, dependLibrary);
         }
       }

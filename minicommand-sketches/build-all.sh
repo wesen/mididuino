@@ -11,7 +11,7 @@ rm -f .failure .failed .succeeded
 
 touch .failed .succeeded
 
-FIRMWARE_DIRS=PublishedFirmwares
+FIRMWARE_DIRS="PublishedFirmwares Tutorials"
 
 for dir in $FIRMWARE_DIRS; do
 		find $dir -maxdepth 1 -type d | grep -v '^\.$' | grep -v '\.svn' |

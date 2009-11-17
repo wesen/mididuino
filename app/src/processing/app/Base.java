@@ -282,16 +282,20 @@ public class Base {
     }
   }
 
+  static public void init() {
+    examplesFolder = getContentFile("examples");
+    librariesFolder = new File(getContentFile("hardware"), "libraries");
+    toolsFolder = getContentFile("tools");
 
+  }
+  
   public Base(String[] args) {
     platform.init(this);
 
     // Get paths for the libraries and examples in the Processing folder
     //String workingDirectory = System.getProperty("user.dir");
-    examplesFolder = getContentFile("examples");
-    librariesFolder = new File(getContentFile("hardware"), "libraries");
-    toolsFolder = getContentFile("tools");
-
+    init();
+    
     // Get the sketchbook path, and make sure it's set properly
     String sketchbookPath = Preferences.get("sketchbook.path");
 
@@ -1791,9 +1795,11 @@ public class Base {
   }
   */
 
+  static public String sysPath;
+  
   static public File getContentFile(String name) {
     String path = System.getProperty("user.dir");
-
+    
     // Get a path to somewhere inside the .app folder
     if (Base.isMacOS()) {
 //      <key>javaroot</key>
@@ -1803,6 +1809,9 @@ public class Base {
         path = javaroot;
       }
     }
+    if (sysPath != null)
+      path = sysPath;
+
     File working = new File(path);
     return new File(working, name);
   }
@@ -2087,5 +2096,16 @@ public class Base {
         listFiles(basePath, newPath, vector);
       }
     }
+  }
+
+
+  public static void init(String mididuinoDir) {
+    // TODO Auto-generated method stub
+    sysPath = mididuinoDir;
+    File path = new File(mididuinoDir);
+    examplesFolder = new File(path, "examples");
+    librariesFolder = new File(new File(path, "hardware"), "libraries");
+    toolsFolder = new File(path, "tools");
+    
   }
 }

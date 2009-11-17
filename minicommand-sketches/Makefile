@@ -10,8 +10,8 @@ AVR_ARCH = atmega64
 F_CPU = 16000000L
 
 CORE = minicommand2
-#BASE_DIR = /Applications/Mididuino.app
-BASE_DIR ?= ../../build/macosx/work/Mididuino.app/Contents/Resources/Java
+BASE_DIR = /Applications/Mididuino.app/Contents/Resources/Java
+#BASE_DIR ?= ../../build/macosx/work/Mididuino.app/Contents/Resources/Java
 HARDWARE_DIR = $(BASE_DIR)/hardware
 
 LBASE_DIR = $(HARDWARE_DIR)/libraries
@@ -25,8 +25,13 @@ CFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$
 CXXFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler  --dir "$(BASE_DIR)" --board $(CORE) --print-cxx-flags)
 CLDFLAGS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$(BASE_DIR)" --board $(CORE) --print-ld-flags)
 
-DIRS = CommonTools Midi GUI SDCard MNM MD MidiTools Elektron PageTools MDPages
-LDIRS = $(wildcard $(LBASE_DIR)/*) $(CORE_DIR)
+TARGET ?= $(shell pwd  | sed -e 's/.*\///')
+
+DIRS = CommonTools Midi GUI MD MidiTools Elektron
+#LDIRS = $(wildcard $(LBASE_DIR)/*) $(CORE_DIR)
+#LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir))
+LDIRS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$(BASE_DIR)" --board $(CORE) --libraries `pwd`/$(TARGET).pde)
+LDIRS += $(CORE_DIR)
 INCS = $(foreach dir,$(LDIRS),-I$(dir))
 
 SRCS =  $(foreach dir,$(LDIRS),$(wildcard $(dir)/*.cpp))
@@ -41,11 +46,10 @@ CFLAGS += $(INCS)
 CXXFLAGS += $(INCS)
 LLVMCFLAGS ?= -emit-llvm -O4 $(CFLAGS)
 
-TARGET ?= $(shell pwd  | sed -e 's/.*\///')
-
 all: $(TARGET).hex
 
-bla: 
+bla:
+	echo $(LDIRS)
 	echo "FOO"
 	echo "$(CLASSPATH)"
 	echo "$(TARGET).cpp"
