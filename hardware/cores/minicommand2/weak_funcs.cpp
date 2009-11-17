@@ -17,6 +17,16 @@ void __attribute__((weak)) onNoteOff(uint8_t *msg) {
 void __attribute__((weak)) onControlChange(uint8_t *msg) {
 }
 
+void __attribute__((weak)) onNoteOn2(uint8_t *msg) {
+}
+
+void __attribute__((weak)) onNoteOff2(uint8_t *msg) {
+}
+
+void __attribute__((weak)) onControlChange2(uint8_t *msg) {
+}
+
+
 void __attribute__((weak)) on16Callback(uint32_t pos) {
 }
 
@@ -38,6 +48,15 @@ public:
 	void onControlChange(uint8_t *msg) {
 		::onControlChange(msg);
 	}
+	void onNoteOn2(uint8_t *msg) {
+		::onNoteOn2(msg);
+	}
+	void onNoteOff2(uint8_t *msg) {
+		::onNoteOff2(msg);
+	}
+	void onControlChange2(uint8_t *msg) {
+		::onControlChange2(msg);
+	}
 	void on16Callback(uint32_t pos) {
 		::on16Callback(pos);
 	}
@@ -49,6 +68,9 @@ public:
 		Midi.addOnNoteOnCallback(this, (midi_callback_ptr_t)&DefaultCallbacks::onNoteOn);
 		Midi.addOnNoteOffCallback(this, (midi_callback_ptr_t)&DefaultCallbacks::onNoteOff);
 		Midi.addOnControlChangeCallback(this, (midi_callback_ptr_t)&DefaultCallbacks::onControlChange);
+		Midi2.addOnNoteOnCallback(this, (midi_callback_ptr_t)&DefaultCallbacks::onNoteOn2);
+		Midi2.addOnNoteOffCallback(this, (midi_callback_ptr_t)&DefaultCallbacks::onNoteOff2);
+		Midi2.addOnControlChangeCallback(this, (midi_callback_ptr_t)&DefaultCallbacks::onControlChange2);
 	}
 
 	void setupClockCallbacks() {
