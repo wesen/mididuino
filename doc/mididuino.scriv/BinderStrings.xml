@@ -11,7 +11,7 @@
 		<key>Text</key>
 		<string>In this tutorial, we are getting a step nearer to writing a useful firmware for the Minicommand. This firmware shows two very important elements of the Mididuino framework: the Page class and its child the EncoderPage, and the Encoder class and its child the RangeEncoder. 
 The Page class is the fundamental building block of more complex firmwares. It groups together four encoders and the code to display and handle them. This allows all the relevant functionality for a firmware (or a part of a firmware) to be grouped inside a class and thus easily reused. For example, already available pages in the Mididuino framework are a four encoder MIDI controller (with MIDI learn), an arpeggiator, or even more utilitarian page like a page that allows to switch between other pages, or a page to configure MIDI clock settings.
-The EncoderPage is a very simple page that just displays and updates four encoders. These encoders can be</string>
+The EncoderPage is a very simple page that just displays and updates four encoders. These encoders can be passed to the constructor of the EncoderPage, </string>
 		<key>Title</key>
 		<string>Making a page</string>
 	</dict>
@@ -64,7 +64,113 @@ Flashing information
 Adding event handlers
 Handling pages and sketches
 Adding tasks
-  void setSketch(Sketch *_sketch);  void setPage(Page *page);  void pushPage(Page *page);  void popPage();  Page *currentPage();  void popPage(Page *page);    void addEventHandler(event_handler_t handler) {    eventHandlers.add(handler);  }  void removeEventHandler(event_handler_t handler) {    eventHandlers.remove(handler);  }  void addTask(Task *task) {    tasks.add(task);  }  void removeTask(Task *task) {    tasks.remove(task);  }  void update();  void display();  void redisplay();#ifdef GUI_NUM_ENCODERS  static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;#endif  static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;    void put_value(uint8_t idx, uint8_t value);  void put_value(uint8_t idx, int value);  void put_value16(uint8_t idx, uint16_t value);  void put_valuex(uint8_t idx, uint8_t value);  void put_value_at(uint8_t idx, uint8_t value);  void put_value_at(uint8_t idx, int value);  void put_value16_at(uint8_t idx, uint16_t value);  void put_valuex_at(uint8_t idx, uint8_t value);  void put_string(uint8_t idx, const char *str);  void put_p_string(uint8_t idx, PGM_P str);  void put_string(const char *str);  void put_p_string(PGM_P str);  void put_string_fill(uint8_t idx, const char *str);  void put_string_fill(const char *str);  void put_p_string_fill(uint8_t idx, PGM_P str);  void put_p_string_fill(PGM_P str);  void put_string_at(uint8_t idx, const char *str);  void put_p_string_at(uint8_t idx, PGM_P str);  void put_string_at_fill(uint8_t idx, const char *str);  void put_p_string_at_fill(uint8_t idx, PGM_P str);	void printf(const char *fmt, ...);	void printf_fill(const char *fmt, ...);	void printf_at(uint8_t idx, const char *fmt, ...);	void printf_at_fill(uint8_t idx, const char *fmt, ...);  void flash(uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value16(uint8_t idx, uint16_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_valuex(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value_at(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_value16_at(uint8_t idx, uint16_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_put_valuex_at(uint8_t idx, uint8_t value,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string(const char *str,		    uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string(PGM_P str,		      uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_fill(const char *str,			 uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_fill(PGM_P str,			   uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_at(uint8_t idx, const char *str,		       uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_at(uint8_t idx, PGM_P str,			 uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_at_fill(uint8_t idx, const char *str,			    uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_at_fill(uint8_t idx, PGM_P str,			      uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_string_clear(const char *str,			  uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_string_clear(const char *str,			    uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_strings_fill(const char *str1, const char *str2,			  uint16_t duration = DEFAULT_FLASH_DURATION);  void flash_p_strings_fill(PGM_P str1, PGM_P str2,			    uint16_t duration = DEFAULT_FLASH_DURATION);  	void flash_printf(const char *fmt, ...);	void flash_printf_fill(const char *fmt, ...);	void flash_printf_at(uint8_t idx, const char *fmt, ...);	void flash_printf_at_fill(uint8_t idx, const char *fmt, ...);	  void setLine(const uint8_t line) { curLine = line; }  void clearLine();  void clearFlashLine();  void clearFlash(uint16_t duration = DEFAULT_FLASH_DURATION);</string>
+
+  void setSketch(Sketch *_sketch);
+  void setPage(Page *page);
+  void pushPage(Page *page);
+  void popPage();
+  Page *currentPage();
+  void popPage(Page *page);
+  
+  void addEventHandler(event_handler_t handler) {
+    eventHandlers.add(handler);
+  }
+  void removeEventHandler(event_handler_t handler) {
+    eventHandlers.remove(handler);
+  }
+
+  void addTask(Task *task) {
+    tasks.add(task);
+  }
+  void removeTask(Task *task) {
+    tasks.remove(task);
+  }
+
+  void update();
+  void display();
+
+  void redisplay();
+
+#ifdef GUI_NUM_ENCODERS
+  static const uint8_t NUM_ENCODERS = GUI_NUM_ENCODERS;
+#endif
+  static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
+  
+  void put_value(uint8_t idx, uint8_t value);
+  void put_value(uint8_t idx, int value);
+  void put_value16(uint8_t idx, uint16_t value);
+  void put_valuex(uint8_t idx, uint8_t value);
+  void put_value_at(uint8_t idx, uint8_t value);
+  void put_value_at(uint8_t idx, int value);
+  void put_value16_at(uint8_t idx, uint16_t value);
+  void put_valuex_at(uint8_t idx, uint8_t value);
+  void put_string(uint8_t idx, const char *str);
+  void put_p_string(uint8_t idx, PGM_P str);
+  void put_string(const char *str);
+  void put_p_string(PGM_P str);
+  void put_string_fill(uint8_t idx, const char *str);
+  void put_string_fill(const char *str);
+  void put_p_string_fill(uint8_t idx, PGM_P str);
+  void put_p_string_fill(PGM_P str);
+  void put_string_at(uint8_t idx, const char *str);
+  void put_p_string_at(uint8_t idx, PGM_P str);
+  void put_string_at_fill(uint8_t idx, const char *str);
+  void put_p_string_at_fill(uint8_t idx, PGM_P str);
+
+	void printf(const char *fmt, ...);
+	void printf_fill(const char *fmt, ...);
+	void printf_at(uint8_t idx, const char *fmt, ...);
+	void printf_at_fill(uint8_t idx, const char *fmt, ...);
+
+  void flash(uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value16(uint8_t idx, uint16_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_valuex(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value_at(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_value16_at(uint8_t idx, uint16_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_put_valuex_at(uint8_t idx, uint8_t value,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string(const char *str,
+		    uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string(PGM_P str,
+		      uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_fill(const char *str,
+			 uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_fill(PGM_P str,
+			   uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_at(uint8_t idx, const char *str,
+		       uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_at(uint8_t idx, PGM_P str,
+			 uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_at_fill(uint8_t idx, const char *str,
+			    uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_at_fill(uint8_t idx, PGM_P str,
+			      uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_string_clear(const char *str,
+			  uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_string_clear(const char *str,
+			    uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_strings_fill(const char *str1, const char *str2,
+			  uint16_t duration = DEFAULT_FLASH_DURATION);
+  void flash_p_strings_fill(PGM_P str1, PGM_P str2,
+			    uint16_t duration = DEFAULT_FLASH_DURATION);
+  
+	void flash_printf(const char *fmt, ...);
+	void flash_printf_fill(const char *fmt, ...);
+	void flash_printf_at(uint8_t idx, const char *fmt, ...);
+	void flash_printf_at_fill(uint8_t idx, const char *fmt, ...);
+
+	
+  void setLine(const uint8_t line) { curLine = line; }
+  void clearLine();
+  void clearFlashLine();
+  void clearFlash(uint16_t duration = DEFAULT_FLASH_DURATION);
+</string>
 		<key>Title</key>
 		<string>GUI</string>
 	</dict>

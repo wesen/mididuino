@@ -6,7 +6,7 @@
 	<false/>
 	<key>binderSelection</key>
 	<array>
-		<integer>6</integer>
+		<integer>5</integer>
 	</array>
 	<key>binderSplitFrames</key>
 	<array>
@@ -28,6 +28,7 @@
 		<integer>45</integer>
 		<integer>60</integer>
 		<integer>19</integer>
+		<integer>1</integer>
 	</array>
 	<key>closedSuccessfully</key>
 	<true/>
@@ -46,7 +47,7 @@
 	<real>200</real>
 	<key>mainDocumentEditor.binderDocuments</key>
 	<array>
-		<integer>73</integer>
+		<integer>4</integer>
 	</array>
 	<key>mainDocumentEditor.corkboardVisible</key>
 	<false/>
@@ -55,7 +56,7 @@
 	<key>mainDocumentEditor.navHistory</key>
 	<dict>
 		<key>CurrentIndex</key>
-		<integer>219</integer>
+		<integer>259</integer>
 		<key>NavigationHistoryArray</key>
 		<array>
 			<dict>
@@ -1375,6 +1376,246 @@
 			<dict>
 				<key>BinderDocID</key>
 				<integer>73</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>9</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>75</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>9</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>75</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>24</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>25</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>24</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>5</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>73</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>7</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>1</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>8</integer>
+				<key>Mode</key>
+				<integer>1</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>10</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>8</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>72</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>8</integer>
+				<key>Mode</key>
+				<integer>1</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>73</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>5</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>4</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>5</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>73</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>74</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>7</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>55</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>69</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>52</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>41</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>40</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>42</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>43</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>39</integer>
+				<key>Mode</key>
+				<integer>2</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>13</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>12</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>75</integer>
+				<key>Mode</key>
+				<integer>2</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>21</integer>
+				<key>Mode</key>
+				<integer>2</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>3</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>4</integer>
 				<key>Mode</key>
 				<integer>0</integer>
 			</dict>

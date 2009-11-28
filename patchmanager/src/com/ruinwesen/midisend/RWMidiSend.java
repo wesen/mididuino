@@ -63,6 +63,9 @@ public class RWMidiSend extends MidiSend {
     /** The output device. */
     private RWMidiDevice output;
     
+    /* the ID of the device to be flashed */
+    private int DeviceID = 0x41;
+    
     private String getCommand(boolean locate) throws MidiSendException {
         if (command != null) {
             return command;
@@ -125,6 +128,16 @@ public class RWMidiSend extends MidiSend {
     @Override
     public RWMidiDevice getOutputDevice() {
         return this.output;
+    }
+    
+    @Override
+    public int getDeviceID() {
+    	return this.DeviceID;
+    }
+    
+    @Override
+    public void setDeviceID(int _deviceID) {
+    	this.DeviceID = _deviceID;
     }
 
     @Override
@@ -271,7 +284,7 @@ public class RWMidiSend extends MidiSend {
             //File midisendFile = new File(command);
             //File midisendDir = midisendFile.getParentFile();
             = new String[] {
-                    cmd, "-b", "-I0x41", 
+                    cmd, "-b", "-I0x" + Integer.toString(getDeviceID(), 16),  // XXX set ID configuration
                     "-i",inputArg,
                     "-o",outputArg,
                     filepath};

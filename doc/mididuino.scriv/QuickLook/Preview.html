@@ -27,18 +27,18 @@ p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Courier}
 <p class="p3">Class</p>
 <p class="p3">UART</p>
 <p class="p2"><br></p>
+<p class="p1"><b>• Getting Started</b></p>
+<p class="p3">Mididuino Environment</p>
+<p class="p3">Makefiles</p>
+<p class="p3">Uploading</p>
+<p class="p3">Patch Manager</p>
+<p class="p2"><br></p>
 <p class="p1"><b>• Components</b></p>
 <p class="p3">GUI</p>
 <p class="p3">MIDI Stack</p>
 <p class="p3">MachineDrum/Monomachine</p>
 <p class="p3">Tools</p>
 <p class="p3">Pages</p>
-<p class="p2"><br></p>
-<p class="p1"><b>• Getting Started</b></p>
-<p class="p3">Mididuino Environment</p>
-<p class="p3">Makefiles</p>
-<p class="p3">Uploading</p>
-<p class="p3">Patch Manager</p>
 <p class="p2"><br></p>
 <p class="p1"><b>• Programming Language</b></p>
 <p class="p3">The Mididuino framework is written in C++, which is a widely used programming language. However, embedded firmwares (programs running on a dedicated piece of hardware, usually on a smaller processor) are usually programmed in C. The decision to choose C++ as the main programming language was made so that it would be easier to write custom firmwares while reusing a big amount of the code of the framework.<span class="Apple-converted-space">  </span>C++ is an object oriented programming language, allowing the programmer to describe common ...</p>
@@ -116,23 +116,7 @@ p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Courier}
 <p class="p2"><br></p>
 <p class="p2"><br></p>
 <p class="p1"><b>• GUI</b></p>
-<p class="p3">Displaying information Flashing information Adding event handlers Handling pages and sketches Adding tasks<span class="Apple-converted-space"> </span></p>
-<p class="p3"><span class="Apple-converted-space">  </span>void setSketch(Sketch *_sketch);</p>
-<p class="p3"><span class="Apple-converted-space">  </span>void setPage(Page *page);</p>
-<p class="p3"><span class="Apple-converted-space">  </span>void pushPage(Page *page);</p>
-<p class="p3"><span class="Apple-converted-space">  </span>void popPage();</p>
-<p class="p3"><span class="Apple-converted-space">  </span>Page *currentPage();</p>
-<p class="p3"><span class="Apple-converted-space">  </span>void popPage(Page *page);</p>
-<p class="p2"><span class="Apple-converted-space">  </span></p>
-<p class="p3"><span class="Apple-converted-space">  </span>void addEventHandler(event_handler_t handler) {</p>
-<p class="p3"><span class="Apple-converted-space">    </span>eventHandlers.add(handler);</p>
-<p class="p3"><span class="Apple-converted-space">  </span>}</p>
-<p class="p3"><span class="Apple-converted-space">  </span>void removeEventHandler(event_handler_t handler) {</p>
-<p class="p3"><span class="Apple-converted-space">    </span>eventHandlers.remove(handler);</p>
-<p class="p3"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p3"><span class="Apple-converted-space">  </span>void addTask(Task *task) {</p>
-<p class="p3"><span class="Apple-converted-space">    </span>tasks.add(task);...</p>
+<p class="p3">Displaying information Flashing information Adding event handlers Handling pages and sketches Adding tasks<span class="Apple-converted-space">    </span>void setSketch(Sketch *_sketch); <span class="Apple-converted-space">  </span>void setPage(Page *page); <span class="Apple-converted-space">  </span>void pushPage(Page *page); <span class="Apple-converted-space">  </span>void popPage(); <span class="Apple-converted-space">  </span>Page *currentPage(); <span class="Apple-converted-space">  </span>void popPage(Page *page);<span class="Apple-converted-space">      </span>void addEventHandler(event_handler_t handler) { <span class="Apple-converted-space">    </span>eventHandlers.add(handler); <span class="Apple-converted-space">  </span>} <span class="Apple-converted-space">  </span>void removeEventHandler(event_handler_t handler) { <span class="Apple-converted-space">    </span>eventHandlers.remove(handler); <span class="Apple-converted-space">  </span>}<span class="Apple-converted-space">    </span>void addTask(Task *task) { <span class="Apple-converted-space">    </span>tasks.add(task);...</p>
 <p class="p2"><br></p>
 <p class="p1"><b>• Page</b></p>
 <p class="p2"><br></p>

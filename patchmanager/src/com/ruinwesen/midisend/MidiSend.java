@@ -294,4 +294,12 @@ public class MidiSend {
         return send(os.toByteArray());
     }
 
+	public int getDeviceID() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setDeviceID(int deviceID) {
+	}
+	
 }

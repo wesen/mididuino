@@ -50,7 +50,7 @@ public class MidiSendWizard extends Wizard {
     public static final String KEY_OUTPUT_DEVICE = 
         MidiSendWizard.class.getName()+"output-device";
     
-    private MidiSendForm midisendForm;
+    protected MidiSendForm midisendForm;
     private SendThread sendThread;
     private CSProperties properties = null;
     
