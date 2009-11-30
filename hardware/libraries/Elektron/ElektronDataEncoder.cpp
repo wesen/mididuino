@@ -1,3 +1,18 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
+/**
+ * \addtogroup Elektron
+ *
+ * @{
+ *
+ * \addtogroup elektron_encoding Elektron Sysex Encoding and Decoding
+ *
+ * @{
+ *
+ * \file
+ * Elektron data encoders and decoders
+ **/
+
 #include "Elektron.hh"
 #include "ElektronDataEncoder.hh"
 

@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MNM_DATA_ENCODER_H__
 #define MNM_DATA_ENCODER_H__
 
@@ -5,6 +7,27 @@
 #include "ElektronDataEncoder.hh"
 #include "DataEncoder.hh"
 
+/**
+ * \addtogroup Elektron
+ *
+ * @{
+ *
+ * \addtogroup elektron_mnmencoder Monomachine Encoders
+ *
+ * @{
+ *
+ * \file
+ * Elektron Monomachine encoding and decoding routines
+ **/
+
+/**
+ * \addtogroup elektron_mnm_data_to_sysex_encoder Monomachine Data to Sysex Encoder
+ *
+ * @{
+ *
+ **/
+
+/** Class to encoder normal 8-bit data to 7-bit encoded and compressed sysex data. **/
 class MNMDataToSysexEncoder : public ElektronDataToSysexEncoder {
 public:
   uint8_t lastByte;
@@ -29,6 +52,16 @@ public:
   virtual uint16_t finish();
 };
 
+/** @} **/
+
+/**
+ * \addtogroup elektron_mnm_sysex_to_data_encoder Monomachine Sysex to Data Encoder
+ *
+ * @{
+ *
+ **/
+
+/** Class to encode 7-bit and compressed sysex data to normal 8-bit data. **/
 class MNMSysexToDataEncoder : public ElektronSysexToDataEncoder {
 public:
   uint8_t repeat;
@@ -44,6 +77,17 @@ public:
   virtual uint16_t finish();
 };
 
+
+/** @} **/
+
+/**
+ * \addtogroup elektron_mnm_sysex_decoder Monomachine Sysex Decoder
+ *
+ * @{
+ *
+ **/
+
+/** Class to decode 7-bit encoded and compressed sysex data. **/
 class MNMSysexDecoder : public DataDecoder {
 public:
   uint8_t cnt7;

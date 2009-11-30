@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "Encoders.hh"
 #include "MidiTools.h"
 #include "Midi.h"
@@ -6,6 +8,24 @@
 
 /* handlers */
 
+/**
+ * \addtogroup GUI
+ *
+ * @{
+ *
+ * \addtogroup gui_encoders Encoder classes
+ *
+ * @{
+ *
+ * \file
+ * Encoder classes
+ **/
+class Encoder;
+
+/**
+ * Handle a change in a CCEncoder by sending out the CC, using the
+ * channel and cc out of the CCEncoder object.
+ **/
 void CCEncoderHandle(Encoder *enc) {
   CCEncoder *ccEnc = (CCEncoder *)enc;
 	uint8_t channel = ccEnc->getChannel();
@@ -15,6 +35,9 @@ void CCEncoderHandle(Encoder *enc) {
   MidiUart.sendCC(channel, cc, value);
 }
 
+/**
+ * Handle a change in a VarRangeEncoder by setting the variable pointed to by enc->var.
+ **/
 void VarRangeEncoderHandle(Encoder *enc) {
   VarRangeEncoder *rEnc = (VarRangeEncoder *)enc;
   if (rEnc->var != NULL) {
@@ -25,12 +48,14 @@ void VarRangeEncoderHandle(Encoder *enc) {
 #ifndef HOST_MIDIDUINO
 #include <MidiClock.h>
 
+/**
+ * Handle an encoder change by setting the MidiClock tempo to the encoder value.
+ **/
 void TempoEncoderHandle(Encoder *enc) {
   MidiClock.setTempo(enc->getValue());
 }
 #endif
 
-/* Encoder */
 Encoder::Encoder(const char *_name, encoder_handle_t _handler) {
   old = 0;
   cur = 0;

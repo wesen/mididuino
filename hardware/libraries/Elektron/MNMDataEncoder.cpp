@@ -1,6 +1,21 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "Elektron.hh"
 #include "ElektronDataEncoder.hh"
 #include "MNMDataEncoder.hh"
+
+/**
+ * \addtogroup Elektron
+ *
+ * @{
+ *
+ * \addtogroup elektron_mnmencoder Monomachine Encoders
+ *
+ * @{
+ *
+ * \file
+ * Elektron Monomachine encoding and decoding routines
+ **/
 
 void MNMDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen), MidiUartParent *_uart)
 {

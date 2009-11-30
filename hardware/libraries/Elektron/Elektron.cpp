@@ -1,3 +1,18 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
+/**
+ * \addtogroup Elektron
+ *
+ * @{
+ *
+ * \addtogroup elektron_helpers Elektron Helpers
+ *
+ * @{
+ *
+ * \file
+ * Elektron helper routines and data structures
+ **/
+
 #include "Elektron.hh"
 
 uint16_t ElektronHelper::ElektronDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len) {
