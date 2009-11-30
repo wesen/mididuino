@@ -6,7 +6,7 @@
 	<false/>
 	<key>binderSelection</key>
 	<array>
-		<integer>5</integer>
+		<integer>14</integer>
 	</array>
 	<key>binderSplitFrames</key>
 	<array>
@@ -47,7 +47,7 @@
 	<real>200</real>
 	<key>mainDocumentEditor.binderDocuments</key>
 	<array>
-		<integer>4</integer>
+		<integer>10</integer>
 	</array>
 	<key>mainDocumentEditor.corkboardVisible</key>
 	<false/>
@@ -56,7 +56,7 @@
 	<key>mainDocumentEditor.navHistory</key>
 	<dict>
 		<key>CurrentIndex</key>
-		<integer>259</integer>
+		<integer>271</integer>
 		<key>NavigationHistoryArray</key>
 		<array>
 			<dict>
@@ -1616,6 +1616,78 @@
 			<dict>
 				<key>BinderDocID</key>
 				<integer>4</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>72</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>75</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>75</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>75</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>11</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>9</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>75</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>4</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>10</integer>
 				<key>Mode</key>
 				<integer>0</integer>
 			</dict>

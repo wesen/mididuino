@@ -17,7 +17,12 @@ extern "C"
 #endif
 
 /**
- * \addtogroup config Sd-reader configuration
+ * \addtogroup SDCard SD-Card support
+ *
+ * SD-Card library by Roland Riegel and C++ wrapper
+ * @{
+ *
+ * \addtogroup config SD-reader configuration
  *
  * @{
  */

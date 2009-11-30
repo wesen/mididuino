@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2006-2009 by Roland Riegel <feedback@roland-riegel.de>
  *
@@ -20,6 +19,11 @@ extern "C"
 #endif
 
 /**
+ * \addtogroup SDCard SD-Card support
+ *
+ * SD-Card library by Roland Riegel and C++ wrapper
+ * @{
+ *
  * \addtogroup fat
  *
  * @{

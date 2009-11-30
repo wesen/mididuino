@@ -19,6 +19,11 @@ extern "C"
 #endif
 
 /**
+ * \addtogroup SDCard SD-Card support
+ *
+ * SD-Card library by Roland Riegel and C++ wrapper
+ * @{
+ *
  * \addtogroup sd_raw
  *
  * @{

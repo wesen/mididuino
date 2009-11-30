@@ -11,7 +11,19 @@
 		<key>Text</key>
 		<string>In this tutorial, we are getting a step nearer to writing a useful firmware for the Minicommand. This firmware shows two very important elements of the Mididuino framework: the Page class and its child the EncoderPage, and the Encoder class and its child the RangeEncoder. 
 The Page class is the fundamental building block of more complex firmwares. It groups together four encoders and the code to display and handle them. This allows all the relevant functionality for a firmware (or a part of a firmware) to be grouped inside a class and thus easily reused. For example, already available pages in the Mididuino framework are a four encoder MIDI controller (with MIDI learn), an arpeggiator, or even more utilitarian page like a page that allows to switch between other pages, or a page to configure MIDI clock settings.
-The EncoderPage is a very simple page that just displays and updates four encoders. These encoders can be passed to the constructor of the EncoderPage, </string>
+The Page class takes care of displaying and refreshing the information shown on screen, and of intercepting GUI events like button presses and encoder turns. Each Page can be customized by overloading methods like display(), show() or hide(). See the #XXX# Page class reference in the GUI chapter.
+The EncoderPage is a very simple page that just displays and updates four encoders. These encoders can be of any class that inherits from Encoder. The EncoderPage takes care of mapping the hardware movements (turning the encoder left or right) to the virtual encoder. That way, the programmer only needs to define the encoders used in his firmware (for example encoders sending out CC messages, encoders selecting tracks, etc…) and does not need to worry about the actual hardware. The encoders that are displayed in an EncoderPage can be initialized by called the EncoderPage constructor with pointers to each encoder, or can be changed later on by updating the encoders[] member variable.
+The RangeEncoder is an encoder which value is limited by a minimum value and a maximum value. When the encoder is turned further across the limits, the actual value of the encoder is not changed. Each encoder has a short name of 3 characters that is used when the encoder is displayed on the active page. Thus, the encoders in our tutorial sketch are instantiated by called the constructor for the RangeEncoder class, giving it a minimum, a maximum and a short name. Pointers to these encoders are then passed to the constructor of the EncoderPage class to create a page displaying the two encoders.
+Finally, the newly created EncoderPage is displayed as the main page of the firmware by calling the GUI.setPage() method.
+RangeEncoder param1(0, 127, "P1");
+RangeEncoder param2(0, 127, "P2");
+EncoderPage page(&amp;param1, &amp;param2);
+
+void setup() {
+  GUI.setPage(&amp;page);
+}
+
+</string>
 		<key>Title</key>
 		<string>Making a page</string>
 	</dict>

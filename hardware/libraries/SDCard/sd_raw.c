@@ -13,6 +13,11 @@
 #include "sd_raw.hh"
 
 /**
+ * \addtogroup SDCard SD-Card support
+ *
+ * SD-Card library by Roland Riegel and C++ wrapper
+ * @{
+ *
  * \addtogroup sd_raw MMC/SD/SDHC card raw access
  *
  * This module implements read and write access to MMC, SD

@@ -11,6 +11,11 @@
 #include "byteordering.hh"
 
 /**
+ * \addtogroup SDCard SD-Card support
+ *
+ * SD-Card library by Roland Riegel and C++ wrapper
+ * @{
+ *
  * \addtogroup byteordering
  *
  * Architecture-dependent handling of byte-ordering.

@@ -21,6 +21,12 @@
 #endif
 
 /**
+ * \addtogroup SDCard SD-Card support
+ *
+ * SD-Card library by Roland Riegel and C++ wrapper
+ *
+ * @{
+ *
  * \addtogroup fat FAT support
  *
  * This module implements FAT16/FAT32 read and write access.

@@ -16,5 +16,51 @@ The
 \b Page
 \b0  class is the fundamental building block of more complex firmwares. It groups together four encoders and the code to display and handle them. This allows all the relevant functionality for a firmware (or a part of a firmware) to be grouped inside a class and thus easily reused. For example, already available pages in the Mididuino framework are a four encoder MIDI controller (with MIDI learn), an arpeggiator, or even more utilitarian page like a page that allows to switch between other pages, or a page to configure MIDI clock settings.\
 The 
+\b Page
+\b0  class takes care of displaying and refreshing the information shown on screen, and of intercepting 
+\b GUI
+\b0  events like button presses and encoder turns. Each 
+\b Page
+\b0  can be customized by overloading methods like 
+\b display()
+\b0 , 
+\b show()
+\b0  or 
+\b hide()
+\b0 . See the #XXX# 
+\b Page
+\b0  class reference in the GUI chapter.\
+The 
 \b EncoderPage
-\b0  is a very simple page that just displays and updates four encoders. These encoders can be}
+\b0  is a very simple page that just displays and updates four encoders. These encoders can be of any class that inherits from 
+\b Encoder
+\b0 . The 
+\b EncoderPage
+\b0  takes care of mapping the hardware movements (turning the encoder left or right) to the virtual encoder. That way, the programmer only needs to define the encoders used in his firmware (for example encoders sending out CC messages, encoders selecting tracks, etc\'85) and does not need to worry about the actual hardware. The encoders that are displayed in an 
+\b EncoderPage
+\b0  can be initialized by called the 
+\b EncoderPage
+\b0  constructor with pointers to each encoder, or can be changed later on by updating the 
+\b encoders[]
+\b0  member variable.\
+The 
+\b RangeEncoder
+\b0  is an encoder which value is limited by a minimum value and a maximum value. When the encoder is turned further across the limits, the actual value of the encoder is not changed. Each encoder has a short name of 3 characters that is used when the encoder is displayed on the active page. Thus, the encoders in our tutorial sketch are instantiated by called the constructor for the 
+\b RangeEncoder
+\b0  class, giving it a minimum, a maximum and a short name. Pointers to these encoders are then passed to the constructor of the 
+\b EncoderPage
+\b0  class to create a page displaying the two encoders.\
+Finally, the newly created 
+\b EncoderPage
+\b0  is displayed as the main page of the firmware by calling the 
+\b GUI.setPage()
+\b0  method.\
+RangeEncoder param1(0, 127, "P1");\
+RangeEncoder param2(0, 127, "P2");\
+EncoderPage page(&param1, &param2);\
+\
+void setup() \{\
+  GUI.setPage(&page);\
+\}\
+\
+}
