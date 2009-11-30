@@ -1,9 +1,31 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef RINGBUFFER_H__
 #define RINGBUFFER_H__
 
 #include "WProgram.h"
 #include <inttypes.h>
 
+/**
+ * \addtogroup CommonTools
+ *
+ * @{
+ *
+ * \file
+ * Ring buffer classes.
+ **/
+
+/**
+ * \addtogroup helpers_cringbuffer Ring Buffer class
+ *
+ * @{
+ **/
+
+/**
+ * Class representing a ring buffer of N elements of type C, with the
+ * index variable of type uint8_t. If your ringbuffer has more than
+ * 255 elements, use T = uint16_t.
+ **/
 template <class C, int N, class T = uint8_t>
 class CRingBuffer {
   volatile T rd, wr;
@@ -13,13 +35,21 @@ class CRingBuffer {
   volatile uint8_t overflow;
 
   CRingBuffer();
+	/** Add a new element c to the ring buffer. **/
   bool put(C c) volatile;
+	/** Copy a new element pointed to by c to the ring buffer. **/
   bool putp(C *c) volatile;
+	/** Return the next element in the ring buffer. **/
   C get() volatile;
+	/** Copy the next element into dst. **/
   bool getp(C *dst) volatile;
+	/** Get the next element without removing it from the ring buffer. **/
   C peek() volatile;
+	/** Returns true if the ring buffer is empty. **/
   bool isEmpty() volatile;
+	/** Returns true if the ring buffer is full. **/
   bool isFull() volatile;
+	/** Returns the number of elements in the ring buffer. **/
 	T size() volatile;
 };
 

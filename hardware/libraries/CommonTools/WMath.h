@@ -1,14 +1,23 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef WMATH_H__
 #define WMATH_H__
 
-uint16_t makeWord(uint16_t w);
-uint16_t makeWord(uint8_t h, uint8_t l);
+/**
+ * \addtogroup CommonTools
+ *
+ * @{
+ *
+ * \file
+ * Arduino math functions
+ **/
 
-#define word(...) makeWord(__VA_ARGS__)
+/**
+ * \addtogroup helpers_wmath Arduino math functions
+ *
+ * @{
+ **/
 
-unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
-
-// WMath prototypes
 long random(long);
 long random(long, long);
 void randomSeed(unsigned int);

@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef LISTPOOL_H__
 #define LISTPOOL_H__
 
@@ -6,6 +8,26 @@
 #define NULL 0
 #endif
 
+/**
+ * \addtogroup CommonTools
+ *
+ * @{
+ *
+ * \addtogroup helpers_list List classes
+ *
+ * @{
+ *
+ * \file
+ * Callback classes.
+ **/
+
+/**
+ * \addtogroup listelt List Element
+ *
+ * @{
+ */
+
+/** Simple class representing a doubly linked list elemnt of type C. **/
 template <class C> class ListElt {
 public:
   C obj;
@@ -13,7 +35,17 @@ public:
   ListElt *prev;
 };
 
+/** @} **/
 
+/**
+ * \addtogroup listpool List Pool
+ *
+ * @{
+ **/
+
+/**
+ * Statically allocated doubly linked list with N elements.
+ **/
 template <class C, int N>
 class ListPool {
 public:
@@ -28,8 +60,8 @@ public:
       heap[i].next = NULL;
 
       if (prev != NULL) {
-	prev->next = &heap[i];
-	heap[i].prev = prev;
+				prev->next = &heap[i];
+				heap[i].prev = prev;
       }
 
       prev = &heap[i];
@@ -37,6 +69,7 @@ public:
     freeList = &heap[0];
   }
 
+	/** Allocate a new element out of the pre-allocated buffer. Returns NULL if no elements are available. **/
   ListElt<C> *alloc() {
     if (freeList == NULL)
       return NULL;
@@ -50,6 +83,7 @@ public:
     return ret;
   }
 
+	/** Allocate a new element and store c inside it. Returns NULL if no elements are available.  **/
   ListElt<C> *alloc(C c) {
     ListElt<C> *ret = alloc();
     if (ret != NULL) {
@@ -58,7 +92,7 @@ public:
     return ret;
   }
   
-
+	/** Allocate a new element and copy c into it. Returns NULL if no elements are available.  **/
   ListElt<C> *alloc(C *c) {
     ListElt<C> *ret = alloc();
     if (ret != NULL) {
@@ -67,6 +101,7 @@ public:
     return ret;
   }
 
+	/** Free the list element and put it back into the preallocated buffer. **/
   void free(ListElt<C> *elt) {
     if (freeList == NULL) {
       freeList = elt;
@@ -79,6 +114,16 @@ public:
   }
 };
 
+/** @} **/
+
+
+/**
+ * \addtogroup list List 
+ *
+ * @{
+ **/
+
+/** Doubly-linked list with elements storing an object of type C. **/
 template <class C> class List {
 public:
   ListElt<C> *head;
@@ -87,6 +132,7 @@ public:
     head = NULL;
   }
 
+	/** Returns the element at idx. **/
   ListElt<C> *getAt(uint8_t idx) {
     ListElt<C> *ptr;
     uint8_t i;
@@ -97,6 +143,7 @@ public:
     return ptr;
   }
 
+	/** Returns the size of the list. **/
   uint8_t size() {
     uint8_t ret = 0;
     ListElt<C> *ptr;
@@ -105,13 +152,14 @@ public:
     }
     return ret;
   }
-
+	
+	/** Insert a new element at idx. **/
   ListElt<C> *insertAt(ListElt<C> *elt, uint8_t idx) {
     ListElt<C> *ptr = head;
     ListElt<C> *prev = NULL;
     for (uint8_t i = 0;
-	 ptr != NULL != NULL && i < idx;
-	 i++, prev = ptr, ptr = ptr->next) {
+				 ptr != NULL != NULL && i < idx;
+				 i++, prev = ptr, ptr = ptr->next) {
       ;
     }
     elt->prev = prev;
@@ -122,6 +170,7 @@ public:
     return elt;
   }
 
+	/** Remove the element at idx. **/
   void removeAt(uint8_t idx) {
     ListElt<C> *ptr = getAt(idx);
     if (ptr != NULL) {
@@ -129,6 +178,7 @@ public:
     }
   }
 
+	/** Returns the last element of the list. **/
   ListElt<C> *getLast() {
     if (head == NULL)
       return NULL;
@@ -139,6 +189,7 @@ public:
     return ptr;
   }
 
+	/** Removes the last element of the list and returns it. **/
   ListElt<C> *popLast() {
     ListElt<C> *ret = getLast();
     if (ret != NULL) {
@@ -148,6 +199,7 @@ public:
     return ret;
   }
 
+	/** Push a new element at the end of the list. **/
   void pushLast(ListElt<C> *elt) {
     ListElt<C> *ptr = getLast();
     if (ptr != NULL) {
@@ -158,7 +210,8 @@ public:
       addFront(elt);
     }
   }
-  
+
+	/** Remove the element elt. **/
   void remove(ListElt<C> *elt) {
     ListElt<C> *prev = elt->prev;
     ListElt<C> *next = elt->next;
@@ -173,6 +226,7 @@ public:
     }
   }
 
+	/** Removes and returns the first element of the list. **/
   ListElt<C> *pop() {
     ListElt<C> *ret = NULL;
     if (head != NULL) {
@@ -183,6 +237,7 @@ public:
     return ret;
   }
 
+	/** Push a new element in front of the list. **/
   void push(ListElt<C> *elt) {
     elt->next = head;
     elt->prev = NULL;
@@ -192,28 +247,32 @@ public:
     head = elt;
   }
 
+	/** Finds the first element storing c, starting at list element ptr. **/
   ListElt<C> *findFirstAfter(C c, ListElt<C> *ptr) {
     for (; ptr != NULL; ptr = ptr->next) {
       if (ptr->obj == c) {
-	return ptr;
+				return ptr;
       }
     }
     return NULL;
   }
 
+	/** Returns the first element storing c in the list. **/
   ListElt<C> *findFirst(C c) {
     return findFirstAfter(c, head);
   }
 
+	/** Searches backwards for the first element storing c in the list, starting at element ptr. **/
   ListElt<C> *findFirstBefore(C c, ListElt<C> *ptr) {
     for (; ptr != NULL; ptr = ptr->prev) {
       if (ptr->obj == c) {
-	return ptr;
+				return ptr;
       }
     }
     return NULL;
   }
-  
+
+	/** Swap the two list elements e1 and e2. **/
   void swap(ListElt<C> *e1, ListElt<C> *e2) {
     ListElt<C> *tmp;
     tmp = e1->prev;
@@ -224,6 +283,7 @@ public:
     e2->next = tmp;
   }
 
+	/** Reverse the list. **/
   void reverse() {
     ListElt<C> *ptr = head;
     ListElt<C> *next = NULL;
@@ -241,6 +301,15 @@ public:
   }
 };
 
+/** @} **/
+
+/**
+ * \addtogroup listwithpool List with auto-allocation pool
+ *
+ * @{
+ **/
+
+/** List class with automatic storage allocation of size N. **/
 template <class C, int N> class ListWithPool : public List<C> {
 public:
   ListPool<C, N> pool;
@@ -323,6 +392,14 @@ public:
     }
   }
 };
+
+/** @} **/
+
+/**
+ * \addtogroup callbacklist List to callback elements, with autoallocation
+ *
+ * @{
+ **/
 
 template <class C, int N> class CallbackList : public ListWithPool<C*, N> {
 public:

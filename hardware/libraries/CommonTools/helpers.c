@@ -21,8 +21,7 @@
  **/
 
 /**
- * \addtogroup helpers_string
- * Various string functions
+ * \addtogroup helpers_string Various string functions
  *
  * @{
  **/
@@ -362,7 +361,7 @@ uint16_t clock_diff(uint16_t old_clock, uint16_t new_clock) {
 /** @} **/
 
 /**
- * \addtogroup helpers_math Math functions.
+ * \addtogroup helpers_math Math functions
  *
  * @{
  **/
@@ -416,7 +415,7 @@ uint8_t interpolate_8(uint8_t start, uint8_t end, uint8_t amount) {
 /** @} **/
 
 /**
- * \addtogroup helpers_debug Debugging functions.
+ * \addtogroup helpers_debug Debugging functions
  * @{
  **/
 

@@ -1,5 +1,3 @@
-/* -*- mode: jde; c-basic-offset: 2; indent-tabs-mode: nil -*- */
-
 /*
   Part of the Wiring project - http://wiring.org.co
   Copyright (c) 2004-06 Hernando Barragan
@@ -27,6 +25,22 @@ extern "C" {
   #include "stdlib.h"
 }
 
+/**
+ * \addtogroup CommonTools
+ *
+ * @{
+ *
+ * \file
+ * Arduino math functions
+ **/
+
+/**
+ * \addtogroup helpers_wmath Arduino math functions
+ *
+ * @{
+ **/
+
+/** Initialize the pseudo-random number generator with seed. **/
 void randomSeed(unsigned int seed)
 {
   if (seed != 0) {
@@ -34,6 +48,7 @@ void randomSeed(unsigned int seed)
   }
 }
 
+/** Returns a random value of maximum value howbig. **/
 long random(long howbig)
 {
   if (howbig == 0) {
@@ -42,6 +57,7 @@ long random(long howbig)
   return random() % howbig;
 }
 
+/** Returns a random value between howsmall and howbig. **/
 long random(long howsmall, long howbig)
 {
   if (howsmall >= howbig) {
@@ -51,10 +67,11 @@ long random(long howsmall, long howbig)
   return random(diff) + howsmall;
 }
 
+/**
+ * Map the value x in the range in_min - in_max to the range out_min -
+ * out_max. This doesn't care about overflows.
+ **/
 long map(long x, long in_min, long in_max, long out_min, long out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
-unsigned int makeWord(unsigned int w) { return w; }
-unsigned int makeWord(unsigned char h, unsigned char l) { return (h << 8) | l; }

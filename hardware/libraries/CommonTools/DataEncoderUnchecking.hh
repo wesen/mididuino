@@ -1,5 +1,20 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef DATA_ENCODER_UNCHECKING_H__
 #define DATA_ENCODER_UNCHECKING_H__
+
+/**
+ * \addtogroup CommonTools
+ *
+ * @{
+ *
+ * \addtogroup helpers_data_encoder Data encoding classes
+ *
+ * @{
+ *
+ * \file
+ * Length checking versions of the DataEncoder and the DataDecoder.
+ **/
 
 #define DATA_ENCODER_RETURN_TYPE void
 #define DATA_ENCODER_CHECK(condition) { condition; }
@@ -10,6 +25,15 @@
 
 #define DATA_ENCODER_UNCHECKING 1
 
+/**
+ * \addtogroup dataencoder Data Encoder
+ * Checking version of the data encoder.
+ *
+ * @{
+ **/
+
+
+/** DataEncoder class, packing various values into a data buffer. **/
 class DataEncoder {
 public:
   uint8_t *data;
@@ -92,6 +116,16 @@ public:
 #endif
 };
 
+/** @} **/
+
+/**
+ * \addtogroup datadecoder Data Decoder
+ * Checking version of the data decoder.
+ *
+ * @{
+ **/
+
+/** DataDecoder class, unpacking various values out of a data buffer. **/
 class DataDecoder {
 public:
 	uint8_t *data;

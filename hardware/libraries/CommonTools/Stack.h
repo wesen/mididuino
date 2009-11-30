@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef STACK_H__
 #define STACK_H__
 
@@ -5,8 +7,22 @@
 #include <inttypes.h>
 #include "helpers.h"
 
-// running stack
+/**
+ * \addtogroup CommonTools
+ *
+ * @{
+ *
+ * \file
+ * Stack class
+ **/
 
+/**
+ * \addtogroup helpers_stack Stack class
+ *
+ * @{
+ **/
+
+/** Stack with N elements of class T. **/
 template <class T, int N>
 class Stack {
  public:
@@ -14,14 +30,23 @@ class Stack {
   T buf[N];
   
   Stack();
+	/** Push a new element pointed to by t. **/
   bool push(T *t);
+	/** Push a new element t. **/
   bool push(T t);
+	/** Remove an element, and copy it to t. **/
   bool pop(T *t = NULL);
+	/** Copy the top element to t. **/
   bool peek(T *t);
+	/** Copy the element at idx into t. **/
   bool peekAt(T *t, uint8_t idx);
+	/** Returns true if the stack is empty. **/
   bool isEmpty();
+	/** Returns true if the stack is full. **/
   bool isFull();
+	/** Empty the stack. **/
   void reset();
+	/** Returns the number of elements in the stack. **/
   uint8_t size();
 };
 

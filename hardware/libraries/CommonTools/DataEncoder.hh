@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef DATA_ENCODER_H__
 #define DATA_ENCODER_H__
 
@@ -10,6 +12,24 @@
 #else
 #include "DataEncoderUnchecking.hh"
 #endif
+
+/**
+ * \addtogroup CommonTools
+ *
+ * @{
+ *
+ * \addtogroup helpers_data_encoder Data encoding classes
+ *
+ * @{
+ *
+ **/
+
+/**
+ * \addtogroup uartdataencoder Uart Data Encoder
+ * DataEncoder that directly outputs encoded data on the uart.
+ *
+ * @{
+ */
 
 class UartDataEncoder : public DataEncoder {
 public:

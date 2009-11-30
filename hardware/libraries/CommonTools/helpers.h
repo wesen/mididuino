@@ -25,7 +25,7 @@ extern "C" {
 
 
 /**
- * \addtogroup helpers_bitmanipulation Bit-manipulation macros.
+ * \addtogroup helpers_bitmanipulation Bit-manipulation macros
  * @{
  **/
 
@@ -62,7 +62,7 @@ extern "C" {
 /** @} */
 
 /**
- * \addtogroup helpers_common_symbols Commonly used symbols and macros.
+ * \addtogroup helpers_common_symbols Commonly used symbols and macros
  * @{
  **/
 
@@ -85,7 +85,7 @@ extern "C" {
 /** @} **/
 
 /**
- * \addtogroup helpers_math Math macros.
+ * \addtogroup helpers_math Math macros
  * @{
  **/
 
@@ -108,7 +108,7 @@ uint8_t interpolate_8(uint8_t start, uint8_t end, uint8_t amount);
 /** @} **/
 
 	/**
-	 * \addtogroup helpers_locking "Locking" and AVR-specific functions.
+	 * \addtogroup helpers_locking "Locking" and AVR-specific functions
 	 * @{
 	 **/
 	
@@ -159,7 +159,7 @@ uint8_t interpolate_8(uint8_t start, uint8_t end, uint8_t amount);
 #define delayMicroseconds(us)
 #endif
 
-/** \addtogroup helpers_string String manipulation routines.
+/** \addtogroup helpers_string String manipulation routines
  * @{
  **/
 	
@@ -183,7 +183,7 @@ uint16_t m_strlen(const char *str);
 /** @} */
 
 /**
- * \addtogroup helpers_clock Timing functions.
+ * \addtogroup helpers_clock Timing functions
  * @{
  **/
 			
@@ -200,7 +200,7 @@ extern volatile uint16_t slowclock;
 /** @} **/
 
 /**
- * \addtogroup helpers_debug Debugging functions.
+ * \addtogroup helpers_debug Debugging functions
  * @{
  **/
 			
