@@ -20,16 +20,24 @@
 /**
  * \addtogroup GUI
  *
+ * @{
+ *
+ * \defgroup gui_lcd GUI LCD routines
+ *
+ * \defgroup gui_mainloop GUI Main Loop
+ *
+ * \defgroup gui_class GUI Class
+ *
  * \file
  * GUI class
  *
- * @{
+ * @}
  *
  **/
 
 
 /**
- * \addtogroup gui_lcd LCD routines
+ * \addtogroup gui_lcd LCD 
  *
  * @{
  **/
@@ -48,15 +56,8 @@ typedef struct line_s {
 /** Default duration of a flashed message (in timer ticks). **/
 #define DEFAULT_FLASH_DURATION 600
 
-/**
- * @}
- **/
+/* @} */
 
-/**
- * \addtogroup gui_class GUI class
- *
- * @{
- **/
 class Page;
 class Sketch;
 
@@ -66,6 +67,7 @@ extern Sketch _defaultSketch;
 typedef bool (*event_handler_t)(gui_event_t *event);
 
 /**
+ * \ingroup gui_class
  * The GUI class acting as a frontend to the display system. This
  * class is used to:
  *
@@ -75,18 +77,29 @@ typedef bool (*event_handler_t)(gui_event_t *event);
  * - handle the toplevel display loop (dispatching events, drawing pages, handling encoders).
  *
  * Although some methods are declared virtual, there is usually no need to subclass the GUI class.
+ *
  **/
 class GuiClass {
  protected:
  public:
 	/**
-	 * \section gui_innen GUI innen
-	 **/
-	
+	 * \addtogroup gui_lcd
+	 *
+	 * @{
+	 */
 	/** The two display lines of the MiniCommand display. **/
   line_t lines[2];
 	/** The currently active line index. **/
   uint8_t curLine;
+
+	/* @} */
+
+	/**
+	 * \addtogroup gui_class
+	 *
+	 * @{
+	 */
+	
 	/** A vector storing the registered event handlers (max 4). **/
   Vector<event_handler_t, 4> eventHandlers;
 	/** A vector storing the registered tasks (max 8). **/
@@ -100,15 +113,10 @@ class GuiClass {
   static const uint8_t NUM_BUTTONS  = GUI_NUM_BUTTONS;
 
   GuiClass();
-
 #ifdef HOST_MIDIDUINO
   virtual ~GuiClass() { }
 #endif
 
-	/**
-	 * \section gui_class_sketch GUI class sketch and page handling
-	 **/
-	 
 	/** The currently active sketch (default NULL). **/
   Sketch *sketch;
 	
@@ -124,19 +132,31 @@ class GuiClass {
 	/** Returns a pointer to the current sketches currentPage(). **/
   Page *currentPage();
 
-	/** When not using sketches, set the current page (all the page stack will be cleared). **/
+	/**
+	 * Set the current page of the active sketch (all the page stack will be cleared).
+	 *
+	 * Refer to the documentation of the Sketch class for more details.
+	 **/
   void setPage(Page *page);
-	/** Push a new page on top of the currently active one. **/
+	/**
+	 * Push a new page on top of the currently active one.
+	 *
+	 * Refer to the documentation of the Sketch class for more details.
+	 **/
   void pushPage(Page *page);
-	/** Pop the top page. **/
+	/**
+	 * Pop the top page.
+	 *
+	 * Refer to the documentation of the Sketch class for more details.
+	 **/
   void popPage();
-	/** Pop the top page if it is the same as page. **/
+	/**
+	 * Pop the top page if it is the same as page.
+	 *
+	 * Refer to the documentation of the Sketch class for more details.
+	 **/
   void popPage(Page *page);
 
-	/**
-	 * \section gui_class_mainloop GUI class main loop
-	 **/
-	
 	/**
 	 * Add a new event handler to the event handler vector (max 4). The
 	 * event handler will then be called on each update loop.
@@ -144,121 +164,260 @@ class GuiClass {
   void addEventHandler(event_handler_t handler) {
     eventHandlers.add(handler);
   }
+	/**
+	 * Remove an event handler.
+	 **/
   void removeEventHandler(event_handler_t handler) {
     eventHandlers.remove(handler);
   }
 
+	/**
+	 * Add a new task to be periodically polled (max 8).
+	 **/
   void addTask(Task *task) {
     tasks.add(task);
   }
+	/**
+	 * Remove a task from the task list.
+	 **/
   void removeTask(Task *task) {
     tasks.remove(task);
   }
 
-
-	/** This is the main toplevel loop. **/
-  virtual void loop();
-	
-  void update();
-  void display();
-
-  void redisplay();
+	/* @} */
 
 	/**
-	 * \section gui_lcd2 GUI lcd display handling 2
-	 **/
+	 * \addtogroup gui_mainloop
+	 *
+	 * @{
+	 */
 	
+	/**
+	 * This is the main toplevel loop. It goes through a few steps to
+	 * make the whole framework run smoothly.
+	 *
+	 * The first step of loop() is to execute the tasks, by calling the
+	 * checkTask() method of each task.
+	 *
+	 * The second step is going through the events stored in
+	 * EventRB. For each event, it goes through the list of registered
+	 * event handlers, and executes them. If one of these event handlers
+	 * returns true, it goes to the next event without trying any
+	 * further event handlers. After the event handlers were executed,
+	 * and none returned true, it asks the sketch to handle the event by
+	 * calling its handleTopEvent method.
+	 *
+	 * In the third step, it then calls the update() and loop() methods
+	 * of the current page of the active sketch (which is _defaultSketch
+	 * by default).
+	 *
+	 * The fourth step is calling the loop() method of the sketch itself.
+	 *
+	 * The fifth step is then calling the ::loop() method, which is
+	 * empty by default, and can be overriden by the user. This is
+	 * mostly to keep a compatibility to older mididuino sketches and to
+	 * mirror the structure of arduino sketches, but usually is not used
+	 * as the main loops are kept inside Sketch classes.
+	 *
+	 * The sixth step is then calling the display() method of the GUI class (see below).
+	 *
+	 * In a final step, it calls the finalize() method of the current
+	 * page of the active sketch, if it is available. This is per
+	 * default an empty method and can be overriden by the programmer.
+	 **/
+  virtual void loop();
+
+
+	/**
+	 * This method is called regularly in the main loop and handles the
+	 * refreshing of the MiniCommand display.
+	 *
+	 * It first calls the display() method of the current page of the active sketch.
+	 *
+	 * It then handles the displaying of "flash" messages, by checking
+	 * how long the active flash message has been running.
+	 **/
+  void display();
+
+	/**
+	 * This method sets the redisplay flag of the active page to true so
+	 * that it gets redisplayed on the next call to display().
+	 **/
+  void redisplay();
+
+	/* @} */
+
+	/**
+	 * \addtogroup gui_lcd
+	 *
+	 * @{
+	 */
+
+	/** Display the value in base 10 at the given idx (in 4 character increments). **/
   void put_value(uint8_t idx, uint8_t value);
+	/** Display the value in base 10 at the given idx (in 4 character increments). **/
   void put_value(uint8_t idx, int value);
+	/** Display the value in base 16 at the given idx (in 4 character increments). **/
   void put_value16(uint8_t idx, uint16_t value);
+	/** Display the value in base 16 at the given idx (in 4 character increments). **/
   void put_valuex(uint8_t idx, uint8_t value);
+	/** Display the value in base 10 at the given idx (in 1 character increments). **/
   void put_value_at(uint8_t idx, uint8_t value);
+	/** Display the value in base 10 at the given idx (in 1 character increments). **/
   void put_value_at(uint8_t idx, int value);
+	/** Display the value in base 16 at the given idx (in 1 character increments). **/
   void put_value16_at(uint8_t idx, uint16_t value);
+	/** Display the value in base 16 at the given idx (in 1 character increments). **/
   void put_valuex_at(uint8_t idx, uint8_t value);
+
+	/** Display the string at the given idx (in 4 character increments). **/
   void put_string(uint8_t idx, const char *str);
+	/** Display the program space string at the given idx (in 4 character increments). **/
   void put_p_string(uint8_t idx, PGM_P str);
+	/** Display the string. **/
   void put_string(const char *str);
+	/** Display the program-space string. **/
   void put_p_string(PGM_P str);
+	/** Display the string at the given idx (in 4 character increments) and fill up with whitespace. **/
   void put_string_fill(uint8_t idx, const char *str);
+	/** Display the string and fill up with whitespace. **/
   void put_string_fill(const char *str);
+	/** Display the program-space string at the given idx (in 4 character increments) and fill up with whitespace. **/
   void put_p_string_fill(uint8_t idx, PGM_P str);
+	/** Display the program-space string and fill up with whitespace. **/
   void put_p_string_fill(PGM_P str);
+	/** Display the string at the given idx (in 1 character increments). **/
   void put_string_at(uint8_t idx, const char *str);
+	/** Display the program-space string at the given idx (in 1 character increments). **/
   void put_p_string_at(uint8_t idx, PGM_P str);
+	/** Display the string at the given idx (in 1 character increments) and fill up with whitespace. **/
   void put_string_at_fill(uint8_t idx, const char *str);
+	/** Display the program-space string at the given idx (in 1 character increments) and fill up with whitespace. **/
   void put_p_string_at_fill(uint8_t idx, PGM_P str);
 
+	/** Print the format string using the vsnprintf function. **/
 	void printf(const char *fmt, ...);
+	/** Print the format string using the vsnprintf function and fill up with whitespace. **/
 	void printf_fill(const char *fmt, ...);
+	/** Print the format string at the given idx (in 1 character increments) using the vsnprintf function. **/
 	void printf_at(uint8_t idx, const char *fmt, ...);
+	/**
+	 * Print the format string at the given idx (in 1 character
+	 * increments) using the vsnprintf function and fill up with
+	 * whitespace.
+	 **/
 	void printf_at_fill(uint8_t idx, const char *fmt, ...);
 
+	/** Set the flash duration of the currently active flash line. **/
   void flash(uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the value in base 10 at the given idx (in 4 character increments) for the given duration. **/
   void flash_put_value(uint8_t idx, uint8_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the value in base 16 at the given idx (in 4 character increments) for the given duration. **/
   void flash_put_value16(uint8_t idx, uint16_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the value in base 16 at the given idx (in 4 character increments) for the given duration. **/
   void flash_put_valuex(uint8_t idx, uint8_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the value in base 10 at the given idx (in 1 character increments) for the given duration. **/
   void flash_put_value_at(uint8_t idx, uint8_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the value in base 16 at the given idx (in 1 character increments) for the given duration. **/
   void flash_put_value16_at(uint8_t idx, uint16_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the value in base 16 at the given idx (in 4 character increments) for the given duration. **/
   void flash_put_valuex_at(uint8_t idx, uint8_t value,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the string for the given duration. **/
   void flash_string(const char *str,
 		    uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the program-space string for the given duration. **/
   void flash_p_string(PGM_P str,
 		      uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the string for the given duration and fill with whitespace. **/
   void flash_string_fill(const char *str,
 			 uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the program-space string for the given duration and fill with whitespace. **/
   void flash_p_string_fill(PGM_P str,
 			   uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the string at the given idx (in 1 character increments) for the given duration. **/
   void flash_string_at(uint8_t idx, const char *str,
 		       uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Flash the program-space string at the given idx (in 1 character increments) for the given duration. **/
   void flash_p_string_at(uint8_t idx, PGM_P str,
 			 uint16_t duration = DEFAULT_FLASH_DURATION);
+	/**
+	 * Flash the string at the given idx (in 1 character increments) for
+	 * the given duration and fill with whitespace.
+	 **/
   void flash_string_at_fill(uint8_t idx, const char *str,
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
+	/**
+	 * Flash the program-space string at the given idx (in 1 character
+	 * increments) for the given duration and fill with whitespace.
+	 **/
   void flash_p_string_at_fill(uint8_t idx, PGM_P str,
 			      uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Clear the flash line and display the new string for the given duration. **/
   void flash_string_clear(const char *str,
 			  uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Clear the flash line and display the new program-space string for the given duration. **/
   void flash_p_string_clear(const char *str,
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Display both strings and fill with whitespace for the given duration. **/
   void flash_strings_fill(const char *str1, const char *str2,
 			  uint16_t duration = DEFAULT_FLASH_DURATION);
+	/** Display both program-space strings and fill with whitespace for the given duration. **/
   void flash_p_strings_fill(PGM_P str1, PGM_P str2,
 			    uint16_t duration = DEFAULT_FLASH_DURATION);
-  
+
+	/** Flash the given format string using the vsnprintf function. **/
 	void flash_printf(const char *fmt, ...);
+	/** Flash the given format string using the vsnprintf function and fill with whitespace. **/
 	void flash_printf_fill(const char *fmt, ...);
+	/**
+	 * Flash the given format string at the given idx (in 1-character
+	 * increments) using the vsnprintf function and fill with
+	 * whitespace.
+	 **/
 	void flash_printf_at(uint8_t idx, const char *fmt, ...);
+	/**
+	 * Flash the given format string using the vsnprintf function and
+	 * fill with whitespace.
+	 **/
 	void flash_printf_at_fill(uint8_t idx, const char *fmt, ...);
 
-	
+	/** Switch the line to be displayed, using either GUI.LINE1 or GUI.LINE2. **/
   void setLine(const uint8_t line) { curLine = line; }
+	/** Clear the currently active line. **/
   void clearLine();
+	/** Clear the currently active flash line. **/
   void clearFlashLine();
+	/** Clear the currently active flash line and reset the flash duration. **/
   void clearFlash(uint16_t duration = DEFAULT_FLASH_DURATION);
 
   static const uint8_t LINE1 = 0;
   static const uint8_t LINE2 = 1;
-	/** @} **/
+
+	/* @} */
 };
 
+/**
+ * \addtogroup gui_class
+ *
+ * @{
+ */
+ 
 /** The single instance of the GUI class. **/
 extern GuiClass GUI;
+
+/* @} */
 
 char hex2c(uint8_t hex);
 
 #include "Encoders.hh"
 #include "Pages.hh"
 #include "Sketch.hh"
-
-/** @} **/
-/** @} **/
 
 #endif
 
