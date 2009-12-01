@@ -40,7 +40,11 @@ void TempoEncoderHandle(Encoder *enc);
 
 /** Encoder parent class. **/
 class Encoder {
- protected:
+	/**
+	 * \addtogroup gui_encoder_class
+	 * @{
+	 **/
+	
  public:
 	/** Old value (before move), current value. **/
   int old, cur;
@@ -118,6 +122,8 @@ class Encoder {
 #ifdef HOST_MIDIDUINO
   virtual ~Encoder() { }
 #endif
+
+	/* @} */
 };
 
 /** @} **/
@@ -129,6 +135,11 @@ class Encoder {
 
 /** Encoder with minimum and maximum value. **/
 class RangeEncoder : public Encoder {
+	/**
+	 * \addtogroup gui_rangeencoder_class
+	 * @{
+	 **/
+	
  public:
 	/** Minimum value of the encoder. **/
   int min;
@@ -173,6 +184,8 @@ class RangeEncoder : public Encoder {
 	 * fastmode, and limit the resulting value using limit_value().
 	 **/
   virtual int update(encoder_t *enc);
+
+	/* @} */
 };
 
 void VarRangeEncoderHandle(Encoder *enc);
@@ -189,6 +202,11 @@ void VarRangeEncoderHandle(Encoder *enc);
  * written to the variable on each modification.
  **/
 class VarRangeEncoder : public RangeEncoder {
+	/**
+	 * \addtogroup gui_varrangeencoder_class
+	 * @{
+	 **/
+	
 public:
 	/**
 	 * Pointer to the variable updated by the encoder. If this is
@@ -209,6 +227,8 @@ public:
     }
     handler = VarRangeEncoderHandle;
   }
+
+	/* @} */
 };
 
 /** @} **/
@@ -220,6 +240,11 @@ public:
 
 /** Enumeration encoder, displaying a limited amount of choices as strings. **/
 class EnumEncoder : public RangeEncoder {
+	/**
+	 * \addtogroup gui_enumencoder_class
+	 * @{
+	 **/
+	
 public:
   const char **enumStrings;
   int cnt;
@@ -247,10 +272,17 @@ public:
   }
 
   virtual void displayAt(int i);
+
+	/* @} */
 };
 
 /** Enumeration encoder with enumeration names stored in program space. **/
 class PEnumEncoder : public EnumEncoder {
+	/**
+	 * \addtogroup gui_enumencoder_class
+	 * @{
+	 **/
+
 public:
   PEnumEncoder(const char *strings[], int _cnt, const char *_name = NULL, int init = 0,
 	      encoder_handle_t _handler = NULL) :
@@ -258,9 +290,9 @@ public:
   }
 
   virtual void displayAt(int i);
-};
 
-static const char *boolEnumStrings[] = { "OFF", "ON" };
+	/* @} */
+};
 
 /** @} **/
 
@@ -269,8 +301,15 @@ static const char *boolEnumStrings[] = { "OFF", "ON" };
  * @{
  **/
 
+static const char *boolEnumStrings[] = { "OFF", "ON" };
+
 /** Specialized enumeration encoder allowing the user to choose between "OFF" (0) and "ON" (1). **/
 class BoolEncoder : public EnumEncoder {
+	/**
+	 * \addtogroup gui_boolencoder_class 
+	 * @{
+	 **/
+	
 public:
   BoolEncoder(const char *_name = NULL, bool init = false, encoder_handle_t _handler = NULL) :
     EnumEncoder(boolEnumStrings, 2, _name, init ? 1 : 0, _handler) {
@@ -284,6 +323,8 @@ public:
   bool getBoolValue() {
     return getValue() == 1;
   }
+
+	/* @} */
 };
 
 /** @} **/
@@ -293,17 +334,22 @@ public:
  * @{
  **/
 
-
 /**
  * Encoder that allows to choose a MIDI track from 0 to 15 (displaying
  * 1 to 16 in order not to confuse musicians.
  **/
 class MidiTrackEncoder : public RangeEncoder {
+	/**
+	 * \addtogroup gui_miditrackencoder_class
+	 * @{
+	 **/
 public:
   MidiTrackEncoder(char *_name = NULL, uint8_t init = 0) : RangeEncoder(15, 0, _name, init) {
   }
 
   virtual void displayAt(int i);
+
+	/* @} */
 };
 
 /** @} **/
@@ -317,6 +363,11 @@ public:
  * Encoder that sends out a CC message on each modification.
  **/
 class CCEncoder : public RangeEncoder {
+	/**
+	 * \addtogroup gui_ccencoder_class
+	 * @{
+	 **/
+	
  public:
 	/** The CC number used when the CC message is sent. **/
   uint8_t cc;
@@ -340,6 +391,8 @@ class CCEncoder : public RangeEncoder {
     initCCEncoder(_channel, _cc);
     handler = CCEncoderHandle;
   }
+
+	/* @} */
 };
 
 char hex2c(uint8_t hex);
@@ -357,6 +410,11 @@ char hex2c(uint8_t hex);
  * in hex, 00 to 7F.
  **/
 class AutoNameCCEncoder : public CCEncoder {
+	/**
+	 * \addtogroup gui_autonameccencoder_class
+	 * @{
+	 **/
+	
 public:
   AutoNameCCEncoder(uint8_t _cc = 0, uint8_t _channel = 0, const char *_name = NULL, int init = 0) :
     CCEncoder(_cc, _channel, _name, init) {
@@ -377,6 +435,8 @@ public:
   }
 
   virtual void initCCEncoder(uint8_t _channel, uint8_t _cc);
+
+	/* @} */
 };
 
 /** @} **/
@@ -392,10 +452,17 @@ public:
  * encoder is 255 at the moment).
  **/
 class TempoEncoder : public RangeEncoder {
+	/**
+	 * \addtogroup gui_tempoencoder_class
+	 * @{
+	 **/
+	
   public:
   TempoEncoder(const char *_name = NULL) : RangeEncoder(255, 20, _name) {
     handler = TempoEncoderHandle;
   }
+
+	/* @} */
 };
 
 /** @} **/
@@ -409,10 +476,17 @@ class TempoEncoder : public RangeEncoder {
  * Encoder that allows the user to choose between a character (a to z, A to Z, 0 to 9).
  **/
 class CharEncoder : public RangeEncoder {
+	/**
+	 * \addtogroup gui_charencoder_class
+	 * @{
+	 **/
+	
 public:
   CharEncoder();
   char getChar();
   void setChar(char c);
+
+	/* @} */
 };
 
 /** @} **/
@@ -427,18 +501,20 @@ public:
  * 127), displaying the correct name and octave.
  **/
 class NotePitchEncoder : public RangeEncoder {
+	/**
+	 * \addtogroup gui_notepitchencoder_class
+	 * @{
+	 **/
 public:
   NotePitchEncoder(char *_name = NULL);
 
   void displayAt(int i);
+
+	/* @} */
 };
 
 #include "RecordingEncoder.hh"
 
-/** @} **/
-
-/** @} **/
-
-/** @} **/
+/** @} @} @} **/
 
 #endif /* ENCODERS_H__ */

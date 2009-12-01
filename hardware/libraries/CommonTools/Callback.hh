@@ -31,6 +31,10 @@
  * objects of class C, with a callback function of type M.
  **/
 template <class C, int N, typename M = void(C::*)()> class CallbackVector {
+	/**
+	 * \addtogroup callbackvector
+	 * @{
+	 **/
 public:
   struct {
     C* obj;
@@ -96,6 +100,8 @@ public:
       ((callbacks[i].obj)->*(callbacks[i].ptr))();
     }
   }
+
+	/* @} */
 };
 
 /** Templated callback vector class with callback method taking one argument of type Arg1. **/
@@ -147,5 +153,7 @@ public:
 		return false;
   }
 };
+
+/* @} @} @} */
 
 #endif /* CALLBACK_H__ */

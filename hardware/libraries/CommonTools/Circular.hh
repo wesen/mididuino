@@ -25,6 +25,11 @@
 
 template <class C, int N>
 class CircularBuffer {
+	/**
+	 * \addtogroup circularbuffer
+	 * @{
+	 **/
+	
 public:
   volatile uint8_t start, count;
   C buf[N];
@@ -94,7 +99,11 @@ public:
   bool getLastCopy(C *c) {
     return getCopy(count);
   }
+
+	/* @} */
       
 };
+
+/* @} @} @} */
 
 #endif /* CIRCULAR_H__ */

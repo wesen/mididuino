@@ -121,19 +121,19 @@ void MDClass::sendFXParam(uint8_t param, uint8_t value, uint8_t type) {
 }
   
 void MDClass::setEchoParam(uint8_t param, uint8_t value) {
-  sendFXParam(param, value, 0x5D);
+  sendFXParam(param, value, MD_SET_RHYTHM_ECHO_PARAM_ID);
 }
 
 void MDClass::setReverbParam(uint8_t param, uint8_t value) {
-  sendFXParam(param, value, 0x5E);
+  sendFXParam(param, value, MD_SET_GATE_BOX_PARAM_ID);
 }
 
 void MDClass::setEQParam(uint8_t param, uint8_t value) {
-  sendFXParam(param, value, 0x5F);
+  sendFXParam(param, value, MD_SET_EQ_PARAM_ID);
 }
 
 void MDClass::setCompressorParam(uint8_t param, uint8_t value) {
-  sendFXParam(param, value, 0x60);
+  sendFXParam(param, value, MD_SET_DYNAMIX_PARAM_ID);
 }
 
 /*** tunings ***/

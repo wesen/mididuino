@@ -21,7 +21,11 @@
 /** Represents an array of N elements of class T. This is slightly misnamed and should be called Set. **/
 template <class T, int N>
 class Vector {
-protected:
+	/**
+	 * \addtogroup helpers_vector
+	 * @{
+	 **/
+	
 public:
   T arr[N];
   int size;
@@ -64,6 +68,10 @@ public:
     }
     return res;
   }
+
+	/* @} */
 };
+
+/* @} @} */
 
 #endif /* VECTOR_H__ */

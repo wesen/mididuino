@@ -33,6 +33,11 @@ extern "C" {
  * up to the child class.
  **/
 class LCDParentClass {
+	/**
+	 * \addtogroup lcd_parent
+	 * @{
+	 **/
+	
 protected:
 	/** Toggle the enable line (left to child). **/
   virtual void enable() { }
@@ -123,6 +128,8 @@ protected:
   void blinkCursor(bool blink);
 	/** move the cursor to the given position. **/
   void moveCursor(uint8_t row, uint8_t column);
+
+	/* @} */
 };
 
 #endif /* LCDPARENT_H__ */

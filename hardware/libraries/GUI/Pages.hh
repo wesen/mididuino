@@ -58,6 +58,11 @@ class PageContainer;
  * configure/store/restore midi clock and midi merge setting.
  **/
 class Page {
+	/**
+	 * \addtogroup gui_parent_page
+	 * @{
+	 **/
+	
  public:
 	/** The long name of a page (max 16 characters), used for example in ScrollSwitchPage. **/
   char name[17];
@@ -171,6 +176,8 @@ class Page {
 #ifdef HOST_MIDIDUINO
   virtual ~Page() { }
 #endif
+
+	/* @} */
 };
 
 /* @} */
@@ -188,15 +195,13 @@ class Encoder;
  * It is also the standard class used as a parent class when creating a custom Page.
  **/
 class EncoderPage : public Page {
+	/**
+	 * \addtogroup gui_encoder_page
+	 * @{
+	 **/
+	
  public:
   Encoder *encoders[GUI_NUM_ENCODERS];
-
-	/**
-	 * \addtogroup gui_encoder_page EncoderPage Class
-	 *
-	 * @{
-	 */
-	
 	/**
 	 * Create an EncoderPage with one or more encoders. The argument
 	 * order determines which encoder will be used. Unused encoders can
@@ -246,6 +251,11 @@ class EncoderPage : public Page {
  * to display it.
  */
 class SwitchPage : public Page {
+	/**
+	 * \addtogroup gui_switch_page
+	 * @{
+	 **/
+	
 public:
   Page *pages[4];
 
@@ -272,6 +282,8 @@ public:
 
   virtual void display();
   virtual bool handleEvent(gui_event_t *event);
+
+	/* @} */
 };
 
 /**
@@ -280,6 +292,11 @@ public:
  * to display it.
  */
 class EncoderSwitchPage : public SwitchPage {
+	/**
+	 * \addtogroup gui_switch_page
+	 * @{
+	 **/
+	
 public:
   EncoderSwitchPage(Page *p1 = NULL, Page *p2 = NULL, Page *p3 = NULL, Page *p4 = NULL) :
     SwitchPage(NULL, p1, p2, p3, p4) {
@@ -287,6 +304,8 @@ public:
 
   virtual void display();
   virtual bool handleEvent(gui_event_t *event);
+
+	/* @} */
 };
 
 
@@ -297,6 +316,11 @@ public:
  * switch between different pages in a "menu" kind of way.
  **/
 class ScrollSwitchPage : public EncoderPage {
+	/**
+	 * \addtogroup gui_switch_page
+	 * @{
+	 **/
+	
 public:
   Vector<Page *, 8> pages;
   RangeEncoder pageEncoder;
@@ -312,6 +336,8 @@ public:
   virtual void display();
   virtual void loop();
   virtual bool handleEvent(gui_event_t *event);
+
+	/* @} */
 };
 
 /* @} */
@@ -326,6 +352,11 @@ public:
  * pages. The Sketch class is an example of a page container.
  */
 class PageContainer {
+	/**
+	 * \addtogroup gui_page_container
+	 * @{
+	 **/
+	
  public:
 	/** Stores the active pages in a stack (max 8 pages). **/
   Stack<Page *, 8> pageStack;
@@ -404,6 +435,8 @@ class PageContainer {
 #ifdef HOST_MIDIDUINO
   virtual ~PageContainer() { }
 #endif
+
+	/* @} */
 };
 
 #endif /* PAGES_H__ */

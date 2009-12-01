@@ -28,6 +28,10 @@
  **/
 template <class C, int N, class T = uint8_t>
 class CRingBuffer {
+	/**
+	 * \addtogroup helpers_cringbuffer
+	 * @{
+	 **/
   volatile T rd, wr;
   volatile C buf[N];
   
@@ -51,6 +55,8 @@ class CRingBuffer {
   bool isFull() volatile;
 	/** Returns the number of elements in the ring buffer. **/
 	T size() volatile;
+
+	/* @} */
 };
 
 template <int N, class T = uint8_t>
@@ -143,5 +149,7 @@ template <class C, int N, class T>
   CLEAR_LOCK();
   return ret;
 }
+
+/* @} @} */
 
 #endif /* RINGBUFFER_H__ */

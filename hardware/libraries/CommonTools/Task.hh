@@ -22,6 +22,11 @@
 
 /** Represents a task that is executed at a regular interval. **/
 class Task {
+	/**
+	 * \addtogroup helpers_task
+	 * @{
+	 **/
+	
 public:
   uint16_t interval;
   uint16_t lastExecution;
@@ -62,6 +67,10 @@ public:
   virtual ~Task() {
   }
 #endif
+
+	/* @} */
 };
+
+/* @} @} */
 
 #endif /* TASK_H__ */

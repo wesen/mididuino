@@ -25,6 +25,11 @@
 /** Stack with N elements of class T. **/
 template <class T, int N>
 class Stack {
+	/**
+	 * \addtogroup helpers_stack
+	 * @{
+	 **/
+	
  public:
   volatile uint8_t wr, start;
   T buf[N];
@@ -48,6 +53,8 @@ class Stack {
   void reset();
 	/** Returns the number of elements in the stack. **/
   uint8_t size();
+
+	/* @} */
 };
 
 #define STACK_INC(x) (uint8_t)(((x) + 1) % N)
@@ -177,5 +184,7 @@ bool Stack<T,N>::isFull() {
   
   return ret;
 }
+
+/* @} @} */
 
 #endif /* STACK_H__ */

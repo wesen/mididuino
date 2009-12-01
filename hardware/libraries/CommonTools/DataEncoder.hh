@@ -32,6 +32,11 @@
  */
 
 class UartDataEncoder : public DataEncoder {
+	/**
+	 * \addtogroup uartdataencoder Uart Data Encoder
+	 * @{
+	 **/
+		 
 public:
 	MidiUartParent *uart;
 	
@@ -43,6 +48,10 @@ public:
 		uart->putc(inb);
 		DATA_ENCODER_TRUE();
 	}
+
+	/* @} */
 };
+
+/* @} @} @} */
 
 #endif /* DATA_ENCODER_H__ */

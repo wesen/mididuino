@@ -29,10 +29,15 @@
 
 /** Simple class representing a doubly linked list elemnt of type C. **/
 template <class C> class ListElt {
+	/**
+	 * \addtogroup listelt
+	 * @{
+	 */
 public:
   C obj;
   ListElt *next;
   ListElt *prev;
+	/* @} */
 };
 
 /** @} **/
@@ -48,6 +53,10 @@ public:
  **/
 template <class C, int N>
 class ListPool {
+	/**
+	 * \addtogroup listpool
+	 * @{
+	 **/
 public:
 
   ListElt<C> heap[N];
@@ -112,6 +121,7 @@ public:
       freeList = elt;
     }
   }
+	/* @} */
 };
 
 /** @} **/
@@ -125,6 +135,11 @@ public:
 
 /** Doubly-linked list with elements storing an object of type C. **/
 template <class C> class List {
+	/**
+	 * \addtogroup list
+	 * @{
+	 **/
+	
 public:
   ListElt<C> *head;
 
@@ -299,6 +314,8 @@ public:
 
     head = prev;
   }
+
+	/* @} */
 };
 
 /** @} **/
@@ -311,6 +328,11 @@ public:
 
 /** List class with automatic storage allocation of size N. **/
 template <class C, int N> class ListWithPool : public List<C> {
+	/**
+	 * \addtogroup listwithpool
+	 * @{
+	 **/
+	
 public:
   ListPool<C, N> pool;
 
@@ -391,6 +413,7 @@ public:
       return true;
     }
   }
+	/* @} */
 };
 
 /** @} **/
@@ -402,6 +425,10 @@ public:
  **/
 
 template <class C, int N> class CallbackList : public ListWithPool<C*, N> {
+	/**
+	 * \addtogroup callbacklist
+	 * @{
+	 **/
 public:
   bool add(C *obj) {
     ListElt<C*> *elt = findFirst(obj);
@@ -420,6 +447,7 @@ public:
       return false;
     }
   }
+	/* @} */
 };
   
 

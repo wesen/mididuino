@@ -40,6 +40,11 @@
  * SwitchSketchPage described further below.
  **/
 class Sketch : public PageContainer {
+	/**
+	 * \addtogroup gui_sketch
+	 * @{
+	 **/
+	
 public:
 
 	/** This is the name of the sketch. **/
@@ -166,6 +171,7 @@ public:
     n2[0] = '\0';
   }
 
+	/* @} */
 };
 
 /**
@@ -189,6 +195,11 @@ public:
  *
  */
 class SketchSwitchPage : public Page {
+	/**
+	 * \addtogroup gui_sketch_switchpage
+	 * @{
+	 **/
+	
 public:
   Sketch *sketches[4];
   Page *tmpPage;
@@ -223,6 +234,8 @@ public:
 	 * It checks if all buttons where pressed to activate the sketch switch page.
 	 **/
   virtual bool handleGlobalEvent(gui_event_t *event);
+
+	/* @} */
 };
 
 /* @} */

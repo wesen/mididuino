@@ -28,6 +28,11 @@
  **/
 template <int N>
 class RecordingEncoder : public Encoder {
+	/**
+	 * \addtogroup gui_recording_encoder
+	 * @{
+	 **/
+	
 public:
   Encoder *realEnc;
   int value[N];
@@ -82,6 +87,8 @@ public:
   virtual void displayAt(int i) {
     realEnc->displayAt(i);
   }
+
+	/* @} */
 };
 
 /* RecordingEncoder */

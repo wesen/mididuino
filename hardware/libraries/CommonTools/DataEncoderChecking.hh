@@ -33,6 +33,10 @@
 
 /** DataEncoder class, packing various values into a data buffer. **/
 class DataEncoder {
+	/**
+	 * \addtogroup dataencoder
+	 * @{
+	 **/
 public:
   uint8_t *data;
   uint8_t *ptr;
@@ -128,6 +132,7 @@ public:
 #ifdef HOST_MIDIDUINO
   virtual ~DataEncoder() { };
 #endif
+	/* @} */
 };
 
 /** @} **/
@@ -141,6 +146,10 @@ public:
 
 /** DataDecoder class, unpacking various values out of a data buffer. **/
 class DataDecoder {
+	/**
+	 * \addtogroup datadecoder
+	 * @{
+	 **/
 public:
 	uint8_t *data;
 	uint8_t *ptr;
@@ -285,6 +294,9 @@ public:
 #ifdef HOST_MIDIDUINO
   virtual ~DataDecoder() { };
 #endif
+	/* @} */
 };
+
+/* @} @} @} */
 
 #endif /* DATA_ENCODER_CHECKING_H__ */

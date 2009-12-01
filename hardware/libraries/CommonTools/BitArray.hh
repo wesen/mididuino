@@ -28,6 +28,10 @@
 
 /** Class to access a memory region as a huge bit vector. **/
 class BitArray {
+	/**
+	 *\addtogroup bitarray
+	 * @{
+	 */
   uint8_t *addr;
   uint8_t offset;
 	
@@ -71,6 +75,7 @@ public:
     idx += offset;
     return TOGGLE_BIT(addr[idx >> 3], idx & 7);
   }
+	/* @} */
 };
 
 /** @} **/
@@ -84,6 +89,10 @@ public:
 
 /** Class representing a bit vector of N bits. **/
 template <int N> class BitField {
+	/**
+	 *\addtogroup bitfield
+	 * @{
+	 */
 public:
   uint8_t _bits[(N / 8) + 1];
 
@@ -116,6 +125,8 @@ public:
   void toggleBit(uint16_t idx) {
     TOGGLE_BIT(_bits[idx >> 3], idx & 7);
   }
+
+	/* @} */
 };
 
 /** @} **/
