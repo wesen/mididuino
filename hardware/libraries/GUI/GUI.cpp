@@ -3,8 +3,6 @@
 
 #if defined(MIDIDUINO_USE_GUI) || defined(HOST_MIDIDUINO)
 
-extern CRingBuffer<gui_event_t, 8, uint8_t> EventRB;
-
 Sketch _defaultSketch((char *)"DFT");
 
 /************************************************/

@@ -4,6 +4,8 @@
 #include "MidiSysex.hh"
 #include "TurboMidi.hh"
 
+#ifndef HOST_MIDIDUINO
+
 static uint8_t turbomidi_sysex_header[] = {
 	0xF0, 0x00, 0x20, 0x3c, 0x00, 0x00
 };
@@ -81,7 +83,7 @@ void TurboMidiSysexListenerClass::end() {
 }
 
 static uint8_t getHighestBit(uint16_t b) {
-	for (uint8_t i = 15; i >= 0; i--) {
+	for (int8_t i = 15; i >= 0; i--) {
 		if (IS_BIT_SET(b, i)) {
 			return i;
 		}
@@ -268,3 +270,5 @@ bool TurboMidiSysexListenerClass::blockForState(tm_state_t _state, uint16_t time
 }
 
 TurboMidiSysexListenerClass TurboMidi;
+
+#endif

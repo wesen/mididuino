@@ -17,8 +17,6 @@
 #include <stdarg.h>
 
 #ifdef __cplusplus
-#include "BitArray.hh"
-#include "Task.hh"
 
 extern "C" {
 #endif
@@ -97,7 +95,9 @@ extern "C" {
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+#ifndef HOST_MIDIDUINO
 #define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
+#endif
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 
 uint8_t u_limit_value(uint8_t value, int8_t encoder, uint8_t min, uint8_t max);
@@ -214,6 +214,9 @@ extern volatile uint16_t slowclock;
 	
 #ifdef __cplusplus
 }
+
+#include "BitArray.hh"
+#include "Task.hh"
 #endif
 
 #endif /* HELPERS_H__ */

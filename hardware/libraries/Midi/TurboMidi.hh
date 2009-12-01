@@ -3,6 +3,8 @@
 
 #include "WProgram.h"
 
+#ifndef HOST_MIDIDUINO
+
 #define TURBOMIDI_SPEED_REQUEST            0x10
 #define TURBOMIDI_SPEED_ANSWER             0x11
 #define TURBOMIDI_SPEED_NEGOTIATION_MASTER 0x12
@@ -120,5 +122,7 @@ public:
 };
 
 extern TurboMidiSysexListenerClass TurboMidi;
+
+#endif
 
 #endif /* TURBOMIDI_H__ */
