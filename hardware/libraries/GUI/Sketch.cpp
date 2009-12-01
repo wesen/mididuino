@@ -1,4 +1,16 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "Sketch.hh"
+
+/**
+ * \addtogroup GUI
+ *
+ * @{
+ *
+ * \addtogroup gui_sketch Sketch class
+ *
+ * @{
+ **/
 
 void SketchSwitchPage::display() {
   if (redisplay) {
@@ -93,3 +105,7 @@ bool SketchSwitchPage::handleGlobalEvent(gui_event_t *event) {
     return false;
   }
 }
+
+/* @} */
+/* @} */
+

@@ -1,6 +1,31 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef RECORDING_ENCODER_H__
 #define RECORDING_ENCODER_H__
 
+/**
+ * \addtogroup GUI
+ *
+ * @{
+ *
+ * \addtogroup gui_encoders 
+ *
+ * @{
+ *
+ * \addtogroup gui_recording_encoder Recording Encoder Class
+ *
+ * @{
+ *
+ * \file
+ * Recording Encoder implementation
+ **/
+
+/**
+ * Create a recording encoder recording N values. The RecordingEncoder
+ * is actually a frontend simulating an encoder, delegating most calls
+ * to the actual encoder. However, it can be used to record movements
+ * of this encoder and play them back.
+ **/
 template <int N>
 class RecordingEncoder : public Encoder {
 public:
@@ -11,6 +36,7 @@ public:
   bool playing;
   int currentPos;
 
+	/** Create a recording encoder wrapper for the actual encoder _realEnc. **/
   RecordingEncoder(Encoder *_realEnc = NULL) {
     initRecordingEncoder(_realEnc);
   }
@@ -115,5 +141,7 @@ void RecordingEncoder<N>::playback(uint8_t pos) {
     // check if real encoder has change value XXX
   }
 }
+
+/* @} @} @} */
 
 #endif /* RECORDING_ENCODER_H__ */
