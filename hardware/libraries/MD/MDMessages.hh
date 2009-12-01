@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDMESSAGES_H__
 #define MDMESSAGES_H__
 
@@ -5,10 +7,41 @@
 
 extern uint8_t machinedrum_sysex_hdr[5];
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sysex MachineDrum Sysex Messages
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sysex_global MachineDrum Global Message
+ * @{
+ **/
+
+/**
+ * This class stores the global settings of the machinedrum, which comprises:
+ *
+ * - MIDI channel and clock and trigger settings
+ * - MachineDrum clock configuration
+ * - routing of the individual tracks to the audio outputs
+ * - gate, sensitivity and levels of the audio inputs
+ **/
 class MDGlobal {
+	/**
+	 * \addtogroup md_sysex_global
+	 * @{
+	 **/
+	
 public:
+	/** Original position of the global inside the MD (0 to 7). **/
   uint8_t origPosition;
+	/** Stores the audio output for each track. **/
   uint8_t drumRouting[16];
+	/** Stores the MIDI pitch that triggers each track. **/
   int8_t drumMapping[16];
   uint8_t baseChannel;
   uint16_t tempo;
@@ -38,11 +71,30 @@ public:
   MDGlobal() {
   }
 
+	/** Read in a global message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
+	/** Convert the global object into a sysex buffer to be sent to the machinedrum. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+
+	/* @} */
 };
 
+/* @} */
+
+/**
+ * \addtogroup md_sysex_kit MachineDrum Kit Message
+ * @{
+ **/
+
+/**
+ * This class stores the LFO settings for a track, inside the Kit object.
+ **/
 class MDLFO {
+	/**
+	 * \addtogroup md_sysex_kit
+	 * @{
+	 **/
+
 public:
   uint8_t destinationTrack;
   uint8_t destinationParam;
@@ -52,9 +104,19 @@ public:
   uint8_t speed;
   uint8_t depth;
   uint8_t mix;
+
+	/* @} */
 };
 
+/**
+ * This class stores the complete settings for a track inside the Kit object.
+ **/
 class MDMachine {
+	/**
+	 * \addtogroup md_sysex_kit
+	 * @{
+	 **/
+
 public:
   uint8_t params[24];
   uint8_t track;
@@ -63,9 +125,21 @@ public:
   MDLFO lfo;
   uint8_t trigGroup;
   uint8_t muteGroup;
+
+	/* @} */
 };
 
+/**
+ * This class is a short version of the full kit class to store just
+ * the models, names and position of a kit for studio firmwares.
+ **/
+	
 class MDKitShort {
+	/**
+	 * \addtogroup md_sysex_kit
+	 * @{
+	 **/
+
 public:
 	uint8_t origPosition;
 	char name[17];
@@ -74,27 +148,61 @@ public:
 	MDKitShort() {
 	}
 	
+	/** Read in a kit message from a sysex buffer. **/
 	bool fromSysex(uint8_t *sysex, uint16_t len);
+
+	/* @} */
 };
 
+/**
+ * This class stores the settings for a complete kit on the
+ * machinedrum, including effect and machine settings.
+ **/
 class MDKit {
+	/**
+	 * \addtogroup md_sysex_kit
+	 * @{
+	 **/
+
 public:
   uint8_t origPosition;
   char name[17];
+	/** The settings of the reverb effect. **/
   uint8_t reverb[8];
+	/** The settings of the delay effect. **/
   uint8_t delay[8];
+	/** The settings of the EQ effect. **/
   uint8_t eq[8];
+	/** The settings of the compressor effect. **/
   uint8_t dynamics[8];
 
+	/** The parameters for each track. **/
   MDMachine machines[16];
 
+	/** Read in a kit message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
+	/** Convert a kit object to a sysex buffer ready to be sent to the MD. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+
+	/* @} */
 };
 
+/* @} */
 
+/**
+ * \addtogroup md_sysex_song MachineDrum Song Message
+ * @{
+ **/
 
+/**
+ * This class stores a single row in a song.
+ **/
 class MDRow {
+	/**
+	 * \addtogroup md_sysex_song
+	 * @{
+	 **/
+
 public:
   uint8_t pattern;
   uint8_t kit;
@@ -104,17 +212,33 @@ public:
   uint16_t tempo;
   uint8_t startPosition;
   uint8_t endPosition;
+
+	/* @} */
 };
 
+/**
+ * This class stores a song of the MachineDrum.
+ **/
 class MDSong {
+	/**
+	 * \addtogroup md_sysex_song
+	 * @{
+	 **/
+
 public:
   uint8_t origPosition;
   char name[17];
   MDRow rows[256];
   uint8_t numRows;
   
+	/** Read in a song message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
+	/** Convert a song object to a sysex buffer ready to be sent to the MD. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+
+	/* @} */
 };
+
+/* @} */
 
 #endif /* MDMESSAGES_H__ */

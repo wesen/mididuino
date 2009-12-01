@@ -1,10 +1,38 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_LFO_PAGE_H__
 #define MD_LFO_PAGE_H__
 
 #include <MD.h>
 
-class MDLFOPage : 
-public EncoderPage {
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_pages MachineDrum Pages
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_lfo_page MachineDrum LFO Configuration Page
+ *
+ * @{
+ **/
+
+/**
+ * This page is used to control a LFO on the MachineDrum. It can
+ * control 4 different parameters of the LFO, automatically displaying
+ * their names and values.
+ **/
+class MDLFOPage : public EncoderPage {
+	/**
+	 * \addtogroup md_lfo_page
+	 *
+	 * @{
+	 **/
+	
 public:
   MDLFOEncoder lfoEncoders[4];
 
@@ -35,10 +63,20 @@ public:
       lfoEncoders[i].loadFromKit();
     }
   }
+
+	/* @} */
 };
 
-class MDLFOConfigPage : 
-public EncoderPage {
+/**
+ * This page is used to configure the parameters that the MDLFOPage controls.
+ **/
+class MDLFOConfigPage : public EncoderPage {
+	/**
+	 * \addtogroup md_lfo_page
+	 *
+	 * @{
+	 **/
+	
 public:
   EnumEncoder paramEncoders[4];
   MDLFOPage *lfoPage;
@@ -68,10 +106,17 @@ public:
       }
     }
   }
+
+	/* @} */
 };
 
-class MDLFOTrackSelectPage : 
-public EncoderPage {
+/** This class is used to configure the destination track of an MDLFOPage object. **/
+class MDLFOTrackSelectPage : public EncoderPage {
+	/**
+	 * \addtogroup md_lfo_page
+	 *
+	 * @{
+	 **/
 public:
   MDTrackFlashEncoder trackEncoder;
   MDLFOPage *lfoPage;
@@ -86,6 +131,9 @@ public:
       lfoPage->setTrack(trackEncoder.getValue());
     }
   }
+	/* @} */
 };
+
+/* @} @} @} */
 
 #endif /* MD_LFO_PAGE_H__ */

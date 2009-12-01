@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_PITCH_EUCLID_H__
 #define MD_PITCH_EUCLID_H__
 
@@ -5,7 +7,26 @@
 #include <Sequencer.h>
 #include <Scales.h>
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_pitch_euclid MachineDrum Pitch Euclid
+ * 
+ * @{
+ **/
+
+/**
+ * This class is used to generate algorithmic euclidean basslines on the MachineDrum.
+ * It registers to the clock system to sequence the notes it sends out.
+ **/
 class MDPitchEuclid {
+	/**
+	 * \addtogroup md_pitch_euclid
+	 * @{
+	 **/
+	
  public:
 	EuclidDrumTrack track;
 	const scale_t *currentScale;
@@ -29,7 +50,11 @@ class MDPitchEuclid {
 
 	static const uint8_t NUM_SCALES = 7;
 	static const scale_t *scales[NUM_SCALES];
+
+	/* @} */
 };
+
+/* @} @} */
 
 #endif /* MD_PITCH_EUCLID_H__ */
 

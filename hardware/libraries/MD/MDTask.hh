@@ -1,15 +1,52 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_TASK_H__
 #define MD_TASK_H__
 
 #include "Vector.hh"
 #include "Callback.hh"
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sysex MachineDrum Sysex Messages
+ * 
+ * @{
+ **/
+
 extern MDClass MD;
 
-class MDTaskClass : 
-  public Task, public MDCallback {
+/**
+ * \addtogroup md_task MachineDrum Sysex Task
+ *
+ * @{
+ **/
+
+/**
+ * This task class polls the MachineDrum regularly, asking for the
+ * current kit, global and pattern positions. It can be configured to
+ * automatically download the sysex data for these, and call callbacks
+ * when the kit/pattern/global changed.
+ **/
+class MDTaskClass : public Task, public MDCallback {
+	/**
+	 * \addtogroup md_task
+	 *
+	 * @{
+	 **/
+	
 public:
+	/**
+	 * When set to true, this will automatically request the kit sysex
+	 * data when the kit changed (default false).
+	 **/
   bool autoLoadKit;
+	/**
+	 * When set to true, this will automatically request the global sysex
+	 * data when the global changed (default false).
+	 **/
   bool autoLoadGlobal;
   bool reloadKit;
   bool reloadGlobal;
@@ -23,9 +60,6 @@ public:
     reloadGlobal = false;
     verbose = true;
   }
-
-  const static uint8_t MD_CB_CLASS_ID = 10;
-  const static uint8_t MD_CB_KITCHANGE_ID = 0;;
 
   CallbackVector<MDCallback, 8> kitChangeCallbacks;
   CallbackVector<MDCallback, 8> globalChangeCallbacks;
@@ -71,8 +105,13 @@ public:
   void onKitMessageCallback();
 
   virtual void destroy();
+
+	/* @} */
 };
 
+/**
+ * Initialize and register the MachineDrum task.
+ **/
 void initMDTask();
 
 extern MDTaskClass MDTask;

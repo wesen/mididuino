@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_RANDOMIZE_PAGE_H__
 #define MD_RANDOMIZE_PAGE_H__
 
@@ -5,7 +7,31 @@
 #include <MD.h>
 #include <MDRandomizer.h>
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_pages MachineDrum Pages
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_randomize_page MachineDrum Randomizer Configuration Page
+ *
+ * @{
+ **/
+
+/**
+ * This page is used to control the MachineDrum randomizer.
+ **/
 class MDRandomizePage : public EncoderPage {
+	/**
+	 * \addtogroup md_randomize_page
+	 *
+	 * @{
+	 **/
  public: 
 	MDTrackFlashEncoder trackEncoder;
 	RangeEncoder amtEncoder;
@@ -52,6 +78,10 @@ class MDRandomizePage : public EncoderPage {
 			
 		return false;
 	}
+
+	/* @} */
 };
+
+/* @} @} @} */
 
 #endif /* MD_RANDOMIZE_PAGE_H__ */

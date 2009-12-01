@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "MDEncoders.h"
 #include "GUI.h"
 #include "MD.h"
@@ -316,7 +318,7 @@ void MDAssignMachineEncoder::loadFromMD() {
   if (MD.loadedKit) {
     for (uint8_t i = 0; i < countof(machine_names); i++) {
       if (pgm_read_byte(&machine_names[i].id) == MD.kit.machines[track].model)
-	setValue(i);
+				setValue(i);
     }
   }
 }

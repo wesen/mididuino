@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDRANDOMIZER_H__
 #define MDRANDOMIZER_H__
 
@@ -5,7 +7,26 @@
 #include "Stack.h"
 #include "Midi.h"
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_randomizer MachineDrum machine randomizer
+ * 
+ * @{
+ **/
+
+
+/**
+ * Randomize a track, according to a selected parameter mask, and a variable amount.
+ **/
 class MDRandomizerClass : public MidiCallback {
+	/**
+	 * \addtogroup md_randomizer
+	 * @{
+	 **/
+	
  public:
   static const uint32_t paramSelectMask[13];
 	static const uint8_t FILTER_MASK = 0;
@@ -43,7 +64,10 @@ class MDRandomizerClass : public MidiCallback {
   
   void onKitChanged();
   void onCCCallback(uint8_t *msg);
+
+	/* @} */
 };
 
+/* @} @} */
 
 #endif /* MDRANDOMIZER_H__ */

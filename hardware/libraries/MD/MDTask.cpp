@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include <GUI.h>
 #include <MD.h>
 #include <Vector.hh>
@@ -67,6 +69,7 @@ void MDTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
     }
     break;
   }
+
   redisplay = true;
 }
 

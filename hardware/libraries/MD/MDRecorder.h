@@ -1,14 +1,37 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDRECORDER_H__
 #define MDRECORDER_H__
 
 #include "WProgram.h"
 #include "ListPool.hh"
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_recorder MachineDrum Recorder
+ * 
+ * @{
+ **/
+
+
+/**
+ * Stores a note send to the machinedrum.
+ **/
 typedef struct md_recorder_event_s {
+	/**
+	 * \addtogroup md_recorder
+	 * @{
+	 **/
+
   uint8_t channel;
   uint8_t pitch;
   uint8_t value;
   uint8_t step;
+
+	/* @} */
 } md_recorder_event_t;
 
 typedef enum {
@@ -17,7 +40,16 @@ typedef enum {
   MD_PLAYBACK_CCS = 2
 } md_playback_phase_t;
 
+/**
+ * This class records notes sent to the MachineDrum. It is in an early
+ * stage and will definitely change in the future.
+ **/
 class MDRecorderClass : public MidiCallback, public ClockCallback {
+	/**
+	 * \addtogroup md_recorder
+	 * @{
+	 **/
+
  public:
   MDRecorderClass();
 
@@ -50,7 +82,11 @@ class MDRecorderClass : public MidiCallback, public ClockCallback {
   void onNoteOnCallback(uint8_t *msg);
   void onCCCallback(uint8_t *msg);
   void on16Callback();
+
+	/* @} */
 };
+
+/* @} @} */
 
 extern MDRecorderClass MDRecorder;
 

@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include <inttypes.h>
 #include "WProgram.h"
 #include "helpers.h"

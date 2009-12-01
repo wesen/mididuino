@@ -1,10 +1,35 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDPATTERN_H__
 #define MDPATTERN_H__
 
 #include <inttypes.h>
 #include "ElektronPattern.hh"
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sysex MachineDrum Sysex Messages
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_pattern_global MachineDrum Pattern Message
+ * @{
+ **/
+
+/**
+ * This class stores just a few data of a pattern message, for studio
+ * firmwares that need to manipulate all the patterns on the MD.
+ **/
 class MDPatternShort {
+	/**
+	 * \addtogroup md_pattern_global 
+	 * @{
+	 **/
 public:
 	uint8_t origPosition;
 	uint8_t kit;
@@ -13,10 +38,16 @@ public:
 	MDPatternShort() {
 	}
 
+	/** Read in a pattern message from a sysex buffer. **/
 	bool fromSysex(uint8_t *sysex, uint16_t len);
+	/* @} */
 };
 
 class MDPattern : public ElektronPattern {
+	/**
+	 * \addtogroup md_pattern_global 
+	 * @{
+	 **/
 public:
   uint8_t origPosition;
 
@@ -25,13 +56,24 @@ public:
 
 	/* SUPER IMPORTANT DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES */
 
+	/**
+	 * Stores the trigger patterns for each track as a 64-bit bit mask (bit set: trigger).
+	 * Use the 64-bit version of the bit-accessing macros to manipulate it.
+	 **/
   uint64_t trigPatterns[16];
+	/**
+	 * Stores the lockPattern for each track as 24-bit bit mask (bit set: parameter is locked)
+	 **/
   uint32_t lockPatterns[16];
 
+	/** Stores the accent pattern as a 64-bit bitmask. **/
   uint64_t accentPattern;
+	/** Stores the accent pattern as a 64-bit bitmask. **/
   uint64_t slidePattern;
+	/** Stores the accent pattern as a 64-bit bitmask. **/
   uint64_t swingPattern;
-  uint64_t swingAmount;
+	/** Stores the swing amount as a 32-bit value. **/
+  uint32_t swingAmount;
 
   uint8_t accentAmount;
   uint8_t patternLength;
@@ -77,8 +119,15 @@ public:
 
   /* XXX TODO extra pattern 64 */
 
+	/** Read in a pattern message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
+	/** Convert the pattern object into a sysex buffer to be sent to the machinedrum. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+	/**
+	 * Convert the pattern object by using the specified encoder. This
+	 * allows the pattern to be sent directly to uart without rendering
+	 * it into a big intermediary buffer.
+	 **/
 	uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
 
 	bool isTrackEmpty(uint8_t track);
@@ -96,6 +145,8 @@ public:
 	void setNote(uint8_t track, uint8_t step, uint8_t pitch);
 
 	virtual void recalculateLockPatterns();
+
+	/* @} */
 };
 
 #endif /* MDPATTERN_H__ */

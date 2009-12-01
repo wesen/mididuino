@@ -1,6 +1,19 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "helpers.h"
 #include "MD.h"
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ *
+ * \addtogroup md_params MachineDrum parameters
+ *
+ * @{
+ **/
+
+/** Names for the LFO parameters. **/
 const char *MDLFONames[8] = {
   "TRK",
   "PRM",
@@ -12,6 +25,9 @@ const char *MDLFONames[8] = {
   "MIX"
 };
 
+/**
+ * Names for the different machine models of the machinedrum.
+ **/
 md_machine_name_t machine_names[134] PROGMEM = {
   { "GND---", 0},
   { "GND-SN", 1},
@@ -907,3 +923,4 @@ const tuning_t PROGMEM *MDClass::getModelTuning(uint8_t model) {
   return NULL;
 }
 
+/* @} @} */

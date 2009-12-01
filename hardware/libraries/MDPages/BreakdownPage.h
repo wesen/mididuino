@@ -1,10 +1,37 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDBREAKDOWN_PAGE_H__
 #define MDBREAKDOWN_PAGE_H__
 
 #include <MD.h>
 #include <MDBreakdown.h>
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_pages MachineDrum Pages
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_breakdown_page MachineDrum Breakdown Configuration Page
+ *
+ * @{
+ **/
+
+/**
+ * This page is used to configure the MDBreakdown object.
+ **/ 
 class BreakdownPage : public EncoderPage {
+	/**
+	 * \addtogroup md_breakdown_page 
+	 *
+	 * @{
+	 */
+	
  public:
     EnumEncoder repeatSpeedEncoder, breakdownEncoder;
 
@@ -51,7 +78,11 @@ class BreakdownPage : public EncoderPage {
   virtual void hide() {
     mdBreakdown.stopBreakdown();
   }
+
+	/* @} */
 };
+
+/* @} @} @} */
 
 
 #endif /* MDBREAKDOWN_PAGE_H__ */

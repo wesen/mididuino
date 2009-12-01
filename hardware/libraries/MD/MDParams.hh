@@ -1,5 +1,17 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_PARAMS_H__
 #define MD_PARAMS_H__
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ *
+ * \addtogroup md_params MachineDrum parameters
+ *
+ * @{
+ **/
 
 #define MD_ASSIGN_MACHINE_ID                             0x5b
 #define MD_ASSIGN_MACHINE_INIT_SYNTHESIS                 0
@@ -771,5 +783,7 @@ PGM_P model_param_name(uint8_t model, uint8_t param);
 
 extern const char *MDLFONames[8];
 extern md_machine_name_t machine_names[134] PROGMEM;
+
+/* @} @} */
 
 #endif /* MD_PARAMS_H__ */

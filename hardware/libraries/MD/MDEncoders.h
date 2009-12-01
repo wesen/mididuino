@@ -1,10 +1,28 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_ENCODERS_H__
 #define MD_ENCODERS_H__
 
 #include <MD.h>
 #include <GUI.h>
 
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_encoders MachineDrum encoders
+ * 
+ * @{
+ **/
+
 #ifdef MIDIDUINO_USE_GUI
+
+/**
+ * This encoder controls a specific track parameter on the machinedrum by sending CC messages.
+ *
+ * It depends on the global channel settings.
+ **/
 class MDEncoder : public CCEncoder {
 public:
   uint8_t track;
@@ -21,9 +39,15 @@ public:
   }
 
   MDEncoder(uint8_t _track = 0, uint8_t _param = 0, char *_name = NULL, uint8_t init = 0);
+
+	/** Load the value of the encoder from the stored parameter value in the currently loaded kit.
+	 **/
   void loadFromKit();
 };
 
+/**
+ * This encoder controls a parameter of a machinedrum effect by sending sysex messages.
+ **/
 class MDFXEncoder : public RangeEncoder {
  public:
   uint8_t effect;
@@ -36,9 +60,15 @@ class MDFXEncoder : public RangeEncoder {
     setValue(init);
   }
   MDFXEncoder(uint8_t _param = 0, uint8_t _effect = MD_FX_ECHO, char *_name = NULL, uint8_t init = 0);
+	/**
+	 * Load the value of the encoder from the stored effect parameter value in the currently loaded kit.
+	 **/
   void loadFromKit();
 };
 
+/**
+ * This encoder controls a LFO parameter on a given track by sending sysex messages.
+ **/
 class MDLFOEncoder : public RangeEncoder {
  public:
   uint8_t track;
@@ -66,6 +96,12 @@ class MDLFOEncoder : public RangeEncoder {
   virtual void displayAt(int i);
 };
 
+/**
+ * This encoder allows to select a track on the machinedrum (from 0 to
+ * 15), and displays the currently loaded machine on the track when
+ * the encoder is moved. It depends on the current kit being correctly
+ * loaded on the machinedrum.
+ **/
 class MDTrackFlashEncoder : public RangeEncoder {
  public:
  MDTrackFlashEncoder(char *_name = NULL, uint8_t init = 0) : RangeEncoder(0, 15, _name, init) {
@@ -74,6 +110,11 @@ class MDTrackFlashEncoder : public RangeEncoder {
   virtual void displayAt(int i);
 };
 
+/**
+ * This encoder is similar to the MDTrackFlashEncoder, but only
+ * displays melodic tracks, and "XXX" when the track is not loaded
+ * with a melodic machine.
+ **/
 class MDMelodicTrackFlashEncoder : public MDTrackFlashEncoder {
  public:
  MDMelodicTrackFlashEncoder(char *_name = NULL, uint8_t init = 0) : MDTrackFlashEncoder(_name, init) {
@@ -82,14 +123,22 @@ class MDMelodicTrackFlashEncoder : public MDTrackFlashEncoder {
   virtual void displayAt(int i);
 };
 
+/**
+ * This encoder allows to switch the kits on the machinedrum. When the
+ * encoder is moved, the selected kit is automatically loaded on the
+ * machinedrum.
+ **/
 class MDKitSelectEncoder : public RangeEncoder {
  public:
   MDKitSelectEncoder(const char *_name = NULL, uint8_t init = 0);
 
   virtual void displayAt(int i);
-  void loadFromMD();
 };
 
+/**
+ * This encoder allows to select a pattern on the MachineDrum (0 -
+ * 63). It automatically displays the correct name for the pattern.
+ **/
 class MDPatternSelectEncoder : public RangeEncoder {
  public:
   MDPatternSelectEncoder(const char *_name = NULL, uint8_t init = 0);
@@ -98,6 +147,10 @@ class MDPatternSelectEncoder : public RangeEncoder {
   void loadFromMD();
 };
 
+/**
+ * This encoder allows to select a parameter (0 to 23) on the given
+ * track. It automatically displays the name of the parameter.
+ **/
 class MDParamSelectEncoder : public RangeEncoder {
  public:
  MDParamSelectEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0) :
@@ -108,6 +161,11 @@ class MDParamSelectEncoder : public RangeEncoder {
   virtual void displayAt(int i);
 };
 
+/**
+ * This encoder allows to select and load a specific machine on the
+ * given track. It automatically loads the selected machine on the
+ * given track, and flashes the name of the select model.
+ **/
 class MDAssignMachineEncoder : public RangeEncoder {
  public:
   MDAssignMachineEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0);
@@ -117,6 +175,10 @@ class MDAssignMachineEncoder : public RangeEncoder {
   void loadFromMD();
 };
 
+/**
+ * This encoder allows to select the trigger group triggered track for the given track.
+ * It flashes the model loaded on the selected destination track.
+ **/
 class MDTrigGroupEncoder : public RangeEncoder {
  public:
   MDTrigGroupEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0);
@@ -126,6 +188,10 @@ class MDTrigGroupEncoder : public RangeEncoder {
   void loadFromMD();
 };
 
+/**
+ * This encoder allows to select the mute group muted track for the given track.
+ * It flashes the model loaded on the selected destination track.
+ **/
 class MDMuteGroupEncoder : public RangeEncoder {
  public:
   MDMuteGroupEncoder(uint8_t _track = 0, const char *_name = NULL, uint8_t init = 0);

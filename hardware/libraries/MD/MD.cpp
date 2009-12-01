@@ -18,7 +18,7 @@ uint8_t MDClass::noteToTrack(uint8_t pitch) {
   if (MD.loadedGlobal) {
     for (i = 0; i < sizeof(MD.global.drumMapping); i++) {
       if (pitch == MD.global.drumMapping[i])
-	return i;
+				return i;
     }
     return 128;
   } else {
@@ -152,12 +152,12 @@ uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
     off = ccStored - cc;
     if (ccStored >= cc) {
       if (offset != NULL) {
-	*offset = off;
+				*offset = off;
       }
       if (off <= tuning->offset)
-	return i + tuning->base;
+				return i + tuning->base;
       else 
-	return 128;
+				return 128;
     }
   }
   off = ABS(pgm_read_byte(&tuning->tuning[tuning->len - 1]) - cc);
@@ -422,7 +422,7 @@ bool MDClass::getBlockingKit(uint8_t kit, uint16_t timeout) {
 bool MDClass::getBlockingPattern(uint8_t pattern, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnPatternMessageCallback(&cb,
-																					(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+																							(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestPattern(pattern);
 	bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnPatternMessageCallback(&cb);
@@ -433,7 +433,7 @@ bool MDClass::getBlockingPattern(uint8_t pattern, uint16_t timeout) {
 bool MDClass::getBlockingGlobal(uint8_t global, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnGlobalMessageCallback(&cb,
-																					(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+																						 (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestGlobal(global);
 	bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnGlobalMessageCallback(&cb);

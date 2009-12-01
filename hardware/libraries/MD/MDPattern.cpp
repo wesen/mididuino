@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "MD.h"
 #include "MDPattern.hh"
 #include "Elektron.hh"

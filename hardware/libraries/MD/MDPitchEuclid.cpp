@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "MDPitchEuclid.h"
 
 const scale_t *MDPitchEuclid::scales[MDPitchEuclid::NUM_SCALES] = {
