@@ -1,6 +1,26 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "WProgram.h"
 #include "helpers.h"
 #include "Arpeggiator.hh"
+
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_tools Midi Tools
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_arpeggiator Midi Arpeggiator Class
+ *
+ * @{
+ **/
 
 const char *retrig_names[RETRIG_CNT] = {
   "OFF ",
@@ -436,3 +456,5 @@ void ArpeggiatorClass::removeNote(uint8_t pitch) {
   calculateArp();
 }
 
+
+/* @} @} @} */

@@ -1,7 +1,22 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MIDITOOLS_H__
 #define MIDITOOLS_H__
 
 #include "WProgram.h"
+
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_tools Midi Tools
+ *
+ * @{
+ **/
+
 
 #define NOTE_C      0
 #define NOTE_C_SHARP 1
@@ -22,5 +37,7 @@
 #define NOTE_B       11
 
 void getNotePitch(uint8_t pitch, char *name);
+
+/* @} @} */
 
 #endif /* MIDITOOLS_H__ */

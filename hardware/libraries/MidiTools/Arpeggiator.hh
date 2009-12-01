@@ -1,9 +1,35 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef ARPEGGIATOR_H__
 #define ARPEGGIATOR_H__
 
 #include "WProgram.h"
 
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_tools Midi Tools
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_arpeggiator Midi Arpeggiator Class
+ *
+ * @{
+ **/
+
 typedef enum {
+	/**
+	 * \addtogroup midi_arpeggiator 
+	 *
+	 * @{
+	 **/
+	
   ARP_STYLE_UP = 0,
   ARP_STYLE_DOWN,
   ARP_STYLE_UPDOWN,
@@ -21,13 +47,23 @@ typedef enum {
   ARP_STYLE_RANDOM_ONCE,
   ARP_STYLE_ORDER,
   ARP_STYLE_CNT
+
+	/* @} */
 } arp_style_t;
 
 typedef enum {
+	/**
+	 * \addtogroup midi_arpeggiator 
+	 *
+	 * @{
+	 **/
+	
   RETRIG_OFF = 0,
   RETRIG_NOTE,
   RETRIG_BEAT,
   RETRIG_CNT
+
+	/* @} */
 } arp_retrig_type_t;
 
 extern const char *retrig_names[RETRIG_CNT];
@@ -37,6 +73,12 @@ extern const char *arp_names[ARP_STYLE_CNT];
 #define MAX_ARP_LEN 64
 
 class ArpeggiatorClass : public MidiCallback {
+	/**
+	 * \addtogroup midi_arpeggiator 
+	 *
+	 * @{
+	 **/
+	
 public:
   uint8_t notes[NUM_NOTES];
   uint8_t velocities[NUM_NOTES];
@@ -77,9 +119,17 @@ public:
 
   void onNoteOffCallback(uint8_t *msg);
   void onNoteOnCallback(uint8_t *msg);
+
+	/* @} */
 };
 
 class MDArpeggiatorClass : public ArpeggiatorClass, public ClockCallback {
+	/**
+	 * \addtogroup midi_arpeggiator 
+	 *
+	 * @{
+	 **/
+	
 public:
   uint8_t recordPitches[64];
   int recordLength;
@@ -104,6 +154,10 @@ public:
   void playNext(uint32_t _my16thpos, bool recording = false);
   void on16Callback();
   void startRecording();
+
+	/* @} */
 };
+
+/* @} @} @} */
 
 #endif /* ARPEGGIATOR_H__ */

@@ -1,10 +1,36 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MERGER_H__
 #define MERGER_H__
 
 #include "helpers.h"
 #include "Midi.h"
 
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_tools Midi Tools
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_merger Midi Merger Class
+ *
+ * @{
+ **/
+
 class MergerSysexListener : public MidiSysexListenerClass {
+	/**
+	 * \addtogroup midi_merger 
+	 *
+	 * @{
+	 **/
+	
  public:
   MergerSysexListener() {
     ids[0] = 0xFF; // catchall
@@ -13,9 +39,17 @@ class MergerSysexListener : public MidiSysexListenerClass {
   }
 
   virtual void end();
+
+	/* @} */
 };
 
 class Merger : public MidiCallback {
+	/**
+	 * \addtogroup midi_merger 
+	 *
+	 * @{
+	 **/
+	
  public:
   static const uint8_t MERGE_CC_MASK        = _BV(0);
   static const uint8_t MERGE_NOTE_MASK      = _BV(1);
@@ -36,6 +70,10 @@ class Merger : public MidiCallback {
   void on3ByteCallback(uint8_t *msg);
 
   void setMergeMask(uint8_t _mask);
+
+	/* @} */
 };
+
+/* @} @} @} */
 
 #endif /* MERGER_H__ */

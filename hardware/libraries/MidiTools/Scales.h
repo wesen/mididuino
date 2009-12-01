@@ -1,7 +1,27 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef SCALES_H__
 #define SCALES_H__
 
 #include <inttypes.h>
+
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_tools Midi Tools
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_scales Midi Scales
+ *
+ * @{
+ **/
 
 typedef struct scale_s {
   uint8_t size;
@@ -57,5 +77,7 @@ extern scale_t minorMaj7ArpMin9;
 
 uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves = 0);
 uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
+
+/* @} @} @} */
 
 #endif /* SCALES_H__ */
