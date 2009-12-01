@@ -1,8 +1,24 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MODALGUI_H__
 #define MODALGUI_H__
 
 #include "WProgram.h"
 #include "GUI.h"
+
+/**
+ * \addtogroup GUI
+ *
+ * @{
+ *
+ * \addtogroup gui_modal Modal GUIs
+ *
+ * @{
+ *
+ * \file
+ * Modal GUIs
+ **/
+
 
 #define ALL_ENCODER_MASK (_BV(ButtonsClass::ENCODER1) | _BV(ButtonsClass::ENCODER2) | _BV(ButtonsClass::ENCODER3) | _BV(ButtonsClass::ENCODER4))
 

@@ -1,6 +1,21 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "LCDParent.hh"
 
 #include <string.h>
+
+/**
+ * \addtogroup LCD
+ *
+ * @{
+ *
+ * \addtogroup lcd_parent LCD Parent Class
+ *
+ * @{
+ *
+ * \file
+ * LCD Parent Class
+ **/
 
 #define LINE_LENGTH 16
 

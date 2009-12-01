@@ -1,9 +1,38 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef SKETCH_H__
 #define SKETCH_H__
 
 #include "Pages.hh"
 #include "Stack.h"
 
+/**
+ * \addtogroup GUI
+ *
+ * @{
+ *
+ * \addtogroup gui_sketch Sketch class
+ *
+ * @{
+ *
+ * \file
+ * Sketch class
+ **/
+
+/**
+ * The standard Sketch class, which is a PageContainer. This is used
+ * as the default parent class for individual "firmwares". Basically a
+ * Sketch is a standalone piece of functionality, using different
+ * Pages for controlling aspects of that functionality. A Sketch can
+ * be an arpeggiator, a standard MIDI controller with 4 different
+ * pages sending out CC messages, etc...
+ *
+ * The Mididuino framework provides a huge number of ready to go
+ * Sketches that can be further modified or just use as is.
+ *
+ * Different Sketch classes can be merged together in a big Monster
+ * firmware.
+ **/
 class Sketch : public PageContainer {
 public:
 
@@ -81,6 +110,16 @@ public:
 
 };
 
+/*
+ * \addtogroup gui_sketch_switchpage SketchSwitchPage
+ *
+ * @{
+ *
+ **/
+
+/**
+ *
+ */
 class SketchSwitchPage : public Page {
 public:
   Sketch *sketches[4];
@@ -104,6 +143,12 @@ public:
   virtual bool handleGlobalEvent(gui_event_t *event);
 };
 
+/* @} */
+
+/**
+ * This is the standard sketch that is always instantiated and
+ * displayed by default.
+ **/
 extern Sketch _defaultSketch;
 
 #endif /* SKETCH_H__ */
