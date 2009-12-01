@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDARPEGGIATORSKETCH_H__
 #define MDARPEGGIATORSKETCH_H__
 
@@ -5,6 +7,22 @@
 #include <GUI.h>
 #include <MidiTools.h>
 #include <Arpeggiator.hh>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_arpeggiator MachineDrum Arpeggiator Sketch
+ *
+ * @{
+ **/
 
 class ArpeggiatorSketch : public Sketch, public MDCallback {
 public:
@@ -165,5 +183,7 @@ class ConfigPage_2 : public EncoderPage {
   }
 
 };
+
+/* @} @} @} */
 
 #endif /* MDARPEGGIATORSKETCH_H__ */

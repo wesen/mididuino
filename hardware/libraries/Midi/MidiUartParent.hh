@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MIDIUARTPARENT_H__
 #define MIDIUARTPARENT_H__
 
@@ -5,7 +7,25 @@
 #include "Vector.hh"
 #include "Callback.hh"
 
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_uart Midi UART Parent Class
+ *
+ * @{
+ **/
+
 class MidiUartParent {
+	/**
+	 * \addtogroup midi_uart 
+	 *
+	 * @{
+	 **/
+	
 public:
   uint8_t running_status;
   uint8_t currentChannel;
@@ -308,7 +328,8 @@ public:
   virtual ~MidiUartParent() {
   }
 #endif
-  
+
+	/* @} */
 };
 
 #endif /* MIDIUARTPARENT_H__ */

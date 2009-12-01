@@ -1,9 +1,27 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_NOTES_RECORD_SKETCH_H__
 #define MD_NOTES_RECORD_SKETCH_H__
 
 #include <MD.h>
 #include <MidiTools.h>
 #include <MDRecorder.h>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_notes_recorder MachineDrum Notes Recorder Sketch
+ *
+ * @{
+ **/
 
 class MDNotesRecordSketch : 
 public Sketch, public MDCallback, public ClockCallback, public MidiCallback {
@@ -154,5 +172,7 @@ public:
   }
   
 };
+
+/* @} @} @} */
 
 #endif /* MD_NOTES_RECORD_SKETCH_H__ */

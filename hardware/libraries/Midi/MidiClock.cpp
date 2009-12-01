@@ -1,7 +1,10 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #include "MidiClock.h"
 #include "midi-common.hh"
 #include "helpers.h"
 #include "MidiUartParent.hh"
+
 // #include "MidiUart.h"
 
 // #define DEBUG_MIDI_CLOCK 0

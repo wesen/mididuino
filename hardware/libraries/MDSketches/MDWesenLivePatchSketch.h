@@ -1,9 +1,27 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDWesenLivePatchSketch_H__
 #define MDWesenLivePatchSketch_H__
 
 #include <MD.h>
 #include <AutoEncoderPage.h>
 #include <BreakdownPage.h>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_wesen_live_patch MachineDrum Wesen Live Patch Sketch
+ *
+ * @{
+ **/
 
 class MDWesenLivePatchSketch : 
 public Sketch, public MDCallback {
@@ -164,5 +182,7 @@ public:
     }
   }  
 };
+
+/* @} @} @} */
 
 #endif /* MDWesenLivePatchSketch_H__ */

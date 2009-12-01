@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MIDISYSEX_H__
 #define MIDISYSEX_H__
 
@@ -9,7 +11,25 @@
 
 class MidiSysexClass;
 
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_sysex Midi Sysex
+ *
+ * @{
+ **/
+
 class MidiSysexListenerClass {
+	/**
+	 * \addtogroup midi_sysex 
+	 *
+	 * @{
+	 **/
+	
  public:
   uint8_t ids[3];
 	MidiSysexClass *sysex;
@@ -34,11 +54,19 @@ class MidiSysexListenerClass {
   virtual ~MidiSysexListenerClass() {
   }
 #endif
+
+	/* @} */
 };
 
 #define NUM_SYSEX_SLAVES 4
 
 class MidiSysexClass {
+	/**
+	 * \addtogroup midi_sysex 
+	 *
+	 * @{
+	 **/
+	
  protected:
   bool aborted;
   bool recording;
@@ -102,9 +130,16 @@ class MidiSysexClass {
   void end();
   void handleByte(uint8_t byte);
 
+	/* @} */
 };
 
 class MididuinoSysexListenerClass : public MidiSysexListenerClass {
+	/**
+	 * \addtogroup midi_sysex 
+	 *
+	 * @{
+	 **/
+	
  public:
   MididuinoSysexListenerClass();
   virtual void handleByte(uint8_t byte);
@@ -113,6 +148,8 @@ class MididuinoSysexListenerClass : public MidiSysexListenerClass {
   virtual ~MididuinoSysexListenerClass() {
   }
 #endif
+
+	/* @} */
 };
 
 // extern MidiSysexClass MidiSysex;
@@ -120,5 +157,7 @@ class MididuinoSysexListenerClass : public MidiSysexListenerClass {
 #define MidiSysex Midi.midiSysex
 #define MidiSysex2 Midi2.midiSysex
 extern MididuinoSysexListenerClass MididuinoSysexListener;
+
+/* @} @} */
 
 #endif /* MIDISYSEX_H__ */

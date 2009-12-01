@@ -1,7 +1,26 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_RANDOMIZE_SKETCH_H__
 #define MD_RANDOMIZE_SKETCH_H__
 
 #include <MDRandomizePage.h>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_randomize MachineDrum Randomize Sketch
+ *
+ * @{
+ **/
+
 
 class MDRandomizeSketch : 
   public Sketch, public MDCallback {
@@ -47,10 +66,8 @@ public:
     m_strncpy_p(n1, PSTR("MD  "), 5);
     m_strncpy_p(n2, PSTR("RND "), 5);
   }
-
-
-  
-  
 };
+
+/* @} @} @} */
 
 #endif /* MD_RANDOMIZE_SKETCH_H__ */

@@ -1,5 +1,20 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MIDI_NOTES_H__
 #define MIDI_NOTES_H__
+
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_notes Midi Notes 
+ *
+ * @{
+ **/
+
 
 #define MIDI_NOTE_C0   ((0 * 12) + 0) // 0
 #define MIDI_NOTE_CS0  ((0 * 12) + 1) // 1
@@ -192,5 +207,7 @@
 #define MIDI_NOTE_FS10  ((10 * 12) + 6) // 126
 #define MIDI_NOTE_GB10  ((10 * 12) + 6) // 126
 #define MIDI_NOTE_G10   ((10 * 12) + 7) // 127
+
+/* @} @} */
 
 #endif /* MIDI_NOTES_H__ */

@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MIDI_COMMON_H__
 #define MIDI_COMMON_H__
 
@@ -6,6 +8,12 @@
 #ifndef NULL
 #define NULL 0
 #endif
+
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
 
 class MidiCallback {
  public:
@@ -90,6 +98,8 @@ typedef enum {
 #define CMD_STRING             0x30
 
 // typedef void (*midi_callback_t)(uint8_t *msg);
+
+/* @} */
 
 #endif /* MIDI_COMMON_H__ */
 

@@ -1,9 +1,27 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDEUCLIDRANDOMIZE_H__
 #define MDEUCLIDRANDOMIZE_H__
 
 #include <MD.h>
 #include <MDRandomizer.h>
 #include <Sequencer.h>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_euclid_randomizer MachineDrum Euclid Randomizer
+ *
+ * @{
+ **/
 
 class MDEuclidRandomizer {
  public:
@@ -211,6 +229,8 @@ public Sketch, public MDCallback, public ClockCallback {
 		m_strncpy_p(n2, PSTR("RND"), 5);
 	}
 };
+
+/* @} @} @} */
 
 	
 #endif /* MDEUCLIDRANDOMIZE_H__ */

@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MIDI_H__
 #define MIDI_H__
 
@@ -15,6 +17,18 @@ class MidiUartParent;
 extern "C" {
 #include "midi-common.hh"
 }
+
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_class Midi Parser Class
+ *
+ * @{
+ **/
 
 #define MIDI_NOTE_OFF_CB    0
 #define MIDI_NOTE_ON_CB     1
@@ -37,6 +51,12 @@ typedef void(MidiCallback::*midi_callback_ptr2_t)(uint8_t *msg, uint8_t len);
 #include "MidiSysex.hh"
 
 class MidiClass {
+	/**
+	 * \addtogroup midi_class
+	 *
+	 * @{
+	 **/
+	
  private:
   midi_state_t in_state;
   uint8_t last_status;
@@ -152,12 +172,16 @@ class MidiClass {
   void removeOnPitchWheelCallback(MidiCallback *obj) {
     midiCallbacks[MIDI_PITCH_WHEEL_CB].remove(obj);
   }
+
+	/* @} */
   
 };
 
 extern MidiClass Midi;
 extern MidiClass Midi2;
 extern MidiClass USBMidi;
+
+/* @} @} */
 
 #include <MidiUartParent.hh>
 

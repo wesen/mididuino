@@ -1,9 +1,23 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef TURBOMIDI_H__
 #define TURBOMIDI_H__
 
 #include "WProgram.h"
 
-#ifndef HOST_MIDIDUINO
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_turbomidi TurboMidi
+ *
+ * @{
+ **/
+
+#ifdef AVR
 
 #define TURBOMIDI_SPEED_REQUEST            0x10
 #define TURBOMIDI_SPEED_ANSWER             0x11
@@ -27,6 +41,11 @@
 #define TURBOMIDI_SPEED_20x   10
 
 class TurboMidiSysexListenerClass : public MidiSysexListenerClass {
+	/**
+	 * \addtogroup midi_turbomidi
+	 *
+	 * @{
+	 **/
 public:
 	TurboMidiSysexListenerClass();
 
@@ -119,10 +138,14 @@ public:
 	virtual ~TurboMidiSysexListenerClass() {
 	}
 #endif
+
+	/* @} */
 };
 
 extern TurboMidiSysexListenerClass TurboMidi;
 
 #endif
+
+/* @} @} */
 
 #endif /* TURBOMIDI_H__ */

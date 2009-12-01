@@ -1,8 +1,26 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MDPITCHEUCLIDSKETCH_H__
 #define MDPITCHEUCLIDSKETCH_H__
 
 #include <MD.h>
 #include <MDPitchEuclid.h>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_pitch_euclid MachineDrum Pitch Euclid Sketch
+ *
+ * @{
+ **/
 
 class MDPitchEuclidConfigPage1 : 
 public EncoderPage {
@@ -149,9 +167,8 @@ public Sketch, public MDCallback, public ClockCallback {
   void on16Callback(uint32_t counter) {
     pitchEuclid.on16Callback(counter);
   }
-
-
 };
 
+/* @} @} @} */
 
 #endif /* MDPITCHEUCLIDSKETCH_H__ */

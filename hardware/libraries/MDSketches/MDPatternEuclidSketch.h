@@ -1,9 +1,27 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MD_PATTERN_EUCLID_SKETCH_H__
 #define MD_PATTERN_EUCLID_SKETCH_H__
 
 #include <MD.h>
 #include <MDPitchEuclidSketch.h>
 #include <MDPatternEuclid.h>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_pattern_euclid MachineDrum Pattern Euclid Sketch
+ *
+ * @{
+ **/
 
 class MDPatternEuclidSketch : 
 public Sketch, MDCallback {
@@ -85,6 +103,6 @@ public Sketch, MDCallback {
 
 };
 
-
+/* @} @} @} */
 
 #endif /* MD_PATTERN_EUCLID_SKETCH_H__ */

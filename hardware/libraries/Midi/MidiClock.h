@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MIDICLOCK_H__
 #define MIDICLOCK_H__
 
@@ -7,12 +9,30 @@
 #include "Vector.hh"
 #include "midi-common.hh"
 
+/**
+ * \addtogroup Midi
+ *
+ * @{
+ **/
+
+/**
+ * \addtogroup midi_clock Midi Clock
+ *
+ * @{
+ **/
+
 class ClockCallback {
 };
 
 typedef void (ClockCallback::*midi_clock_callback_ptr_t)(uint32_t count);
 
 class MidiClockClass {
+	/**
+	 * \addtogroup midi_clock 
+	 *
+	 * @{
+	 **/
+	
  public:
   volatile uint32_t indiv96th_counter;
   volatile uint32_t outdiv96th_counter;
@@ -135,9 +155,13 @@ class MidiClockClass {
   bool isStarted() {
     return state == STARTED;
   }
+
+	/* @} */
 };
 
 extern MidiClockClass MidiClock;
+
+/* @} @} */
 
 #endif /* MIDICLOCK_H__ */
 

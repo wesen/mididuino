@@ -1,9 +1,27 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef LEO_SKETCH_H__
 #define LEO_SKETCH_H__
 
 #include <MD.h>
 #include <Scales.h>
 #include <MDLFOPage.h>
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_leo MachineDrum Leo Sketch
+ *
+ * @{
+ **/
 
 class LeoTriggerClass {
  public:
@@ -195,5 +213,7 @@ class LeoSketch : public Sketch, public MDCallback {
     return false;
   }
 };
+
+/* @} @} @} */
 
 #endif /* LEO_SKETCH_H__ */

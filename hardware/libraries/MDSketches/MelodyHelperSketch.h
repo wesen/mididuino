@@ -1,3 +1,5 @@
+/* Copyright (c) 2009 - http://ruinwesen.com/ */
+
 #ifndef MELODY_HELPER_SKETCH_H__
 #define MELODY_HELPER_SKETCH_H__
 
@@ -20,6 +22,23 @@ char *melodyHelperNoteNames[] = {
 };
 
 #define NOTE_OFFSET 8
+
+/**
+ * \addtogroup MD Elektron MachineDrum
+ *
+ * @{
+ * 
+ * \addtogroup md_sketches MachineDrum Sketches
+ * 
+ * @{
+ **/
+
+/**
+ * \addtogroup md_sketches_melody_helper MachineDrum Melody Helper Sketch
+ *
+ * @{
+ **/
+
 
 class MelodyHelperSketch : 
 public Sketch, public MidiCallback, public MDCallback {
@@ -126,5 +145,7 @@ public:
     return NULL;
   }
 };
+
+/* @} @} @} */
 
 #endif /* MELODY_HELPER_SKETCH_H__ */
