@@ -118,10 +118,25 @@ class MNMKit {
 public:
   uint8_t origPosition;
   char name[17];
-  MNMMachine machines[6];
-
+	uint8_t levels[6];
+	uint8_t parameters[6][72];
+	uint8_t models[6];
+	uint8_t types[6];
   uint16_t patchBusIn;
+	uint8_t mirrorLR;
+	uint8_t mirrorUD;
+	uint8_t destPages[6][6][2];
+	uint8_t destParams[6][6][62];
+	int8_t destRanges[6][6][2];
+	uint8_t lpKeyTrack;
+	uint8_t hpKeyTrack;
 
+	uint8_t trigPortamento;
+	uint8_t trigTracks[6];
+	uint8_t trigLegatoAmp;
+	uint8_t trigLegatoFilter;
+	uint8_t trigLegatoLFO;
+	
   static const uint8_t MULTIMODE_ALL = 0;
   static const uint8_t MULTIMODE_SPLIT_KEY = 1;
   static const uint8_t MULTIMODE_SEQ_START = 2;
@@ -137,6 +152,7 @@ public:
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+	uint16_t toSysex(MNMDataToSysexEncoder &encoder);
 };
 
 class MNMRow {
@@ -166,6 +182,7 @@ public:
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+	uint16_t toSysex(MNMDataToSysexEncoder &encoder);
 };
 
 

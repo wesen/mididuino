@@ -116,10 +116,10 @@ class MNMClass {
     assignMachine(currentTrack, model, initAll, initSynth);
   }
   void assignMachine(uint8_t track, uint8_t model, bool initAll = false, bool initSynth = false);
-  void setMachine(MNMMachine *machine) {
-    setMachine(currentTrack, machine);
+  void setMachine(uint8_t idx) {
+    setMachine(currentTrack, idx);
   }
-  void setMachine(uint8_t track, MNMMachine *machine);
+  void setMachine(uint8_t track, uint8_t idx);
 
   void setMute(bool mute) {
     setMute(currentTrack, mute);

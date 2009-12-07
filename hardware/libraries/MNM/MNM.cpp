@@ -201,7 +201,7 @@ void MNMClass::revertToCurrentKit(bool reloadKit) {
 void MNMClass::revertToTrack(uint8_t track, bool reloadKit) {
   if (!reloadKit) {
     if (loadedKit) {
-      setMachine(track, &kit.machines[track]);
+      setMachine(track, track);
     }
   }
 }
@@ -234,12 +234,12 @@ void MNMClass::assignMachine(uint8_t track, uint8_t model, bool initAll, bool in
   MNM.sendSysex(data, countof(data));
 }
 
-void MNMClass::setMachine(uint8_t track, MNMMachine *machine) {
-  assignMachine(track, machine->model);
+void MNMClass::setMachine(uint8_t track, uint8_t idx) {
+  assignMachine(track, kit.models[idx]);
   for (int i = 0; i < 56; i++) {
-    setParam(track, i, machine->params[i]);
+    setParam(track, i, kit.parameters[idx][i]);
   }
-  setTrackLevel(track, machine->level);
+  setTrackLevel(track, kit.levels[idx]);
 }
 
 class BlockCurrentStatusCallback : public MNMCallback {

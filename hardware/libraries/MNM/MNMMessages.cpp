@@ -114,170 +114,134 @@ uint16_t MNMGlobal::toSysex(MNMDataToSysexEncoder &encoder) {
 }
 
 bool MNMKit::fromSysex(uint8_t *data, uint16_t len) {
-  if (len < 698) {
-#ifdef HOST_MIDIDUINO
-    fprintf(stderr, "wrong len, %d should be %d bytes\n", len, 698 + 8);
-#endif
-    return false;
-  }
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+		return false;
+	}
 
-  uint8_t *udata = data + 3;
-  origPosition = udata[0];
-  m_memcpy(name, (char *)(udata + 1), 16);
+	origPosition = data[3];
+	MNMSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.get((uint8_t *)name, 16);
+	name[16] = '\0';
 
-  for (int i = 0; i < 6; i++) {
-    machines[i].level = udata[0xC + i];
-    for (int j = 0; j < 72; j++) {
-      machines[i].params[j] = udata[0x12 + i * 72 + j];
-    }
-    machines[i].model = udata[0x1C2 + i];
-    machines[i].type = udata[0x1C8 + i];
-  }
+	decoder.get(levels, 6);
+	decoder.get((uint8_t *)parameters, 6 * 72);
+	decoder.get(models, 6);
+	decoder.get(types, 6);
+	decoder.get16(&patchBusIn);
+	decoder.get8(&mirrorLR);
+	decoder.get8(&mirrorUD);
 
-  patchBusIn = ElektronHelper::to16Bit(udata + 0x1ce);
-  for (int i = 0; i < 6; i++) {
-    machines[i].modifier.mirrorLR = IS_BIT_SET(udata[0x1d1], i);
-    machines[i].modifier.mirrorUD = IS_BIT_SET(udata[0x1d2], i);
-    machines[i].modifier.LPKeyTrack = IS_BIT_SET(udata[0x2ab], i);
-    machines[i].modifier.HPKeyTrack = IS_BIT_SET(udata[0x2ac], i);
-  }
+	decoder.get((uint8_t *)destPages, 6 * 6 * 2);
+	decoder.get((uint8_t *)destParams, 6 * 6 * 2);
+	decoder.get((uint8_t *)destRanges, 6 * 6 * 2);
+	decoder.get8(&lpKeyTrack);
+	decoder.get8(&hpKeyTrack);
 
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 6; j++) {
-      machines[i].modifier.destPage[j][0] = udata[0x1d3 + i * 12 + j * 2];
-      machines[i].modifier.destPage[j][1] = udata[0x1d3 + i * 12 + j * 2 + 1];
-      machines[i].modifier.destParam[j][0] = udata[0x21b + i * 12 + j * 2];
-      machines[i].modifier.destParam[j][1] = udata[0x21b + i * 12 + j * 2 + 1];
-      machines[i].modifier.range[j][0] = udata[0x263 + i * 12 + j * 2];
-      machines[i].modifier.range[j][1] = udata[0x263 + i * 12 + j * 2 + 1];
-    }
-  }
+	decoder.get8(&trigPortamento);
+	decoder.get(trigTracks, 6);
+	decoder.get8(&trigLegatoAmp);
+	decoder.get8(&trigLegatoFilter);
+	decoder.get8(&trigLegatoLFO);
 
-  for (int i = 0; i < 6; i++) {
-    machines[i].trig.track = udata[0x2ae + i];
-    machines[i].trig.portamento = IS_BIT_SET(udata[0x2ad], i);
-    machines[i].trig.legatoAmp = IS_BIT_SET(udata[0x2b4], i);
-    machines[i].trig.legatoFilter = IS_BIT_SET(udata[0x2b5], i);
-    machines[i].trig.legatoLFO = IS_BIT_SET(udata[0x2b6], i);
-  }
-
-  commonMultimode = udata[0x2b7];
-  if (udata[0x2b8] == 0) {
+	decoder.get8(&commonMultimode);
+	uint8_t byte;
+	decoder.get8(&byte);
+  if (byte == 0) {
     commonTiming = 0;
   } else {
-    commonTiming = 1 << (1 - udata[0x2b8]);
+    commonTiming = 1 << (1 - byte);
   }
-  splitKey = udata[0x2b9];
-  splitRange = udata[0x2ba];
+	decoder.get8(&splitKey);
+	decoder.get8(&splitRange);
 
   return true;
 }
 
 uint16_t MNMKit::toSysex(uint8_t *data, uint16_t len) {
-  uint8_t udata[0x2ba + 1];
+	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
+	return toSysex(encoder);
+}
 
-  data[0] = 0xF0;
-  m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
-  data[6] = MNM_KIT_MESSAGE_ID;
-  data[7] = 0x02;
-  data[8] = 0x01;
+uint16_t MNMKit::toSysex(MNMDataToSysexEncoder &encoder) {
+	encoder.stop7Bit();
+	encoder.pack8(0xF0);
+	encoder.pack(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
+	encoder.pack8(MNM_KIT_MESSAGE_ID);
+	encoder.pack8(0x02); // version
+	encoder.pack8(0x01); // revision
 
-  uint16_t cksum = 0;
-  udata[0] = data[9] = origPosition;
-  cksum += data[9];
+	encoder.startChecksum();
+	encoder.pack8(origPosition);
+	encoder.start7Bit();
 
-  m_memcpy(udata + 1, name, 16);
-  for (int i = 0; i < 6; i++) {
-    udata[0xC + i] = machines[i].level;
-    for (int j = 0; j < 72; j++) {
-      udata[0x12 + i * 72 + j] = machines[i].params[j];
-    }
-    udata[0x1c2 + i] = machines[i].model;
-    udata[0x1c8 + i] = machines[i].type;
-  }
-  
-  ElektronHelper::from16Bit(patchBusIn, udata + 0x1ce);
-  udata[0x1d1] = udata[0x1d2] = udata[0x2ab] = udata[0x2ac] = 0;
-  udata[0x1d0] = 1; // ???
-  for (int i = 0; i < 6; i++) {
-    if (machines[i].modifier.mirrorLR)
-      SET_BIT(udata[0x1d1], i);
-    if (machines[i].modifier.mirrorUD)
-      SET_BIT(udata[0x1d2], i);
-    if (machines[i].modifier.LPKeyTrack)
-      SET_BIT(udata[0x2ab], i);
-    if (machines[i].modifier.HPKeyTrack)
-      SET_BIT(udata[0x2ac], i);
-  }
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 6; j++) {
-      udata[0x1d3 + i * 12 + j * 2] = machines[i].modifier.destPage[j][0];
-      udata[0x1d3 + i * 12 + j * 2 + 1] = machines[i].modifier.destPage[j][1];
-      udata[0x21b + i * 12 + j * 2] = machines[i].modifier.destParam[j][0];
-      udata[0x21b + i * 12 + j * 2 + 1] = machines[i].modifier.destParam[j][1];
-      udata[0x263 + i * 12 + j * 2] = machines[i].modifier.range[j][0];
-      udata[0x263 + i * 12 + j * 2 + 1] = machines[i].modifier.range[j][1];
-    }
-  }
-  udata[0x2b4] = udata[0x2b5] = udata[0x2b6] = 0xF0;
-  udata[0x2ad] = 0;
-  for (int i = 0; i < 6; i++) {
-    udata[0x2ae + i] = machines[i].trig.track;
-    if (machines[i].trig.portamento)
-      SET_BIT(udata[0x2ad], i);
-    if (machines[i].trig.legatoAmp)
-      SET_BIT(udata[0x2b4], i);
-    if (machines[i].trig.legatoFilter)
-      SET_BIT(udata[0x2b5], i);
-    if (machines[i].trig.legatoLFO)
-      SET_BIT(udata[0x2b6], i);
-  }
+	encoder.pack((uint8_t *)name, 16);
+	name[16] = '\0';
 
-  udata[0x2b7] = commonMultimode;
-  int j;
-  for (j = 0; j < 6; j++) {
+	encoder.pack(levels, 6);
+	encoder.pack((uint8_t *)parameters, 6 * 72);
+	encoder.pack(models, 6);
+	encoder.pack(types, 6);
+	encoder.pack16(patchBusIn);
+	encoder.pack8(mirrorLR);
+	encoder.pack8(mirrorUD);
+
+	encoder.pack((uint8_t *)destPages, 6 * 6 * 2);
+	encoder.pack((uint8_t *)destParams, 6 * 6 * 2);
+	encoder.pack((uint8_t *)destRanges, 6 * 6 * 2);
+	encoder.pack8(lpKeyTrack);
+	encoder.pack8(hpKeyTrack);
+
+	encoder.pack8(trigPortamento);
+	encoder.pack(trigTracks, 6);
+	encoder.pack8(trigLegatoAmp);
+	encoder.pack8(trigLegatoFilter);
+	encoder.pack8(trigLegatoLFO);
+
+	encoder.pack8(commonMultimode);
+	uint8_t byte = 0;
+  for (uint8_t j = 0; j < 6; j++) {
     if (IS_BIT_SET(commonTiming, j)) {
-      udata[0x2b8] = (j+1);
+      byte = (j+1);
       break;
     }
   }
-  if (j == 6) {
-    udata[0x2b8] = (0);
-  }
+	encoder.pack8(byte);
+	encoder.pack8(splitKey);
+	encoder.pack8(splitRange);
 
-  udata[0x2b9] = splitKey;
-  udata[0x2ba] = splitRange;
+	uint16_t enclen = encoder.finish();
+	encoder.finishChecksum();
 
-  MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
-  for (int i = 1; i < 699; i++) {
-    encoder.pack8(udata[i]);
-  }
-  uint16_t enclen = encoder.finish();
-  for (uint16_t i = 0; i < enclen; i++) {
-    cksum += data[10 + i];
- }
-  data[10 + enclen] = (cksum >> 7) & 0x7F;
-  data[10 + enclen + 1] = cksum & 0x7F;
-  data[10 + enclen + 2] = ((enclen + 5) >> 7) & 0x7F;
-  data[10 + enclen + 3] = (enclen + 5) & 0x7F;
-  data[10 + enclen + 2 + 2] = 0xF7;
-  
-  return enclen + 10 + sizeof(monomachine_sysex_hdr);
+	return enclen + 5;
 }
 
 bool MNMSong::fromSysex(uint8_t *data, uint16_t len) {
-  if (len < 3) {
-#ifdef HOST_MIDIDUINO
-    fprintf(stderr, "wrong length of unpacked data, %d should be 264\n", len);
-#endif
-    return false;
-  }
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+		return false;
+	}
 
-  //  uint8_t *udata = data + 3;
+	//	origPosition = data[3];
+	MNMSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
 
   return false;
 }
 
 uint16_t MNMSong::toSysex(uint8_t *sysex, uint16_t len) {
-  return 0;
+	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(sysex, len));
+	return toSysex(encoder);
+}
+
+uint16_t MNMSong::toSysex(MNMDataToSysexEncoder &encoder) {
+	encoder.stop7Bit();
+	encoder.pack8(0xF0);
+	encoder.pack(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
+	encoder.pack8(MNM_KIT_MESSAGE_ID);
+	encoder.pack8(0x02); // version
+	encoder.pack8(0x01); // revision
+
+	encoder.startChecksum();
+	//	encoder.pack8(origPosition);
+	encoder.start7Bit();
+
+	return 0;
 }
