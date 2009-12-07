@@ -11,6 +11,8 @@ rm -f .failure .failed .succeeded
 
 touch .failed .succeeded
 
+mkdir /tmp/build
+
 FIRMWARE_DIRS="PublishedFirmwares Tutorials"
 
 for dir in $FIRMWARE_DIRS; do

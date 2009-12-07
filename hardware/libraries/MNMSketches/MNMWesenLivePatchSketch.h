@@ -62,7 +62,7 @@ public:
         GUI.setLine(GUI.LINE1);
         GUI.flash_put_value_at(10, MNM.currentTrack + 1);
         GUI.setLine(GUI.LINE2);
-        GUI.flash_p_string_fill(MNM.getMachineName(MNM.kit.machines[MNM.currentTrack].model));
+        GUI.flash_p_string_fill(MNM.getMachineName(MNM.kit.models[MNM.currentTrack]));
       }
       return true;
     } 
