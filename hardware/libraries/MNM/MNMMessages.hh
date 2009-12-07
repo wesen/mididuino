@@ -126,7 +126,7 @@ public:
 	uint8_t mirrorLR;
 	uint8_t mirrorUD;
 	uint8_t destPages[6][6][2];
-	uint8_t destParams[6][6][62];
+	uint8_t destParams[6][6][2];
 	int8_t destRanges[6][6][2];
 	uint8_t lpKeyTrack;
 	uint8_t hpKeyTrack;

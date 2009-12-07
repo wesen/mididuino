@@ -60,6 +60,7 @@ test: main.host.o \
 			mnmDataEncoderTest.host.o \
       mdPatternTest.host.o\
 			mnmPatternTest.host.o \
+			mnmMessagesTest.host.o \
 			clockTests.host.o \
       $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
