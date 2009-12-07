@@ -140,7 +140,7 @@ void MDClass::setCompressorParam(uint8_t param, uint8_t value) {
 
 
 uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
-  tuning_t const *tuning = getModelTuning(kit.machines[track].model);
+  tuning_t const *tuning = getModelTuning(kit.models[track]);
   
   if (tuning == NULL)
     return 128;
@@ -170,7 +170,7 @@ uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
 }
 
 uint8_t MDClass::trackGetPitch(uint8_t track, uint8_t pitch) {
-  tuning_t const *tuning = getModelTuning(kit.machines[track].model);
+  tuning_t const *tuning = getModelTuning(kit.models[track]);
   
   if (tuning == NULL)
     return 128;
@@ -226,7 +226,7 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
 }
 
 bool MDClass::isMelodicTrack(uint8_t track) {
-  return (getModelTuning(kit.machines[track].model) != NULL);
+  return (getModelTuning(kit.models[track]) != NULL);
 }
 
 void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {

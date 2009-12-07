@@ -779,6 +779,10 @@
 #define MD_LFO_DEPTH  6
 #define MD_LFO_SHMIX  7
 
+#define MD_LFO_TYPE_FREE 0
+#define MD_LFO_TYPE_TRIG 1
+#define MD_LFO_TYPE_HOLD 2
+
 PGM_P model_param_name(uint8_t model, uint8_t param);
 
 extern const char *MDLFONames[8];

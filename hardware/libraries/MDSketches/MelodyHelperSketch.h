@@ -42,7 +42,7 @@ char *melodyHelperNoteNames[] = {
 
 class MelodyHelperSketch : 
 public Sketch, public MidiCallback, public MDCallback {
-public:
+ public:
   bool muted;
 
   MelodyHelperSketch() {
@@ -67,41 +67,41 @@ public:
 
       GUI.setLine(GUI.LINE1);
       if (monster) {
-	GUI.flash_p_string_at_fill(0, PSTR("TRACK:"));
-	GUI.flash_put_value_at(7, track + 1);
+				GUI.flash_p_string_at_fill(0, PSTR("TRACK:"));
+				GUI.flash_put_value_at(7, track + 1);
 
-	GUI.setLine(GUI.LINE2);
-	GUI.flash_p_string_at(0, MD.getMachineName(MD.kit.machines[track].model));
+				GUI.setLine(GUI.LINE2);
+				GUI.flash_p_string_at(0, MD.getMachineName(MD.kit.models[track]));
       } else {
-	GUI.put_p_string_at_fill(0, PSTR("TRACK:"));
-	GUI.put_value_at(7, track + 1);
+				GUI.put_p_string_at_fill(0, PSTR("TRACK:"));
+				GUI.put_value_at(7, track + 1);
 
-	GUI.setLine(GUI.LINE2);
-	GUI.put_p_string_at(0, MD.getMachineName(MD.kit.machines[track].model));
+				GUI.setLine(GUI.LINE2);
+				GUI.put_p_string_at(0, MD.getMachineName(MD.kit.models[track]));
       }
 
       if (pitch == 128) {
-	if (monster) {
-	  GUI.flash_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
-	} else {
-	  GUI.put_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
-	}
+				if (monster) {
+					GUI.flash_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
+				} else {
+					GUI.put_p_string_at_fill(NOTE_OFFSET, PSTR("XXX"));
+				}
       } else {
         uint8_t note = pitch % 12;
         uint8_t octave = pitch / 12;
-	if (monster) {
-	  GUI.flash_string_at_fill(NOTE_OFFSET, melodyHelperNoteNames[note]);
-	  GUI.lines[GUI.curLine].flash[NOTE_OFFSET + 1] = octave + '0';
-	  for (uint8_t i = 0; i < offset; i += 2) {
-	    GUI.lines[GUI.curLine].flash[NOTE_OFFSET + 2 + (i >> 1)] = '+';
-	  }
-	} else {
-	  GUI.put_string_at_fill(NOTE_OFFSET, melodyHelperNoteNames[note]);
-	  GUI.lines[GUI.curLine].data[NOTE_OFFSET + 1] = octave + '0';
-	  for (uint8_t i = 0; i < offset; i += 2) {
-	    GUI.lines[GUI.curLine].data[NOTE_OFFSET + 2 + (i >> 1)] = '+';
-	  }
-	}
+				if (monster) {
+					GUI.flash_string_at_fill(NOTE_OFFSET, melodyHelperNoteNames[note]);
+					GUI.lines[GUI.curLine].flash[NOTE_OFFSET + 1] = octave + '0';
+					for (uint8_t i = 0; i < offset; i += 2) {
+						GUI.lines[GUI.curLine].flash[NOTE_OFFSET + 2 + (i >> 1)] = '+';
+					}
+				} else {
+					GUI.put_string_at_fill(NOTE_OFFSET, melodyHelperNoteNames[note]);
+					GUI.lines[GUI.curLine].data[NOTE_OFFSET + 1] = octave + '0';
+					for (uint8_t i = 0; i < offset; i += 2) {
+						GUI.lines[GUI.curLine].data[NOTE_OFFSET + 2 + (i >> 1)] = '+';
+					}
+				}
       }
     }
   }
@@ -131,9 +131,9 @@ public:
     if (pressed) {
       muted = !muted;
       if (muted) {
-	GUI.flash_strings_fill("MELODY", "MUTED");
+				GUI.flash_strings_fill("MELODY", "MUTED");
       } else {
-	GUI.flash_strings_fill("MELODY", "UNMUTED");
+				GUI.flash_strings_fill("MELODY", "UNMUTED");
       }
     }
   }

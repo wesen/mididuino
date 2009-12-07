@@ -14,102 +14,88 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
   }
 
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
-    return false;
-  }
+		return false;
+	}
 
-  origPosition = data[9 - 6];
-  for (int i = 0; i < 16; i++) {
-    drumRouting[i] = data[0xA - 6 + i];
-  }
-  
-  ElektronHelper::ElektronSysexToData(data + 0x1A - 6, keyMap, 147);
-  baseChannel = data[0xAD - 6];
-  tempo = (data[0xAF - 6] << 7) | data[0xB0 - 6];
-  extendedMode = (data[0xB1 - 6] == 1);
-  clockIn = ((data[0xB2 - 6] & 1) != 0);
-  clockOut = ((data[0xB2 - 6] & 32) != 0);
-  transportIn = ((data[0xB2 - 6] & 16) != 0);
-  transportOut = ((data[0xB2 - 6] & 64) != 0);
-  localOn = (data[0xb3 - 6] == 1);
+	origPosition = data[3];
+	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.get(drumRouting, 16);
 
-  drumLeft = data[0xB4 - 6];
-  drumRight = data[0xB5 - 6];
-  gateLeft = data[0xB6 - 6];
-  gateRight = data[0xB7 - 6];
-  senseLeft = data[0xB8 - 6];
-  senseRight = data[0xB9 - 6];
-  minLevelLeft = data[0xBA - 6];
-  minLevelRight = data[0xBB - 6];
-  maxLevelLeft = data[0xBC - 6];
-  maxLevelRight = data[0xBD - 6];
-  
-  programChange = data[0xBE - 6];
-  trigMode = data[0xBF - 6];
+	decoder.start7Bit();
+	decoder.get((uint8_t *)drumMapping, 16);
+	decoder.get(keyMap, 128);
+	decoder.get8(&triggerStart);
+	decoder.get8(&triggerStop);
+	decoder.stop7Bit();
 
-  for (int i = 0; i < 16; i++) {
-    drumMapping[i] = -1;
-  }
-  for (int i = 0; i < 128; i++) {
-    if (keyMap[i] < 16) {
-      drumMapping[keyMap[i]] = i;
-    }
-  }
+	decoder.get8(&baseChannel);
+	decoder.get8(&unused);
+	decoder.get16(&tempo);
+	decoder.getb(&extendedMode);
+
+	uint8_t byte = 0;
+	decoder.get8(&byte);
+	clockIn = IS_BIT_SET(byte, 0);
+	transportIn = IS_BIT_SET(byte, 4);
+	clockOut = IS_BIT_SET(byte, 5);
+	transportOut = IS_BIT_SET(byte, 6);
+	decoder.getb(&localOn);
+
+	decoder.get(&drumLeft, 10);
+
   return true;
 }
 
 uint16_t MDGlobal::toSysex(uint8_t *data, uint16_t len) {
+	ElektronDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
+	return toSysex(encoder);
   if (len < 0xC5)
     return 0;
-  
-  m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
-  data[6] = MD_GLOBAL_MESSAGE_ID;
-  data[7] = 0x05; // version
-  data[8] = 0x01;
+}
 
-  data[9] = origPosition;
-  for (int i = 0; i < 16; i++){
-    data[0xA + i] = drumRouting[i];
-  }
-  for (int i = 0; i < 16; i++) {
-    if (drumMapping[i] != -1) {
-      keyMap[drumMapping[i]] = i;
-    }
-  }
-  ElektronHelper::ElektronDataToSysex(keyMap, data + 0x1A, 128);
-  data[0xAd] = baseChannel;
-  data[0xAe] = 0;
-  data[0xAF] = (uint8_t)((tempo >> 7) & 0x7F);
-  data[0xB0] = (uint8_t)(tempo & 0x7F);
-  data[0xB1] = (uint8_t) (extendedMode ? 1 : 0);
-  data[0xb2] = 0;
-  if (clockIn)
-    data[0xb2] |= 1;
-  if (clockOut)
-    data[0xb2] |= 32;
-  if (transportIn)
-    data[0xb2] |= 16;
-  if (transportOut)
-    data[0xb2] |= 64;
-  data[0xb3] = (uint8_t) (localOn ? 1 : 0);
+uint16_t MDGlobal::toSysex(ElektronDataToSysexEncoder &encoder) {
+	encoder.stop7Bit();
+	encoder.pack8(0xF0);
+	encoder.pack(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+	encoder.pack8(MD_PATTERN_MESSAGE_ID);
+	encoder.pack8(0x05); // version
+	encoder.pack8(0x01); // revision
 
-  data[0xb4] = drumLeft;
-  data[0xb6] = gateLeft;
-  data[0xb8] = senseLeft;
-  data[0xBa] = minLevelLeft;
-  data[0xBC] = maxLevelLeft;
+	encoder.startChecksum();
+	encoder.pack8(origPosition);
 
-  data[0xb5] = drumRight;
-  data[0xb7] = gateRight;
-  data[0xb9] = senseRight;
-  data[0xBB] = minLevelLeft;
-  data[0xBD] = maxLevelLeft;
+	encoder.pack(drumRouting, 16);
 
-  data[0xBE] = programChange;
-  data[0xBF] = trigMode;
+	encoder.start7Bit();
+	encoder.pack((uint8_t *)drumMapping, 16);
+	encoder.pack(keyMap, 128);
+	encoder.pack8(triggerStart);
+	encoder.pack8(triggerStop);
+	encoder.stop7Bit();
 
-	ElektronHelper::calculateSysexChecksum(data, 0xC0);
+	encoder.pack8(baseChannel);
+	encoder.pack8(unused);
+	encoder.pack16(tempo);
+	encoder.packb(extendedMode);
 
-  return 0xC5;
+	uint8_t byte = 0;
+	if (clockIn)
+		SET_BIT(byte, 0);
+	if (transportIn)
+		SET_BIT(byte, 4);
+	if (clockOut)
+		SET_BIT(byte, 5);
+	if (transportOut)
+		SET_BIT(byte, 6);
+	encoder.pack8(byte);
+	encoder.packb(localOn);
+
+	encoder.pack(&drumLeft, 10);
+
+	uint16_t enclen = encoder.finish();
+	encoder.finishChecksum();
+
+	return enclen + 5;
 }
 
 bool MDKitShort::fromSysex(uint8_t *data, uint16_t len) {
@@ -121,19 +107,17 @@ bool MDKitShort::fromSysex(uint8_t *data, uint16_t len) {
   }
 
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
-    return false;
-  }
+		return false;
+	}
 
-  origPosition = data[9 - 6];
-  m_memcpy(name, (char *)data + 0xA - 6, 16);
+	origPosition = data[3];
+	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.get((uint8_t *)name, 16);
+	name[16] = '\0';
 
-  uint8_t data2[16 * 36];
-  uint8_t *ptr = data2;
-  ElektronHelper::ElektronSysexToData(data + 0x1aa - 6, data2, 74);
-  for (int i = 0; i < 16; i++) {
-    models[i] = ElektronHelper::to32Bit(ptr);
-    ptr += 4;
-  }
+	decoder.skip(24 * 16 + 16);
+	decoder.start7Bit();
+	decoder.get32(models, 16);
 
 	return true;
 }
@@ -150,130 +134,81 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
     return false;
   }
 
-  origPosition = data[9 - 6];
-  m_memcpy(name, (char *)data + 0xA - 6, 16);
+	origPosition = data[3];
+	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.get((uint8_t *)name, 16);
+	name[16] = '\0';
 
-  int idx = 0x1A - 6;
-  for (int i = 0; i < 16; i++) {
-    for (int j = 0; j < 24; j++) {
-      machines[i].params[j] = data[idx++];
-    }
-  }
-  for (int i = 0; i < 16; i++) {
-    machines[i].level = data[idx++];
-  }
+	decoder.get((uint8_t *)params, 16 * 24);
+	decoder.get(levels, 16);
 
-  uint8_t data2[16 * 36];
-  uint8_t *ptr = data2;
-  ElektronHelper::ElektronSysexToData(data + 0x1aa - 6, data2, 74);
-  for (int i = 0; i < 16; i++) {
-    machines[i].model = ElektronHelper::to32Bit(ptr);
-    ptr += 4;
-    machines[i].track = i;
-  }
+	decoder.start7Bit();
+	decoder.get32(models, 16);
+	decoder.stop7Bit(); // reset 7 bit
+	decoder.start7Bit();
+	for (uint8_t i = 0; i < 16; i++) {
+		decoder.get((uint8_t *)&lfos[i], 36);
+	}
+	decoder.stop7Bit();
 
-  ptr = data2;
-  ElektronHelper::ElektronSysexToData(data + 0x1f4 - 6, data2, 659);
-  for (int i = 0; i < 16; i++) {
-    machines[i].lfo.destinationTrack = ptr[0];
-    machines[i].lfo.destinationParam = ptr[1];
-    machines[i].lfo.shape1 = ptr[2];
-    machines[i].lfo.shape2 = ptr[3];
-    machines[i].lfo.type = ptr[4];
-    machines[i].lfo.speed = machines[i].params[21];
-    machines[i].lfo.depth = machines[i].params[22];
-    machines[i].lfo.mix = machines[i].params[23];
-    ptr += 36;
-  }
+	decoder.get(reverb, 8);
+	decoder.get(delay, 8);
+	decoder.get(eq, 8);
+	decoder.get(dynamics, 8);
 
-  for (int i = 0; i < 8; i++) {
-    reverb[i] = data[0x487 + i - 6];
-    delay[i] = data[0x48F + i - 6];
-    eq[i] = data[0x497 + i - 6];
-    dynamics[i] = data[0x49F + i - 6];
-  }
-
-  ptr = data2;
-  ElektronHelper::ElektronSysexToData(data + 0x4a7 - 6, data2, 37);
-  for (int i = 0; i < 16; i++) {
-    machines[i].trigGroup = ptr[i * 2];
-    machines[i].muteGroup = ptr[i * 2 + 1];
-    ptr += 2;
-  }
+	decoder.start7Bit();
+	decoder.get(trigGroups, 16);
+	decoder.get(muteGroups, 16);
 
   return true;
 }
 
 uint16_t MDKit::toSysex(uint8_t *data, uint16_t len) {
-  if (len < 0x4d1)
+	ElektronDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
+  if (len < 0xC5)
     return 0;
-  
-  data[0] = 0xF0;
-  m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+	return toSysex(encoder);
+}
 
-  data[6] = MD_KIT_MESSAGE_ID;
-  data[7] = 0x04; // version
-  data[8] = 0x01;
-		
-  data[9] = origPosition;
-  bool afterEnd = false;
-  for (int i = 0; i < 16; i++) {
-    if (afterEnd) {
-      data[i + 0xA] = ' ';
-    } else {
-      data[i + 0xA] = name[i] & 0x7F;
-    }
-  }
+uint16_t MDKit::toSysex(ElektronDataToSysexEncoder &encoder) {
+	encoder.stop7Bit();
+	encoder.pack8(0xF0);
+	encoder.pack(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+	encoder.pack8(MD_PATTERN_MESSAGE_ID);
+	encoder.pack8(0x04); // version
+	encoder.pack8(0x01); // revision
 
-  int idx = 0x1A;
-  for (int i = 0; i < 16; i++) {
-    for (int j = 0; j < 24; j++) {
-      data[idx++] = machines[i].params[j];
-    }
-  }
-  for (int i = 0; i < 16; i++) {
-    data[idx++] = machines[i].level;
-  }
+	encoder.startChecksum();
+	encoder.pack8(origPosition);
 
-  uint8_t data2[16 * 36];
-  uint8_t *ptr = data2;
-  for (int i = 0; i < 16; i++) {
-    ElektronHelper::from32Bit(machines[i].model, ptr);
-    ptr += 4;
-  }
-  ElektronHelper::ElektronDataToSysex(data2, data + 0x1AA, 16 * 4);
+	encoder.pack((uint8_t *)name, 16);
+	name[16] = '\0';
 
-  ptr = data2;
-  for (int i = 0; i < 16; i++) {
-    ptr[0] = machines[i].lfo.destinationTrack;
-    ptr[1] = machines[i].lfo.destinationParam;
-    ptr[2] = machines[i].lfo.shape1;
-    ptr[3] = machines[i].lfo.shape2;
-    ptr[4] = machines[i].lfo.type;
-    for (int j = 5; j < 36; j++) {
-      ptr[j] = 10;
-    }
-    ptr += 36;
-  }
-  ElektronHelper::ElektronDataToSysex(data2, data + 0x1F4, 16 * 36);
-		
-  for (int i = 0; i < 8; i++) {
-    data[0x487 + i] = reverb[i];
-    data[0x48F + i] = delay[i];
-    data[0x497 + i] = eq[i];
-    data[0x49F + i] = dynamics[i];
-  }
+	encoder.pack((uint8_t *)params, 16 * 24);
+	encoder.pack(levels, 16);
 
-  ptr = data2;
-  for (int i = 0; i < 16; i++) {
-    ptr[i*2] = machines[i].trigGroup;
-    ptr[i*2+1] = machines[i].muteGroup;
-    ptr += 2;
-  }
-  ElektronHelper::ElektronDataToSysex(data2, data + 0x4a7, 32);
-	ElektronHelper::calculateSysexChecksum(data, 0x4cc);
+	encoder.start7Bit();
+	encoder.pack32(models, 16);
+	encoder.stop7Bit();
+	encoder.start7Bit();
+	for (uint8_t i = 0; i < 16; i++) {
+		encoder.pack((uint8_t *)&lfos[i], 36);
+	}
+	encoder.stop7Bit();
 
-  return 0x4d1;
+	encoder.pack(reverb, 8);
+	encoder.pack(delay, 8);
+	encoder.pack(eq, 8);
+	encoder.pack(dynamics, 8);
+
+	encoder.start7Bit();
+	encoder.pack(trigGroups, 16);
+	encoder.pack(muteGroups, 16);
+	
+	uint16_t enclen = encoder.finish();
+	encoder.finishChecksum();
+
+	return enclen + 5;
 }
 
 bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
@@ -285,69 +220,55 @@ bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
   }
 
   numRows = (len - (0x1A - 7)) / 12;
-  uint16_t end = 0x1A + numRows * 12;
-  
-  origPosition = data[9 - 6];
-  m_memcpy(name, (char *)data + 0xA - 6, 16);
 
-  uint8_t data2[10];
-  uint8_t *ptr = data + 0x1A - 6;
+  origPosition = data[3];
+	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.get((uint8_t *)name, 16);
+	name[16] = '\0';
+
   for (int i = 0; i < numRows; i++) {
-    ElektronHelper::ElektronSysexToData(ptr, data2, 12);
-    rows[i].pattern = data2[0];
-    rows[i].kit = data2[1];
-    rows[i].loopTimes = data2[2];
-    rows[i].jump = data2[3];
-    rows[i].mutes = ElektronHelper::to16Bit(data2[4], data2[5]);
-    rows[i].tempo = ElektronHelper::to16Bit(data2[6], data2[7]);
-    rows[i].startPosition = data2[8];
-    rows[i].endPosition = data2[9];
-    ptr += 12;
+		decoder.start7Bit();
+		decoder.get((uint8_t *)&rows[i], 4);
+		decoder.get16(&rows[i].mutes);
+		decoder.get16(&rows[i].tempo);
+		decoder.get(&rows[i].startPosition, 2);
+		decoder.stop7Bit();
   }
   
   return true;
 }
 
 uint16_t MDSong::toSysex(uint8_t *data, uint16_t len) {
+	ElektronDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
   if (len < (uint16_t)(0x1F + numRows * 12 ))
     return 0;
-  
-  data[0] = 0xF0;
-  m_memcpy(data + 1, machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
 
-  data[6] = MD_SONG_MESSAGE_ID;
-  data[7] = 0x02; // version
-  data[8] = 0x02;
-  data[9] = origPosition;
+	return toSysex(encoder);
+}
 
-  bool afterEnd = false;
-  for (int i = 0; i < 16; i++) {
-    if (afterEnd) {
-      data[i + 0xA] = ' ';
-    } else {
-      data[i + 0xA] = name[i] & 0x7F;
-    }
-  }
+uint16_t MDSong::toSysex(ElektronDataToSysexEncoder &encoder) {
+	encoder.stop7Bit();
+	encoder.pack8(0xF0);
+	encoder.pack(machinedrum_sysex_hdr, sizeof(machinedrum_sysex_hdr));
+	encoder.pack8(MD_PATTERN_MESSAGE_ID);
+	encoder.pack8(0x04); // version
+	encoder.pack8(0x01); // revision
 
-  uint8_t *ptr = data + 0x1A;
-  uint8_t data2[10];
-  for (int i = 0; i < numRows; i++) {
-    data2[0] = rows[i].pattern;
-    data2[1] = rows[i].kit;
-    data2[2] = rows[i].loopTimes;
-    data2[3] = rows[i].jump;
-    ElektronHelper::from16Bit(rows[i].mutes, data2 + 4);
-    ElektronHelper::from16Bit(rows[i].tempo, data2 + 6);
-    data2[8] = rows[i].startPosition;
-    data2[9] = rows[i].endPosition;
-    ElektronHelper::ElektronDataToSysex(data2, ptr, 10);
-    ptr += 12;
-  }
+	encoder.startChecksum();
+	encoder.pack8(origPosition);
+	encoder.pack((uint8_t *)name, 16);
 
-  int end = 0x1A + 12 * numRows;
+	for (uint8_t i = 0; i < numRows; i++) {
+		encoder.start7Bit();
+		encoder.pack((uint8_t *)&rows[i].pattern, 4);
+		encoder.pack16(rows[i].mutes);
+		encoder.pack16(rows[i].tempo);
+		encoder.pack(&rows[i].startPosition, 2);
+		encoder.stop7Bit();
+	}
+	
+	uint16_t enclen = encoder.finish();
+	encoder.finishChecksum();
 
-	ElektronHelper::calculateSysexChecksum(data, end);
-  int length = 0x1F + 12 * numRows - 10;
-
-  return length + 10;
+	return enclen + 5;
 }

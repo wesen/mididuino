@@ -87,7 +87,7 @@ void MDRandomizerClass::randomize(int amount, uint8_t mask, uint8_t *params) {
 
     for (uint8_t i = 0; i < 24; i++) {
       if (IS_BIT_SET32(trackMask, i)) {
-        int param = MD.kit.machines[track].params[i];
+        int param = MD.kit.params[track][i];
         int rand = random(-amount, amount);
         param += rand;
         if (param > 127) 
@@ -97,7 +97,7 @@ void MDRandomizerClass::randomize(int amount, uint8_t mask, uint8_t *params) {
 				if (params != NULL) {
 					params[i] = param;
 				} else {
-					MD.kit.machines[track].params[i] = param;
+					MD.kit.params[track][i] = param;
 					MD.setTrackParam(track, i, param);
 				}
       }
@@ -110,9 +110,9 @@ void MDRandomizerClass::setup() {
 }
 
 bool MDRandomizerClass::undo() {
-    if (undoStack.pop(&MD.kit.machines[track].params)) {
+	if (undoStack.pop(&MD.kit.params[track])) {
       for (uint8_t i = 0; i < 24; i++) {
-        MD.setTrackParam(track, i, MD.kit.machines[track].params[i]);
+        MD.setTrackParam(track, i, MD.kit.params[track][i]);
       }
       return true;
     } else {
@@ -121,7 +121,7 @@ bool MDRandomizerClass::undo() {
   }
 
 void MDRandomizerClass::onKitChanged() {
-  m_memcpy(origParams, MD.kit.machines[track].params, sizeof(origParams));
+  m_memcpy(origParams, MD.kit.params[track], sizeof(origParams));
 }
 
 void MDRandomizerClass::onCCCallback(uint8_t *msg) {
@@ -129,7 +129,7 @@ void MDRandomizerClass::onCCCallback(uint8_t *msg) {
   uint8_t track, param;
   MD.parseCC(channel, msg[1], &track, &param);
   if (track != 255) {
-    MD.kit.machines[track].params[param] = msg[2];
+    MD.kit.params[track][param] = msg[2];
   }
 }
 

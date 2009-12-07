@@ -35,9 +35,9 @@ void MNMEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
 
 void MNMEncoder::loadFromKit() {
   if (param == 101) {
-    setValue(MNM.kit.machines[track].level);
+    setValue(MNM.kit.levels[track]);
   } else if (param < 72) {
-    setValue(MNM.kit.machines[track].params[param]);
+    setValue(MNM.kit.parameters[track][param]);
   }
 }
 
@@ -48,7 +48,7 @@ void MNMEncoder::initMNMEncoder(uint8_t _track, uint8_t _param,
   if (_name == NULL) {
     if (MNM.loadedKit) {
       PGM_P name= NULL;
-      name = MNM.getModelParamName(MNM.kit.machines[track].model, param);
+      name = MNM.getModelParamName(MNM.kit.models[track], param);
       if (name != NULL) {
 	char myName[4];
 	m_strncpy_p(myName, name, 4);
@@ -77,7 +77,7 @@ void MNMTrackFlashEncoder::displayAt(int i) {
   GUI.put_value(i, track + 1);
   redisplay = false;
   GUI.flash_put_value(i, track + 1);
-  GUI.flash_p_string_at_fill(flashOffset[i], MNM.getMachineName(MNM.kit.machines[track].model));
+  GUI.flash_p_string_at_fill(flashOffset[i], MNM.getMachineName(MNM.kit.models[track]));
 }
 
 #endif /* HOST_MIDIDUINO */

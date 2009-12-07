@@ -13,6 +13,8 @@ touch .failed .succeeded
 
 mkdir /tmp/build
 
+make clean libclean
+
 FIRMWARE_DIRS="PublishedFirmwares Tutorials"
 
 for dir in $FIRMWARE_DIRS; do

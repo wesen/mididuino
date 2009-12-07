@@ -234,7 +234,7 @@ uint16_t MDPattern::toSysex(ElektronDataToSysexEncoder &encoder) {
     }
   }
 	encoder.fill8(0xFF, 32 * (64 - lockIdx));
-	encoder.reset();
+	encoder.reset(); // reset 7 bit
 
 	encoder.pack32(&accentEditAll, 3 * 16 + 3);
 	/*

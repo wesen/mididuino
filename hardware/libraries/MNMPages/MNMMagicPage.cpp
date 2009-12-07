@@ -5,7 +5,7 @@ void MagicMNMPage::show() {
   if (track != 255) {
     GUI.flash_strings_fill("MAGIC PAGE ", "");
     GUI.setLine(GUI.LINE2);
-    GUI.flash_p_string_fill(MNM.getMachineName(MNM.kit.machines[track].model));
+    GUI.flash_p_string_fill(MNM.getMachineName(MNM.kit.models[track]));
     GUI.setLine(GUI.LINE1);
     GUI.flash_put_value_at(11, track + 1);
   }
@@ -31,7 +31,7 @@ void MagicMNMPage::setTrack(uint8_t _track)  {
   for (int i = 0; i < 4; i++) {
     realEncoders[i].initMNMEncoder(track, params[i], NULL);
     if (MNM.loadedKit) {
-      realEncoders[i].setValue(MNM.kit.machines[track].params[params[i]]);
+      realEncoders[i].setValue(MNM.kit.parameters[track][params[i]]);
     }
   }
   clearRecording();
@@ -168,7 +168,7 @@ void MagicSwitchPage::setToCurrentTrack() {
   else {
     GUI.flash_strings_fill("MAGIC PAGE ", "");
     GUI.setLine(GUI.LINE2);
-    GUI.flash_p_string_fill(MNM.getMachineName(MNM.kit.machines[currentTrack].model));
+    GUI.flash_p_string_fill(MNM.getMachineName(MNM.kit.models[currentTrack]));
     GUI.setLine(GUI.LINE1);
     GUI.flash_put_value_at(11, currentTrack + 1);
 

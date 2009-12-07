@@ -166,7 +166,7 @@ public:
   void onKitChanged() {
 		//		MidiUart.printfString("PARSED KIT %b with name %s", MD.kit.origPosition, MD.kit.name);
     for (int i = 0; i < 16; i++) {
-      if (MD.kit.machines[i].model == RAM_P1_MODEL) {
+      if (MD.kit.models[i] == RAM_P1_MODEL) {
         ramP1Track = i;
         mdBreakdown.ramP1Track = i;
         break;
