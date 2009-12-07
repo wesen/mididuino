@@ -59,6 +59,7 @@ test: main.host.o \
 		  dataEncoderTest.host.o \
 			mnmDataEncoderTest.host.o \
       mdPatternTest.host.o\
+			mdMessagesTest.host.o \
 			mnmPatternTest.host.o \
 			mnmMessagesTest.host.o \
 			clockTests.host.o \
