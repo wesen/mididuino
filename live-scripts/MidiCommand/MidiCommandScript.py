@@ -2,6 +2,7 @@ import Live
 from consts import *
 import sys
 from MidiCommandHelper import MidiCommandHelper
+from MidiCommandListener import MidiCommandListener
 from ParamMap import ParamMap
 from Devices import *
 from Tracing import Traced
@@ -48,6 +49,8 @@ class MidiCommandScript:
         if self.is_live_5():
             live = "Live 5"
         self.show_message(self.__name__ + " " + self.__version__ + " for " + live)
+        self.log("listeners %s" % MidiCommandListener.songListeners)
+        self.listener = MidiCommandListener(self, self.song(), MidiCommandListener.songListeners)
 
     def dump_documentation(self):
         for i in ["Application.Application", "Clip.Clip", "ClipSlot.ClipSlot", "Device.Device", "DeviceParameter.DeviceParameter", "MidiMap", "MixerDevice.MixerDevice", "Scene.Scene", "Song.Song", "Song.BeatTime", "Song.CuePoint", "Song.Quantization", "Song.SmptTime", "Song.TimeFormat", "Track.Track"]:
@@ -211,5 +214,6 @@ class MidiCommandScript:
 		c.receive_midi_note(channel, status, note_no, note_vel)
 	    self.param_map.receive_midi_note(channel, status, note_no, note_vel)
 	else:
+            self.log("unknown midi %s" % str(midi_bytes))
 	    assert False, ('Unknown MIDI message %s' % str(midi_bytes))
 
