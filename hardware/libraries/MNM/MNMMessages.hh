@@ -2,7 +2,9 @@
 #define MNM_MESSAGES_H__
 
 #include <inttypes.h>
+#include "MNMDataEncoder.hh"
 
+/*
 class MNMMidiMap {
 public:
   uint8_t range;
@@ -12,11 +14,14 @@ public:
   int8_t transpose;
   uint8_t timing;
 };
+*/
 
 class MNMGlobal {
 public:
   uint8_t origPosition;
 
+	/* XXX Don't change the order of declaration, important for decoding */
+	
   uint8_t autotrackChannel;
   uint8_t baseChannel;
   uint8_t channelSpan;
@@ -29,14 +34,14 @@ public:
   bool ctrlOut;
 
   bool transportIn;
-  bool transportOut;
-  
   bool sequencerOut;
   bool arpOut;
+
+  bool transportOut;
+  
   bool keyboardOut;
   bool midiClockOut;
   bool pgmChangeOut;
-  bool pgmChangeIn;
 
   uint8_t note; /* not used */
   uint8_t gate; /* not used */
@@ -47,12 +52,19 @@ public:
   uint8_t midiMachineChannels[6];
   uint8_t ccDestinations[6][4];
 
-  bool midiSeqLegato[6]; /* always true */
-  bool legato[6]; /* not unsed */
-  
-  MNMMidiMap maps[32];
+  uint8_t midiSeqLegato[6]; /* always true */
+  uint8_t legato[6]; /* not unsed */
+
+	uint8_t mapRange[32];
+	uint8_t mapPattern[32];
+	uint8_t mapOffset[32];
+	uint8_t mapLength[32];
+	int8_t mapTranspose[32];
+	uint8_t mapTiming[32];
 
   uint8_t globalRouting;
+	bool pgmChangeIn;
+	uint8_t unused[5];
 
   uint32_t baseFreq;
 
@@ -61,6 +73,7 @@ public:
 
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
+	uint16_t toSysex(MNMDataToSysexEncoder &encoder);
 };
 
 class MNMTrackModifier {

@@ -187,8 +187,8 @@ uint16_t MNMPattern::toSysex(MNMDataToSysexEncoder &encoder) {
 	encoder.pack8(0xF0);
 	encoder.pack(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
 	encoder.pack8(MNM_PATTERN_MESSAGE_ID);
-	encoder.pack8(0x05);
-	encoder.pack8(0x01);
+	encoder.pack8(0x05); // version
+	encoder.pack8(0x01); // revision
 
 	encoder.startChecksum();
 	encoder.pack8(origPosition);

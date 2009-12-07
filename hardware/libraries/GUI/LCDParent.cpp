@@ -169,7 +169,7 @@ void LCDParentClass::putnumber32(uint32_t num) {
     num /= 10;
   }
   for (i = 0; i < 10; i++) {
-    putdata(res[9-i]);
+    putdata(res[9-i] + '0');
   }
 }
 

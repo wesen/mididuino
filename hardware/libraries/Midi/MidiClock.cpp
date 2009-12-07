@@ -190,7 +190,7 @@ void MidiClockClass::updateClockInterval() {
 }
 
 void MidiClockClass::incrementCounters() {
-  if (state == STARTING) {
+  if (state == STARTING && (mode == INTERNAL_MIDI || useImmediateClock)) {
     state = STARTED;
   } else if (state == STARTED) {
 		div96th_counter++;
@@ -342,28 +342,30 @@ void MidiClockClass::handleTimerInt()  {
     }
 
 		incrementCounters();
-      
-    if (transmit) {
-      int len = (div96th_counter - outdiv96th_counter);
-      for (int i = 0; i < len; i++) {
-				MidiUart.putc_immediate(MIDI_CLOCK);
-				outdiv96th_counter++;
-      }
-    }
+		
+		if (state == STARTED) {
+			if (transmit) {
+				int len = (div96th_counter - outdiv96th_counter);
+				for (int i = 0; i < len; i++) {
+					MidiUart.putc_immediate(MIDI_CLOCK);
+					outdiv96th_counter++;
+				}
+			}
+		
+			if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
+				if ((div96th_counter < indiv96th_counter) ||
+						(div96th_counter > (indiv96th_counter + 1))) {
+					div96th_counter = indiv96th_counter;
+					div32th_counter = indiv32th_counter;
+					div16th_counter = indiv16th_counter;
+					mod6_counter = inmod6_counter;
+				}
+			}
+		
+			callCallbacks();
 
-    if (mode == EXTERNAL_MIDI || mode == EXTERNAL_UART2) {
-      if ((div96th_counter < indiv96th_counter) ||
-					(div96th_counter > (indiv96th_counter + 1))) {
-				div96th_counter = indiv96th_counter;
-				div32th_counter = indiv32th_counter;
-				div16th_counter = indiv16th_counter;
-				mod6_counter = inmod6_counter;
-      }
-    }
-
-    inIRQ = false;
-
-		callCallbacks();
+			inIRQ = false;
+		}
   } else {
     counter--;
   }

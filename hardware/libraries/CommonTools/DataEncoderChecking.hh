@@ -64,6 +64,14 @@ public:
     return false;
   }
 
+	virtual DATA_ENCODER_RETURN_TYPE packb(bool inb) {
+		if (inb)
+			return pack8(1);
+		else
+			return pack8(0);
+  }
+
+
 	DATA_ENCODER_RETURN_TYPE fill8(uint8_t inb, uint16_t cnt) {
 		for (uint16_t i = 0; i < cnt; i++) {
 			if (!pack8(inb))
@@ -167,7 +175,16 @@ public:
 	uint16_t getIdx() {
 		return ptr - data;
 	}
-		
+
+	virtual DATA_ENCODER_RETURN_TYPE getb(bool *b) {
+		uint8_t c;
+		bool ret = get8(&c);
+		if (!ret) {
+			*b = c;
+		}
+		return ret;
+	}
+	
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c) {
 		return false;
 	}

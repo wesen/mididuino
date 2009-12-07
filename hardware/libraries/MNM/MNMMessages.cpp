@@ -8,150 +8,109 @@
 #endif
 
 bool MNMGlobal::fromSysex(uint8_t *data, uint16_t len) {
-  if (len < 264) {
-#ifdef HOST_MIDIDUINO
-    fprintf(stderr, "wrong len, %d should be %d bytes\n", len, 272);
-#endif
-    return false;
-  }
+	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+		return false;
+	}
 
-  uint8_t *udata = data + 3;
+	origPosition = data[3];
+	MNMSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
 
-  origPosition = udata[0];
-  autotrackChannel = udata[1];
-  baseChannel = udata[2];
-  channelSpan = udata[3];
-  multitrigChannel = udata[4];
-  multimapChannel = udata[5];
-  clockIn = IS_BIT_SET(udata[6], 0);
-  clockOut = IS_BIT_SET(udata[6], 5);
-  ctrlIn = IS_BIT_SET(udata[6], 4);
-  ctrlOut = IS_BIT_SET(udata[6], 6);
-  transportIn = udata[7];
-  sequencerOut = udata[8];
-  arpOut = udata[9];
-  keyboardOut = udata[0xa];
-  transportOut = udata[0xb];
-  midiClockOut = udata[0xc];
-  pgmChangeOut = udata[0xd];
-  for (int i = 0; i < 6; i++) {
-    midiMachineChannels[i] = udata[0x13 + i];
-    ccDestinations[i][0] = udata[0x19 + i];
-    ccDestinations[i][1] = udata[0x19 + 6 + i];
-    ccDestinations[i][2] = udata[0x19 + 12 + i];
-    ccDestinations[i][3] = udata[0x19 + 18 + i];
-    midiSeqLegato[i] = udata[0x31 + i];
-    legato[i] = udata[0x37 + i];
-  }
-  for (int i = 0; i < 32; i++) {
-    maps[i].range = udata[0x3d + i];
-    maps[i].pattern = udata[0x5d + i];
-    maps[i].offset = udata[0x7d + i];
-    maps[i].length = udata[0x9d + i];
-    maps[i].transpose = udata[0xbd + i];
-    if (udata[0xdd + i] == 0) {
-      maps[i].timing = 0;
-    } else {
-      maps[i].timing = 1 << (1 - udata[0xdd + i]);
-    }
-  }
-  globalRouting = udata[0xfd];
-  pgmChangeIn = udata[0xfe];
-  baseFreq = ElektronHelper::to32Bit(udata + 0x105);
-  //  printf("baseFreq: %ld\n", baseFreq);
+	decoder.get(&autotrackChannel, 5);
+	/*
+		autotrackChannel = udata[1];
+		baseChannel = udata[2];
+		channelSpan = udata[3];
+		multitrigChannel = udata[4];
+		multimapChannel = udata[5];
+	*/
+
+	uint8_t byte = 0;
+	decoder.get8(&byte);
+	
+  clockIn = IS_BIT_SET(byte, 0);
+  clockOut = IS_BIT_SET(byte, 5);
+  ctrlIn = IS_BIT_SET(byte, 4);
+  ctrlOut = IS_BIT_SET(byte, 6);
+
+	decoder.getb(&transportIn);
+	decoder.getb(&sequencerOut);
+	decoder.getb(&arpOut);
+	decoder.getb(&keyboardOut);
+	decoder.getb(&transportOut);
+	decoder.getb(&midiClockOut);
+	decoder.getb(&pgmChangeOut);
+	
+	decoder.get(&note, 5); // note, gate, sense, minvel, maxvel (not used)
+	
+	decoder.get(midiMachineChannels, 6);
+	decoder.get((uint8_t *)ccDestinations, 6 * 4);
+	decoder.get(midiSeqLegato, 6);
+	decoder.get(legato, 6);
+
+	decoder.get(mapRange, 32 * 6);
+	decoder.get8(&globalRouting);
+	decoder.getb(&pgmChangeIn);
+	decoder.get(unused, 5);
+	decoder.get32(&baseFreq);
 
   return true;
 }
 
 uint16_t MNMGlobal::toSysex(uint8_t *data, uint16_t len) {
-  uint8_t udata[0x10a];
-  
-  data[0] = 0xF0;
-  m_memcpy(data + 1, monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
-  data[6] = MNM_GLOBAL_MESSAGE_ID;
-  data[7] = 0x02; // version
-  data[8] = 0x01; // revision
+	MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data, len));
+	return toSysex(encoder);
+}
 
-  uint16_t cksum = 0;
-  udata[0] = data[9] = origPosition;
-  cksum += data[9];
+uint16_t MNMGlobal::toSysex(MNMDataToSysexEncoder &encoder) {
+	encoder.stop7Bit();
+	encoder.pack8(0xF0);
+	encoder.pack(monomachine_sysex_hdr, sizeof(monomachine_sysex_hdr));
+	encoder.pack8(MNM_GLOBAL_MESSAGE_ID);
+	encoder.pack8(0x02); // version
+	encoder.pack8(0x01); // revision
 
-  udata[1] = (autotrackChannel);
-  udata[2] = (baseChannel);
-  udata[3] = (channelSpan);
-  udata[4] = (multitrigChannel);
-  udata[5] = (multimapChannel);
-  uint8_t sync = 0;
-  if (clockIn)
-    SET_BIT(sync, 0);
-  if (clockOut)
-    SET_BIT(sync, 5);
-  if (ctrlIn)
-    SET_BIT(sync, 4);
-  if (ctrlOut)
-    SET_BIT(sync, 6);
-  udata[6] = (sync);
-  udata[7] = (transportIn ? 1 : 0);
-  udata[8] = (sequencerOut ? 1 : 0);
-  udata[9] = (arpOut ? 1 : 0);
-  udata[0xa] = (keyboardOut ? 1 : 0);
-  udata[0xb] = (transportOut ? 1 : 0);
-  udata[0xc] = (midiClockOut ? 1 : 0);
-  udata[0xd] = (pgmChangeOut ? 1 : 0);
-  udata[0xe] = (0); // note
-  udata[0xf] = (0); // gate
-  udata[0x10] = (0); // sense
-  udata[0x11] = (0); // minVel
-  udata[0x12] = (0); // maxVel
-  for (int i = 0; i < 6; i++) {
-    udata[0x13 + i] = (midiMachineChannels[i]);
-    udata[0x19 + i] = (ccDestinations[i][0]);
-    udata[0x19 + 6 + i] = (ccDestinations[i][1]);
-    udata[0x19 + 12 + i] = (ccDestinations[i][2]);
-    udata[0x19 + 18 + i] = (ccDestinations[i][3]);
-    udata[0x31 + i] = (midiSeqLegato[i]);
-    udata[0x37 + i] = (legato[i]);
-  }
-  for (int i = 0; i < 32; i++) {
-    udata[0x3d + i] = (maps[i].range);
-    udata[0x5d + i] = (maps[i].pattern);
-    udata[0x7D + i] = (maps[i].offset);
-    udata[0x9d + i] = (maps[i].length);
-    udata[0xbd + i] = (maps[i].transpose);
+	encoder.startChecksum();
+	encoder.pack8(origPosition);
+	encoder.start7Bit();
 
-    int j;
-    for (j = 0; j < 6; j++) {
-      if (IS_BIT_SET(maps[i].timing, j)) {
-	udata[0xdd + i] = (j+1);
-	break;
-      }
-    }
-    if (j == 6) {
-      udata[0xdd + i] = (0);
-    }
-  }
-  udata[0xfd] = (globalRouting);
-  udata[0xfe] = (pgmChangeIn);
-  for (int i = 0; i < 6; i++) {
-    udata[0xFF + i] = 0x00;
-  }
-  ElektronHelper::from32Bit(baseFreq, udata + 0x105);
+	encoder.pack(&autotrackChannel, 5);
 
-  MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(data + 10, len - 10));
-  for (int i = 1; i < 0x109; i++) {
-    encoder.pack8(udata[i]);
-  }
-  uint16_t enclen = encoder.finish();
-  for (uint16_t i = 0; i < enclen; i++) {
-    cksum += data[10 + i];
- }
-  data[10 + enclen] = (cksum >> 7) & 0x7F;
-  data[10 + enclen + 1] = cksum & 0x7F;
-  data[10 + enclen + 2] = ((enclen + 5) >> 7) & 0x7F;
-  data[10 + enclen + 3] = (enclen + 5) & 0x7F;
-  data[10 + enclen + 2 + 2] = 0xF7;
-  
-  return enclen + 10 + sizeof(monomachine_sysex_hdr);
+	uint8_t byte = 0;
+	if (clockIn)
+		SET_BIT(byte, 0);
+	if (clockOut)
+		SET_BIT(byte, 5);
+	if (ctrlIn)
+		SET_BIT(byte, 4);
+	if (ctrlOut)
+		SET_BIT(byte, 6);
+	encoder.pack8(byte);
+
+	encoder.packb(transportIn);
+	encoder.packb(sequencerOut);
+	encoder.packb(arpOut);
+	encoder.packb(keyboardOut);
+	encoder.packb(transportOut);
+	encoder.packb(midiClockOut);
+	encoder.packb(pgmChangeOut);
+
+	encoder.pack(&note, 5);
+
+	encoder.pack(midiMachineChannels, 6);
+	encoder.pack((uint8_t *)ccDestinations, 6 * 4);
+	encoder.pack(midiSeqLegato, 6);
+	encoder.pack(legato, 6);
+
+	encoder.pack(mapRange, 32 * 6);
+	encoder.pack8(globalRouting);
+	encoder.packb(pgmChangeIn);
+	encoder.pack(unused, 5);
+	encoder.pack32(baseFreq);
+
+	uint16_t enclen = encoder.finish();
+	encoder.finishChecksum();
+
+	return enclen + 5;
 }
 
 bool MNMKit::fromSysex(uint8_t *data, uint16_t len) {

@@ -54,6 +54,13 @@ public:
 		}
 	}
 
+	virtual DATA_ENCODER_RETURN_TYPE packb(bool inb) {
+		if (inb)
+			pack8(1);
+		else
+			pack8(0);
+  }
+
 	uint16_t getIdx() {
 		return ptr - data;
 	}
@@ -151,6 +158,12 @@ public:
 
 	uint16_t getIdx() {
 		return ptr - data;
+	}
+
+	virtual DATA_ENCODER_RETURN_TYPE getb(bool *b) {
+		uint8_t c;
+		get8(&c);
+		*b = c;
 	}
 		
 	virtual DATA_ENCODER_RETURN_TYPE get8(uint8_t *c) {
