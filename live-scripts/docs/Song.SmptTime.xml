@@ -1,0 +1,53 @@
+<dumpObj>
+<title class='class' module='Song'>Instance of class 'class' as defined in module 'Song'</title>
+<documentation> Represents a Time, split into Hours, Minutes, Seconds and Frames.
+The frame type must be specified when calling a function that returns
+a SmptTime. </documentation>
+<builtin>
+<name> __new__ </name>
+</builtin>
+<methods>
+<method>
+<name> __init__ </name>
+<doc> 
+__init__( (object)arg1) -&gt; None :
+
+    C++ signature :
+        void __init__(_object*) </doc>
+</method>
+<method>
+<name> __reduce__ </name>
+<doc> no documentation </doc>
+</method>
+<method>
+<name> __str__ </name>
+<doc> 
+__str__( (SmptTime)arg1) -&gt; object :
+
+    C++ signature :
+        TString __str__(NPythonSong::TSmptTime {lvalue}) </doc>
+</method>
+</methods>
+<attributes>
+<attribute>
+<name> frames </name>
+<type> type property </type>
+<value> property object at 0x2d9c300 </value>
+</attribute>
+<attribute>
+<name> hours </name>
+<type> type property </type>
+<value> property object at 0x2d9c288 </value>
+</attribute>
+<attribute>
+<name> minutes </name>
+<type> type property </type>
+<value> property object at 0x2d9c2d8 </value>
+</attribute>
+<attribute>
+<name> seconds </name>
+<type> type property </type>
+<value> property object at 0x2d9c2b0 </value>
+</attribute>
+</attributes>
+</dumpObj>

@@ -1,0 +1,481 @@
+<dumpObj>
+<title class='class' module='Song'>Instance of class 'class' as defined in module 'Song'</title>
+<documentation> This class represents a Live set. </documentation>
+<builtin>
+<name> __init__ </name>
+<name>  __new__ </name>
+</builtin>
+<methods>
+<method>
+<name> __eq__ </name>
+<doc> 
+__eq__( (object)arg1, (Song)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyHandle&lt;ASong&gt; &gt;,TPyHandle&lt;ASong&gt;*) </doc>
+</method>
+<method>
+<name> __ne__ </name>
+<doc> 
+__ne__( (object)arg1, (Song)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyHandle&lt;ASong&gt; &gt;,TPyHandle&lt;ASong&gt;*) </doc>
+</method>
+<method>
+<name> __nonzero__ </name>
+<doc> 
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyHandle&lt;ASong&gt; &gt;) </doc>
+</method>
+<method>
+<name> __reduce__ </name>
+<doc> no documentation </doc>
+</method>
+<method>
+<name> continue_playing </name>
+<doc> 
+continue_playing( (Song)arg1) -&gt; None :
+    Continue playing the song from the current position
+
+    C++ signature :
+        void continue_playing(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> get_beats_loop_length </name>
+<doc> 
+get_beats_loop_length( (Song)arg1) -&gt; BeatTime :
+    Get const access to the songs loop length, using a
+    BeatTime class with the current global set signature.
+
+    C++ signature :
+        NPythonSong::TBeatTime get_beats_loop_length(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> get_beats_loop_start </name>
+<doc> 
+get_beats_loop_start( (Song)arg1) -&gt; BeatTime :
+    Get const access to the songs loop start, using a
+    BeatTime class with the current global set signature.
+
+    C++ signature :
+        NPythonSong::TBeatTime get_beats_loop_start(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> get_current_beats_song_time </name>
+<doc> 
+get_current_beats_song_time( (Song)arg1) -&gt; BeatTime :
+    Get const access to the songs current playing position, using a
+    BeatTime class with the current global set signature.
+
+    C++ signature :
+        NPythonSong::TBeatTime get_current_beats_song_time(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> get_current_smpte_song_time </name>
+<doc> 
+get_current_smpte_song_time( (Song)arg1, (int)arg2) -&gt; SmptTime :
+    Get const access to the songs current playing position, by specifying
+    the SMPTE format in which you would like to receive the time.
+
+    C++ signature :
+        NPythonSong::TSmptTime get_current_smpte_song_time(TPyHandle&lt;ASong&gt;,long) </doc>
+</method>
+<method>
+<name> is_cue_point_selected </name>
+<doc> 
+is_cue_point_selected( (Song)arg1) -&gt; bool :
+    Return true if the global playing pos is currently on a cue point.
+
+    C++ signature :
+        bool is_cue_point_selected(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> jump_by </name>
+<doc> 
+jump_by( (Song)arg1, (float)arg2) -&gt; None :
+    Set a new playing pos, relative to the current one.
+
+    C++ signature :
+        void jump_by(TPyHandle&lt;ASong&gt;,double) </doc>
+</method>
+<method>
+<name> jump_to_next_cue </name>
+<doc> 
+jump_to_next_cue( (Song)arg1) -&gt; None :
+    Jump to the next cue (marker) if possible.
+
+    C++ signature :
+        void jump_to_next_cue(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> jump_to_prev_cue </name>
+<doc> 
+jump_to_prev_cue( (Song)arg1) -&gt; None :
+    Jump to the prior cue (marker) if possible.
+
+    C++ signature :
+        void jump_to_prev_cue(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> play_selection </name>
+<doc> 
+play_selection( (Song)arg1) -&gt; None :
+    Start playing the current set selection, or do nothing if
+    no selection is set.
+
+    C++ signature :
+        void play_selection(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> redo </name>
+<doc> 
+redo( (Song)arg1) -&gt; None :
+    Redo the last action that was undone.
+
+    C++ signature :
+        void redo(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> scrub_by </name>
+<doc> 
+scrub_by( (Song)arg1, (float)arg2) -&gt; None :
+    Same as jump_by, but does not stop playback.
+
+    C++ signature :
+        void scrub_by(TPyHandle&lt;ASong&gt;,double) </doc>
+</method>
+<method>
+<name> set_or_delete_cue </name>
+<doc> 
+set_or_delete_cue( (Song)arg1) -&gt; None :
+    When a cue is selected, it gets deleted. If no cue is selected,
+    a new cue is created at the current global songtime.
+
+    C++ signature :
+        void set_or_delete_cue(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> start_playing </name>
+<doc> 
+start_playing( (Song)arg1) -&gt; None :
+    Start playing from the startmarker
+
+    C++ signature :
+        void start_playing(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> stop_all_clips </name>
+<doc> 
+stop_all_clips( (Song)arg1) -&gt; None :
+    Stop all playing Clips (if any) but continue playing the Song.
+
+    C++ signature :
+        void stop_all_clips(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> stop_playing </name>
+<doc> 
+stop_playing( (Song)arg1) -&gt; None :
+    Stop playing the Song.
+
+    C++ signature :
+        void stop_playing(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> tap_tempo </name>
+<doc> 
+tap_tempo( (Song)arg1) -&gt; None :
+    Trigger the tap tempo function.
+
+    C++ signature :
+        void tap_tempo(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+<method>
+<name> undo </name>
+<doc> 
+undo( (Song)arg1) -&gt; None :
+    Undo the last action that was made.
+
+    C++ signature :
+        void undo(TPyHandle&lt;ASong&gt;) </doc>
+</method>
+</methods>
+<attributes>
+<attribute>
+<name> View </name>
+<type> type Boost.Python.class </type>
+<value> class Song.View </value>
+</attribute>
+<attribute>
+<name> appointed_device </name>
+<type> type property </type>
+<value> property object at 0x2d91710 </value>
+</attribute>
+<attribute>
+<name> back_to_arranger </name>
+<type> type property </type>
+<value> property object at 0x2d91d00 </value>
+</attribute>
+<attribute>
+<name> can_jump_to_next_cue </name>
+<type> type property </type>
+<value> property object at 0x2d91968 </value>
+</attribute>
+<attribute>
+<name> can_jump_to_prev_cue </name>
+<type> type property </type>
+<value> property object at 0x2d91918 </value>
+</attribute>
+<attribute>
+<name> can_redo </name>
+<type> type property </type>
+<value> property object at 0x2d917b0 </value>
+</attribute>
+<attribute>
+<name> can_undo </name>
+<type> type property </type>
+<value> property object at 0x2d917d8 </value>
+</attribute>
+<attribute>
+<name> canonical_parent </name>
+<type> type property </type>
+<value> property object at 0x2d91760 </value>
+</attribute>
+<attribute>
+<name> clip_trigger_quantization </name>
+<type> type property </type>
+<value> property object at 0x2d91c60 </value>
+</attribute>
+<attribute>
+<name> cue_points </name>
+<type> type property </type>
+<value> property object at 0x2d91698 </value>
+</attribute>
+<attribute>
+<name> current_song_time </name>
+<type> type property </type>
+<value> property object at 0x2d91b98 </value>
+</attribute>
+<attribute>
+<name> exclusive_arm </name>
+<type> type property </type>
+<value> property object at 0x2d91e90 </value>
+</attribute>
+<attribute>
+<name> exclusive_solo </name>
+<type> type property </type>
+<value> property object at 0x2d91ee0 </value>
+</attribute>
+<attribute>
+<name> groove_amount </name>
+<type> type property </type>
+<value> property object at 0x2d91af8 </value>
+</attribute>
+<attribute>
+<name> is_playing </name>
+<type> type property </type>
+<value> property object at 0x2d91800 </value>
+</attribute>
+<attribute>
+<name> last_event_time </name>
+<type> type property </type>
+<value> property object at 0x2d91c10 </value>
+</attribute>
+<attribute>
+<name> loop </name>
+<type> type property </type>
+<value> property object at 0x2d91e68 </value>
+</attribute>
+<attribute>
+<name> loop_length </name>
+<type> type property </type>
+<value> property object at 0x2d91e18 </value>
+</attribute>
+<attribute>
+<name> loop_start </name>
+<type> type property </type>
+<value> property object at 0x2d91dc8 </value>
+</attribute>
+<attribute>
+<name> master_track </name>
+<type> type property </type>
+<value> property object at 0x2d91620 </value>
+</attribute>
+<attribute>
+<name> metronome </name>
+<type> type property </type>
+<value> property object at 0x2d91b48 </value>
+</attribute>
+<attribute>
+<name> midi_recording_quantization </name>
+<type> type property </type>
+<value> property object at 0x2d91c88 </value>
+</attribute>
+<attribute>
+<name> nudge_down </name>
+<type> type property </type>
+<value> property object at 0x2d91a80 </value>
+</attribute>
+<attribute>
+<name> nudge_up </name>
+<type> type property </type>
+<value> property object at 0x2d91ad0 </value>
+</attribute>
+<attribute>
+<name> overdub </name>
+<type> type property </type>
+<value> property object at 0x2d91a08 </value>
+</attribute>
+<attribute>
+<name> punch_in </name>
+<type> type property </type>
+<value> property object at 0x2d91d50 </value>
+</attribute>
+<attribute>
+<name> punch_out </name>
+<type> type property </type>
+<value> property object at 0x2d91d78 </value>
+</attribute>
+<attribute>
+<name> record_mode </name>
+<type> type property </type>
+<value> property object at 0x2d919b8 </value>
+</attribute>
+<attribute>
+<name> return_tracks </name>
+<type> type property </type>
+<value> property object at 0x2d915d0 </value>
+</attribute>
+<attribute>
+<name> scenes </name>
+<type> type property </type>
+<value> property object at 0x2d91670 </value>
+</attribute>
+<attribute>
+<name> select_on_launch </name>
+<type> type property </type>
+<value> property object at 0x2d91f30 </value>
+</attribute>
+<attribute>
+<name> signature_denominator </name>
+<type> type property </type>
+<value> property object at 0x2d91cd8 </value>
+</attribute>
+<attribute>
+<name> signature_numerator </name>
+<type> type property </type>
+<value> property object at 0x2d91cb0 </value>
+</attribute>
+<attribute>
+<name> song_length </name>
+<type> type property </type>
+<value> property object at 0x2d91bc0 </value>
+</attribute>
+<attribute>
+<name> tempo </name>
+<type> type property </type>
+<value> property object at 0x2d91a30 </value>
+</attribute>
+<attribute>
+<name> tracks </name>
+<type> type property </type>
+<value> property object at 0x2d91558 </value>
+</attribute>
+<attribute>
+<name> view </name>
+<type> type property </type>
+<value> property object at 0x2d916e8 </value>
+</attribute>
+<attribute>
+<name> visible_tracks </name>
+<type> type property </type>
+<value> property object at 0x2d91580 </value>
+</attribute>
+</attributes>
+<listeners>
+<listener>
+<name> appointed_device </name>
+</listener>
+<listener>
+<name> back_to_arranger </name>
+</listener>
+<listener>
+<name> can_jump_to_next_cue </name>
+</listener>
+<listener>
+<name> can_jump_to_prev_cue </name>
+</listener>
+<listener>
+<name> clip_trigger_quantization </name>
+</listener>
+<listener>
+<name> cue_points </name>
+</listener>
+<listener>
+<name> current_song_time </name>
+</listener>
+<listener>
+<name> groove_amount </name>
+</listener>
+<listener>
+<name> is_playing </name>
+</listener>
+<listener>
+<name> loop </name>
+</listener>
+<listener>
+<name> loop_length </name>
+</listener>
+<listener>
+<name> loop_start </name>
+</listener>
+<listener>
+<name> metronome </name>
+</listener>
+<listener>
+<name> midi_recording_quantization </name>
+</listener>
+<listener>
+<name> nudge_down </name>
+</listener>
+<listener>
+<name> nudge_up </name>
+</listener>
+<listener>
+<name> overdub </name>
+</listener>
+<listener>
+<name> punch_in </name>
+</listener>
+<listener>
+<name> punch_out </name>
+</listener>
+<listener>
+<name> record_mode </name>
+</listener>
+<listener>
+<name> scenes </name>
+</listener>
+<listener>
+<name> signature_denominator </name>
+</listener>
+<listener>
+<name> signature_numerator </name>
+</listener>
+<listener>
+<name> song_length </name>
+</listener>
+<listener>
+<name> tempo </name>
+</listener>
+<listener>
+<name> tracks </name>
+</listener>
+<listener>
+<name> visible_tracks </name>
+</listener>
+</listeners>
+</dumpObj>

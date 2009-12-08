@@ -1,0 +1,89 @@
+<dumpObj>
+<title class='type' module='Song'>Instance of class 'type' as defined in module 'Song'</title>
+<documentation> None </documentation>
+<builtin>
+<name> __new__ </name>
+</builtin>
+<attributes>
+<attribute>
+<name> name </name>
+<type> type member_descriptor </type>
+<value> member name of Boost.Python.enum objects </value>
+</attribute>
+<attribute>
+<name> q_2_bars </name>
+<type> class Song.Quantization </type>
+<value> q_2_bars </value>
+</attribute>
+<attribute>
+<name> q_4_bars </name>
+<type> class Song.Quantization </type>
+<value> q_4_bars </value>
+</attribute>
+<attribute>
+<name> q_8_bars </name>
+<type> class Song.Quantization </type>
+<value> q_8_bars </value>
+</attribute>
+<attribute>
+<name> q_bar </name>
+<type> class Song.Quantization </type>
+<value> q_bar </value>
+</attribute>
+<attribute>
+<name> q_eight </name>
+<type> class Song.Quantization </type>
+<value> q_eight </value>
+</attribute>
+<attribute>
+<name> q_eight_triplet </name>
+<type> class Song.Quantization </type>
+<value> q_eight_triplet </value>
+</attribute>
+<attribute>
+<name> q_half </name>
+<type> class Song.Quantization </type>
+<value> q_half </value>
+</attribute>
+<attribute>
+<name> q_half_triplet </name>
+<type> class Song.Quantization </type>
+<value> q_half_triplet </value>
+</attribute>
+<attribute>
+<name> q_no_q </name>
+<type> class Song.Quantization </type>
+<value> q_no_q </value>
+</attribute>
+<attribute>
+<name> q_quarter </name>
+<type> class Song.Quantization </type>
+<value> q_quarter </value>
+</attribute>
+<attribute>
+<name> q_quarter_triplet </name>
+<type> class Song.Quantization </type>
+<value> q_quarter_triplet </value>
+</attribute>
+<attribute>
+<name> q_sixtenth </name>
+<type> class Song.Quantization </type>
+<value> q_sixtenth </value>
+</attribute>
+<attribute>
+<name> q_sixtenth_triplet </name>
+<type> class Song.Quantization </type>
+<value> q_sixtenth_triplet </value>
+</attribute>
+<attribute>
+<name> q_thirtytwoth </name>
+<type> class Song.Quantization </type>
+<value> q_thirtytwoth </value>
+</attribute>
+<attribute>
+<name> values </name>
+<type> type dict </type>
+<value> {0: Song.Quantization.q_no_q, 1: Song.Quantization.q_8_bars, 2: Song.Quantization.q_4_bars, 3: Song.Quantization.q_2_bars, 4: Song.Quantization.q_bar, 5: Song.Quantization.q_half, 6: Song.Quantization.q_half_triplet, 7: Song.Quantization.q_quarter, 8: Song.Quantization.q_quarter_triplet, 9: Song.Quantization.q_eight, 10: Song.Quantization.q_eight_triplet, 11: Song.Quantization.q_sixtenth, 12: Song.Quantization.q_sixtenth_triplet, 13: Song.Quantization.q_thirtytwoth} </value>
+</attribute>
+</attributes>
+</dumpObj>

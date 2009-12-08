@@ -1,0 +1,128 @@
+<dumpObj>
+<title class='class' module='Scene'>Instance of class 'class' as defined in module 'Scene'</title>
+<documentation> This class represents an series of ClipSlots in Lives Sessionview matrix. </documentation>
+<builtin>
+<name> __init__ </name>
+<name>  __new__ </name>
+</builtin>
+<methods>
+<method>
+<name> __eq__ </name>
+<doc> 
+__eq__( (object)arg1, (Scene)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyHandle&lt;AScene&gt; &gt;,TPyHandle&lt;AScene&gt;*)
+
+__eq__( (object)arg1, (object)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyViewData&lt;AScene&gt; &gt;,TPyViewData&lt;AScene&gt;*) </doc>
+</method>
+<method>
+<name> __ne__ </name>
+<doc> 
+__ne__( (object)arg1, (Scene)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyHandle&lt;AScene&gt; &gt;,TPyHandle&lt;AScene&gt;*)
+
+__ne__( (object)arg1, (object)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyViewData&lt;AScene&gt; &gt;,TPyViewData&lt;AScene&gt;*) </doc>
+</method>
+<method>
+<name> __nonzero__ </name>
+<doc> 
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyHandle&lt;AScene&gt; &gt;)
+
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyViewData&lt;AScene&gt; &gt;) </doc>
+</method>
+<method>
+<name> __reduce__ </name>
+<doc> no documentation </doc>
+</method>
+<method>
+<name> fire </name>
+<doc> 
+fire( (Scene)arg1) -&gt; None :
+    Fire the scene directly. Will fire all clipslots that this scene owns and
+    select the scene itself.
+
+    C++ signature :
+        void fire(TPyHandle&lt;AScene&gt;) </doc>
+</method>
+<method>
+<name> fire_as_selected </name>
+<doc> 
+fire_as_selected( (Scene)arg1) -&gt; None :
+    Fire the selected scene. Will fire all clipslots that this scene owns and
+    select the next scene if necessary.
+
+    C++ signature :
+        void fire_as_selected(TPyHandle&lt;AScene&gt;) </doc>
+</method>
+<method>
+<name> set_fire_button_state </name>
+<doc> 
+set_fire_button_state( (Scene)arg1, (bool)arg2) -&gt; None :
+    Set the scene's fire button state directly. Supports all launch modes.
+
+    C++ signature :
+        void set_fire_button_state(TPyHandle&lt;AScene&gt;,bool) </doc>
+</method>
+</methods>
+<attributes>
+<attribute>
+<name> canonical_parent </name>
+<type> type property </type>
+<value> property object at 0x2da3fd0 </value>
+</attribute>
+<attribute>
+<name> clip_slots </name>
+<type> type property </type>
+<value> property object at 0x2da3f30 </value>
+</attribute>
+<attribute>
+<name> color </name>
+<type> type property </type>
+<value> property object at 0x2da3f08 </value>
+</attribute>
+<attribute>
+<name> is_triggered </name>
+<type> type property </type>
+<value> property object at 0x2da3f80 </value>
+</attribute>
+<attribute>
+<name> name </name>
+<type> type property </type>
+<value> property object at 0x2da3eb8 </value>
+</attribute>
+<attribute>
+<name> tempo </name>
+<type> type property </type>
+<value> property object at 0x2da3ee0 </value>
+</attribute>
+</attributes>
+<listeners>
+<listener>
+<name> clip_slots </name>
+</listener>
+<listener>
+<name> color </name>
+</listener>
+<listener>
+<name> is_triggered </name>
+</listener>
+<listener>
+<name> name </name>
+</listener>
+</listeners>
+</dumpObj>

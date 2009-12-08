@@ -1,0 +1,284 @@
+<dumpObj>
+<title class='class' module='Clip'>Instance of class 'class' as defined in module 'Clip'</title>
+<documentation> This class represents a Clip in Live. It can be either an Audio
+Clip or a MIDI Clip, in an Arrangement or the Session, depending
+on the Track (Slot) it lives in. </documentation>
+<builtin>
+<name> __init__ </name>
+<name>  __new__ </name>
+</builtin>
+<methods>
+<method>
+<name> __eq__ </name>
+<doc> 
+__eq__( (object)arg1, (Clip)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyHandle&lt;AClip&gt; &gt;,TPyHandle&lt;AClip&gt;*)
+
+__eq__( (object)arg1, (object)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyViewData&lt;AClip&gt; &gt;,TPyViewData&lt;AClip&gt;*) </doc>
+</method>
+<method>
+<name> __ne__ </name>
+<doc> 
+__ne__( (object)arg1, (Clip)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyHandle&lt;AClip&gt; &gt;,TPyHandle&lt;AClip&gt;*)
+
+__ne__( (object)arg1, (object)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyViewData&lt;AClip&gt; &gt;,TPyViewData&lt;AClip&gt;*) </doc>
+</method>
+<method>
+<name> __nonzero__ </name>
+<doc> 
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyHandle&lt;AClip&gt; &gt;)
+
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyViewData&lt;AClip&gt; &gt;) </doc>
+</method>
+<method>
+<name> __reduce__ </name>
+<doc> no documentation </doc>
+</method>
+<method>
+<name> deselect_all_notes </name>
+<doc> 
+deselect_all_notes( (Clip)arg1) -&gt; None :
+    De-selects all notes present in the clip.
+
+    C++ signature :
+        void deselect_all_notes(TPyHandle&lt;AClip&gt;) </doc>
+</method>
+<method>
+<name> fire </name>
+<doc> 
+fire( (Clip)arg1) -&gt; None :
+    (Re)Start playing this Clip.
+
+    C++ signature :
+        void fire(TPyHandle&lt;AClip&gt;) </doc>
+</method>
+<method>
+<name> get_selected_notes </name>
+<doc> 
+get_selected_notes( (Clip)arg1) -&gt; tuple :
+    Returns a tuple of tuples where each inner tuple
+    represents a note. The inner tuple contains
+    pitch, time, duration, velocity, and mute state.
+
+    C++ signature :
+        boost::python::tuple get_selected_notes(TPyHandle&lt;AClip&gt;) </doc>
+</method>
+<method>
+<name> move_playing_pos </name>
+<doc> 
+move_playing_pos( (Clip)arg1, (float)arg2) -&gt; None :
+    Jump forward or backward by the specified relative amount in beats.
+    Will do nothing, if the Clip is not playing.
+
+    C++ signature :
+        void move_playing_pos(TPyHandle&lt;AClip&gt;,double) </doc>
+</method>
+<method>
+<name> replace_selected_notes </name>
+<doc> 
+replace_selected_notes( (Clip)arg1, (tuple)arg2) -&gt; None :
+    Called with a tuple of tuples where each inner tuple represents
+    a note in the same format as returned by get_selected_notes. The
+    notes described that way will then be used to replace the old selection.
+
+    C++ signature :
+        void replace_selected_notes(TPyHandle&lt;AClip&gt;,boost::python::tuple) </doc>
+</method>
+<method>
+<name> select_all_notes </name>
+<doc> 
+select_all_notes( (Clip)arg1) -&gt; None :
+    Selects all notes present in the clip.
+
+    C++ signature :
+        void select_all_notes(TPyHandle&lt;AClip&gt;) </doc>
+</method>
+<method>
+<name> set_fire_button_state </name>
+<doc> 
+set_fire_button_state( (Clip)arg1, (bool)arg2) -&gt; None :
+    Set the clip's fire button state directly. Supports all launch modes.
+
+    C++ signature :
+        void set_fire_button_state(TPyHandle&lt;AClip&gt;,bool) </doc>
+</method>
+<method>
+<name> stop </name>
+<doc> 
+stop( (Clip)arg1) -&gt; None :
+    Stop playing this Clip.
+
+    C++ signature :
+        void stop(TPyHandle&lt;AClip&gt;) </doc>
+</method>
+</methods>
+<attributes>
+<attribute>
+<name> canonical_parent </name>
+<type> type property </type>
+<value> property object at 0x2daa5d0 </value>
+</attribute>
+<attribute>
+<name> color </name>
+<type> type property </type>
+<value> property object at 0x2daa558 </value>
+</attribute>
+<attribute>
+<name> is_audio_clip </name>
+<type> type property </type>
+<value> property object at 0x2daa468 </value>
+</attribute>
+<attribute>
+<name> is_midi_clip </name>
+<type> type property </type>
+<value> property object at 0x2daa4b8 </value>
+</attribute>
+<attribute>
+<name> is_playing </name>
+<type> type property </type>
+<value> property object at 0x2daa648 </value>
+</attribute>
+<attribute>
+<name> is_recording </name>
+<type> type property </type>
+<value> property object at 0x2daa698 </value>
+</attribute>
+<attribute>
+<name> is_triggered </name>
+<type> type property </type>
+<value> property object at 0x2daa670 </value>
+</attribute>
+<attribute>
+<name> length </name>
+<type> type property </type>
+<value> property object at 0x2daa710 </value>
+</attribute>
+<attribute>
+<name> loop_end </name>
+<type> type property </type>
+<value> property object at 0x2daa788 </value>
+</attribute>
+<attribute>
+<name> loop_start </name>
+<type> type property </type>
+<value> property object at 0x2daa760 </value>
+</attribute>
+<attribute>
+<name> looping </name>
+<type> type property </type>
+<value> property object at 0x2daa738 </value>
+</attribute>
+<attribute>
+<name> muted </name>
+<type> type property </type>
+<value> property object at 0x2daa508 </value>
+</attribute>
+<attribute>
+<name> name </name>
+<type> type property </type>
+<value> property object at 0x2daa530 </value>
+</attribute>
+<attribute>
+<name> pitch_coarse </name>
+<type> type property </type>
+<value> property object at 0x2daa7b0 </value>
+</attribute>
+<attribute>
+<name> pitch_fine </name>
+<type> type property </type>
+<value> property object at 0x2daa800 </value>
+</attribute>
+<attribute>
+<name> playing_position </name>
+<type> type property </type>
+<value> property object at 0x2daa5f8 </value>
+</attribute>
+<attribute>
+<name> signature_denominator </name>
+<type> type property </type>
+<value> property object at 0x2daa5a8 </value>
+</attribute>
+<attribute>
+<name> signature_numerator </name>
+<type> type property </type>
+<value> property object at 0x2daa580 </value>
+</attribute>
+<attribute>
+<name> warping </name>
+<type> type property </type>
+<value> property object at 0x2daa850 </value>
+</attribute>
+<attribute>
+<name> will_record_on_start </name>
+<type> type property </type>
+<value> property object at 0x2daa6c0 </value>
+</attribute>
+</attributes>
+<listeners>
+<listener>
+<name> color </name>
+</listener>
+<listener>
+<name> is_recording </name>
+</listener>
+<listener>
+<name> loop_end </name>
+</listener>
+<listener>
+<name> loop_jump </name>
+</listener>
+<listener>
+<name> loop_start </name>
+</listener>
+<listener>
+<name> looping </name>
+</listener>
+<listener>
+<name> muted </name>
+</listener>
+<listener>
+<name> name </name>
+</listener>
+<listener>
+<name> notes </name>
+</listener>
+<listener>
+<name> pitch_coarse </name>
+</listener>
+<listener>
+<name> pitch_fine </name>
+</listener>
+<listener>
+<name> playing_position </name>
+</listener>
+<listener>
+<name> playing_status </name>
+</listener>
+<listener>
+<name> signature_denominator </name>
+</listener>
+<listener>
+<name> signature_numerator </name>
+</listener>
+<listener>
+<name> warping </name>
+</listener>
+</listeners>
+</dumpObj>

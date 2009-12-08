@@ -1,0 +1,320 @@
+<dumpObj>
+<title class='class' module='Track'>Instance of class 'class' as defined in module 'Track'</title>
+<documentation> This class represents a track in Live. It can be either an Audio 
+track, a MIDI Track, a Return Track or the Master track. The Master 
+Track and at least one Audio or MIDI track will be always present.
+Return Tracks are optional. </documentation>
+<builtin>
+<name> __init__ </name>
+<name>  __new__ </name>
+</builtin>
+<classes>
+<class>
+<name> monitoring_states </name>
+<doc> no documentation </doc>
+</class>
+</classes>
+<methods>
+<method>
+<name> __eq__ </name>
+<doc> 
+__eq__( (object)arg1, (Track)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyHandle&lt;ATrack&gt; &gt;,TPyHandle&lt;ATrack&gt;*) </doc>
+</method>
+<method>
+<name> __ne__ </name>
+<doc> 
+__ne__( (object)arg1, (Track)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyHandle&lt;ATrack&gt; &gt;,TPyHandle&lt;ATrack&gt;*) </doc>
+</method>
+<method>
+<name> __nonzero__ </name>
+<doc> 
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyHandle&lt;ATrack&gt; &gt;) </doc>
+</method>
+<method>
+<name> __reduce__ </name>
+<doc> no documentation </doc>
+</method>
+<method>
+<name> jump_in_running_session_clip </name>
+<doc> 
+jump_in_running_session_clip( (Track)arg1, (float)arg2) -&gt; None :
+    Jump forward or backward in the currently running Sessionclip (if any)
+    by the specified relative amount in beats. Does nothing if no Session Clip
+    is currently running.
+
+    C++ signature :
+        void jump_in_running_session_clip(TPyHandle&lt;ATrack&gt;,double) </doc>
+</method>
+<method>
+<name> stop_all_clips </name>
+<doc> 
+stop_all_clips( (Track)arg1) -&gt; None :
+    Stop running and triggered clip and slots on this track.
+
+    C++ signature :
+        void stop_all_clips(TPyHandle&lt;ATrack&gt;) </doc>
+</method>
+</methods>
+<attributes>
+<attribute>
+<name> View </name>
+<type> type Boost.Python.class </type>
+<value> class Track.View </value>
+</attribute>
+<attribute>
+<name> arm </name>
+<type> type property </type>
+<value> property object at 0x2d9cbe8 </value>
+</attribute>
+<attribute>
+<name> can_be_armed </name>
+<type> type property </type>
+<value> property object at 0x2d9cb98 </value>
+</attribute>
+<attribute>
+<name> canonical_parent </name>
+<type> type property </type>
+<value> property object at 0x2d9ccd8 </value>
+</attribute>
+<attribute>
+<name> clip_slots </name>
+<type> type property </type>
+<value> property object at 0x2d9cee0 </value>
+</attribute>
+<attribute>
+<name> current_input_routing </name>
+<type> type property </type>
+<value> property object at 0x2da3210 </value>
+</attribute>
+<attribute>
+<name> current_input_sub_routing </name>
+<type> type property </type>
+<value> property object at 0x2da3260 </value>
+</attribute>
+<attribute>
+<name> current_monitoring_state </name>
+<type> type property </type>
+<value> property object at 0x2da3198 </value>
+</attribute>
+<attribute>
+<name> current_output_routing </name>
+<type> type property </type>
+<value> property object at 0x2da32d8 </value>
+</attribute>
+<attribute>
+<name> current_output_sub_routing </name>
+<type> type property </type>
+<value> property object at 0x2da3328 </value>
+</attribute>
+<attribute>
+<name> devices </name>
+<type> type property </type>
+<value> property object at 0x2da3058 </value>
+</attribute>
+<attribute>
+<name> fired_slot_index </name>
+<type> type property </type>
+<value> property object at 0x2d9cf30 </value>
+</attribute>
+<attribute>
+<name> fold_state </name>
+<type> type property </type>
+<value> property object at 0x2d9cd50 </value>
+</attribute>
+<attribute>
+<name> has_audio_input </name>
+<type> type property </type>
+<value> property object at 0x2d9cda0 </value>
+</attribute>
+<attribute>
+<name> has_audio_output </name>
+<type> type property </type>
+<value> property object at 0x2d9cdf0 </value>
+</attribute>
+<attribute>
+<name> has_midi_input </name>
+<type> type property </type>
+<value> property object at 0x2d9ce40 </value>
+</attribute>
+<attribute>
+<name> has_midi_output </name>
+<type> type property </type>
+<value> property object at 0x2d9ce90 </value>
+</attribute>
+<attribute>
+<name> input_meter_left </name>
+<type> type property </type>
+<value> property object at 0x2da30d0 </value>
+</attribute>
+<attribute>
+<name> input_meter_level </name>
+<type> type property </type>
+<value> property object at 0x2da3080 </value>
+</attribute>
+<attribute>
+<name> input_meter_right </name>
+<type> type property </type>
+<value> property object at 0x2da3120 </value>
+</attribute>
+<attribute>
+<name> input_routings </name>
+<type> type property </type>
+<value> property object at 0x2da31c0 </value>
+</attribute>
+<attribute>
+<name> input_sub_routings </name>
+<type> type property </type>
+<value> property object at 0x2da3238 </value>
+</attribute>
+<attribute>
+<name> is_foldable </name>
+<type> type property </type>
+<value> property object at 0x2d9cd00 </value>
+</attribute>
+<attribute>
+<name> is_part_of_selection </name>
+<type> type property </type>
+<value> property object at 0x2d9ccb0 </value>
+</attribute>
+<attribute>
+<name> is_visible </name>
+<type> type property </type>
+<value> property object at 0x2d9cc60 </value>
+</attribute>
+<attribute>
+<name> mixer_device </name>
+<type> type property </type>
+<value> property object at 0x2d9cfd0 </value>
+</attribute>
+<attribute>
+<name> mute </name>
+<type> type property </type>
+<value> property object at 0x2d9cb48 </value>
+</attribute>
+<attribute>
+<name> name </name>
+<type> type property </type>
+<value> property object at 0x2d9cb20 </value>
+</attribute>
+<attribute>
+<name> output_meter_left </name>
+<type> type property </type>
+<value> property object at 0x2da3148 </value>
+</attribute>
+<attribute>
+<name> output_meter_level </name>
+<type> type property </type>
+<value> property object at 0x2da30a8 </value>
+</attribute>
+<attribute>
+<name> output_meter_right </name>
+<type> type property </type>
+<value> property object at 0x2da3170 </value>
+</attribute>
+<attribute>
+<name> output_routings </name>
+<type> type property </type>
+<value> property object at 0x2da3288 </value>
+</attribute>
+<attribute>
+<name> output_sub_routings </name>
+<type> type property </type>
+<value> property object at 0x2da3300 </value>
+</attribute>
+<attribute>
+<name> playing_slot_index </name>
+<type> type property </type>
+<value> property object at 0x2d9cf80 </value>
+</attribute>
+<attribute>
+<name> solo </name>
+<type> type property </type>
+<value> property object at 0x2d9cb70 </value>
+</attribute>
+<attribute>
+<name> view </name>
+<type> type property </type>
+<value> property object at 0x2da3350 </value>
+</attribute>
+</attributes>
+<listeners>
+<listener>
+<name> arm </name>
+</listener>
+<listener>
+<name> clip_slots </name>
+</listener>
+<listener>
+<name> current_input_routing </name>
+</listener>
+<listener>
+<name> current_input_sub_routing </name>
+</listener>
+<listener>
+<name> current_monitoring_state </name>
+</listener>
+<listener>
+<name> current_output_routing </name>
+</listener>
+<listener>
+<name> current_output_sub_routing </name>
+</listener>
+<listener>
+<name> devices </name>
+</listener>
+<listener>
+<name> fired_slot_index </name>
+</listener>
+<listener>
+<name> has_audio_input </name>
+</listener>
+<listener>
+<name> has_audio_output </name>
+</listener>
+<listener>
+<name> has_midi_input </name>
+</listener>
+<listener>
+<name> has_midi_output </name>
+</listener>
+<listener>
+<name> input_meter_left </name>
+</listener>
+<listener>
+<name> input_meter_level </name>
+</listener>
+<listener>
+<name> input_meter_right </name>
+</listener>
+<listener>
+<name> mute </name>
+</listener>
+<listener>
+<name> name </name>
+</listener>
+<listener>
+<name> output_meter_left </name>
+</listener>
+<listener>
+<name> output_meter_level </name>
+</listener>
+<listener>
+<name> output_meter_right </name>
+</listener>
+<listener>
+<name> playing_slot_index </name>
+</listener>
+<listener>
+<name> solo </name>
+</listener>
+</listeners>
+</dumpObj>

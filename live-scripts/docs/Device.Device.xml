@@ -1,0 +1,92 @@
+<dumpObj>
+<title class='class' module='Device'>Instance of class 'class' as defined in module 'Device'</title>
+<documentation> This class represents a MIDI or Audio DSP-Device in Live. </documentation>
+<builtin>
+<name> __init__ </name>
+<name>  __new__ </name>
+</builtin>
+<methods>
+<method>
+<name> __eq__ </name>
+<doc> 
+__eq__( (object)arg1, (Device)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyHandle&lt;ADevice&gt; &gt;,TPyHandle&lt;ADevice&gt;*)
+
+__eq__( (object)arg1, (object)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __eq__(TWeakPtr&lt;TPyViewData&lt;ADevice&gt; &gt;,TPyViewData&lt;ADevice&gt;*) </doc>
+</method>
+<method>
+<name> __ne__ </name>
+<doc> 
+__ne__( (object)arg1, (Device)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyHandle&lt;ADevice&gt; &gt;,TPyHandle&lt;ADevice&gt;*)
+
+__ne__( (object)arg1, (object)arg2) -&gt; bool :
+
+    C++ signature :
+        bool __ne__(TWeakPtr&lt;TPyViewData&lt;ADevice&gt; &gt;,TPyViewData&lt;ADevice&gt;*) </doc>
+</method>
+<method>
+<name> __nonzero__ </name>
+<doc> 
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyHandle&lt;ADevice&gt; &gt;)
+
+__nonzero__( (object)arg1) -&gt; bool :
+
+    C++ signature :
+        bool __nonzero__(TWeakPtr&lt;TPyViewData&lt;ADevice&gt; &gt;) </doc>
+</method>
+<method>
+<name> __reduce__ </name>
+<doc> no documentation </doc>
+</method>
+<method>
+<name> store_chosen_bank </name>
+<doc> 
+store_chosen_bank( (Device)arg1, (int)arg2, (int)arg3) -&gt; None :
+    Set the selected bank in the device for persistency.
+
+    C++ signature :
+        void store_chosen_bank(TPyHandle&lt;ADevice&gt;,long,long) </doc>
+</method>
+</methods>
+<attributes>
+<attribute>
+<name> canonical_parent </name>
+<type> type property </type>
+<value> property object at 0x2da3a30 </value>
+</attribute>
+<attribute>
+<name> class_name </name>
+<type> type property </type>
+<value> property object at 0x2da3990 </value>
+</attribute>
+<attribute>
+<name> name </name>
+<type> type property </type>
+<value> property object at 0x2da3968 </value>
+</attribute>
+<attribute>
+<name> parameters </name>
+<type> type property </type>
+<value> property object at 0x2da39e0 </value>
+</attribute>
+</attributes>
+<listeners>
+<listener>
+<name> name </name>
+</listener>
+<listener>
+<name> parameters </name>
+</listener>
+</listeners>
+</dumpObj>

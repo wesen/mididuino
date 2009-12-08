@@ -16,7 +16,6 @@ nar@liveapi.org - 5-28-07
 """
 
 def dumpXML(obj, Filename=None):
-    import types
     import sys
     # There seem to be a couple of other types; gather templates of them
     MethodWrapperType = type(object().__hash__)
@@ -35,6 +34,8 @@ def dumpXML(obj, Filename=None):
     builtins  = []
     classes   = []
     attrs     = []
+    listeners = []
+    
     for slot in dir(obj):
         try:
             attr = getattr(obj, slot)
@@ -54,13 +55,19 @@ def dumpXML(obj, Filename=None):
             except: 
                 objmodule = 'no_module'
                 
-        elif (isinstance(attr, types.BuiltinMethodType) or 
-              isinstance(attr, MethodWrapperType)):
-            builtins.append( slot )
-        elif (isinstance(attr, types.MethodType) or
-              isinstance(attr, types.FunctionType)):
-            methods.append( (slot, attr) )
-        elif isinstance(attr, types.TypeType):
+        elif ((type(attr).__name__ == "builtin_function_or_method") or
+              (type(attr).__name__ == "method-wrapper")):
+            if (slot.find("listener") != -1):
+                listeners.append( slot )
+            else:
+                builtins.append( slot )
+        elif ((type(attr).__name__ == "instancemethod") or
+              (type(attr).__name__ == "function")):
+            if (slot.find("listener") != -1):
+                listeners.append( slot )
+            else:
+                methods.append( (slot, attr) )
+        elif (type(attr).__name__ == "type"):
             classes.append( (slot, attr) )
         else:
             attrs.append( (slot, attr) )
@@ -107,6 +114,8 @@ def dumpXML(obj, Filename=None):
         for (classname, classtype) in classes:
             print '<class>'
             classdoc = getattr(classtype, '__doc__', None) or 'no documentation'
+            classdoc = classdoc.replace("<", "&lt;")
+            classdoc = classdoc.replace(">", "&gt;")
             print '<name>', classname, '</name>'
             print '<doc>', classdoc, '</doc>'
             print '</class>'
@@ -121,6 +130,8 @@ def dumpXML(obj, Filename=None):
         for (methodname, method) in methods:
             print '<method>'
             methoddoc = getattr(method, '__doc__', None) or 'no documentation'
+            methoddoc = methoddoc.replace("<", "&lt;")
+            methoddoc = methoddoc.replace(">", "&gt;")
             print '<name>', methodname, '</name>'
             print '<doc>', methoddoc, '</doc>'
             print '</method>'
@@ -145,6 +156,32 @@ def dumpXML(obj, Filename=None):
 		pass
                 
         print '</attributes>'
+
+    # Listener
+    
+    if listeners:
+        
+        print '<listeners>'
+        
+        for (attr) in listeners:
+            if attr[0:2] == "__" and attr[-2:] == "__":
+                continue
+            if attr.find("remove_") == 0:
+                continue
+            if attr.find("add_") == 0:
+                continue
+            start =  attr.find("_has_listener")
+            if start != -1:
+                name = attr.replace("_has_listener", "")
+                try:
+                    print "<listener>"
+                    print '<name>', name, '</name>'
+                    print "</listener>"  
+                except:
+                    pass
+                
+        print '</listeners>'
+        
         
     print "</dumpObj>"
     output_file.close()
