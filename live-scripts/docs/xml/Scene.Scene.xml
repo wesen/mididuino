@@ -82,32 +82,36 @@ set_fire_button_state( (Scene)arg1, (bool)arg2) -&gt; None :
 <attributes>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Get the canonical parent of the scene. </type>
 <value> property object at 0x2da3fd0 </value>
 </attribute>
 <attribute>
 <name> clip_slots </name>
-<type> type property </type>
+<type> return a list of clipslots (see class AClipSlot) that this scene covers. </type>
 <value> property object at 0x2da3f30 </value>
 </attribute>
 <attribute>
 <name> color </name>
-<type> type property </type>
+<type> Get/set access to the color of the Scene (RGB). </type>
 <value> property object at 0x2da3f08 </value>
 </attribute>
 <attribute>
 <name> is_triggered </name>
-<type> type property </type>
+<type> Const access to the scene's trigger state. </type>
 <value> property object at 0x2da3f80 </value>
 </attribute>
 <attribute>
 <name> name </name>
-<type> type property </type>
+<type> Get/Set the name of the scene. Might contain the substring BPM, which
+identifies that the scene will change the tempo when fireed. To Get/Set
+the temp, use the 'tempo' property of the scene. </type>
 <value> property object at 0x2da3eb8 </value>
 </attribute>
 <attribute>
 <name> tempo </name>
-<type> type property </type>
+<type> Get/Set the the tempo value of the scene.
+The Song will use the Scenes tempo as soon as the Scene is fired.
+Returns -1 if the Scene has no tempo propery. </type>
 <value> property object at 0x2da3ee0 </value>
 </attribute>
 </attributes>

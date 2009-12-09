@@ -82,52 +82,55 @@ stop( (ClipSlot)arg1) -&gt; None :
 <attributes>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Get the canonical parent of the ClipSlot. </type>
 <value> property object at 0x2daa328 </value>
 </attribute>
 <attribute>
 <name> clip </name>
-<type> type property </type>
+<type> Returns the Clip which this clipslots currently owns. Might be None. </type>
 <value> property object at 0x2daa170 </value>
 </attribute>
 <attribute>
 <name> controls_other_clips </name>
-<type> type property </type>
+<type> Returns true if firing this slot will fire clips in other slots.
+Can only be true for slots in group tracks. </type>
 <value> property object at 0x2daa300 </value>
 </attribute>
 <attribute>
 <name> has_clip </name>
-<type> type property </type>
+<type> Returns true if this Clipslot owns a Clip. </type>
 <value> property object at 0x2daa148 </value>
 </attribute>
 <attribute>
 <name> has_stop_button </name>
-<type> type property </type>
+<type> Get/Set if this Clip has a stop button, which will, if fired, stop any
+other Clip that is currently playing the Track we do belong to. </type>
 <value> property object at 0x2daa198 </value>
 </attribute>
 <attribute>
 <name> is_playing </name>
-<type> type property </type>
+<type> Returns whether the clip associated with the slot is playing. </type>
 <value> property object at 0x2daa260 </value>
 </attribute>
 <attribute>
 <name> is_recording </name>
-<type> type property </type>
+<type> Returns whether the clip associated with the slot is recording. </type>
 <value> property object at 0x2daa288 </value>
 </attribute>
 <attribute>
 <name> is_triggered </name>
-<type> type property </type>
+<type> Const access to the triggering state of the clip slot. </type>
 <value> property object at 0x2daa1e8 </value>
 </attribute>
 <attribute>
 <name> playing_status </name>
-<type> type property </type>
+<type> Const access to the playing state of the clip slot.
+Can be either stopped, playing, or recording. </type>
 <value> property object at 0x2daa210 </value>
 </attribute>
 <attribute>
 <name> will_record_on_start </name>
-<type> type property </type>
+<type> returns true if the clip slot will record on being fired. </type>
 <value> property object at 0x2daa2d8 </value>
 </attribute>
 </attributes>

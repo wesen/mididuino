@@ -206,192 +206,209 @@ undo( (Song)arg1) -&gt; None :
 <attributes>
 <attribute>
 <name> View </name>
-<type> type Boost.Python.class </type>
+<type> Representing the view aspects of a Live document: The Session and Arrangerview. </type>
 <value> class Song.View </value>
 </attribute>
 <attribute>
 <name> appointed_device </name>
-<type> type property </type>
+<type> Access to the selected Device </type>
 <value> property object at 0x2d91710 </value>
 </attribute>
 <attribute>
 <name> back_to_arranger </name>
-<type> type property </type>
+<type> Get/Set if triggering a Clip in the Session, disabled the playback of
+Clips in the Arranger. </type>
 <value> property object at 0x2d91d00 </value>
 </attribute>
 <attribute>
 <name> can_jump_to_next_cue </name>
-<type> type property </type>
+<type> Returns true when there is a cue marker right to the playing pos that
+we could jump to. </type>
 <value> property object at 0x2d91968 </value>
 </attribute>
 <attribute>
 <name> can_jump_to_prev_cue </name>
-<type> type property </type>
+<type> Returns true when there is a cue marker left to the playing pos that
+we could jump to. </type>
 <value> property object at 0x2d91918 </value>
 </attribute>
 <attribute>
 <name> can_redo </name>
-<type> type property </type>
+<type> Returns true if there is an undone action that we can redo. </type>
 <value> property object at 0x2d917b0 </value>
 </attribute>
 <attribute>
 <name> can_undo </name>
-<type> type property </type>
+<type> Returns true if there is an action that we can restore. </type>
 <value> property object at 0x2d917d8 </value>
 </attribute>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Get the canonical parent of the song. </type>
 <value> property object at 0x2d91760 </value>
 </attribute>
 <attribute>
 <name> clip_trigger_quantization </name>
-<type> type property </type>
+<type> Get/Set access to the quantization settings that are used to fire
+Clips in the Session. </type>
 <value> property object at 0x2d91c60 </value>
 </attribute>
 <attribute>
 <name> cue_points </name>
-<type> type property </type>
+<type> Const access to a list of all cue points of the Live Song. </type>
 <value> property object at 0x2d91698 </value>
 </attribute>
 <attribute>
 <name> current_song_time </name>
-<type> type property </type>
+<type> Get/Set access to the songs current playing position in ms. </type>
 <value> property object at 0x2d91b98 </value>
 </attribute>
 <attribute>
 <name> exclusive_arm </name>
-<type> type property </type>
+<type> Get if Tracks should be armed exclusively by default. </type>
 <value> property object at 0x2d91e90 </value>
 </attribute>
 <attribute>
 <name> exclusive_solo </name>
-<type> type property </type>
+<type> Get if Tracks should be soloed exclusively by default. </type>
 <value> property object at 0x2d91ee0 </value>
 </attribute>
 <attribute>
 <name> groove_amount </name>
-<type> type property </type>
+<type> Get/Set the global groove amount, that adjust all setup grooves
+in all clips. </type>
 <value> property object at 0x2d91af8 </value>
 </attribute>
 <attribute>
 <name> is_playing </name>
-<type> type property </type>
+<type> Returns true if the Song is currently playing. </type>
 <value> property object at 0x2d91800 </value>
 </attribute>
 <attribute>
 <name> last_event_time </name>
-<type> type property </type>
+<type> Return the time of the last set event in the song. In contrary to
+song_length, this will not add some extra beats that are mostly needed
+for Display purposes in the Arrangerview. </type>
 <value> property object at 0x2d91c10 </value>
 </attribute>
 <attribute>
 <name> loop </name>
-<type> type property </type>
+<type> Get/Set the the looping flag that en/disables the usage of the global
+loop markers in the song. </type>
 <value> property object at 0x2d91e68 </value>
 </attribute>
 <attribute>
 <name> loop_length </name>
-<type> type property </type>
+<type> Get/Set the lenght of the global loop marker position in beats. </type>
 <value> property object at 0x2d91e18 </value>
 </attribute>
 <attribute>
 <name> loop_start </name>
-<type> type property </type>
+<type> Get/Set the start of the global loop marker position in beats. </type>
 <value> property object at 0x2d91dc8 </value>
 </attribute>
 <attribute>
 <name> master_track </name>
-<type> type property </type>
+<type> Access to the Master Track (always available) </type>
 <value> property object at 0x2d91620 </value>
 </attribute>
 <attribute>
 <name> metronome </name>
-<type> type property </type>
+<type> Get/Set if the metronom is audible. </type>
 <value> property object at 0x2d91b48 </value>
 </attribute>
 <attribute>
 <name> midi_recording_quantization </name>
-<type> type property </type>
+<type> Get/Set access to the settings that are used to quantize
+MIDI recordings. </type>
 <value> property object at 0x2d91c88 </value>
 </attribute>
 <attribute>
 <name> nudge_down </name>
-<type> type property </type>
+<type> Get/Set the status of the nudge down button. </type>
 <value> property object at 0x2d91a80 </value>
 </attribute>
 <attribute>
 <name> nudge_up </name>
-<type> type property </type>
+<type> Get/Set the status of the nudge up button. </type>
 <value> property object at 0x2d91ad0 </value>
 </attribute>
 <attribute>
 <name> overdub </name>
-<type> type property </type>
+<type> Get/Set the global overdub/replace state. </type>
 <value> property object at 0x2d91a08 </value>
 </attribute>
 <attribute>
 <name> punch_in </name>
-<type> type property </type>
+<type> Get/Set the flag that will enable recording as soon as the Song plays
+and hits the global loop start region. </type>
 <value> property object at 0x2d91d50 </value>
 </attribute>
 <attribute>
 <name> punch_out </name>
-<type> type property </type>
+<type> Get/Set the flag that will disable recording as soon as the Song plays
+and hits the global loop end region. </type>
 <value> property object at 0x2d91d78 </value>
 </attribute>
 <attribute>
 <name> record_mode </name>
-<type> type property </type>
+<type> Get/Set the state of the global recording flag. </type>
 <value> property object at 0x2d919b8 </value>
 </attribute>
 <attribute>
 <name> return_tracks </name>
-<type> type property </type>
+<type> Const access to the list of available Return Tracks. </type>
 <value> property object at 0x2d915d0 </value>
 </attribute>
 <attribute>
 <name> scenes </name>
-<type> type property </type>
+<type> Const access to a list of all Scenes in the Live Song. </type>
 <value> property object at 0x2d91670 </value>
 </attribute>
 <attribute>
 <name> select_on_launch </name>
-<type> type property </type>
+<type> Get if Scenes and Clips should be selected when fired. </type>
 <value> property object at 0x2d91f30 </value>
 </attribute>
 <attribute>
 <name> signature_denominator </name>
-<type> type property </type>
+<type> Get/Set access to the global signature denominator of the Song. </type>
 <value> property object at 0x2d91cd8 </value>
 </attribute>
 <attribute>
 <name> signature_numerator </name>
-<type> type property </type>
+<type> Get/Set access to the global signature numerator of the Song. </type>
 <value> property object at 0x2d91cb0 </value>
 </attribute>
 <attribute>
 <name> song_length </name>
-<type> type property </type>
+<type> Return the time of the last set event in the song, plus som extra beats
+that are usually added for better navigation in the arrangerview. </type>
 <value> property object at 0x2d91bc0 </value>
 </attribute>
 <attribute>
 <name> tempo </name>
-<type> type property </type>
+<type> Get/Set the global project tempo. </type>
 <value> property object at 0x2d91a30 </value>
 </attribute>
 <attribute>
 <name> tracks </name>
-<type> type property </type>
+<type> Const access to a list of all Player Tracks in the Live Song, exluding
+the return and Master Track (see also Song.send_tracks and Song.master_track).
+At least one MIDI or Audio Track is always available. </type>
 <value> property object at 0x2d91558 </value>
 </attribute>
 <attribute>
 <name> view </name>
-<type> type property </type>
+<type> Representing the view aspects of a Live document: 
+The Session and Arrangerview. </type>
 <value> property object at 0x2d916e8 </value>
 </attribute>
 <attribute>
 <name> visible_tracks </name>
-<type> type property </type>
+<type> Const access to a list of all visible Player Tracks in the Live Song, exluding
+the return and Master Track (see also Song.send_tracks and Song.master_track).
+At least one MIDI or Audio Track is always available. </type>
 <value> property object at 0x2d91580 </value>
 </attribute>
 </attributes>

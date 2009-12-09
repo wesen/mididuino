@@ -83,16 +83,19 @@ stop( (ClipSlot)arg1) -> None :
     C++ signature :
         void stop(TPyHandle<AGroupAndClipSlotBase>) </TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Attributes</TH><TD><TABLE WIDTH='100%'>
-	<TR class='odd'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> clip </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> controls_other_clips </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> has_clip </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> has_stop_button </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_playing </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> is_recording </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_triggered </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> playing_status </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> will_record_on_start </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'> Get the canonical parent of the ClipSlot. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> clip </TD><TD class='attribute_type'> Returns the Clip which this clipslots currently owns. Might be None. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> controls_other_clips </TD><TD class='attribute_type'> Returns true if firing this slot will fire clips in other slots.
+Can only be true for slots in group tracks. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> has_clip </TD><TD class='attribute_type'> Returns true if this Clipslot owns a Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> has_stop_button </TD><TD class='attribute_type'> Get/Set if this Clip has a stop button, which will, if fired, stop any
+other Clip that is currently playing the Track we do belong to. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_playing </TD><TD class='attribute_type'> Returns whether the clip associated with the slot is playing. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> is_recording </TD><TD class='attribute_type'> Returns whether the clip associated with the slot is recording. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_triggered </TD><TD class='attribute_type'> Const access to the triggering state of the clip slot. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> playing_status </TD><TD class='attribute_type'> Const access to the playing state of the clip slot.
+Can be either stopped, playing, or recording. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> will_record_on_start </TD><TD class='attribute_type'> returns true if the clip slot will record on being fired. </TD><TD class='attribute_value'> property</TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Listeners</TH><TD><TABLE WIDTH='100%'>
 	<TR class='odd'><TD class='attribute_name'> controls_other_clips </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>
 	<TR class='even'><TD class='attribute_name'> has_clip </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>

@@ -71,15 +71,22 @@ __str__( (DeviceParameter)arg1) -> object :
     C++ signature :
         TString __str__(TPyHandle<ATimeable>) </TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Attributes</TH><TD><TABLE WIDTH='100%'>
-	<TR class='odd'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> default_value </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> is_enabled </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_quantized </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> max </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> min </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> name </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> original_name </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> value </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'> Get the canonical parent of the device parameter. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> default_value </TD><TD class='attribute_type'> Return the default value for this parameter.  A Default value is only
+available for non-quantized parameter s (see 'is_quantized'). </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> is_enabled </TD><TD class='attribute_type'> Returns false if the parameter has been macro mapped or disabled by Max. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_quantized </TD><TD class='attribute_type'> Returns True, if this value is a boolean or integer like switch.
+Non quantized values are continues float values. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> max </TD><TD class='attribute_type'> Returns const access to the upper value of the allowed range for
+this parameter </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> min </TD><TD class='attribute_type'> Returns const access to the lower value of the allowed range for
+this parameter </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> name </TD><TD class='attribute_type'> Returns const access the name of this parameter, as visible in Lives
+automation choosers. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> original_name </TD><TD class='attribute_type'> Returns const access the original name of this parameter, unaffected of
+any renamings. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> value </TD><TD class='attribute_type'> Get/Set the current value (as visible in the GUI) this parameter.
+The value must be inside the min/max properties of this device. </TD><TD class='attribute_value'> property</TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Listeners</TH><TD><TABLE WIDTH='100%'>
 	<TR class='even'><TD class='attribute_name'> value </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Builtins</TH><TD><TABLE WIDTH='100%'>

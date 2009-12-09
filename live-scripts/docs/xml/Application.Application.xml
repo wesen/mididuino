@@ -74,17 +74,17 @@ get_minor_version( (Application)arg1) -&gt; int :
 <attributes>
 <attribute>
 <name> View </name>
-<type> type Boost.Python.class </type>
+<type> This class represents the view aspects of the Live application. </type>
 <value> class Application.View </value>
 </attribute>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Returns the canonical parent of the application. </type>
 <value> property object at 0x2d910f8 </value>
 </attribute>
 <attribute>
 <name> view </name>
-<type> type property </type>
+<type> Returns the applications view component. </type>
 <value> property object at 0x2d910d0 </value>
 </attribute>
 </attributes>

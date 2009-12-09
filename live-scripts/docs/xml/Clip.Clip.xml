@@ -132,102 +132,114 @@ stop( (Clip)arg1) -&gt; None :
 <attributes>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Get the canonical parent of the Clip. </type>
 <value> property object at 0x2daa5d0 </value>
 </attribute>
 <attribute>
 <name> color </name>
-<type> type property </type>
+<type> Get/set access to the color of the Clip (RGB). </type>
 <value> property object at 0x2daa558 </value>
 </attribute>
 <attribute>
 <name> is_audio_clip </name>
-<type> type property </type>
+<type> Return true if this Clip is an Audio Clip.
+A Clip can be either an Audioclip or a MIDI Clip. </type>
 <value> property object at 0x2daa468 </value>
 </attribute>
 <attribute>
 <name> is_midi_clip </name>
-<type> type property </type>
+<type> return true if this Clip is a MIDI Clip.
+A Clip can be either an Audioclip or a MIDI Clip. </type>
 <value> property object at 0x2daa4b8 </value>
 </attribute>
 <attribute>
 <name> is_playing </name>
-<type> type property </type>
+<type> Get/Set if this Clip is currently playing. If the Clips trigger mode
+is set to a quantization value, the Clip will not start playing immediately.
+If you need to know wether the Clip was triggered, use the is_triggered property. </type>
 <value> property object at 0x2daa648 </value>
 </attribute>
 <attribute>
 <name> is_recording </name>
-<type> type property </type>
+<type> returns true if the Clip was triggered to record or is recording. </type>
 <value> property object at 0x2daa698 </value>
 </attribute>
 <attribute>
 <name> is_triggered </name>
-<type> type property </type>
+<type> returns true if the Clip was triggered or is playing. </type>
 <value> property object at 0x2daa670 </value>
 </attribute>
 <attribute>
 <name> length </name>
-<type> type property </type>
+<type> Get to the Clips length in beats. </type>
 <value> property object at 0x2daa710 </value>
 </attribute>
 <attribute>
 <name> loop_end </name>
-<type> type property </type>
+<type> Get/Set the loop end pos of this Clip in beats. </type>
 <value> property object at 0x2daa788 </value>
 </attribute>
 <attribute>
 <name> loop_start </name>
-<type> type property </type>
+<type> Get/Set the Clips loopstart pos in beats. </type>
 <value> property object at 0x2daa760 </value>
 </attribute>
 <attribute>
 <name> looping </name>
-<type> type property </type>
+<type> Get/Set the Clips 'loop is enabled' flag
+.Only Warped Audio Clips or MIDI Clip can be looped. </type>
 <value> property object at 0x2daa738 </value>
 </attribute>
 <attribute>
 <name> muted </name>
-<type> type property </type>
+<type> Read/write access to the mute state of the Clip. </type>
 <value> property object at 0x2daa508 </value>
 </attribute>
 <attribute>
 <name> name </name>
-<type> type property </type>
+<type> Read/write access to the name of the Clip. </type>
 <value> property object at 0x2daa530 </value>
 </attribute>
 <attribute>
 <name> pitch_coarse </name>
-<type> type property </type>
+<type> Avalibale for AudioClips only.
+Read/write access to the pitch (in halftones) setting of the
+Audio Clip, ranging from -48 to 48 </type>
 <value> property object at 0x2daa7b0 </value>
 </attribute>
 <attribute>
 <name> pitch_fine </name>
-<type> type property </type>
+<type> Avalibale for AudioClips only.
+Read/write access to the pitch fine setting of the
+Audio Clip, ranging from -500 to 500 </type>
 <value> property object at 0x2daa800 </value>
 </attribute>
 <attribute>
 <name> playing_position </name>
-<type> type property </type>
+<type> Constant access to the current playing position of the clip.
+The returned value is the position in beats for midi and warped audio clips,
+or in seconds for unwarped audio clips. Stopped clips will return 0. </type>
 <value> property object at 0x2daa5f8 </value>
 </attribute>
 <attribute>
 <name> signature_denominator </name>
-<type> type property </type>
+<type> Get/Set access to the global signature denominator of the Clip. </type>
 <value> property object at 0x2daa5a8 </value>
 </attribute>
 <attribute>
 <name> signature_numerator </name>
-<type> type property </type>
+<type> Get/Set access to the global signature numerator of the Clip. </type>
 <value> property object at 0x2daa580 </value>
 </attribute>
 <attribute>
 <name> warping </name>
-<type> type property </type>
+<type> Avalibale for AudioClips only.
+Get/Set if this Clip is timestreched. </type>
 <value> property object at 0x2daa850 </value>
 </attribute>
 <attribute>
 <name> will_record_on_start </name>
-<type> type property </type>
+<type> returns true if the Clip will record on being started. </type>
 <value> property object at 0x2daa6c0 </value>
 </attribute>
 </attributes>

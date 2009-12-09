@@ -63,42 +63,65 @@ stop_all_clips( (Track)arg1) -> None :
     C++ signature :
         void stop_all_clips(TPyHandle<ATrack>) </TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Attributes</TH><TD><TABLE WIDTH='100%'>
-	<TR class='odd'><TD class='attribute_name'> View </TD><TD class='attribute_type'>  Boost.Python.class </TD><TD class='attribute_value'> class <A HREF="Track.View.html">Track.View</A> </TD></TR>
-	<TR class='even'><TD class='attribute_name'> arm </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> can_be_armed </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> clip_slots </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> current_input_routing </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> current_input_sub_routing </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> current_monitoring_state </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> current_output_routing </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> current_output_sub_routing </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> devices </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> fired_slot_index </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> fold_state </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> has_audio_input </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> has_audio_output </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> has_midi_input </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> has_midi_output </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> input_meter_left </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> input_meter_level </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> input_meter_right </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> input_routings </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> input_sub_routings </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> is_foldable </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_part_of_selection </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> is_visible </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> mixer_device </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> mute </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> name </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> output_meter_left </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> output_meter_level </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> output_meter_right </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> output_routings </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> output_sub_routings </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> playing_slot_index </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> solo </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> view </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> View </TD><TD class='attribute_type'> Representing the view aspects of a Track. </TD><TD class='attribute_value'> class <A HREF="Track.View.html">Track.View</A> </TD></TR>
+	<TR class='even'><TD class='attribute_name'> arm </TD><TD class='attribute_type'> Arm the track for recording. Not available for Master- and Send Tracks. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> can_be_armed </TD><TD class='attribute_type'> return True, if this Track has a valid arm property. Not all tracks
+can be armed (for example return Tracks or the Master Tracks). </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'> Get the canonical parent of the track. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> clip_slots </TD><TD class='attribute_type'> const access to the list of clipslots (see class AClipSlot) for this track.
+The list will be empty for the master and sendtracks. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> current_input_routing </TD><TD class='attribute_type'> Get/Set the name of the current active input routing.
+When setting a new routing, the new routing must be one of the available ones. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> current_input_sub_routing </TD><TD class='attribute_type'> Get/Set the current active input sub routing.
+When setting a new routing, the new routing must be one of the available ones. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> current_monitoring_state </TD><TD class='attribute_type'> Get/Set the track's current monitoring state. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> current_output_routing </TD><TD class='attribute_type'> Get/Set the current active output routing.
+When setting a new routing, the new routing must be one of the available ones. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> current_output_sub_routing </TD><TD class='attribute_type'> Get/Set the current active output sub routing.
+When setting a new routing, the new routing must be one of the available ones. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> devices </TD><TD class='attribute_type'> Return const access to all available Devices that are present in the Tracks
+Devicechain. This tuple will also include the 'mixer_device' that every Track
+always has. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> fired_slot_index </TD><TD class='attribute_type'> const access to the index of the fired (and thus blinking) clipslot in this track.
+This index is -1 if no slot is fired and -2 if the track's stop button has been fired. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> fold_state </TD><TD class='attribute_type'> Get/Set whether the track is folded or not. Only available if is_foldable is True. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> has_audio_input </TD><TD class='attribute_type'> return True, if this Track can be feed with an Audio signal. This is
+true for all Audio Tracks. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> has_audio_output </TD><TD class='attribute_type'> return True, if this Track sends out an Audio signal. This is
+true for all Audio Tracks, and MIDI tracks with an Instrument. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> has_midi_input </TD><TD class='attribute_type'> return True, if this Track can be feed with an Audio signal. This is
+true for all MIDI Tracks. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> has_midi_output </TD><TD class='attribute_type'> return True, if this Track sends out MIDI events. This is
+true for all MIDI Tracks with no Instruments. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> input_meter_left </TD><TD class='attribute_type'> Momentary value of left input channel meter, 0.0 to 1.0. For Audio Tracks only. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> input_meter_level </TD><TD class='attribute_type'> Return the MIDI or Audio meter value of the Tracks input, depending on the
+ of the Track input. Meter values (MIDI or Audio) are always scaled
+from 0.0 to 1.0. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> input_meter_right </TD><TD class='attribute_type'> Momentary value of right input channel meter, 0.0 to 1.0. For Audio Tracks only. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> input_routings </TD><TD class='attribute_type'> Const access to the list of available input routings. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> input_sub_routings </TD><TD class='attribute_type'> Return a list of all available input sub routings. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> is_foldable </TD><TD class='attribute_type'> return True if the track can be (un)folded to hide/reveal contained tracks. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_part_of_selection </TD><TD class='attribute_type'> return False if the track is not selected. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> is_visible </TD><TD class='attribute_type'> return False if the track is hidden within a folded group track. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> mixer_device </TD><TD class='attribute_type'> Return access to the special Device that every Track has: This Device contains
+the Volume, Pan, Sendamounts, and Crossfade assignment parameters. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> mute </TD><TD class='attribute_type'> Mute/unmute the track. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> name </TD><TD class='attribute_type'> Read/write access to the name of the Track, as visible in the track header. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> output_meter_left </TD><TD class='attribute_type'> Momentary value of left output channel meter, 0.0 to 1.0.
+For tracks with audio output only. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> output_meter_level </TD><TD class='attribute_type'> Return the MIDI or Audio meter value of the Track output (behind the
+mixer_device), depending on the  of the Track input, this can be a MIDI
+or Audio meter. Meter values (MIDI or Audio) are always scaled from 0.0 to 1.0. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> output_meter_right </TD><TD class='attribute_type'> Momentary value of right output channel meter, 0.0 to 1.0.
+For tracks with audio output only. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> output_routings </TD><TD class='attribute_type'> Const access to the list of all available output routings. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> output_sub_routings </TD><TD class='attribute_type'> Return a list of all available output sub routings. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> playing_slot_index </TD><TD class='attribute_type'> const access to the index of the currently playing clip in the track.
+Will be -1 when no clip is playing. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> solo </TD><TD class='attribute_type'> Get/Set the solo status of the track. Note that this will not disable the
+solo state of any other track. If you want exclusive solo, you have to 
+disable the solo state of the other Tracks manually. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> view </TD><TD class='attribute_type'> Representing the view aspects of a Track. </TD><TD class='attribute_value'> property</TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Listeners</TH><TD><TABLE WIDTH='100%'>
 	<TR class='odd'><TD class='attribute_name'> arm </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>
 	<TR class='even'><TD class='attribute_name'> clip_slots </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>

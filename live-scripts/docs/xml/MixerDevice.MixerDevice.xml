@@ -60,37 +60,37 @@ __nonzero__( (object)arg1) -&gt; bool :
 <attributes>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Get the canonical parent of the mixer device. </type>
 <value> property object at 0x2da37d8 </value>
 </attribute>
 <attribute>
 <name> crossfade_assign </name>
-<type> type property </type>
+<type> Player- and ReturnTracks only: Const access to the Track's Crossfade Assign State. </type>
 <value> property object at 0x2da3738 </value>
 </attribute>
 <attribute>
 <name> crossfader </name>
-<type> type property </type>
+<type> MasterTrack only: Const access to the Crossfader. </type>
 <value> property object at 0x2da3788 </value>
 </attribute>
 <attribute>
 <name> cue_volume </name>
-<type> type property </type>
+<type> MasterTrack only: Const access to the Cue Volume Parameter. </type>
 <value> property object at 0x2da36c0 </value>
 </attribute>
 <attribute>
 <name> panning </name>
-<type> type property </type>
+<type> Const access to the Tracks Panning Device Parameter. </type>
 <value> property object at 0x2da3698 </value>
 </attribute>
 <attribute>
 <name> sends </name>
-<type> type property </type>
+<type> Const access to the Tracks list of Send Amount Device Parameters. </type>
 <value> property object at 0x2da3710 </value>
 </attribute>
 <attribute>
 <name> volume </name>
-<type> type property </type>
+<type> Const access to the Tracks Volume Device Parameter. </type>
 <value> property object at 0x2da3670 </value>
 </attribute>
 </attributes>

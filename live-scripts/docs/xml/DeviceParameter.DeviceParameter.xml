@@ -65,47 +65,54 @@ __str__( (DeviceParameter)arg1) -&gt; object :
 <attributes>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Get the canonical parent of the device parameter. </type>
 <value> property object at 0x2da3d78 </value>
 </attribute>
 <attribute>
 <name> default_value </name>
-<type> type property </type>
+<type> Return the default value for this parameter.  A Default value is only
+available for non-quantized parameter types (see 'is_quantized'). </type>
 <value> property object at 0x2da3d28 </value>
 </attribute>
 <attribute>
 <name> is_enabled </name>
-<type> type property </type>
+<type> Returns false if the parameter has been macro mapped or disabled by Max. </type>
 <value> property object at 0x2da3c10 </value>
 </attribute>
 <attribute>
 <name> is_quantized </name>
-<type> type property </type>
+<type> Returns True, if this value is a boolean or integer like switch.
+Non quantized values are continues float values. </type>
 <value> property object at 0x2da3c60 </value>
 </attribute>
 <attribute>
 <name> max </name>
-<type> type property </type>
+<type> Returns const access to the upper value of the allowed range for
+this parameter </type>
 <value> property object at 0x2da3cd8 </value>
 </attribute>
 <attribute>
 <name> min </name>
-<type> type property </type>
+<type> Returns const access to the lower value of the allowed range for
+this parameter </type>
 <value> property object at 0x2da3cb0 </value>
 </attribute>
 <attribute>
 <name> name </name>
-<type> type property </type>
+<type> Returns const access the name of this parameter, as visible in Lives
+automation choosers. </type>
 <value> property object at 0x2da3b98 </value>
 </attribute>
 <attribute>
 <name> original_name </name>
-<type> type property </type>
+<type> Returns const access the original name of this parameter, unaffected of
+any renamings. </type>
 <value> property object at 0x2da3bc0 </value>
 </attribute>
 <attribute>
 <name> value </name>
-<type> type property </type>
+<type> Get/Set the current value (as visible in the GUI) this parameter.
+The value must be inside the min/max properties of this device. </type>
 <value> property object at 0x2da3d00 </value>
 </attribute>
 </attributes>

@@ -83,12 +83,16 @@ set_fire_button_state( (Scene)arg1, (bool)arg2) -> None :
     C++ signature :
         void set_fire_button_state(TPyHandle<AScene>,bool) </TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Attributes</TH><TD><TABLE WIDTH='100%'>
-	<TR class='odd'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> clip_slots </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> color </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_triggered </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> name </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> tempo </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'> Get the canonical parent of the scene. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> clip_slots </TD><TD class='attribute_type'> return a list of clipslots (see class AClipSlot) that this scene covers. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> color </TD><TD class='attribute_type'> Get/set access to the color of the Scene (RGB). </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_triggered </TD><TD class='attribute_type'> Const access to the scene's trigger state. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> name </TD><TD class='attribute_type'> Get/Set the name of the scene. Might contain the substring BPM, which
+identifies that the scene will change the tempo when fireed. To Get/Set
+the temp, use the 'tempo' property of the scene. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> tempo </TD><TD class='attribute_type'> Get/Set the the tempo value of the scene.
+The Song will use the Scenes tempo as soon as the Scene is fired.
+Returns -1 if the Scene has no tempo propery. </TD><TD class='attribute_value'> property</TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Listeners</TH><TD><TABLE WIDTH='100%'>
 	<TR class='odd'><TD class='attribute_name'> clip_slots </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>
 	<TR class='even'><TD class='attribute_name'> color </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>

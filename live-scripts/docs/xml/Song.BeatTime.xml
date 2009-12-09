@@ -29,22 +29,22 @@ __str__( (BeatTime)arg1) -&gt; object :
 <attributes>
 <attribute>
 <name> bars </name>
-<type> type property </type>
+<type> no documentation </type>
 <value> property object at 0x2d9c170 </value>
 </attribute>
 <attribute>
 <name> beats </name>
-<type> type property </type>
+<type> no documentation </type>
 <value> property object at 0x2d9c198 </value>
 </attribute>
 <attribute>
 <name> sub_division </name>
-<type> type property </type>
+<type> no documentation </type>
 <value> property object at 0x2d9c1c0 </value>
 </attribute>
 <attribute>
 <name> ticks </name>
-<type> type property </type>
+<type> no documentation </type>
 <value> property object at 0x2d9c210 </value>
 </attribute>
 </attributes>

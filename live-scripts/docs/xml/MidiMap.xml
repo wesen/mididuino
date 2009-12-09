@@ -92,12 +92,12 @@ send_feedback_for_parameter( (int)arg1, (DeviceParameter)arg2) -&gt; None :
 <attributes>
 <attribute>
 <name> CCFeedbackRule </name>
-<type> type Boost.Python.class </type>
+<type> Structure to define feedback properties of MIDI mappings. </type>
 <value> class MidiMap.CCFeedbackRule </value>
 </attribute>
 <attribute>
 <name> PitchBendFeedbackRule </name>
-<type> type Boost.Python.class </type>
+<type> Structure to define feedback properties of MIDI mappings. </type>
 <value> class MidiMap.PitchBendFeedbackRule </value>
 </attribute>
 </attributes>

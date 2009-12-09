@@ -116,26 +116,38 @@ stop( (Clip)arg1) -> None :
     C++ signature :
         void stop(TPyHandle<AClip>) </TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Attributes</TH><TD><TABLE WIDTH='100%'>
-	<TR class='even'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> color </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_audio_clip </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> is_midi_clip </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_playing </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> is_recording </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> is_triggered </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> length </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> loop_end </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> loop_start </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> looping </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> muted </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> name </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> pitch_coarse </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> pitch_fine </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> playing_position </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> signature_denominator </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> signature_numerator </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='even'><TD class='attribute_name'> warping </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
-	<TR class='odd'><TD class='attribute_name'> will_record_on_start </TD><TD class='attribute_type'>  property </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> canonical_parent </TD><TD class='attribute_type'> Get the canonical parent of the Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> color </TD><TD class='attribute_type'> Get/set access to the color of the Clip (RGB). </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_audio_clip </TD><TD class='attribute_type'> Return true if this Clip is an Audio Clip.
+A Clip can be either an Audioclip or a MIDI Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> is_midi_clip </TD><TD class='attribute_type'> return true if this Clip is a MIDI Clip.
+A Clip can be either an Audioclip or a MIDI Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_playing </TD><TD class='attribute_type'> Get/Set if this Clip is currently playing. If the Clips trigger mode
+is set to a quantization value, the Clip will not start playing immediately.
+If you need to know wether the Clip was triggered, use the is_triggered property. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> is_recording </TD><TD class='attribute_type'> returns true if the Clip was triggered to record or is recording. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> is_triggered </TD><TD class='attribute_type'> returns true if the Clip was triggered or is playing. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> length </TD><TD class='attribute_type'> Get to the Clips length in beats. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> loop_end </TD><TD class='attribute_type'> Get/Set the loop end pos of this Clip in beats. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> loop_start </TD><TD class='attribute_type'> Get/Set the Clips loopstart pos in beats. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> looping </TD><TD class='attribute_type'> Get/Set the Clips 'loop is enabled' flag
+.Only Warped Audio Clips or MIDI Clip can be looped. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> muted </TD><TD class='attribute_type'> Read/write access to the mute state of the Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> name </TD><TD class='attribute_type'> Read/write access to the name of the Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> pitch_coarse </TD><TD class='attribute_type'> Avalibale for AudioClips only.
+Read/write access to the pitch (in halftones) setting of the
+Audio Clip, ranging from -48 to 48 </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> pitch_fine </TD><TD class='attribute_type'> Avalibale for AudioClips only.
+Read/write access to the pitch fine setting of the
+Audio Clip, ranging from -500 to 500 </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> playing_position </TD><TD class='attribute_type'> Constant access to the current playing position of the clip.
+The returned value is the position in beats for midi and warped audio clips,
+or in seconds for unwarped audio clips. Stopped clips will return 0. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> signature_denominator </TD><TD class='attribute_type'> Get/Set access to the global signature denominator of the Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> signature_numerator </TD><TD class='attribute_type'> Get/Set access to the global signature numerator of the Clip. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='even'><TD class='attribute_name'> warping </TD><TD class='attribute_type'> Avalibale for AudioClips only.
+Get/Set if this Clip is timestreched. </TD><TD class='attribute_value'> property</TD></TR>
+	<TR class='odd'><TD class='attribute_name'> will_record_on_start </TD><TD class='attribute_type'> returns true if the Clip will record on being started. </TD><TD class='attribute_value'> property</TD></TR>
 </TABLE></TD><TR><TR><TD COLSPAN=2><HR></HR></TD><TR><TR><TH class='docheader'>Listeners</TH><TD><TABLE WIDTH='100%'>
 	<TR class='even'><TD class='attribute_name'> color </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>
 	<TR class='odd'><TD class='attribute_name'> is_recording </TD><TD class='attribute_type'></TD><TD class='attribute_value'></TD></TR>

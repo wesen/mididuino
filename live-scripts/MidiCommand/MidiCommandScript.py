@@ -2,11 +2,13 @@ import Live
 from consts import *
 import sys
 from MidiCommandHelper import MidiCommandHelper
-from MidiCommandListener import MidiCommandListener
+#from MidiCommandListener import MidiCommandListener
 from ParamMap import ParamMap
 from Devices import *
 from Tracing import Traced
 from DumpXML import dumpXML
+from LiveClasses import *
+from MidiConversion import *
 
 #class MidiCommandScript(Traced):
 class MidiCommandScript:
@@ -49,8 +51,8 @@ class MidiCommandScript:
         if self.is_live_5():
             live = "Live 5"
         self.show_message(self.__name__ + " " + self.__version__ + " for " + live)
-        self.log("listeners %s" % MidiCommandListener.songListeners)
-        self.listener = MidiCommandListener(self, self.song(), MidiCommandListener.songListeners)
+
+#        self.listener = MidiCommandListener(self, self.song())
 
     def dump_documentation(self):
         for i in ["Application.Application", "Clip.Clip", "ClipSlot.ClipSlot", "Device.Device", "DeviceParameter.DeviceParameter", "MidiMap", "MixerDevice.MixerDevice", "Scene.Scene", "Song.Song", "Song.BeatTime", "Song.CuePoint", "Song.Quantization", "Song.SmptTime", "Song.TimeFormat", "Track.Track"]:
@@ -84,6 +86,7 @@ class MidiCommandScript:
 	    command = command.strip()
 	    try:
                 exec(command)
+                self.log("execed %s" % (command))
 		result = eval(command).__str__()
 		self.log("%s = %s" % (command, result))
 	    except Exception, inst:
@@ -99,10 +102,6 @@ class MidiCommandScript:
 	
     def log(self, string):
 	if self.__myDebug__:
-#	    self.file.write("string type %s" % type(string))
-#	    if (isinstance(string, unicode)):
-#		self.file.write(string.encode("latin-1") + "\n")
-#	    else:
             self.file.write(string + "\n")
 	    self.file.flush()
 
@@ -110,14 +109,13 @@ class MidiCommandScript:
 	args2 = []
 	for i in range(0, len(args)):
 	    args2 += [args[i].__str__()]
-#	    if (isinstance(args2[i], unicode)):
-#		args2[i] = args2[i].encode("latin-1")
 	str = fmt % tuple(args2)
 	return self.log(str)
 	
 	
     def disconnect(self):
-#	self.song().remove_tracks_listener(self.on_tracks_changed)
+        self.listener.disconnect()
+        
 	for c in self.components:
 	    c.disconnect()
 

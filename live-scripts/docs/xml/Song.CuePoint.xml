@@ -64,17 +64,17 @@ jump( (CuePoint)arg1) -&gt; None :
 <attributes>
 <attribute>
 <name> canonical_parent </name>
-<type> type property </type>
+<type> Get the canonical parent of the cue point. </type>
 <value> property object at 0x2d9c080 </value>
 </attribute>
 <attribute>
 <name> name </name>
-<type> type property </type>
+<type> Get/Listen to the name of this CuePoint, as visible in the arranger. </type>
 <value> property object at 0x2d9c058 </value>
 </attribute>
 <attribute>
 <name> time </name>
-<type> type property </type>
+<type> Get/Listen to the CuePoint's time in beats. </type>
 <value> property object at 0x2d9c030 </value>
 </attribute>
 </attributes>

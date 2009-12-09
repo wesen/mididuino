@@ -147,9 +147,13 @@ def dumpXML(obj, Filename=None):
             if attr[0:2] == "__" and attr[-2:] == "__":
                 continue
             try:
+#                typestr = delchars(str(type(val)), "<'>")
+                typestr = getattr(val, '__doc__', None) or 'no documentation'
+                typestr = typestr.replace("<", "&lt;")
+                typestr = typestr.replace(">", "&gt;")
                 print "<attribute>"
                 print '<name>', str(attr), '</name>'
-                print '<type>', delchars(str(type(val)), "<'>"), '</type>'
+                print '<type>', typestr, '</type>'
                 print '<value>', delchars(str(val), "<'>"), '</value>'
                 print "</attribute>"  
             except:

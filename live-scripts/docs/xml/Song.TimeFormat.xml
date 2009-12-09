@@ -7,42 +7,50 @@
 <attributes>
 <attribute>
 <name> ms_time </name>
-<type> class Song.TimeFormat </type>
+<type> no documentation </type>
 <value> ms_time </value>
 </attribute>
 <attribute>
 <name> name </name>
-<type> type member_descriptor </type>
+<type> no documentation </type>
 <value> member name of Boost.Python.enum objects </value>
 </attribute>
 <attribute>
 <name> smpte_24 </name>
-<type> class Song.TimeFormat </type>
+<type> no documentation </type>
 <value> smpte_24 </value>
 </attribute>
 <attribute>
 <name> smpte_25 </name>
-<type> class Song.TimeFormat </type>
+<type> no documentation </type>
 <value> smpte_25 </value>
 </attribute>
 <attribute>
 <name> smpte_29 </name>
-<type> class Song.TimeFormat </type>
+<type> no documentation </type>
 <value> smpte_29 </value>
 </attribute>
 <attribute>
 <name> smpte_30 </name>
-<type> class Song.TimeFormat </type>
+<type> no documentation </type>
 <value> smpte_30 </value>
 </attribute>
 <attribute>
 <name> smpte_30_drop </name>
-<type> class Song.TimeFormat </type>
+<type> no documentation </type>
 <value> smpte_30_drop </value>
 </attribute>
 <attribute>
 <name> values </name>
-<type> type dict </type>
+<type> dict() -&gt; new empty dictionary.
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+    (key, value) pairs.
+dict(seq) -&gt; new dictionary initialized as if via:
+    d = {}
+    for k, v in seq:
+        d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+    in the keyword argument list.  For example:  dict(one=1, two=2) </type>
 <value> {0: Song.TimeFormat.ms_time, 1: Song.TimeFormat.smpte_24, 2: Song.TimeFormat.smpte_25, 3: Song.TimeFormat.smpte_30, 4: Song.TimeFormat.smpte_30_drop, 5: Song.TimeFormat.smpte_29} </value>
 </attribute>
 </attributes>
