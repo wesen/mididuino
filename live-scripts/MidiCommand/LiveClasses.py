@@ -17,7 +17,8 @@ def attributeToMidi(object, attr, value):
     if _class != None:
         liveattr = _class.getAttribute(attr)
         if liveattr != None:
-            return (PRINT_ATTRIBUTE_FUNC_ID, _class.id) + MidiConverter.toMidi(object) + (liveattr.id) + liveattr.toMidi()
+#            return (PRINT_ATTRIBUTE_FUNC_ID, _class.id) + MidiConverter.toMidi(object) + (liveattr.id) + liveattr.toMidi(value)
+            return (PRINT_ATTRIBUTE_FUNC_ID, _class.id) + (liveattr.id,) + liveattr.toMidi(value)
     return ()
 
 class LiveClass:
@@ -63,7 +64,7 @@ class LiveAttribute:
     __module__ = __name__
     __doc__ = 'Generic introspection class for Live attribute'
 
-    def __init__(self, _name, _type, _id, _hasListener):
+    def __init__(self, _name, _id, _type, _hasListener):
         self.name = _name
         self.type = _type
         self.id = _id

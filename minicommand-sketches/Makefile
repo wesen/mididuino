@@ -48,6 +48,9 @@ LLVMCFLAGS ?= -emit-llvm -O4 $(CFLAGS)
 
 all: $(TARGET).hex
 
+printlibs:
+	echo $(LDIRS)
+
 bla:
 	echo $(LDIRS)
 	echo "FOO"

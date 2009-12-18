@@ -6,7 +6,7 @@
 	<false/>
 	<key>binderSelection</key>
 	<array>
-		<integer>13</integer>
+		<integer>40</integer>
 	</array>
 	<key>binderSplitFrames</key>
 	<array>
@@ -49,16 +49,25 @@
 	<real>200</real>
 	<key>mainDocumentEditor.binderDocuments</key>
 	<array>
-		<integer>11</integer>
+		<integer>39</integer>
 	</array>
+	<key>mainDocumentEditor.corkboardSelection</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUIGBlUJHRvcFgkb2JqZWN0c1gkdmVyc2lvblkkYXJjaGl2ZXLR
+	BgdUcm9vdIABowkKEVUkbnVsbNQLDA0ODw8PEFpOU0xvY2F0aW9uWE5TTGVuZ3RoXE5T
+	UmFuZ2VDb3VudFYkY2xhc3MQAYAC0hITFBdYJGNsYXNzZXNaJGNsYXNzbmFtZaIVFlpO
+	U0luZGV4U2V0WE5TT2JqZWN0Wk5TSW5kZXhTZXQSAAGGoF8QD05TS2V5ZWRBcmNoaXZl
+	cggRFh8oMjU6PEBGT1pjcHd5e4CJlJeiq7a7AAAAAAAAAQEAAAAAAAAAGgAAAAAAAAAA
+	AAAAAAAAAM0=
+	</data>
 	<key>mainDocumentEditor.corkboardVisible</key>
-	<false/>
+	<true/>
 	<key>mainDocumentEditor.lockedInPlace</key>
 	<false/>
 	<key>mainDocumentEditor.navHistory</key>
 	<dict>
 		<key>CurrentIndex</key>
-		<integer>272</integer>
+		<integer>276</integer>
 		<key>NavigationHistoryArray</key>
 		<array>
 			<dict>
@@ -1698,6 +1707,30 @@
 				<integer>11</integer>
 				<key>Mode</key>
 				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>61</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>23</integer>
+				<key>Mode</key>
+				<integer>2</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>45</integer>
+				<key>Mode</key>
+				<integer>2</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>39</integer>
+				<key>Mode</key>
+				<integer>2</integer>
 			</dict>
 		</array>
 	</dict>

@@ -36,8 +36,8 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
       case MNM_GLOBAL_MESSAGE_ID:
       case MNM_KIT_MESSAGE_ID:
       case MNM_SONG_MESSAGE_ID:
-				MidiSysex.resetRecord();
-				isMNMEncodedMessage = true;
+				//				MidiSysex.resetRecord();
+				isMNMEncodedMessage = false;
 				break;
 
       case MNM_PATTERN_MESSAGE_ID:

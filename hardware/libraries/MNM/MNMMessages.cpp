@@ -115,6 +115,7 @@ uint16_t MNMGlobal::toSysex(MNMDataToSysexEncoder &encoder) {
 
 bool MNMKit::fromSysex(uint8_t *data, uint16_t len) {
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+		GUI.flash_strings_fill("WRONG CHECK", "");
 		return false;
 	}
 
