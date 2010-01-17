@@ -43,8 +43,14 @@ public:
   uint8_t origPosition;
 	/** Stores the audio output for each track. **/
   uint8_t drumRouting[16];
+	/** Stores the MIDI pitch that triggers each track. **/
+  int8_t drumMapping[16];
 	/** Stores the MIDI pitch that triggers each pattern. **/
   uint8_t keyMap[128];
+	/** Stores the MIDI pitch that triggers the MachineDrum to start. **/
+	uint8_t triggerStart;
+	/** Stores the MIDI pitch that triggers the MachineDrum to stop. **/
+	uint8_t triggerStop;
 
 	/** The MIDI base channel of the MachineDrum. **/
   uint8_t baseChannel;
