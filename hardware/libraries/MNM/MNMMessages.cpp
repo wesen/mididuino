@@ -115,7 +115,9 @@ uint16_t MNMGlobal::toSysex(MNMDataToSysexEncoder &encoder) {
 
 bool MNMKit::fromSysex(uint8_t *data, uint16_t len) {
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+#ifdef MIDIDUINO
 		GUI.flash_strings_fill("WRONG CHECK", "");
+#endif
 		return false;
 	}
 

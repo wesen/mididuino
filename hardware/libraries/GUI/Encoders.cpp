@@ -106,7 +106,7 @@ void Encoder::clear() {
 }
 
 int Encoder::update(encoder_t *enc) {
-  cur = cur + enc->normal + (pressmode ? 0 : (fastmode ? 5 * enc->button : enc->button));
+	cur = cur + enc->normal + (pressmode ? 0 : (fastmode ? 5 * enc->button : enc->button));
   return cur;
 }
 

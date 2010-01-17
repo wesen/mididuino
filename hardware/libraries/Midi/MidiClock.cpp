@@ -172,7 +172,7 @@ void MidiClockClass::updateClockInterval() {
       }
       bla >>= 8;
       new_interval = bla;
-      //      if (rem > 190) // omg voodoo to correct discarded precision induced drift
+      //  if (rem > 190) // omg voodoo to correct discarded precision induced drift
       //	new_interval++;
     }
 

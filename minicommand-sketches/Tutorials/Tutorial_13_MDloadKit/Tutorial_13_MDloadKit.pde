@@ -5,5 +5,3 @@ void setup() {
   GUI.put_string_fill("MD KIT");
   initMDTask();
 }
-
-

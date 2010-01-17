@@ -29,6 +29,8 @@ struct MDKitFixture {
 
 TEST_F (MDKitFixture, MDKitSysex) {
 	uint8_t data[4092];
+	kit.origPosition = 0;
+	m_memcpy(kit.name, "foo", 4);
 	uint16_t len = kit.toSysex(data, sizeof(data));
 	bool ret = kit2.fromSysex(data + 6, len - 7);
 	CHECK(ret);

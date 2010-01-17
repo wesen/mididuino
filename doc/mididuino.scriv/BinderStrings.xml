@@ -2,6 +2,64 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>10</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>This tutorial is the first that actually produces MIDI messages on the MiniCommand. We are setting up two encoders, grouping them in an EncoderPage as seen previously, and sending out MIDI CC messages when the value of the encoders is changed.
+
+RangeEncoder param1(0, 127, "P1");
+RangeEncoder param2(0, 127, "P2");
+EncoderPage page(&amp;param1, &amp;param2);
+
+void setup() {
+  GUI.setPage(&amp;page);
+}
+
+This code is the same in the previous tutorial. We are now going to react to encoder changes in the main loop of the sketch by using the hasChanged() method of the Encoder class. The MIDI CC message is sent by using the sendCC() method of the MidiUart object. This object models the first MIDI port of the MiniCommand (the only one featuring a MIDI output). It has a huge number of methods to send different MIDI messages, such as sendNoteOn(), sendNoteOff(), etc… The getValue() method of the Encoder class is used to get the current value of the Encoder.
+
+void loop() {
+  if (param1.hasChanged()) {
+    MidiUart.sendCC(1, param1.getValue());
+  }
+  if (param2.hasChanged()) {
+    MidiUart.sendCC(2, param2.getValue());
+  }
+}
+
+This sketch can be expanded by sending MIDI note messages when buttons are pressed. This is done by checking for button pressed in the handleEvent() function, which is called automatically when events are received.
+
+bool handleEvent(gui_event_t *evt) {
+  if (EVENT_PRESSED(evt, Buttons.BUTTON1)) {
+    MidiUart.sendNoteOn(1, 100);
+    return true;
+  }
+  if (EVENT_RELEASED(evt, Buttons.BUTTON1)) {
+    MidiUart.sendNoteOff(1);
+    return true;
+  }
+  
+  return false;
+}
+
+Of course, this way of polling for encoder changes get a bit tedious and slow, especially when the number of encoders starts to grow (for example when using multiple pages). The MidiDuino framework helps with this by providing a number of Encoder subclasses that provide their own handler function. This function is called automatically by the MidiDuino runloop when the value of an encoder is changed. The CCEncoder class for example automatically sends CC messages. The example above can thus be rewritten as follows:
+
+CCEncoder param1(1, 0, "P1");
+CCEncoder param2(2, 0, "P2");
+EncoderPage page(&amp;param1, &amp;param2);
+
+void setup() {
+  GUI.setPage(&amp;page);
+}
+
+
+</string>
+		<key>Title</key>
+		<string>Sending MIDI</string>
+	</dict>
 	<key>11</key>
 	<dict>
 		<key>Notes</key>
@@ -27,6 +85,18 @@ void setup() {
 </string>
 		<key>Title</key>
 		<string>Making a page</string>
+	</dict>
+	<key>12</key>
+	<dict>
+		<key>Notes</key>
+		<string></string>
+		<key>Synopsis</key>
+		<string></string>
+		<key>Text</key>
+		<string>Of course, a MIDI controller that can only send MIDI data is not very interesting. The MidiDuino framework provides a full-featured MIDI parser that automatically parses incoming MIDI messages (including running-status messages, realtime messages and Sysex messages).
+There are multiple ways to react to incoming MIDI messages. The simplest way is to just implement a number of predefined callbacks that are automatically registered by the framework. These callbacks are onControlChange(), onNoteOn() and onNoteOff(), for commonly used MIDI messages. These callbacks are called when CC and Note messages are received on the first MIDI interface of the MiniCommand. onControlChange2(), onNoteOn2() and onNoteOff2() are called when the MIDI messages are received on the second MIDI interface of the MiniCommand.</string>
+		<key>Title</key>
+		<string>Receiving MIDI</string>
 	</dict>
 	<key>15</key>
 	<dict>

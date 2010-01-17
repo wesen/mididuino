@@ -68,10 +68,10 @@ p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Courier}
 <p class="p3">In this tutorial, we are getting a step nearer to writing a useful firmware for the Minicommand. This firmware shows two very important elements of the Mididuino framework: the Page class and its child the EncoderPage, and the Encoder class and its child the RangeEncoder.<span class="Apple-converted-space">  </span>The Page class is the fundamental building block of more complex firmwares. It groups together four encoders and the code to display and handle them. This allows all the relevant functionality for a firmware (or a part of a fi...</p>
 <p class="p2"><br></p>
 <p class="p1"><b>• Sending MIDI</b></p>
-<p class="p2"><br></p>
+<p class="p3">This tutorial is the first that actually produces MIDI messages on the MiniCommand. We are setting up two encoders, grouping them in an EncoderPage as seen previously, and sending out MIDI CC messages when the value of the encoders is changed.<span class="Apple-converted-space">  </span>RangeEncoder param1(0, 127, "P1"); RangeEncoder param2(0, 127, "P2"); EncoderPage page(&amp;param1, &amp;param2);<span class="Apple-converted-space">  </span>void setup() { <span class="Apple-converted-space">  </span>GUI.setPage(&amp;page); }<span class="Apple-converted-space">  </span>This code is the same in the previous tutorial. We are now going to react to encoder changes in the main loo...</p>
 <p class="p2"><br></p>
 <p class="p1"><b>• Receiving MIDI</b></p>
-<p class="p2"><br></p>
+<p class="p3">Of course, a MIDI controller that can only send MIDI data is not very interesting. The MidiDuino framework provides a full-featured MIDI parser that automatically parses incoming MIDI messages (including running-status messages, realtime messages and Sysex messages). There are multiple ways to react to incoming MIDI messages. The simplest way is to just implement a number of predefined callbacks that are automatically registered by the framework. These callbacks are onControlChange(), onNoteOn()...</p>
 <p class="p2"><br></p>
 <p class="p1"><b>• Accessing the Machinedrum</b></p>
 <p class="p2"><br></p>

@@ -9,23 +9,23 @@
 
 bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
   if (len != 0xC4 - 6)  {
+		//		printf("wrong length\n");
     // wrong length 
     return false;
   }
 
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+		//		printf("wrong checksum\n");
 		return false;
 	}
 
 	origPosition = data[3];
 	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.stop7Bit();
 	decoder.get(drumRouting, 16);
 
 	decoder.start7Bit();
-	decoder.get((uint8_t *)drumMapping, 16);
 	decoder.get(keyMap, 128);
-	decoder.get8(&triggerStart);
-	decoder.get8(&triggerStop);
 	decoder.stop7Bit();
 
 	decoder.get8(&baseChannel);
@@ -41,7 +41,7 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
 	transportOut = IS_BIT_SET(byte, 6);
 	decoder.getb(&localOn);
 
-	decoder.get(&drumLeft, 10);
+	decoder.get(&drumLeft, 12);
 
   return true;
 }
@@ -67,10 +67,7 @@ uint16_t MDGlobal::toSysex(ElektronDataToSysexEncoder &encoder) {
 	encoder.pack(drumRouting, 16);
 
 	encoder.start7Bit();
-	encoder.pack((uint8_t *)drumMapping, 16);
 	encoder.pack(keyMap, 128);
-	encoder.pack8(triggerStart);
-	encoder.pack8(triggerStop);
 	encoder.stop7Bit();
 
 	encoder.pack8(baseChannel);
@@ -90,7 +87,7 @@ uint16_t MDGlobal::toSysex(ElektronDataToSysexEncoder &encoder) {
 	encoder.pack8(byte);
 	encoder.packb(localOn);
 
-	encoder.pack(&drumLeft, 10);
+	encoder.pack(&drumLeft, 12);
 
 	uint16_t enclen = encoder.finish();
 	encoder.finishChecksum();
@@ -112,6 +109,7 @@ bool MDKitShort::fromSysex(uint8_t *data, uint16_t len) {
 
 	origPosition = data[3];
 	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.stop7Bit();
 	decoder.get((uint8_t *)name, 16);
 	name[16] = '\0';
 
@@ -124,20 +122,26 @@ bool MDKitShort::fromSysex(uint8_t *data, uint16_t len) {
 
 bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
   if (len != (0x4d1 - 7)) {
-    //    GUI.flash_strings_fill("WRONG LEN", "");
-    //    GUI.setLine(GUI.LINE2);
-    //    GUI.flash_put_value16(0, len);
+        GUI.flash_strings_fill("WRONG LEN", "");
+        GUI.setLine(GUI.LINE2);
+        GUI.flash_put_value16(0, len);
     return false;
   }
 
 	if (!ElektronHelper::checkSysexChecksum(data, len)) {
+        GUI.flash_strings_fill("WRONG CKSUM", "");
     return false;
   }
 
 	origPosition = data[3];
+
 	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	GUI.setLine(GUI.LINE2);
+	decoder.stop7Bit();
 	decoder.get((uint8_t *)name, 16);
+	GUI.flash_printf_fill("%X %X", data + 4, decoder.ptr);
 	name[16] = '\0';
+	m_memcpy(name, data + 4, 16);
 
 	decoder.get((uint8_t *)params, 16 * 24);
 	decoder.get(levels, 16);
@@ -223,6 +227,7 @@ bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
 
   origPosition = data[3];
 	ElektronSysexDecoder decoder(DATA_ENCODER_INIT(data + 4, len - 4));
+	decoder.stop7Bit();
 	decoder.get((uint8_t *)name, 16);
 	name[16] = '\0';
 
