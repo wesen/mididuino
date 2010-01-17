@@ -47,10 +47,6 @@ public:
   int8_t drumMapping[16];
 	/** Stores the MIDI pitch that triggers each pattern. **/
   uint8_t keyMap[128];
-	/** Stores the MIDI pitch that triggers the MachineDrum to start. **/
-	uint8_t triggerStart;
-	/** Stores the MIDI pitch that triggers the MachineDrum to stop. **/
-	uint8_t triggerStop;
 
 	/** The MIDI base channel of the MachineDrum. **/
   uint8_t baseChannel;

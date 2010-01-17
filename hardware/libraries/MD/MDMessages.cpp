@@ -43,6 +43,12 @@ bool MDGlobal::fromSysex(uint8_t *data, uint16_t len) {
 
 	decoder.get(&drumLeft, 12);
 
+	for (int i = 0; i < 128; i++) {
+    if (keyMap[i] < 16) {
+      drumMapping[keyMap[i]] = i;
+    }
+  }
+
   return true;
 }
 
@@ -139,9 +145,7 @@ bool MDKit::fromSysex(uint8_t *data, uint16_t len) {
 	GUI.setLine(GUI.LINE2);
 	decoder.stop7Bit();
 	decoder.get((uint8_t *)name, 16);
-	GUI.flash_printf_fill("%X %X", data + 4, decoder.ptr);
 	name[16] = '\0';
-	m_memcpy(name, data + 4, 16);
 
 	decoder.get((uint8_t *)params, 16 * 24);
 	decoder.get(levels, 16);
