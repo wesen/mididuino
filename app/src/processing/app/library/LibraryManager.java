@@ -117,6 +117,15 @@ public class LibraryManager {
   }
 
   /*
+   * Returns a collection of alllibrary objects
+   * @return A read-only collection of Library objects
+   */
+  public Collection getLibraries() {
+    refreshLibraries();
+    return Collections.unmodifiableList(libraries);
+  }
+
+  /*
    * Returns a collection of all buildable library objects
    * @return A read-only collection of built Library objects
    */
@@ -184,8 +193,8 @@ public class LibraryManager {
   }
   
   public Library getLibraryWithFile(String fileName) {
-    Collection<Library> builtLibraries = getBuiltLibraries();
-    for (Library library : builtLibraries) {
+    Collection<Library> allLibraries = getLibraries();
+    for (Library library : allLibraries) {
       if (library.hasHeaderFile(fileName)) {
         return library;
       }
