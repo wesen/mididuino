@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -20,14 +21,15 @@ uint8_t deviceID = 56;
 midi_ack_callback_t midi_ack_callback = NULL;
 
 #define CMD_DATA_BLOCK          0x01
-#define CMD_DATA_BLOCK_ACK     0x02
-#define CMD_FIRMWARE_CHECKSUM 0x03
+#define CMD_DATA_BLOCK_ACK      0x02
+#define CMD_FIRMWARE_CHECKSUM   0x03
 
 #define SYSEX_VENDOR_1 0x00
 #define SYSEX_VENDOR_2 0x13
 
 int exitMainLoop = 0;
 
+int statusMessage = 0;
 int verbose = 1;
 int convertHexFile = 0;
 
@@ -39,11 +41,77 @@ int waitingForBootloader = 0;
 
 unsigned char bootmsg[] = { 0xF0, 0x00, 0x13, 0x37, 0x05, 0xF7 };
 
-
 #define MAX_KB_SIZE 256 /* should be enough for now */
 unsigned char flashram[MAX_KB_SIZE * 1024];
 unsigned int max_address = 0;
 unsigned int cur_address = 0;
+
+typedef enum log_type_e {
+	LOG_INFO = 0,
+	LOG_USAGE, 
+	LOG_WARNING,
+	LOG_PROGRESS,
+	LOG_STATUS,
+	LOG_ERROR
+} log_type_t;
+
+FILE *logDescriptor(log_type_t log) {
+	if (log == LOG_ERROR) {
+		return stderr;
+	} else {
+		return stdout;
+	}
+}
+
+void logPrintType(log_type_t log) {
+	switch (log) {
+	case LOG_USAGE:
+		fprintf(logDescriptor(log), "Usage: ");
+		break;
+		
+	case LOG_INFO:
+		fprintf(logDescriptor(log), "INFO: ");
+		break;
+
+	case LOG_WARNING:
+		fprintf(logDescriptor(log), "WARNING: ");
+		break;
+
+	case LOG_PROGRESS:
+		fprintf(logDescriptor(log), "PROGRESS: ");
+		break;
+
+	case LOG_STATUS:
+		fprintf(logDescriptor(log), "STATUS: ");
+		break;
+
+	case LOG_ERROR:
+		fprintf(logDescriptor(log), "ERROR: ");
+		break;
+
+	default:
+		fprintf(logDescriptor(log), "INFO: ");
+		break;
+	}
+}
+
+void logString(log_type_t log, char *msg) {
+	logPrintType(log);
+	fprintf(logDescriptor(log), "%s", msg);
+}
+
+void logPrintf(log_type_t log, const char *fmt, ...) {
+	va_list lp;
+	va_start(lp, fmt);
+	logPrintType(log);
+	vfprintf(logDescriptor(log), fmt, lp);
+	va_end(lp);
+}
+
+void logvPrintf(log_type_t log, const char *fmt, va_list lp) {
+	logPrintType(log);
+	vfprintf(logDescriptor(log), fmt, lp);
+}
 
 void closeFile() {
   if (fin != NULL) {
@@ -70,9 +138,9 @@ void hexdump(unsigned char *buf, int len) {
   for (i = 0; i < len; i+=16) {
     int j;
     for (j = i; j < MIN(i+16, len); j++) {
-      printf("%2x ", buf[j]);
+      logPrintf(LOG_INFO, "%2x ", buf[j]);
     }
-    printf("\n");
+    logPrintf(LOG_INFO, "\n");
   }
 }
 
@@ -88,7 +156,7 @@ void loadHexFile(void) {
   while (fgets(buf, sizeof(buf), fin)) {
     unsigned int len = strlen(buf);
     if (len < 10) {
-      fprintf(stderr, "wrong ihex length, should be at least 10: %s\n", buf);
+			logPrintf(LOG_ERROR, "wrong ihex length, should be at least 10: %s\n", buf);
       exit(1);
     }
 
@@ -291,9 +359,9 @@ int send_sysex_part(void) {
   if (verbose >= 2) {
     if (part_buf[4] == CMD_DATA_BLOCK) {
       uint16_t address = make_word(part_buf + 6, 4);
-      printf("address: %x\n", address);
+      logPrintf(LOG_INFO, "address: %x\n", address);
       if (verbose >= 3) {
-				printf("code: \n");
+				logPrintf(LOG_INFO, "code: \n");
 				unsigned char code[512];
 				unsigned int code_len = 0;
 				unsigned int cnt;
@@ -315,7 +383,7 @@ int send_sysex_part(void) {
     }
     
     if (verbose >= 4) {
-      printf("sysex: \n");
+      logPrintf(LOG_INFO, "sysex: \n");
       hexdump(part_buf, len);
     }
   }
@@ -340,7 +408,7 @@ unsigned char stm_cmd = 0;
 void midi_sysex_cmd_recvd(unsigned char cmd) {
   if (cmd == 2) {
     if (verbose >= 2) {
-      printf("ACK received\n");
+      logPrintf(LOG_INFO, "ACK received\n");
     }
 
 		if (midi_ack_callback != NULL) {
@@ -357,7 +425,7 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
     }
     if (!send_sysex_part()) {
       if (verbose >= 1) {
-				printf("booting to main program\n");
+				logPrintf(LOG_INFO, "booting to main program\n");
       }
       
       static unsigned char buf[6] = {0xf0, 0x00, 0x13, 0x37, 0x04, 0xf7 };
@@ -371,7 +439,7 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
       exitMainLoop = 1;
     }
   } else {
-    fprintf(stderr, "unknown cmd %d received\n", cmd);
+    logPrintf(LOG_ERROR, "unknown cmd %d received\n", cmd);
   }
 }
 
@@ -421,14 +489,14 @@ void midiReceive(unsigned char c) {
 }
 
 void midiTimeout(void) {
-  fprintf(stderr, "Midi timeout: Device is not responding\n");
+  logPrintf(LOG_ERROR, "Midi timeout: Device is not responding\n");
   closeFile();
 
   exit(1);
 }
 
 void usage(void) {
-  fprintf(stderr, "Usage: ./midi-send [-l] [-h] [-I ID in hex (default 38)] -i inputDevice -o outputDevice file\n");
+  logPrintf(LOG_USAGE, "./midi-send [-l] [-h] [-s] [-b] [-v] [-I ID in hex (default 38)] -i inputDevice -o outputDevice file\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -437,7 +505,7 @@ int main(int argc, char *argv[]) {
   char inputDevice[256]  = "";
   int bootloader = 0;
 
-  while ((c = getopt(argc, argv, "ho:l:i:I:bvq")) != -1) {
+  while ((c = getopt(argc, argv, "ho:l:i:I:bvqs")) != -1) {
     switch (c) {
     case 'b':
       bootloader = 1;
@@ -456,7 +524,7 @@ int main(int argc, char *argv[]) {
       } else {
 				deviceID = strtol(optarg, NULL, 10);
       }
-      printf("deviceID: %x\n", deviceID);
+      logPrintf(LOG_INFO, "deviceID: %x\n", deviceID);
       break;
 
     case 'l':
@@ -471,6 +539,10 @@ int main(int argc, char *argv[]) {
     case 'v':
       verbose++;
       break;
+
+		case 's':
+			statusMessage = 1;
+			break;
 
     case 'q':
       verbose--;
@@ -495,9 +567,9 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  printf("input: %s\n", inputFile);
+  logPrintf(LOG_INFO, "input: %s\n", inputFile);
   if (isHexFile(inputFile)) {
-    printf("convert hex file\n");
+    logPrintf(LOG_INFO, "convert hex file\n");
     loadHexFile();
     convertHexFile = 1;
   }
@@ -510,6 +582,9 @@ int main(int argc, char *argv[]) {
   midiInitialize(inputDevice, outputDevice);
 
   if (bootloader) {
+		if (statusMessage) {
+		}
+		
     send_sysex_bootload();
   } else {
     send_sysex_part();
