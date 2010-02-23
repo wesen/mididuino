@@ -32,7 +32,7 @@ void midiSendLong(unsigned char *buf, unsigned long len) {
   sysexReq->destination = gDest;
   sysexReq->data = ((unsigned char *)sysexReq) + sizeof(struct MIDISysexSendRequest);
   if (verbose >= 3) {
-    printf("sending MIDI\n");
+		printf("sending MIDI\n");
     hexdump(buf, len);
   }
   //  printf("sysexReq: %p, data: %p\n", sysexReq, sysexReq->data);
@@ -42,7 +42,7 @@ void midiSendLong(unsigned char *buf, unsigned long len) {
   sysexReq->completionProc = midiSysexSent;
   sysexReq->completionRefCon = NULL;
   ret = MIDISendSysex(sysexReq);
-	printf("ret: %ld\n", ret);
+	//	printf("ret: %ld\n", ret);
 }
 
 void midiReceivedAckCallback(uint8_t *ptr) {
@@ -60,13 +60,13 @@ void midiSendShort(unsigned char status,
   pktlist.packet[0].data[1] = byte1;
   pktlist.packet[0].data[2] = byte2;
   ret = MIDISend(gOutPort, gDest, &pktlist);
-	printf("send ret: %ld\n", ret);
+	//	printf("send ret: %ld\n", ret);
 }
 
 void timer_callback(CFRunLoopTimerRef ref, void *info) {
   if (exitMainLoop)
     midiClose();
-	printf("callbacks: %d\n", callbacks);
+	//	printf("callbacks: %d\n", callbacks);
   if (++callbacks > MAX_TIMEOUT_CALLBACKS)
     midiTimeout();
 }

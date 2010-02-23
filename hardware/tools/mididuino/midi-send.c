@@ -356,6 +356,14 @@ int send_sysex_part(void) {
   if (len <= 0) 
     return 0;
 
+	if (statusMessage) {
+    if (part_buf[4] == CMD_DATA_BLOCK) {
+      uint16_t address = make_word(part_buf + 6, 4);
+			float percent = (float)address/(float)max_address * 100.0;
+			logPrintf(LOG_STATUS, "%2.2f %%, sending %d/%d\n", percent, address, max_address);
+		}
+	}
+	
   if (verbose >= 2) {
     if (part_buf[4] == CMD_DATA_BLOCK) {
       uint16_t address = make_word(part_buf + 6, 4);
@@ -427,6 +435,9 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
       if (verbose >= 1) {
 				logPrintf(LOG_INFO, "booting to main program\n");
       }
+			if (statusMessage) {
+				logPrintf(LOG_STATUS, "booting to main program\n");
+			}
       
       static unsigned char buf[6] = {0xf0, 0x00, 0x13, 0x37, 0x04, 0xf7 };
       buf[3] = deviceID;
@@ -583,6 +594,7 @@ int main(int argc, char *argv[]) {
 
   if (bootloader) {
 		if (statusMessage) {
+			logPrintf(LOG_STATUS, "starting bootloader");
 		}
 		
     send_sysex_bootload();
