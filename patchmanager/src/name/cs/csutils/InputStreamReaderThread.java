@@ -31,6 +31,11 @@ package name.cs.csutils;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
 
 public class InputStreamReaderThread implements Runnable {
     
@@ -38,6 +43,8 @@ public class InputStreamReaderThread implements Runnable {
 
     private InputStream is;
     private StringBuffer sb = new StringBuffer();
+    private Queue<String> lastLineList = new LinkedList<String>();
+    private StringBuffer lastLineBuffer = new StringBuffer();
     private boolean isRunning = false;
     private boolean isCompleted = false;
     private boolean isCanceled = false;
@@ -57,6 +64,14 @@ public class InputStreamReaderThread implements Runnable {
         synchronized (this) {
       //      this.thread = t;
         }
+    }
+    
+    public synchronized String readLine() {
+    	if (lastLineList.isEmpty()) {
+    		return null;
+    	} else {
+    		return (String)lastLineList.remove();
+    	}
     }
 
     public synchronized boolean isRunning() {
@@ -95,6 +110,16 @@ public class InputStreamReaderThread implements Runnable {
                             Math.min(available_without_blocking, BUFFER_SIZE));
                     if (count > 0) {
                         sb.append(new String(bytes, 0, count));
+                        lastLineBuffer.append(new String(bytes, 0, count));
+                        // recognize new line XXX
+                        int index;
+                        while ((index = lastLineBuffer.indexOf("\n")) >= 0) {
+                        	synchronized (this) {
+                        		String lastLine = lastLineBuffer.substring(0, index);
+                        		lastLineList.add(lastLine);
+                        		lastLineBuffer.delete(0, index + 1);
+                        	}
+                        }
                     }
                 } else {
                     if (onlyAvailable) {

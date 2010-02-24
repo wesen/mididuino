@@ -365,7 +365,7 @@ int send_sysex_part(void) {
     if (part_buf[4] == CMD_DATA_BLOCK) {
       uint16_t address = make_word(part_buf + 6, 4);
 			float percent = (float)address/(float)max_address * 100.0;
-			logPrintf(LOG_STATUS, "%2.2f %%, sending %d/%d\n", percent, address, max_address);
+			logPrintf(LOG_PROGRESS, "%2.2f %%, sending %d/%d\n", percent, address, max_address);
 		}
 	}
 	

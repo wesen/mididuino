@@ -37,6 +37,7 @@ import name.cs.csutils.concurrent.SimpleSwingWorker;
 
 import com.ruinwesen.midisend.MidiDevice;
 import com.ruinwesen.midisend.MidiSend;
+import com.ruinwesen.midisend.MidiSendCallback;
 import com.ruinwesen.midisend.MidiSendProcess;
 import com.ruinwesen.patchmanager.swing.SwingPatchManagerUtils;
 import com.ruinwesen.patchmanager.swing.form.FormContainer;
@@ -129,6 +130,8 @@ public class MidiSendWizard extends Wizard {
         midisend.setInputDevice(input);
         midisend.setOutputDevice(output);
         
+        midisend.setCallback(new MidiSendWizardCallback());
+        
         MidiSendProcess proc;
         try {
             // validate hex file + unpack hex file from patch
@@ -143,6 +146,19 @@ public class MidiSendWizard extends Wizard {
         
         this.sendThread = new SendThread(proc);
         new Thread(sendThread).start();
+    }
+    
+    private class MidiSendWizardCallback implements MidiSendCallback {
+
+		public void midisendCompleted() {
+		}
+
+		public void midisendProgress(float progress) {
+            midisendForm.getProgressBar().setValue((int)(
+                    midisendForm.getProgressBar().getMaximum() * progress / 100.0));
+            midisendForm.getProgressBar().setIndeterminate(false);
+		}
+    	
     }
     
     private class SendThread extends SimpleSwingWorker {

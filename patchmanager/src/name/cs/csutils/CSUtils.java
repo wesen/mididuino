@@ -105,6 +105,7 @@ public final class CSUtils {
         public int status;
         public boolean timeout;
         public boolean interrupted;
+        public boolean exited;
         public InterruptedException interruptedException;
     }
     
@@ -119,6 +120,7 @@ public final class CSUtils {
         
         ProcessResult res = new ProcessResult();
         res.status = 1;
+        res.exited = false;
         res.timeout = false;
         res.interrupted = false;
         res.interruptedException = null;
@@ -129,6 +131,7 @@ public final class CSUtils {
             }
             try {
                 res.status = proc.exitValue();
+                res.exited = true;
                 break;
             } catch (IllegalThreadStateException ex) {
                 // no op
