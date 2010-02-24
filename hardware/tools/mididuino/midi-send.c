@@ -93,11 +93,14 @@ void logPrintType(log_type_t log) {
 		fprintf(logDescriptor(log), "INFO: ");
 		break;
 	}
+
+	fflush(logDescriptor(log));
 }
 
 void logString(log_type_t log, char *msg) {
 	logPrintType(log);
 	fprintf(logDescriptor(log), "%s", msg);
+	fflush(logDescriptor(log));
 }
 
 void logPrintf(log_type_t log, const char *fmt, ...) {
@@ -106,11 +109,13 @@ void logPrintf(log_type_t log, const char *fmt, ...) {
 	logPrintType(log);
 	vfprintf(logDescriptor(log), fmt, lp);
 	va_end(lp);
+	fflush(logDescriptor(log));
 }
 
 void logvPrintf(log_type_t log, const char *fmt, va_list lp) {
 	logPrintType(log);
 	vfprintf(logDescriptor(log), fmt, lp);
+	fflush(logDescriptor(log));
 }
 
 void closeFile() {
