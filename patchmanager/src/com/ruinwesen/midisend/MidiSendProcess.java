@@ -40,3 +40,4 @@ public interface MidiSendProcess {
     void waitFor(long timeout) throws InterruptedException;
     
 }
+

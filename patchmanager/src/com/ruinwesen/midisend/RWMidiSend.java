@@ -284,7 +284,7 @@ public class RWMidiSend extends MidiSend {
             //File midisendFile = new File(command);
             //File midisendDir = midisendFile.getParentFile();
             = new String[] {
-                    cmd, "-b", "-I0x" + Integer.toString(getDeviceID(), 16),  // XXX set ID configuration
+                    cmd, "-s", "-b", "-I0x" + Integer.toString(getDeviceID(), 16),  // XXX set ID configuration
                     "-i",inputArg,
                     "-o",outputArg,
                     filepath};

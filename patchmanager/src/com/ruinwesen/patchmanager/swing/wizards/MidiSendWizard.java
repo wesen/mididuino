@@ -116,7 +116,6 @@ public class MidiSendWizard extends Wizard {
     }
     
     private void doSend()  {
-        setHint("Sending ...");
         MidiSend midisend = midisendForm.getMidiSend();
 
         MidiDevice input = midisendForm.getInputDevice();
@@ -137,7 +136,7 @@ public class MidiSendWizard extends Wizard {
             proc = midisend.send(hexFileData);
         } catch (Exception ex) {
             SwingPatchManagerUtils.showErrorDialog(getContainer(), 
-                    "Error: "+ex
+                    "Error: " + ex
             );
             return;
         }
@@ -158,6 +157,7 @@ public class MidiSendWizard extends Wizard {
 
         @Override
         protected void setup() {
+        	setHint("Sending ...");
             midisendForm.getProgressBar().setValue(
                     midisendForm.getProgressBar().getMinimum());
             midisendForm.getProgressBar().setIndeterminate(true);
@@ -202,6 +202,7 @@ public class MidiSendWizard extends Wizard {
         protected void finish() {
             midisendForm.getProgressBar().setValue(
                     midisendForm.getProgressBar().getMaximum());
+            setHint("Upload finished.");
         }
 
         @Override
