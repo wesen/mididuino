@@ -253,7 +253,7 @@
 		</jarbundler>
 	</target>
 
-	<target name="jarbundle-osx-dist-faderfox" depends="dist,clean-osx-dist">
+	<target name="osx-dist-faderfox" depends="dist,clean-osx-dist">
 		<mkdir dir="${osxdist}"/>
 		<jarbundler dir="${osxdist}"
 								icon="osx-artwork/firmwareflash.icns"
@@ -279,6 +279,14 @@
 				<include name="**/*"/>
 			</javafileset>
 		</jarbundler>
+		<exec executable="chmod"> 
+			<arg value="+x" />
+			<arg value="${basedir}/${osxdist}/FaderfoxUpdate.app/Contents/Resources/Java/midi-send/mac/midi-send"/>
+		</exec>
+		<exec executable="chmod"> 
+			<arg value="+x" />
+			<arg value="${basedir}/${osxdist}/FaderfoxUpdate5.app/Contents/Resources/Java/midi-send/mac/midi-send"/>
+		</exec>
 	</target>
 	
 	<target name="clean-osx-dist">

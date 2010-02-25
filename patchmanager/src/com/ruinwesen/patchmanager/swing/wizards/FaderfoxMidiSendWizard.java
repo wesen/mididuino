@@ -10,7 +10,7 @@ public class FaderfoxMidiSendWizard extends MidiSendWizard {
 	public FaderfoxMidiSendWizard() {
 		super();
 		setTitle("Faderfox Firmware Update");
-		// midisendForm.getMidiSend().setDeviceID(0x50); // faderfox adapter
+		midisendForm.getMidiSend().setDeviceID(0x50); // faderfox adapter
 	}
 
 	/**
