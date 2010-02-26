@@ -215,31 +215,34 @@ void midiInitialize(char *inputDeviceStr, char *outputDeviceStr) {
     debugPrintf(1, "Opened input device %s.\n", name);
   }
 
-}
-
-void midiMainLoop(void) {
-  unsigned long result;
-
   sleepCount = 0;
   
   midiHdr.lpData = inputBuffer;
   midiHdr.dwBufferLength = sizeof(inputBuffer);
   midiHdr.dwFlags = 0;
   result = midiInPrepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
+
   if (result) {
     logPrintf(LOG_ERROR, "Could not prepare input buffer\n");
-    goto end;
+    exit(-1);
   }
+
   result = midiInAddBuffer(inHandle, &midiHdr, sizeof(MIDIHDR));
+
   if (result) {
     logPrintf(LOG_ERROR, "could not add input buffer\n");
-    goto end;
+    exit(-1);
   }
+
   result = midiInStart(inHandle);
   if (result) {
     logPrintf(LOG_ERROR, "Could not start recording on input\n");
-    goto end;
+    exit(-1);
   }
+}
+
+void midiMainLoop(void) {
+  unsigned long result;
 
   for (; !exitMainLoop; ) {
     Sleep(10);
