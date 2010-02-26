@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 
+#include "logging.h"
 #include "midi.h"
 
 HMIDIOUT outHandle;
@@ -30,7 +31,7 @@ void listInputMidiDevices(void) {
   /* Get the number of MIDI Out devices in this computer */
   iNumDevs = midiInGetNumDevs();
 
-  //  printf("%lu input midi devices found\r\n", iNumDevs);
+  debugPrintf(1, "%lu input midi devices found\r\n", iNumDevs);
   
   /* Go through all of those devices, displaying their names */
   for (i = 0; i < iNumDevs; i++)
@@ -50,7 +51,7 @@ void listOutputMidiDevices(void) {
   /* Get the number of MIDI Out devices in this computer */
   iNumDevs = midiOutGetNumDevs();
 
-  //  printf("%lu output midi devices found\r\n", iNumDevs);
+  debugPrintf(1, "%lu output midi devices found\r\n", iNumDevs);
   
   /* Go through all of those devices, displaying their names */
   for (i = 0; i < iNumDevs; i++)
@@ -64,35 +65,57 @@ void listOutputMidiDevices(void) {
     }  
 }
 
+
 void midiSendLong(unsigned char *buf, unsigned long len) {
   MIDIHDR midiHdr;
+  HANDLE hBuffer;
 
-  midiHdr.lpData = (LPBYTE)buf;
-  midiHdr.dwBufferLength = len;
-  midiHdr.dwFlags = 0;
-  
-  UINT err = midiOutPrepareHeader(outHandle, &midiHdr, sizeof(MIDIHDR));
-  if (!err) {
-    //    memcpy(midiHdr.lpData, buf, len);
-    err = midiOutLongMsg(outHandle, &midiHdr, sizeof(MIDIHDR));
-    if (err) {
-      char errBuf[256];
-      midiOutGetErrorText(err, errBuf, sizeof(errBuf));
-      printf("error sending long message: %s\n", errBuf);
-      
+  hBuffer = GlobalAlloc(GHND, len);
+  if (!hBuffer) {
+    logPrintf(LOG_ERROR, "error allocating buffer for sysex\n");
+    return;
+  } 
+
+  midiHdr.lpData = (LPBYTE)GlobalLock(hBuffer);
+  if (midiHdr.lpData) {
+    midiHdr.dwBufferLength = len;
+    midiHdr.dwFlags = 0;
+    
+    debugPrintf(2, "midiSendLong: \n");
+    debugHexdump(2, buf, len);
+    
+    UINT err = midiOutPrepareHeader(outHandle, &midiHdr, sizeof(MIDIHDR));
+    if (!err) {
+      memcpy(midiHdr.lpData, buf, len);
+      err = midiOutLongMsg(outHandle, &midiHdr, sizeof(MIDIHDR));
+      if (err) {
+	char errBuf[256];
+	midiOutGetErrorText(err, errBuf, sizeof(errBuf));
+	logPrintf(LOG_ERROR, "error sending long message: %s\n", errBuf);
+	
+      }
+      while (MIDIERR_STILLPLAYING == midiOutUnprepareHeader(outHandle, &midiHdr, sizeof(MIDIHDR))) {
+	;
+	
+      }
+      debugPrintf(2, "midiSendLong finished\n");
     }
-    while (MIDIERR_STILLPLAYING == midiOutUnprepareHeader(outHandle, &midiHdr, sizeof(MIDIHDR)))
-      ;
   }
+
+  GlobalUnlock(hBuffer);
+  GlobalFree(hBuffer);
+    
 }
 
 void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2) {
+  debugPrintf(2, "midiSendShort %x %x %x\n", status, byte1, byte2);
   midiOutShortMsg(outHandle, MAKE_SHORT_MSG(status, byte1, byte2));
 }
 
 void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
 			   DWORD dwParam1, DWORD dwParam2) {
-  //  printf("callback called %d, handle %p\n", uMsg, handle);
+  debugPrintf(1, "callback called %d, handle %p\n", uMsg, handle);
+  
   switch (uMsg) {
   case MIM_DATA:
     midiReceive(SHORT_MSG_STATUS(dwParam1));
@@ -106,7 +129,7 @@ void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
       if (midiHdr->dwBytesRecorded == 0) {
 	return;
       }
-      int len = 0;
+      unsigned int len = 0;
       sleepCount = 0;
       for (len = 0; len < midiHdr->dwBufferLength; len++) {
 	midiReceive(midiHdr->lpData[len]);
@@ -121,23 +144,24 @@ void CALLBACK midiCallback(HMIDIIN handle, UINT uMsg, DWORD dwInstance,
 
   case MIM_MOREDATA:
       // XXX set IO_STATUS flag to midiInOpen()
-    printf("midi driver is throwing away received data: %x %x %x\n",
-	   SHORT_MSG_STATUS(dwParam1), SHORT_MSG_BYTE1(dwParam1),
-	   SHORT_MSG_BYTE2(dwParam1));
+    debugPrintf(1, "midi driver is throwing away received data: %x %x %x\n",
+	      SHORT_MSG_STATUS(dwParam1), SHORT_MSG_BYTE1(dwParam1),
+	      SHORT_MSG_BYTE2(dwParam1));
     break;
     
   case MIM_ERROR:
-    printf("error\n");
+    logPrintf(LOG_ERROR, "error\n");
     break;
     
   case MIM_LONGERROR:
     {
-      printf("long error\n");
+      logPrintf(LOG_ERROR, "long error\n");
     }
     break;
 
   default:
-    printf("received event %x\n", uMsg);
+    debugPrintf(1, "received event %x\n", uMsg);
+
     /* ignore */
     return;
   }
@@ -174,19 +198,21 @@ void midiInitialize(char *inputDeviceStr, char *outputDeviceStr) {
   getOutDeviceName(outputDevice, name, sizeof(name));
   unsigned long result = midiOutOpen(&outHandle, outputDevice, 0, 0, CALLBACK_NULL);
   if (result) {
-    printf("Error opening output device %s with ID %d, aborting\n", name, outputDevice);
+    logPrintf(LOG_ERROR,
+	      "Error opening output device %s with ID %d, aborting\n", name, outputDevice);
     exit(-1);
   } else {
-    printf("Opened output device %s.\n", name);
+    debugPrintf(1, "Opened output device %s.\n", name);
   }
 
   getInDeviceName(inputDevice, name, sizeof(name));
   result = midiInOpen(&inHandle, inputDevice, (DWORD)midiCallback, 0, CALLBACK_FUNCTION);
   if (result) {
-    printf("Error opening input device %s with ID %d, aborting\n", name, inputDevice);
+    logPrintf(LOG_ERROR,
+	      "Error opening input device %s with ID %d, aborting\n", name, inputDevice);
     exit(-1);
   } else {
-    printf("Opened input device %s.\n", name);
+    debugPrintf(1, "Opened input device %s.\n", name);
   }
 
 }
@@ -201,31 +227,32 @@ void midiMainLoop(void) {
   midiHdr.dwFlags = 0;
   result = midiInPrepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
   if (result) {
-    printf("Could not prepare input buffer\n");
+    logPrintf(LOG_ERROR, "Could not prepare input buffer\n");
     goto end;
   }
   result = midiInAddBuffer(inHandle, &midiHdr, sizeof(MIDIHDR));
   if (result) {
-    printf("could not add input buffer\n");
+    logPrintf(LOG_ERROR, "could not add input buffer\n");
     goto end;
   }
   result = midiInStart(inHandle);
   if (result) {
-    printf("Could not start recording on input\n");
+    logPrintf(LOG_ERROR, "Could not start recording on input\n");
     goto end;
   }
 
   for (; !exitMainLoop; ) {
     Sleep(10);
-    //    printf("count: %d\n", sleepCount);
+    debugPrintf(3, "count: %d\n", sleepCount);
     sleepCount++;
     if (sleepCount > 2000) {
-      printf("timeout\n");
+      debugPrintf(1, "timeout\n");
       break;
     }
   }
+
+  debugPrintf(2, "end of midiMainLoop\n");
   //  midiInReset(inHandle);
-  //  printf("foo\n");
 
  end:
   midiClose();
@@ -233,23 +260,43 @@ void midiMainLoop(void) {
 
 
 void midiClose(void) {
+  MMRESULT res;
+  
   //  printf("stop\n");
   if (MMSYSERR_NOERROR != midiInStop(inHandle)) {
-    printf("stop error\n");
+    logPrintf(LOG_ERROR, "input stop error\n");
   }
   //  printf("reset\n");
   if (MMSYSERR_NOERROR != midiInReset(inHandle)) {
-    printf("reset error\n");
+    logPrintf(LOG_ERROR, "input reset error\n");
   }
-  //  printf("close\n");
-  if (MMSYSERR_NOERROR != midiInClose(inHandle)) {
-    printf("close error\n");
-  }
-  //  printf("foobnar\n");
+
+  int retry = 0;
+  do {
+    res = midiInClose(inHandle);
+    if (res != MMSYSERR_NOERROR) {
+      logPrintf(LOG_ERROR, "input close error\n");
+    }
+    if (res == MIDIERR_STILLPLAYING) {
+      midiInReset(inHandle);
+    }
+    Sleep(10);
+    retry++;
+  } while ((res == MIDIERR_STILLPLAYING) && (retry < 10));
+  
   midiInUnprepareHeader(inHandle, &midiHdr, sizeof(MIDIHDR));
-  //  printf("closing b\n");
-  //  midiInReset(inHandle);
-  midiOutClose(outHandle);
-  //  printf("closing b\n");
-  Sleep(10);
+
+  retry = 0;
+  res = midiOutReset(outHandle);
+  if (res != MMSYSERR_NOERROR) {
+    logPrintf(LOG_ERROR, "output reset error\n");
+  }
+  do {
+    res = midiOutClose(outHandle);
+    if (res != MMSYSERR_NOERROR) {
+      logPrintf(LOG_ERROR, "output close error\n");
+    }
+    Sleep(10);
+    retry++;
+  } while ((res == MIDIERR_STILLPLAYING) && (retry < 10));
 }

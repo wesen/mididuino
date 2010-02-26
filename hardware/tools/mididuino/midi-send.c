@@ -11,8 +11,7 @@
 
 #include <inttypes.h>
 #include "midi.h"
-
-#define MIN(a, b) ((a > b) ? b : a)
+#include "logging.h"
 
 // 55: midi command 168
 // 56 : mididuino 1.0
@@ -46,78 +45,6 @@ unsigned char flashram[MAX_KB_SIZE * 1024];
 unsigned int max_address = 0;
 unsigned int cur_address = 0;
 
-typedef enum log_type_e {
-	LOG_INFO = 0,
-	LOG_USAGE, 
-	LOG_WARNING,
-	LOG_PROGRESS,
-	LOG_STATUS,
-	LOG_ERROR
-} log_type_t;
-
-FILE *logDescriptor(log_type_t log) {
-	if (log == LOG_ERROR) {
-		return stderr;
-	} else {
-		return stdout;
-	}
-}
-
-void logPrintType(log_type_t log) {
-	switch (log) {
-	case LOG_USAGE:
-		fprintf(logDescriptor(log), "Usage: ");
-		break;
-		
-	case LOG_INFO:
-		fprintf(logDescriptor(log), "INFO: ");
-		break;
-
-	case LOG_WARNING:
-		fprintf(logDescriptor(log), "WARNING: ");
-		break;
-
-	case LOG_PROGRESS:
-		fprintf(logDescriptor(log), "PROGRESS: ");
-		break;
-
-	case LOG_STATUS:
-		fprintf(logDescriptor(log), "STATUS: ");
-		break;
-
-	case LOG_ERROR:
-		fprintf(logDescriptor(log), "ERROR: ");
-		break;
-
-	default:
-		fprintf(logDescriptor(log), "INFO: ");
-		break;
-	}
-
-	fflush(logDescriptor(log));
-}
-
-void logString(log_type_t log, char *msg) {
-	logPrintType(log);
-	fprintf(logDescriptor(log), "%s", msg);
-	fflush(logDescriptor(log));
-}
-
-void logPrintf(log_type_t log, const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
-	logPrintType(log);
-	vfprintf(logDescriptor(log), fmt, lp);
-	va_end(lp);
-	fflush(logDescriptor(log));
-}
-
-void logvPrintf(log_type_t log, const char *fmt, va_list lp) {
-	logPrintType(log);
-	vfprintf(logDescriptor(log), fmt, lp);
-	fflush(logDescriptor(log));
-}
-
 void closeFile() {
   if (fin != NULL) {
     fclose(fin);
@@ -138,16 +65,6 @@ int isHexFile(char *str) {
   }
 }
 
-void hexdump(unsigned char *buf, int len) {
-  int i;
-  for (i = 0; i < len; i+=16) {
-    int j;
-    for (j = i; j < MIN(i+16, len); j++) {
-      logPrintf(LOG_INFO, "%2x ", buf[j]);
-    }
-    logPrintf(LOG_INFO, "\n");
-  }
-}
 
 void loadHexFile(void) {
   char buf[128];
@@ -161,7 +78,7 @@ void loadHexFile(void) {
   while (fgets(buf, sizeof(buf), fin)) {
     unsigned int len = strlen(buf);
     if (len < 10) {
-			logPrintf(LOG_ERROR, "wrong ihex length, should be at least 10: %s\n", buf);
+      logPrintf(LOG_ERROR, "wrong ihex length, should be at least 10: %s\n", buf);
       exit(1);
     }
 
@@ -194,17 +111,17 @@ void loadHexFile(void) {
     if (type == 0x00) {
       unsigned int cnt = 0;
       for (i = 0; i < size * 2; i+=2) {
-				char data_str[3];
-				data_str[2] = 0;
-				data_str[0] = buf[9 + i];
-				data_str[1] = buf[10 + i];
+	char data_str[3];
+	data_str[2] = 0;
+	data_str[0] = buf[9 + i];
+	data_str[1] = buf[10 + i];
 
-				unsigned int byte;
-				sscanf(data_str, "%x", &byte);
-				flashram[address + cnt++] = byte & 0xFF;
+	unsigned int byte;
+	sscanf(data_str, "%x", &byte);
+	flashram[address + cnt++] = byte & 0xFF;
       }
       //      printf("address: %x, size: %x, type: %x\n", address, size, type);
-      //      hexdump(flashram + address, size);
+      //      hexdump](flashram + address, size);
       max_address = address + cnt;
     }
   }
@@ -243,7 +160,7 @@ int getNextSysexPart(unsigned char *outbuf, unsigned int maxSize) {
       unsigned short firmware_len = 0;
       unsigned short firmware_checksum = 0;
       for (i = 0; i < max_address; i++) {
-				firmware_checksum += flashram[i];
+	firmware_checksum += flashram[i];
       }
       firmware_len = max_address;
 
@@ -263,6 +180,13 @@ int getNextSysexPart(unsigned char *outbuf, unsigned int maxSize) {
       b = (firmware_checksum >> 7) & 0x7f;
       outbuf[idx++] = b;
       outbuf[idx++] = '\xf7';
+
+      if (verbose >= 2) {
+	logPrintf(LOG_INFO, "len: %x (%x %x), checksum: %x (%x %x) \n",
+		  firmware_len, (firmware_len & 0x7F), (firmware_len >> 7) & 0x7F,
+		  firmware_checksum, (firmware_checksum & 0x7F), (firmware_checksum >> 7) & 0x7F);
+      }
+      
 
       firmwareChecksumSent = 1;
       return idx;
@@ -305,11 +229,11 @@ int getNextSysexPart(unsigned char *outbuf, unsigned int maxSize) {
       tmpbuf[i % 7] = c;
       
       if ((i % 7) == 6) {
-				checksum ^= bits;
-				outbuf[idx++] = bits;
-				bits = 0;
-				memcpy(outbuf + idx, tmpbuf, 7);
-				idx += 7;
+	checksum ^= bits;
+	outbuf[idx++] = bits;
+	bits = 0;
+	memcpy(outbuf + idx, tmpbuf, 7);
+	idx += 7;
       }
       checksum ^= c;
     }
@@ -331,12 +255,12 @@ int getNextSysexPart(unsigned char *outbuf, unsigned int maxSize) {
     for (i = 0; i < maxSize; i++) {
       int c = fgetc(fin);
       if (c < 0) {
-				return 0;
+	return 0;
       }
       outbuf[i] = c;
       if (c == 0xf7) {
-				i++;
-				break;
+	i++;
+	break;
       }
     }
     return i;
@@ -361,43 +285,43 @@ int send_sysex_part(void) {
   if (len <= 0) 
     return 0;
 
-	if (statusMessage) {
+  if (statusMessage) {
     if (part_buf[4] == CMD_DATA_BLOCK) {
       uint16_t address = make_word(part_buf + 6, 4);
-			float percent = (float)address/(float)max_address * 100.0;
-			logPrintf(LOG_PROGRESS, "%2.2f %%, sending %d/%d\n", percent, address, max_address);
-		}
-	}
+      float percent = (float)address/(float)max_address * 100.0;
+      logPrintf(LOG_PROGRESS, "%2.2f %%, sending %d/%d\n", percent, address, max_address);
+    }
+  }
 	
   if (verbose >= 2) {
     if (part_buf[4] == CMD_DATA_BLOCK) {
       uint16_t address = make_word(part_buf + 6, 4);
       logPrintf(LOG_INFO, "address: %x\n", address);
       if (verbose >= 3) {
-				logPrintf(LOG_INFO, "code: \n");
-				unsigned char code[512];
-				unsigned int code_len = 0;
-				unsigned int cnt;
-				uint8_t bits;
+	logPrintf(LOG_INFO, "code: \n");
+	unsigned char code[512];
+	unsigned int code_len = 0;
+	unsigned int cnt;
+	uint8_t bits;
 	
-				for (cnt = 0; cnt < (len - 12); cnt++) {
-					uint8_t byte = part_buf[10 + cnt];
+	for (cnt = 0; cnt < (len - 12); cnt++) {
+	  uint8_t byte = part_buf[10 + cnt];
 	  
-					if ((cnt % 8) == 0) {
-						bits = byte;
-					} else {
-						code[code_len++] = byte | ((bits & 1) << 7);
-						bits >>= 1;
-					}
-				}
+	  if ((cnt % 8) == 0) {
+	    bits = byte;
+	  } else {
+	    code[code_len++] = byte | ((bits & 1) << 7);
+	    bits >>= 1;
+	  }
+	}
 	
-				hexdump(code, code_len);
+	logHexdump(LOG_INFO, code, code_len);
       }
     }
     
     if (verbose >= 4) {
       logPrintf(LOG_INFO, "sysex: \n");
-      hexdump(part_buf, len);
+      logHexdump(LOG_INFO, part_buf, len);
     }
   }
   canSendSysex = 0;
@@ -424,9 +348,9 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
       logPrintf(LOG_INFO, "ACK received\n");
     }
 
-		if (midi_ack_callback != NULL) {
-			midi_ack_callback(NULL);
-		}
+    if (midi_ack_callback != NULL) {
+      midi_ack_callback(NULL);
+    }
     
     if (waitingForBootloader) {
 #ifdef WINDOWS
@@ -438,11 +362,11 @@ void midi_sysex_cmd_recvd(unsigned char cmd) {
     }
     if (!send_sysex_part()) {
       if (verbose >= 1) {
-				logPrintf(LOG_INFO, "booting to main program\n");
+	logPrintf(LOG_INFO, "booting to main program\n");
       }
-			if (statusMessage) {
-				logPrintf(LOG_STATUS, "booting to main program\n");
-			}
+      if (statusMessage) {
+	logPrintf(LOG_STATUS, "booting to main program\n");
+      }
       
       static unsigned char buf[6] = {0xf0, 0x00, 0x13, 0x37, 0x04, 0xf7 };
       buf[3] = deviceID;
@@ -512,7 +436,7 @@ void midiTimeout(void) {
 }
 
 void usage(void) {
-  logPrintf(LOG_USAGE, "./midi-send [-l] [-h] [-s] [-b] [-v] [-I ID in hex (default 38)] -i inputDevice -o outputDevice file\n");
+  logPrintf(LOG_USAGE, "./midi-send [-l] [-h] [-s] [-b] [-v] [-d] [-I ID in hex (default 38)] -i inputDevice -o outputDevice file\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -521,7 +445,7 @@ int main(int argc, char *argv[]) {
   char inputDevice[256]  = "";
   int bootloader = 0;
 
-  while ((c = getopt(argc, argv, "ho:l:i:I:bvqs")) != -1) {
+  while ((c = getopt(argc, argv, "ho:l:i:I:bvqsd")) != -1) {
     switch (c) {
     case 'b':
       bootloader = 1;
@@ -534,20 +458,24 @@ int main(int argc, char *argv[]) {
       strncpy(inputDevice, optarg, sizeof(inputDevice));
       break;
 
+    case 'd':
+      debugLevel++;
+      break;
+
     case 'I':
       if ((strlen(optarg) > 2) && optarg[0] == '0' && optarg[1] == 'x') {
-				deviceID = strtol(optarg + 2, NULL, 16);
+	deviceID = strtol(optarg + 2, NULL, 16);
       } else {
-				deviceID = strtol(optarg, NULL, 10);
+	deviceID = strtol(optarg, NULL, 10);
       }
       logPrintf(LOG_INFO, "deviceID: %x\n", deviceID);
       break;
 
     case 'l':
       if (optarg[0] == 'i') {
-				listInputMidiDevices();
+	listInputMidiDevices();
       } else {
-				listOutputMidiDevices();
+	listOutputMidiDevices();
       }
       exit(0);
       break;
@@ -556,9 +484,9 @@ int main(int argc, char *argv[]) {
       verbose++;
       break;
 
-		case 's':
-			statusMessage = 1;
-			break;
+    case 's':
+      statusMessage = 1;
+      break;
 
     case 'q':
       verbose--;
@@ -579,7 +507,7 @@ int main(int argc, char *argv[]) {
   char *inputFile = argv[optind];
   fin = fopen(inputFile, "r");
   if (fin == NULL) {
-    usage();
+    logPrintf(LOG_ERROR, "Could not open file %s\n", argv[optind]);
     exit(1);
   }
 
@@ -598,9 +526,9 @@ int main(int argc, char *argv[]) {
   midiInitialize(inputDevice, outputDevice);
 
   if (bootloader) {
-		if (statusMessage) {
-			logPrintf(LOG_STATUS, "starting bootloader");
-		}
+    if (statusMessage) {
+      logPrintf(LOG_STATUS, "starting bootloader");
+    }
 		
     send_sysex_bootload();
   } else {
