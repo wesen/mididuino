@@ -38,10 +38,12 @@ bool handleEvent(gui_event_t *evt) {
     randomizeNotes();
     return true;
   }
+  
   if (EVENT_PRESSED(evt, Buttons.BUTTON3)) {
     MidiClock.start();
     return true;
   }
+  
   if (EVENT_PRESSED(evt, Buttons.BUTTON4)) {
     MidiClock.stop();
     return true;

@@ -76,10 +76,10 @@ void MidiUartClass::putc(uint8_t c) {
   } else {
     if (txRb.isFull()) {
       while (txRb.isFull()) {
-	uint8_t tmp = SREG;
-	sei();
-	delayMicroseconds(10);
-	SREG = tmp;
+				uint8_t tmp = SREG;
+				sei();
+				delayMicroseconds(10);
+				SREG = tmp;
       }
       goto again;
     } else {

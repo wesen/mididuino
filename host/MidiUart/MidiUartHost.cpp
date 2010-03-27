@@ -8,7 +8,7 @@ MidiClass Midi, Midi2;
 MidiUartHostClass MidiUart;
 
 void MidiUartHostSysexListener::end() {
-	//	printf("send sysex of %d bytes\n", sysex->len);
+	printf("send sysex of %d bytes\n", sysex->len);
 	uint8_t buf[sysex->len +2];
 	buf[0] = 0xF0;
 	m_memcpy(buf + 1, sysex->data, sysex->len);
