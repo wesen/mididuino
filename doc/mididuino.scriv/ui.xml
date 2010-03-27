@@ -6,7 +6,7 @@
 	<false/>
 	<key>binderSelection</key>
 	<array>
-		<integer>15</integer>
+		<integer>0</integer>
 	</array>
 	<key>binderSplitFrames</key>
 	<array>
@@ -40,7 +40,7 @@
 		<string>{{0, 353}, {700, 344}}</string>
 	</array>
 	<key>editorSplitType</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>fullScreenInspectorVisible</key>
 	<false/>
 	<key>inspectorIsCollapsed</key>
@@ -55,9 +55,7 @@
 	<key>lastDocumentSplitType</key>
 	<integer>0</integer>
 	<key>mainDocumentEditor.binderDocuments</key>
-	<array>
-		<integer>12</integer>
-	</array>
+	<array/>
 	<key>mainDocumentEditor.corkboardSelection</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUIGBlUJHRvcFgkb2JqZWN0c1gkdmVyc2lvblkkYXJjaGl2ZXLR
@@ -1895,18 +1893,30 @@
 	<false/>
 	<key>mainDocumentEditor.textMode</key>
 	<integer>0</integer>
+	<key>mainDocumentView</key>
+	<string>supportingDocumentEditor</string>
 	<key>mainWindowFrame</key>
 	<string>0 59 1133 719 0 0 1280 778 </string>
 	<key>supportingDocumentEditor.binderDocuments</key>
 	<array>
-		<integer>11</integer>
+		<integer>0</integer>
 	</array>
+	<key>supportingDocumentEditor.corkboardSelection</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUIFhdUJHRvcFgkb2JqZWN0c1gkdmVyc2lvblkkYXJjaGl2ZXLR
+	BgdUcm9vdIABowkKD1UkbnVsbNILDA0OXE5TUmFuZ2VDb3VudFYkY2xhc3MQAIAC0hAR
+	EhVYJGNsYXNzZXNaJGNsYXNzbmFtZaITFFpOU0luZGV4U2V0WE5TT2JqZWN0Wk5TSW5k
+	ZXhTZXQSAAGGoF8QD05TS2V5ZWRBcmNoaXZlcggRFh8oMjU6PEBGS1hfYWNocXx/ipOe
+	owAAAAAAAAEBAAAAAAAAABgAAAAAAAAAAAAAAAAAAAC1
+	</data>
+	<key>supportingDocumentEditor.corkboardVisible</key>
+	<true/>
 	<key>supportingDocumentEditor.lockedInPlace</key>
 	<false/>
 	<key>supportingDocumentEditor.navHistory</key>
 	<dict>
 		<key>CurrentIndex</key>
-		<integer>0</integer>
+		<integer>17</integer>
 		<key>NavigationHistoryArray</key>
 		<array>
 			<dict>
@@ -1915,11 +1925,115 @@
 				<key>Mode</key>
 				<integer>0</integer>
 			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>12</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>10</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>12</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>78</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>14</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>78</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>13</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>15</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>16</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>15</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>16</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>73</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>4</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>16</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>5</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>15</integer>
+				<key>Mode</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>BinderDocID</key>
+				<integer>0</integer>
+				<key>Mode</key>
+				<integer>2</integer>
+			</dict>
 		</array>
 	</dict>
+	<key>supportingDocumentEditor.outlinerVisible</key>
+	<false/>
 	<key>supportingDocumentEditor.textMode</key>
 	<integer>0</integer>
 	<key>supportingDocumentViewIsCurrent</key>
-	<true/>
+	<false/>
 </dict>
 </plist>

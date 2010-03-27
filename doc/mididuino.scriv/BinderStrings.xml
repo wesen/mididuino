@@ -94,7 +94,26 @@ void setup() {
 		<string></string>
 		<key>Text</key>
 		<string>Of course, a MIDI controller that can only send MIDI data is not very interesting. The MidiDuino framework provides a full-featured MIDI parser that automatically parses incoming MIDI messages (including running-status messages, realtime messages and Sysex messages).
-There are multiple ways to react to incoming MIDI messages. The simplest way is to just implement a number of predefined callbacks that are automatically registered by the framework. These callbacks are onControlChange(), onNoteOn() and onNoteOff(), for commonly used MIDI messages. These callbacks are called when CC and Note messages are received on the first MIDI interface of the MiniCommand. onControlChange2(), onNoteOn2() and onNoteOff2() are called when the MIDI messages are received on the second MIDI interface of the MiniCommand.</string>
+There are multiple ways to react to incoming MIDI messages. The simplest way is to just implement a number of predefined callbacks that are automatically registered by the framework. These callbacks are onControlChange(), onNoteOn() and onNoteOff(), for commonly used MIDI messages. These callbacks are called when CC and Note messages are received on the first MIDI interface of the MiniCommand. onControlChange2(), onNoteOn2() and onNoteOff2() are called when the MIDI messages are received on the second MIDI interface of the MiniCommand.
+In this example sketch, we are going to display the received Control Change messages and the received Note On messages.
+
+void setup() {
+  GUI.setLine(GUI.LINE1);
+  GUI.put_string_fill("RECV MIDI");
+}
+
+void onControlChange(uint8_t *msg) {
+  GUI.setLine(GUI.LINE2);
+  GUI.printf_fill("C%b CC%b V%b", msg[0] &amp; 0xF, msg[1], msg[2]);
+}
+
+void onNoteOn(uint8_t *msg) {
+  GUI.setLine(GUI.LINE2);
+  GUI.printf_fill("C%b N%b V%b", msg[0] &amp; 0xF, msg[1], msg[2]);
+}
+
+
+</string>
 		<key>Title</key>
 		<string>Receiving MIDI</string>
 	</dict>
