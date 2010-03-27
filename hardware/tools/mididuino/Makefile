@@ -12,7 +12,7 @@ all: midi-send
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-midi-send: midi-send.o midi-apple.o
+midi-send: midi-send.o midi-apple.o logging.o
 	$(CC) $(CFLAGS) -isysroot /Developer/SDKs/MacOSX10.4u.sdk -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
 
 midi-merge: midi-merge.c

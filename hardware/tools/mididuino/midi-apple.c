@@ -1,4 +1,5 @@
 #include "midi.h"
+#include "logging.h"
 
 #include <CoreMIDI/MIDIServices.h>
 #include <CoreFoundation/CFRunLoop.h>
@@ -31,10 +32,9 @@ void midiSendLong(unsigned char *buf, unsigned long len) {
 
   sysexReq->destination = gDest;
   sysexReq->data = ((unsigned char *)sysexReq) + sizeof(struct MIDISysexSendRequest);
-  if (verbose >= 3) {
-		printf("sending MIDI\n");
-    hexdump(buf, len);
-  }
+	debugPrintf(1, "sending MIDI\n");
+	debugHexdump(1, buf, len);
+
   //  printf("sysexReq: %p, data: %p\n", sysexReq, sysexReq->data);
   memcpy((void *)sysexReq->data, buf, len);
   sysexReq->bytesToSend = len;

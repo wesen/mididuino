@@ -126,6 +126,11 @@ void loadHexFile(void) {
     }
   }
 
+	uint16_t checksum = 0;
+	for (i = 0; i < max_address; i++) {
+		checksum += flashram[i];
+	}
+	debugPrintf(1, "firmware length: %x, checksum: %x\n", max_address, checksum & 0x3FFF);
   closeFile();
 }
 

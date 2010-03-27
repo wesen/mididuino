@@ -1,6 +1,8 @@
 #ifndef LOGGING_H__
 #define LOGGING_H__
 
+#include <stdarg.h>
+
 #define MIN(a, b) ((a > b) ? b : a)
 
 extern int debugLevel;
