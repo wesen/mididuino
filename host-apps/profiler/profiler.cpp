@@ -58,10 +58,10 @@ public:
     for (int i = 1; i < MidiSysex.recordLen; i+=3) {
       uint16_t addr = ptr[i] << 14 | (ptr[i+1] << 7) | ptr[i+2];
       if (addr != 0) {
-	//	char foobar[256] = "";
-	//	sprintf(foobar, "avr-addr2line -e %s -f %x", file, addr);
-	//	//	printf("%s\n", foobar);
-	//	system(foobar);
+				//	char foobar[256] = "";
+				//	sprintf(foobar, "avr-addr2line -e %s -f %x", file, addr);
+				//	//	printf("%s\n", foobar);
+				//	system(foobar);
 				printf("%x\n", addr);
       }
     }
@@ -69,7 +69,7 @@ public:
     //    exit(1);
     //    hexDump(MidiSysex.data, MidiSysex.recordLen);
   }
-
+	
   virtual void handleByte(uint8_t byte) {
   }
 };

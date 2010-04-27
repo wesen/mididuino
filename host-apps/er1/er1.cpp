@@ -77,7 +77,6 @@ public:
 		uint8_t synth = (nrpn - 0x200) / 10;
 		uint8_t param = (nrpn - 0x200) % 10;
 		printf("SYNTH %d %s: %d\n", synth, synth_names[param], value);
-		
 	}
 	
 	void handleNRPNSample(uint16_t nrpn, uint8_t value) {
