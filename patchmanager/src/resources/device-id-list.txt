@@ -1,2 +1,0 @@
-# device ids
-minicommand-1.1
