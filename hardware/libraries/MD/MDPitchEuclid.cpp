@@ -40,7 +40,16 @@ void MDPitchEuclid::on16Callback(uint32_t counter) {
 		uint8_t pitch = basePitch + pitches[pitches_idx];
 		if (pitch <= 127) {
 			if (!muted) {
-				MD.sendNoteOn(mdTrack, pitch, 100);
+				if (mdTrack <= 15) {
+					// normal track
+					MD.sendNoteOn(mdTrack, pitch, 100);
+				} else if (mdTrack = 127) {
+					// all tracks
+					for (uint8_t i = 0; i < 16; i++) {
+						MD.sendNoteOn(i, pitch, 100);
+					}
+				} else {
+				}
 				lastPitch = pitch;
 			}
 		}
