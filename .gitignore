@@ -1,2 +1,7 @@
 *.o
 .#*
+*.elf
+*.lst
+*.pyc
+*.hex
+*.out

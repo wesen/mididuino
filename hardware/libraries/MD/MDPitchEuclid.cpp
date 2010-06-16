@@ -34,11 +34,15 @@ void MDPitchEuclid::randomizePitches() {
 }
 
 void MDPitchEuclid::on16Callback(uint32_t counter) {
+	static uint8_t lastPitch = 255;
+	
 	if (track.isHit(counter)) {
 		uint8_t pitch = basePitch + pitches[pitches_idx];
 		if (pitch <= 127) {
-			if (!muted)
+			if (!muted) {
 				MD.sendNoteOn(mdTrack, pitch, 100);
+				lastPitch = pitch;
+			}
 		}
 		pitches_idx = (pitches_idx + 1) % pitches_len;
 	}

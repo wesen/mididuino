@@ -43,11 +43,18 @@ void PitchEuclid::randomizePitches()  {
 }
 
 void PitchEuclid::on16Callback(uint32_t counter)  {
+	static uint8_t lastPitch = 255;
+	
   if (track.isHit(MidiClock.div16th_counter)) {
     uint8_t pitch = basePitch + pitches[pitches_idx];
+		if (lastPitch <= 127) {
+			MidiUart.sendNoteOff(mdTrack, lastPitch, 0);
+			lastPitch = 255;
+		}
     if (pitch <= 127) {
       if (!muted) {
 				MidiUart.sendNoteOn(mdTrack, pitch, 100);
+				lastPitch = pitch;
       }
     }
     pitches_idx = (pitches_idx + 1) % pitches_len;

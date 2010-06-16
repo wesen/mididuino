@@ -600,7 +600,7 @@
 			<key>NS.time</key>
 			<real>280143072.03259403</real>
 		</dict>
-		<string>{2373, 0}</string>
+		<string>{0, 2373}</string>
 		<dict>
 			<key>$classes</key>
 			<array>
@@ -787,7 +787,7 @@
 			<key>NS.time</key>
 			<real>280143117.53573602</real>
 		</dict>
-		<string>{1739, 0}</string>
+		<string>{0, 1739}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -1158,7 +1158,7 @@
 			<key>NS.time</key>
 			<real>280141352.025702</real>
 		</dict>
-		<string>{5283, 0}</string>
+		<string>{0, 5283}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -1335,7 +1335,7 @@
 			<key>NS.time</key>
 			<real>280175430.91313797</real>
 		</dict>
-		<string>{2057, 0}</string>
+		<string>{0, 3065}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -2082,7 +2082,7 @@ Documentation structure</string>
 			<key>NS.time</key>
 			<real>280174909.31054199</real>
 		</dict>
-		<string>{281, 0}</string>
+		<string>{0, 281}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -2259,7 +2259,7 @@ Documentation structure</string>
 			<key>NS.time</key>
 			<real>280141523.31189901</real>
 		</dict>
-		<string>{1156, 54}</string>
+		<string>{0, 1210}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -2436,7 +2436,7 @@ Documentation structure</string>
 			<key>NS.time</key>
 			<real>280176249.16857302</real>
 		</dict>
-		<string>{1645, 0}</string>
+		<string>{0, 4045}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -2613,7 +2613,7 @@ Documentation structure</string>
 			<key>NS.time</key>
 			<real>280141536.85577703</real>
 		</dict>
-		<string>{2682, 0}</string>
+		<string>{0, 2683}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -2790,7 +2790,7 @@ Documentation structure</string>
 			<key>NS.time</key>
 			<real>280141532.16806298</real>
 		</dict>
-		<string>{2246, 0}</string>
+		<string>{0, 2248}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -2967,7 +2967,7 @@ Documentation structure</string>
 			<key>NS.time</key>
 			<real>280141542.19984001</real>
 		</dict>
-		<string>{931, 0}</string>
+		<string>{0, 1266}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -14850,17 +14850,17 @@ Patch Manager</string>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>846</integer>
+					<integer>847</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>847</integer>
+					<integer>846</integer>
 				</dict>
 			</array>
 		</dict>
-		<string>ParseFootnotes</string>
 		<string>ParseAnnotations</string>
 		<string>MetaData</string>
+		<string>ParseFootnotes</string>
 		<true/>
 		<dict>
 			<key>$class</key>

@@ -128,7 +128,7 @@ void MDLFOEncoder::setParam(uint8_t _param) {
     break;
     
   case MD_LFO_UPDTE:
-    max = 3;
+    max = 2;
     break;
     
   case MD_LFO_SPEED:
