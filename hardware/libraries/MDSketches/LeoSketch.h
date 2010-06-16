@@ -260,45 +260,47 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   ScrollSwitchPage switchPage;
   AutoEncoderPage<MDEncoder> autoMDPage;
 
-  MDPitchEuclidConfigPage1 euclidPage1;
-  MDPitchEuclidConfigPage2 euclidPage2;
-  MDPitchEuclid pitchEuclid;
+	//  MDPitchEuclidConfigPage1 euclidPage1;
+	//  MDPitchEuclidConfigPage2 euclidPage2;
+	//  MDPitchEuclid pitchEuclid;
 
  public:
- LeoSketch() : euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid) {
+ LeoSketch()
+	// :
+	//	euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid)
+
+		{
 	}
 	
   virtual void setup() {
     scalePage.setName("SCALE");
     triggerPage.setName("TRIGGER");
-    muteTrigPage.setName("MUTE & TRIG");
+    switchPage.addPage(&triggerPage);
+    switchPage.addPage(&scalePage);
 
 		// lfo page setup
 		lfoPage1.setName("LFOS 1/2");
 		lfoPage1.initLFOParams(0, 1, 5, 6);
 		lfoPage2.setName("LFOS 2/2");
 		lfoPage2.initLFOParams(2, 3, 4, 7);
+		switchPage.addPage(&lfoPage1);
+		switchPage.addPage(&lfoPage2);
+
+		// euclid config
+		//    MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&LeoSketch::on16Callback);
+		//		euclidPage1.setName("EUCLID 1/2");
+		//		euclidPage2.setName("EUCLID 2/2");
+		//		switchPage.addPage(&euclidPage1);
+		//		switchPage.addPage(&euclidPage2);
 
 		// auto page setup
 		autoMDPage.setup();
 		autoMDPage.setName("AUTO LEARN");
-    for (int i = 0; i < 4; i++) {
-      ccHandler.addEncoder((CCEncoder *)autoMDPage.encoders[i]);
-    }
-    ccHandler.setup();
+		ccHandler.setup();
 
-		// euclid config
-    MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&LeoSketch::on16Callback);
-		euclidPage1.setName("EUCLID 1/2");
-		euclidPage2.setName("EUCLID 2/2");
-		
-    switchPage.addPage(&triggerPage);
-    switchPage.addPage(&scalePage);
-		switchPage.addPage(&lfoPage1);
-		switchPage.addPage(&lfoPage2);
 		switchPage.addPage(&autoMDPage);
-		//		switchPage.addPage(&euclidPage1);
-		//		switchPage.addPage(&euclidPage2);
+
+    muteTrigPage.setName("MUTE & TRIG");
     switchPage.addPage(&muteTrigPage);
 
     scalePage.encoders[3]->pressmode = true;
