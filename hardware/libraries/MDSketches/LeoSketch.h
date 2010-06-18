@@ -314,9 +314,10 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
 	}
 	
   virtual void setup() {
-    scalePage.setName("SCALE");
     triggerPage.setName("TRIGGER");
     switchPage.addPage(&triggerPage);
+
+    scalePage.setName("SCALE");
     switchPage.addPage(&scalePage);
 
 		// lfo page setup
