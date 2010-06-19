@@ -300,16 +300,16 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   ScrollSwitchPage switchPage;
   AutoEncoderPage<MDEncoder> autoMDPage;
 
-	//  MDPitchEuclidConfigPage1 euclidPage1;
-	//  MDPitchEuclidConfigPage2 euclidPage2;
-	//  MDPitchEuclid pitchEuclid;
+	MDPitchEuclidConfigPage1 euclidPage1;
+	MDPitchEuclidConfigPage2 euclidPage2;
+	MDPitchEuclid pitchEuclid;
 
  public:
  LeoSketch()
 	 :
-	lfoSelectPage(&lfoPage1, &lfoPage2)
-	//	euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid)
-
+	lfoSelectPage(&lfoPage1, &lfoPage2),
+		euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid)
+		
 		{
 	}
 	
@@ -329,11 +329,11 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
 		switchPage.addPage(&lfoPage2);
 
 		// euclid config
-		//    MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&LeoSketch::on16Callback);
-		//		euclidPage1.setName("EUCLID 1/2");
-		//		euclidPage2.setName("EUCLID 2/2");
-		//		switchPage.addPage(&euclidPage1);
-		//		switchPage.addPage(&euclidPage2);
+		MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&LeoSketch::on16Callback);
+		euclidPage1.setName("EUCLID 1/2");
+		euclidPage2.setName("EUCLID 2/2");
+		switchPage.addPage(&euclidPage1);
+		switchPage.addPage(&euclidPage2);
 
 		// auto page setup
 		autoMDPage.setup();
@@ -389,7 +389,7 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   }
 
 	void on16Callback(uint32_t counter) {
-		//		pitchEuclid.on16Callback(counter);
+		pitchEuclid.on16Callback(counter);
 	}
 	
 };
