@@ -7,10 +7,10 @@ REVISION=`head -1 ../../todo.txt | awk '{print $1}'`
 if [ $1 ]
 then
   RELEASE=$1
-  echo Creating Mididuino release $RELEASE...
+  echo Creating MidiCtrl release $RELEASE...
 else 
   RELEASE=$REVISION
-  echo Creating Mididuino distribution for revision $REVISION...
+  echo Creating MidiCtrl distribution for revision $REVISION...
 fi
 
 VERSIONED=`cat ../../app/src/processing/app/Base.java | grep $REVISION`
@@ -21,9 +21,9 @@ then
 fi
 
 # remove any unfinished builds or old builds
-rm -rf mididuino
-rm -rf Mididuino*
-rm -rf mididuino-*
+rm -rf MidiCtrl
+rm -rf MidiCtrl*
+rm -rf MidiCtrl-*
 rm -rf work
 
 ./make.sh
@@ -31,7 +31,7 @@ rm -rf work
 if [ $1 ]
 then
   # write the release version number into the output directory
-  echo $1 > work/Mididuino.app/Contents/Resources/Java/lib/version.txt
+  echo $1 > work/MidiCtrl.app/Contents/Resources/Java/lib/version.txt
 fi
 
 echo Cleaning file boogers...
@@ -55,8 +55,8 @@ find work -name ".svn" -exec rm -rf {} 2> /dev/null ';'
 echo Creating disk image...
 
 SOURCE_DIR="work"
-SOURCE_FILES="Mididuino.app"
-OUTPUT_DMG="mididuino-$RELEASE"
+SOURCE_FILES="MidiCtrl.app"
+OUTPUT_DMG="MidiCtrl-$RELEASE"
 WORK_DMG="working.dmg"
 WORK_DIR="working_dir"
 

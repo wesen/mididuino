@@ -3,7 +3,7 @@
 
 ### -- SETUP WORK DIR -------------------------------------------
 
-DISTNAME=Mididuino
+DISTNAME=MidiCtrl
 RESOURCES=`pwd`/work/${DISTNAME}.app/Contents/Resources/Java
 
 HARDWAREDIR=../../hardware
@@ -46,7 +46,7 @@ else
   cp -X ../../app/lib/jna.jar "$RESOURCES/"
   cp -X ../../app/lib/oro.jar "$RESOURCES/"
 
-#  echo Copying examples...
+  echo Copying examples...
 	mkdir "$RESOURCES/examples/"
 	cp -r ../../minicommand-sketches/PublishedFirmwares "$RESOURCES/examples/"
 	cp -r ../../minicommand-sketches/Tutorials "$RESOURCES/examples/"
@@ -54,10 +54,10 @@ else
 #  echo Extracting reference...
 #  unzip -q -d "$RESOURCES/" ../shared/reference.zip
   
-#  echo Extracting avr tools...
+  echo Extracting avr tools...
   unzip -q -d "$RESOURCES/" "$TOOLSZIP"
 
-#  mv "${RESOURCES}/hardware/tools/mididuino" "${RESOURCES}/tools"
+#  mv "${RESOURCES}/hardware/tools/MidiCtrl" "${RESOURCES}/tools"
 fi
 
 
