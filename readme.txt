@@ -22,4 +22,3 @@ Further information, as well as a wiki, forums and an issue tracker
 can be found on the redmine project manager at
 http://redmine.ruinwesen.com/
 
-b
