@@ -43,7 +43,7 @@ import processing.core.*;
 public class Base {
   static final int REVISION = 17;
   static String VERSION_NAME = "0017";
-  public static String PROGRAM_NAME = "Mididuino";
+  public static String PROGRAM_NAME = "Midi-Ctrl";
 
   static HashMap<Integer, String> platformNames = new HashMap();
   static {
@@ -2099,10 +2099,10 @@ public class Base {
   }
 
 
-  public static void init(String mididuinoDir) {
+  public static void init(String midictrlDir) {
     // TODO Auto-generated method stub
-    sysPath = mididuinoDir;
-    File path = new File(mididuinoDir);
+    sysPath = midictrlDir;
+    File path = new File(midictrlDir);
     examplesFolder = new File(path, "examples");
     librariesFolder = new File(new File(path, "hardware"), "libraries");
     toolsFolder = new File(path, "tools");

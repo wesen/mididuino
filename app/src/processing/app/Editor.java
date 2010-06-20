@@ -1168,10 +1168,10 @@ public class Editor extends JFrame implements RunnerListener {
       });
     menu.add(item);
     
-    item = new JMenuItem("Visit MidiDuino page");
+    item = new JMenuItem("Visit Midictrl page");
     item.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          Base.openURL("http://ruinwesen.com/mididuino");
+          Base.openURL("http://redmine.ruinwesen.com/projects/midi-ctrl/wiki");
         }
       });
     menu.add(item);

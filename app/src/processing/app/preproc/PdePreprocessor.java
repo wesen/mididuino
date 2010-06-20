@@ -405,21 +405,21 @@ public class PdePreprocessor {
   public static void main(String args[]) {
     java.util.List printList = new ArrayList();
     String board = "minicommand2";
-    String mididuinoDir = null;
+    String midictrlDir = null;
     int i;
     for (i = 0; i < args.length; i++) {
       if (args[i].equals("--board")) {
         board = args[i+1];
         i++;
       } else if (args[i].equals("--dir")) {
-        mididuinoDir = args[i+1];
+        midictrlDir = args[i+1];
         i++;
       } else {
         break;
       }
     }
-    System.out.println("dir: " + mididuinoDir);
-    Preferences.initBoards(mididuinoDir);
+    System.out.println("dir: " + midictrlDir);
+    Preferences.initBoards(midictrlDir);
     Preferences.set("board", board);
 
     if (args.length > i) {
@@ -434,7 +434,7 @@ public class PdePreprocessor {
           program += readFileAsString(args[i]);
         }
 
-        String hardwarePath = (mididuinoDir != null ? mididuinoDir : System.getProperty("user.dir")) +
+        String hardwarePath = (midictrlDir != null ? midictrlDir : System.getProperty("user.dir")) +
           File.separator + "hardware";
         Target target = new Target(hardwarePath  + File.separator + "cores",
                                    Preferences.get("boards." + Preferences.get("board") + ".build.core"));

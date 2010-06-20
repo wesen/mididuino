@@ -804,7 +804,7 @@ public class Compiler implements MessageConsumer {
   }
 	
   public static void main(String args[]) {
-    String mididuinoDir = null;
+    String midictrlDir = null;
     String board = "minicommand2";
           
     if (args.length <= 1) {
@@ -817,17 +817,17 @@ public class Compiler implements MessageConsumer {
         board = args[i+1];
         i++;
       } else if (args[i].equals("--dir")) {
-        mididuinoDir = args[i+1];
+        midictrlDir = args[i+1];
         i++;
       } else {
         break;
       }
     }
     
-    String hardwarePath = (mididuinoDir != null ? mididuinoDir : System.getProperty("user.dir")) + File.separator + "hardware";
-    Base.init(mididuinoDir);
+    String hardwarePath = (midictrlDir != null ? midictrlDir : System.getProperty("user.dir")) + File.separator + "hardware";
+    Base.init(midictrlDir);
     Target target = null;
-        Preferences.initBoards(mididuinoDir);
+        Preferences.initBoards(midictrlDir);
     Preferences.set("board", board);
     try {
       target = new Target(hardwarePath  + File.separator + "cores",
