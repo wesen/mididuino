@@ -52,7 +52,7 @@ else
   PREVDIR=`pwd`
   cd ${DISTDIR}/windows/launcher
   ./launch4j/launch4jc.exe config.xml
-  cp mididuino.exe "${PREVDIR}/work/mididuino.exe"
+  cp mididuino.exe "${PREVDIR}/work/midi-ctrl.exe"
   cd "${PREVDIR}"
 
   # chmod +x the crew

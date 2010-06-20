@@ -9,10 +9,10 @@ SHAREDDIST=${DISTDIR}/shared
 if [ $1 ]
 then
   RELEASE=$1
-  echo Creating Mididuino release $RELEASE...
+  echo Creating Midi-Ctrl release $RELEASE...
 else 
   RELEASE=$REVISION
-  echo Creating Mididuino distribution for revision $REVISION...
+  echo Creating Midi-Ctrl distribution for revision $REVISION...
 fi
 
 # check to see if the version number in the app is correct
@@ -29,82 +29,82 @@ fi
 echo `pwd`
 
 # remove any old boogers
-rm -rf mididuino
-rm -rf mididuino-*
+rm -rf midi-ctrl
+rm -rf midi-ctrl-*
 
-mkdir mididuino
-cp -r ../../app/lib mididuino
+mkdir midi-ctrl
+cp -r ../../app/lib midi-ctrl
 
 PREVDIR=`pwd`
 cd ../../hardware/tools/mididuino && make -f Makefile.windows
 cd "${PREVDIR}"
 
-cp ${DISTDIR}/windows/*.dll mididuino/
+cp ${DISTDIR}/windows/*.dll midi-ctrl/
 
-cp -r ../../hardware mididuino/
+cp -r ../../hardware midi-ctrl/
 
 if [ $1 ]
 then
   # write the release version number into the output directory
-  echo $1 > mididuino/lib/version.txt
+  echo $1 > midi-ctrl/lib/version.txt
 fi
 
-cp ../../app/lib/antlr.jar mididuino/lib/
-#cp ../../app/lib/ecj.jar mididuino/lib/
-cp ../../app/lib/jna.jar mididuino/lib/
-cp ../../app/lib/oro.jar mididuino/lib/
+cp ../../app/lib/antlr.jar midi-ctrl/lib/
+#cp ../../app/lib/ecj.jar midi-ctrl/lib/
+cp ../../app/lib/jna.jar midi-ctrl/lib/
+cp ../../app/lib/oro.jar midi-ctrl/lib/
 
 #echo Copying examples...
-#cp -r ../shared/examples mididuino/
+#cp -r ../shared/examples midi-ctrl/
 
 #echo Extracting reference...
-#unzip -q -d mididuino/ ../shared/reference.zip
+#unzip -q -d midi-ctrl/ ../shared/reference.zip
 
-unzip -q -d mididuino/hardware ${DISTDIR}/windows/avr_tools.zip
+unzip -q -d midi-ctrl/hardware ${DISTDIR}/windows/avr_tools.zip
 
 # add java (jre) files
-unzip -q -d mididuino ${DISTDIR}/windows/jre.zip
+unzip -q -d midi-ctrl ${DISTDIR}/windows/jre.zip
 
 # get platform-specific goodies from the dist dir
 PREVDIR=`pwd`
 cd ${DISTDIR}/windows/launcher
 ./launch4j/launch4jc.exe config.xml
-cp mididuino.exe "${PREVDIR}/mididuino/mididuino.exe"
+cp mididuino.exe "${PREVDIR}/midi-ctrl/midi-ctrl.exe"
 cd "${PREVDIR}"
 
 # grab pde.jar and export from the working dir
-cp work/lib/pde.jar mididuino/lib/
-cp work/lib/core.jar mididuino/lib/
+cp work/lib/pde.jar midi-ctrl/lib/
+cp work/lib/core.jar midi-ctrl/lib/
 
 # convert revisions.txt to windows LFs
 # the 2> is because the app is a little chatty
-unix2dos mididuino/readme.txt 2> /dev/null
-unix2dos mididuino/lib/preferences.txt 2> /dev/null
-unix2dos mididuino/lib/keywords.txt 2> /dev/null
+unix2dos midi-ctrl/readme.txt 2> /dev/null
+unix2dos midi-ctrl/lib/preferences.txt 2> /dev/null
+unix2dos midi-ctrl/lib/keywords.txt 2> /dev/null
 
 # remove boogers
-find mididuino -name "*.bak" -print0 | xargs -0 rm -rf
-find mididuino -name "*~" -print0 | xargs -0 rm -rf
-find mididuino -name ".DS_Store" -print0 | xargs -0 rm -rf
-find mididuino -name "._*" -print0 | xargs -0 rm -rf
-find mididuino -name "Thumbs.db" -print0 | xargs -0 rm -rf
+find midi-ctrl -name "*.bak" -print0 | xargs -0 rm -rf
+find midi-ctrl -name "*~" -print0 | xargs -0 rm -rf
+find midi-ctrl -name ".DS_Store" -print0 | xargs -0 rm -rf
+find midi-ctrl -name "._*" -print0 | xargs -0 rm -rf
+find midi-ctrl -name "Thumbs.db" -print0 | xargs -0 rm -rf
 
 # chmod +x the crew
-find mididuino -name "*.html" -print0 | xargs -0 chmod +x
-find mididuino -name "*.dll" -print0 | xargs -0 chmod +x
-find mididuino -name "*.exe" -print0 | xargs -0 chmod +x
-find mididuino -name "*.html" -print0 | xargs -0 chmod +x
+find midi-ctrl -name "*.html" -print0 | xargs -0 chmod +x
+find midi-ctrl -name "*.dll" -print0 | xargs -0 chmod +x
+find midi-ctrl -name "*.exe" -print0 | xargs -0 chmod +x
+find midi-ctrl -name "*.html" -print0 | xargs -0 chmod +x
 
 # clean out the cvs entries
-find mididuino -name "CVS" -print0 | xargs -0 rm -rf
-find mididuino -name ".cvsignore" -print0 | xargs -0 rm -rf
-find mididuino -name ".svn" -print0 | xargs -0 rm -rf
+find midi-ctrl -name "CVS" -print0 | xargs -0 rm -rf
+find midi-ctrl -name ".cvsignore" -print0 | xargs -0 rm -rf
+find midi-ctrl -name ".svn" -print0 | xargs -0 rm -rf
 
 # zip it all up for release
 echo Packaging standard release...
 echo
-P5=mididuino-$RELEASE
-mv mididuino $P5
+P5=midi-ctrl-$RELEASE
+mv midi-ctrl $P5
 zip -rq $P5.zip $P5
 # nah, keep the new directory around
 #rm -rf $P5

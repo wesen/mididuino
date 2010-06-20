@@ -1,3 +1,4 @@
 #!/bin/sh
 
-rm -rf work mididuino*.dmg mididuino*
+rm -rf work midi-ctrl*.dmg midi-ctrl*
+
