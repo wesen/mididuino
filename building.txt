@@ -1,0 +1,81 @@
+BUILDING
+--------
+
+To build the MIDI-CTRL framework, you will need access to a Unix
+environment and a Java compiler. These are available under MacOSX and
+Linux. To build the framework under Windows, you can use the Cygwin
+environment.
+
+Under MacOSX, you will need to have the XCode tools installed, as well
+as the compatibility framework to build 10.4u universal binaries
+(which you can download from apple's developer site , where it is
+called "10.4.0 Mac OS SDK") .
+
+1. Create a new directory that will contain the sourcecode and the
+binary tools contained in the framework.
+
+$ mkdir midi-ctrl
+$ cd midi-ctrl
+$
+2. Download the source from github
+
+Use git to clone the git repository at github.com/wesen/mididuino
+. For more information about the git source control system, visit
+git-scm.com .
+
+$ git clone git://github.com/wesen/mididuino.git
+Initialized empty Git repository in /private/tmp/midi-ctrl/mididuino/.git/
+remote: Counting objects: 11179, done.
+remote: Compressing objects: 100% (3823/3823), done.
+remote: Total 11179 (delta 7498), reused 9968 (delta 6680)
+Receiving objects: 100% (11179/11179), 12.79 MiB | 206 KiB/s, done.
+Resolving deltas: 100% (7498/7498), done.
+$
+3. Getting the distribution package
+
+The MIDI-CTRL frameworks needs a working avr-gcc toolchain to compile
+binaries. Due to its size, this toolchain is hosted separately from
+the mididuino sourcecode, and is available at
+ruinwesen.com/support-files/mididuino-dist.tar.gz . This archive
+contains the toolchains for MacOSX and Windows. Linux users will have
+to build the toolchain on their own (additional documentation about
+the process will be added here).
+
+$ wget http://ruinwesen.com/support-files/mididuino-dist.tar.gz
+$ tar zxvf mididuino-dist.tar.gz
+x mididuino-dist/
+x mididuino-dist/macosx/
+x mididuino-dist/shared/
+x mididuino-dist/windows/
+x mididuino-dist/windows/avr_tools.zip
+x mididuino-dist/windows/bootloader/
+x mididuino-dist/windows/core/
+x mididuino-dist/windows/cygiconv-2.dll
+x mididuino-dist/windows/cygwin1.dll
+x mididuino-dist/windows/ICE_JNIRegistry.dll
+x mididuino-dist/windows/jikes.exe
+...
+$
+4. Build the MIDI-CTRL environment (MacOSX)
+
+Now that all the files are there, build the MIDI-CTRL environment:
+
+$ cd mididuino/build/macosx/
+$ ./clean.sh
+$ ./dist.sh
+Creating MidiCtrl distribution for revision 0017...
+Setting up directories to build under Mac OS X
+Copying MidiCtrl.app...
+make: Nothing to be done for `all'.
+Copying examples...
+Extracting avr tools...
+Building processing.core...
+/Users/manuel/code/wesen/mididuino/core
+/Users/manuel/code/wesen/mididuino/app
+Building the PDE...
+Done.
+Cleaning file boogers...
+Creating disk image...
+$
+The environment is now available in the file midictrl-XXX.dmg .
+
