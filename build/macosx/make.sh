@@ -35,6 +35,9 @@ else
   # cvs doesn't seem to want to honor the +x bit 
   chmod +x work/${DISTNAME}.app/Contents/MacOS/JavaApplicationStub
 
+	cp ../../readme.txt work
+	cp ../../license.txt work
+	cp ../../building.txt work
   cp -rX ../../app/lib "$RESOURCES/"
 #  cp -rX ../shared/libraries "$RESOURCES/"
 #  cp -rX ../shared/tools "$RESOURCES/"
@@ -55,6 +58,7 @@ else
 #  unzip -q -d "$RESOURCES/" ../shared/reference.zip
   
   echo Extracting avr tools...
+	cp -r ../../hardware/tools "$RESOURCES/"
   unzip -q -d "$RESOURCES/" "$TOOLSZIP"
 
 #  mv "${RESOURCES}/hardware/tools/MidiCtrl" "${RESOURCES}/tools"
