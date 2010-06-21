@@ -26,7 +26,10 @@ else
   cp ${DISTDIR}/windows/*.dll work/
 
   cp -r ../../hardware work/
-
+  cp ../../readme.txt work/
+  cp ../../license.txt work/
+  cp ../../building.txt work/
+  
   cp ../../app/lib/antlr.jar work/lib/
 #  cp ../../app/lib/ecj.jar work/lib/
   cp ../../app/lib/jna.jar work/lib/

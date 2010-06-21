@@ -42,6 +42,9 @@ cd "${PREVDIR}"
 cp ${DISTDIR}/windows/*.dll midi-ctrl/
 
 cp -r ../../hardware midi-ctrl/
+cp ../../readme.txt midi-ctrl
+cp ../../license.txt midi-ctrl
+cp ../../building.txt midi-ctrl
 
 if [ $1 ]
 then
