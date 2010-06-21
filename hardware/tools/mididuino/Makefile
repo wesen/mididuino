@@ -1,11 +1,12 @@
-CC = gcc
-ARCHFLAGS = -arch i386 -arch ppc  -mmacosx-version-min=10.4
+CC = gcc-4.0
+ARCHFLAGS = -arch i386 -arch ppc -mmacosx-version-min=10.4
 #ARCHFLAGS = -arch i386 
 #ARCHFLAGS = -arch ppc
 #CFLAGS += -mno-cygwin
 CFLAGS += -W -Wall $(ARCHFLAGS) -g
 #LDFLAGS += -lwinmm
 DLLTOOL = dlltool
+CFLAGS +=  -isysroot /Developer/SDKs/MacOSX10.4u.sdk
 
 all: midi-send
 
@@ -13,7 +14,7 @@ all: midi-send
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 midi-send: midi-send.o midi-apple.o logging.o
-	$(CC) $(CFLAGS) -isysroot /Developer/SDKs/MacOSX10.4u.sdk -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
+	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
 
 midi-merge: midi-merge.c
 	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
