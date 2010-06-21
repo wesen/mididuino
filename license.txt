@@ -13,7 +13,9 @@ libraries: CommonTools, GUI, LFO, MD, Midi, MidiTools, Sequencer
 bootloaders: mididuino, mididuino-usb, minicommand, minicommand2
 cores: midicommand168, mididuino, mididuino-small, minicommand, minicommand2
 
-are covered by the BSD license.
+are covered by the BSD license, with the added clause that the
+software can not be used in commercial devices without written
+permission of Manuel Odendahl <wesen@ruinwesen.com> .
 
 .....................................................................
 
@@ -761,7 +763,7 @@ DAMAGES.
 .....................................................................
 
 
-Copyright (c) 2009, Ruin & Wesen
+Copyright (c) 2009, 2010 - Ruin & Wesen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -774,6 +776,9 @@ modification, are permitted provided that the following conditions are met:
     * Neither the name of Ruin & Wesen nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
+    * The devices running the MIDI-CTRL framework are not built with a commercial
+      purpose in mind. For commercial use of the MIDI-CTRL framework requires
+      written approval of Manuel Odendahl <wesen@ruinwesen.com>
 
 THIS SOFTWARE IS PROVIDED BY Ruin & Wesen ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
