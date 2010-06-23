@@ -14,12 +14,12 @@ MidiUartClass2 MidiUart2;
 #define UART_BAUDRATE_REG (((F_CPU / 16)/(UART_BAUDRATE)) - 1)
 
 #define UART_CHECK_EMPTY_BUFFER() IS_BIT_SET8(UCSR0A, UDRE)
-#define UART_CHECK_RX() IS_BIT_SET8(UCSR0A, RXC)
-#define UART_WRITE_CHAR(c) (UDR0 = (c))
-#define UART_READ_CHAR() (UDR0)
+#define UART_CHECK_RX()           IS_BIT_SET8(UCSR0A, RXC)
+#define UART_WRITE_CHAR(c)        (UDR0 = (c))
+#define UART_READ_CHAR()          (UDR0)
 
-#define UART2_CHECK_RX() IS_BIT_SET8(UCSR1A, RXC)
-#define UART2_READ_CHAR() (UDR1)
+#define UART2_CHECK_RX()          IS_BIT_SET8(UCSR1A, RXC)
+#define UART2_READ_CHAR()         (UDR1)
 
 #include <avr/io.h>
 

@@ -9,7 +9,6 @@
 
 // #include "MidiSDS.hh"
 #include "Vector.hh"
-#include "ListPool.hh"
 #include "Callback.hh"
 
 class MidiUartParent;

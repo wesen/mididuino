@@ -5,7 +5,6 @@
 #include "WProgram.h"
 
 #include "GUI_private.h"
-#include "LCD.h"
 
 /*
 	$SR165_OUT$        output pin for the shift register
