@@ -11,16 +11,19 @@ extern "C" {
 #include <avr/interrupt.h>
 }
 
-#define LCD_DATA_PORT PORTF
-#define LCD_DATA_DDR  DDRF
+/*
+	$LCD_DATA_PORT$    port to which the LCD is connected (lower 4 bits of the port)
+	$LCD_DATA_DDR$
+	
+	$LCD_CTRL_PORT$    port to which the LCD ctrl lines are connected (ENABLE AND RS)
+	$LCD_CTRL_DDR$
 
-#define LCD_CTRL_PORT PORTE
-#define LCD_CTRL_DDR  DDRE
+	$LCD_RS$           pin to which the RS line is connected
+	$LCD_ENABLE$       pin to which the enable line is connected
 
-#define LCD_DELAY_US 50
-
-#define LCD_RS     PE2
-#define LCD_ENABLE PE6
+	$LCD_DELAY_US$     delay in us between commands
+		
+*/
 
 #define LCD_SET_ENABLE()   { SET_BIT8(LCD_CTRL_PORT, LCD_ENABLE); }
 #define LCD_CLEAR_ENABLE() { CLEAR_BIT8(LCD_CTRL_PORT, LCD_ENABLE); }

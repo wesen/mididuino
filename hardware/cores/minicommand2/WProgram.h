@@ -19,7 +19,26 @@ extern "C" {
 
 #include "helpers.h"
 
+/* LCD configuration variables */
+#define LCD_DATA_PORT PORTF
+#define LCD_DATA_DDR  DDRF
 
+#define LCD_CTRL_PORT PORTE
+#define LCD_CTRL_DDR  DDRE
+
+#define LCD_DELAY_US 50
+
+#define LCD_RS     PE2
+#define LCD_ENABLE PE6
+
+/* GUI configuration variables */
+#define SR165_OUT    PD5
+#define SR165_SHLOAD PD6
+#define SR165_CLK    PD7
+
+#define SR165_DATA_PORT PORTD
+#define SR165_DDR_PORT  DDRD
+#define SR165_PIN_PORT  PIND
 
 /* default config flags */
 #define MIDIDUINO_POLL_GUI     1
