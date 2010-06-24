@@ -15,6 +15,7 @@
  * @{
  **/
 
+#ifdef __cplusplus
 class MidiCallback {
  public:
 
@@ -22,6 +23,7 @@ class MidiCallback {
   virtual ~MidiCallback() { }
 #endif
 };
+#endif /* _cplusplus */
 
 typedef enum {
   midi_wait_status = 0,
