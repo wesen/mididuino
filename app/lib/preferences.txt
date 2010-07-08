@@ -287,3 +287,4 @@ serial.burn_rate=115200
 build.verbose=false
 
 board=minicommand2
+last.sketch.count=0

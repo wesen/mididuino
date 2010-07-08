@@ -7,7 +7,7 @@ all: midi-send
 %.o: %.c
 	$(CC) -c -o $@ $<
 
-midi-send: midi-send.o midi-linux.o
+midi-send: midi-send.o midi-linux.o logging.o
 	$(CC) -o $@ $+ -lasound
 
 
