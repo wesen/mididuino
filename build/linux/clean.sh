@@ -1,3 +1,3 @@
 #!/bin/sh
 
-rm -rf work *gz
+rm -rf work midi-ctrl-* *.tgz
