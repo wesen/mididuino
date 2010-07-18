@@ -824,6 +824,10 @@ public class Compiler implements MessageConsumer {
       }
     }
     
+    if (midictrlDir == null) {
+      midictrlDir = System.getProperty("user.dir");
+    }
+    
     String hardwarePath = (midictrlDir != null ? midictrlDir : System.getProperty("user.dir")) + File.separator + "hardware";
     Base.init(midictrlDir);
     Target target = null;

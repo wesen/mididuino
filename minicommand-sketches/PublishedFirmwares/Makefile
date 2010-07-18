@@ -1,4 +1,9 @@
+MIDI_INPUT_PORT ?= 0
+MIDI_OUTPUT_PORT ?= 0
+
 PDEDIR ?= .
+CURRENT_DIR := $(shell pwd)
+PDENAME := $(notdir $(CURRENT_DIR))
 
 CC=avr-gcc
 CXX=avr-g++
@@ -15,19 +20,13 @@ LBASE_DIR = $(BASE_DIR)/hardware/libraries
 JAR_DIR = $(BASE_DIR)
 CLASSPATH = $(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
+JAVA_FLAGS += -Duser.dir="$(BASE_DIR)" -cp "$(CLASSPATH)"
+
 PDEFILES=$(wildcard $(PDEDIR)/*.pde)
 
-CFLAGS += -g -Os -w -fno-exceptions -ffunction-sections -fdata-sections -mmcu=$(AVR_ARCH) -DF_CPU=$(F_CPU)
-CFLAGS += -Wl,--section-start=.bss=0x802000,--defsym=__heap_end=0x80ffff
-CFLAGS += -mcall-prologues -funsigned-char -funsigned-bitfields -fshort-enums -fpack-struct -Wall -Werror 
-#CFLAGS += -fno-default-inline -nostdinc++ -fno-rtti -fno-implement-inlines 
-
-CFLAGS += --param inline-call-cost=2 -finline-limit=3 -fno-inline-small-functions
-CFLAGS += -fno-tree-scev-cprop -fsplit-wide-types
-
-#CFLAGS += -fno-inline
-CLDFLAGS += -Wl,--relax,--gc-sections -ffunction-sections -g
-CLDFLAGS += -mmcu=$(AVR_ARCH)
+CFLAGS = $(shell cd $(BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-c-flags)
+CXXFLAGS = $(shell cd $(BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-cxx-flags)
+CLDFLAGS = $(shell cd $(BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-ld-flags)
 
 DIRS = CommonTools Midi GUI SDCard MNM MD MidiTools Elektron PageTools
 LDIRS = $(wildcard $(LBASE_DIR)/*) $(BASE_DIR)/hardware/cores/$(CORE)
@@ -41,17 +40,26 @@ COBJS = $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,
 OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.o,$(file))))
 
 CFLAGS += $(INCS)
+CXXFLAGS += $(INCS)
 
-all: main.hex
+all: $(PDENAME).hex
 
-main.cpp: $(PDEFILES) $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
+testflags:	
+	cd $(BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-c-flags
+
+$(PDENAME).o: $(PDEFILES) $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	echo $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
-	java -Duser.dir="$(BASE_DIR)" -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./main $(PDEFILES)
+	java $(JAVA_FLAGS) processing.app.preproc.PdePreprocessor ./$(PDENAME) $(PDEFILES)
+	$(CXX) $(CXXFLAGS) -c $(PDENAME).cpp -o $@
+#	rm $(PDENAME).cpp
 
-mainwhole.elf: main.cpp $(COBJS)
+upload: $(PDENAME).hex
+	midi-send -I 0x41 -b -i${MIDI_INPUT_PORT} -o${MIDI_OUTPUT_PORT} $<
+
+$(PDENAME)whole.elf: $(PDENAME).cpp $(COBJS)
 	$(CXX) $(CLDFLAGS) $(CFLAGS) -o $@ -fwhole-program --combine $^ $(SRCS)
 
-main.elf: main.o $(OBJS)
+$(PDENAME).elf: $(PDENAME).o $(OBJS)
 	$(CXX) $(CLDFLAGS) -g -o $@ $^ 
 
 %.o: %.c Makefile
@@ -97,4 +105,4 @@ libclean:
 	rm -rf $(OBJS)
 
 clean:
-	rm -rf *.os *.o *.elf *.elfs *.lst main.cpp
+	rm -rf *.os *.o *.elf *.elfs *.lst $(PDENAME).cpp $(PDENAME).hex

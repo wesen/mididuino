@@ -2100,7 +2100,6 @@ public class Base {
 
 
   public static void init(String midictrlDir) {
-    // TODO Auto-generated method stub
     sysPath = midictrlDir;
     File path = new File(midictrlDir);
     examplesFolder = new File(path, "examples");
