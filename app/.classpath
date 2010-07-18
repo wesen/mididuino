@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/antlr.jar"/>
 	<classpathentry kind="lib" path="lib/jna.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
 	<classpathentry kind="lib" path="lib/oro.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/midi-ctrl-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

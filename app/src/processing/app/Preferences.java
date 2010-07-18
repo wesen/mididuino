@@ -249,9 +249,7 @@ public class Preferences {
       if (dir == null) {
         dir = System.getProperty("user.dir");
       }
-      load(new FileInputStream(new File(dir,
-                                        File.separator + "hardware" +
-                                        File.separator + "boards.txt")),
+      load(new FileInputStream(new File(Base.getHardwareFolder(), "boards.txt")),
          "boards");
     } catch (Exception ex) {
       Base.showError("Error reading board definitions",

@@ -827,7 +827,7 @@ public class Compiler implements MessageConsumer {
     String hardwarePath = (midictrlDir != null ? midictrlDir : System.getProperty("user.dir")) + File.separator + "hardware";
     Base.init(midictrlDir);
     Target target = null;
-        Preferences.initBoards(midictrlDir);
+    Preferences.initBoards(midictrlDir);
     Preferences.set("board", board);
     try {
       target = new Target(hardwarePath  + File.separator + "cores",
