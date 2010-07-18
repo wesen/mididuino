@@ -106,7 +106,7 @@ mkdir ../build/linux/work/classes
 javac \
     -Xlint:deprecation \
     -source 1.5 -target 1.5 \
-    -classpath "/usr/lib/jvm/java-6-openjdk/lib/tools.jar:$RESOURCES/lib/core.jar:$RESOURCES/lib/antlr.jar:$RESOURCES/lib/ecj.jar:$RESOURCES/lib/jna.jar:$RESOURCES/lib/oro.jar" \
+    -classpath "$CLASSPATH:$RESOURCES/lib/core.jar:$RESOURCES/lib/antlr.jar:$RESOURCES/lib/ecj.jar:$RESOURCES/lib/jna.jar:$RESOURCES/lib/oro.jar" \
     -d ../build/linux/work/classes \
     src/processing/app/*.java \
     src/processing/app/debug/*.java \
