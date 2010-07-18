@@ -8,10 +8,11 @@ AVR_ARCH = atmega64
 F_CPU = 16000000L
 
 CORE = minicommand2
-BASE_DIR = /Applications/mididuino-0014
-# LBASE_DIR = $(BASE_DIR)/hardware/libraries
-LBASE_DIR = /Users/manuel/mididuino/hardware/libraries
-JAR_DIR = $(BASE_DIR)/MidiDuino\ 14.app/Contents/Resources/Java
+BASE_DIR = /Applications/MidiCtrl.app/Contents/Resources/Java
+#BASE_DIR = /Users/manuel/code/wesen/mididuino/build/macosx/work/MidiCtrl.app/Contents/Resources/Java
+LBASE_DIR = $(BASE_DIR)/hardware/libraries
+# LBASE_DIR = /Users/manuel/mididuino/hardware/libraries
+JAR_DIR = $(BASE_DIR)
 CLASSPATH = $(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 
 PDEFILES=$(wildcard $(PDEDIR)/*.pde)
@@ -45,7 +46,7 @@ all: main.hex
 
 main.cpp: $(PDEFILES) $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	echo $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
-	java -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./main $(PDEFILES)
+	java -Duser.dir="$(BASE_DIR)" -cp "$(CLASSPATH)" processing.app.preproc.PdePreprocessor ./main $(PDEFILES)
 
 mainwhole.elf: main.cpp $(COBJS)
 	$(CXX) $(CLDFLAGS) $(CFLAGS) -o $@ -fwhole-program --combine $^ $(SRCS)
