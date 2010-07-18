@@ -62,7 +62,8 @@ public:
     page2.setEncoders(&timEncoder, &frqEncoder, &modEncoder, &fbEncoder);
     page2.setShortName("DL2");
 
-		mdBreakdown.ramP1Track = ramP1Track = 15;
+    // initialize track to non-sensical value
+		mdBreakdown.ramP1Track = ramP1Track = 255;
 		
     pFlfEncoder.initMDEncoder(ramP1Track, MODEL_FLTF, "FLF", 0);
     pFlwEncoder.initMDEncoder(ramP1Track, MODEL_FLTW, "FLW", 127);
@@ -164,14 +165,15 @@ public:
   }
   
   void onKitChanged() {
-		//		MidiUart.printfString("PARSED KIT %b with name %s", MD.kit.origPosition, MD.kit.name);
+    ramP1Track = 255;
+    
     for (int i = 0; i < 16; i++) {
       if (MD.kit.models[i] == RAM_P1_MODEL) {
         ramP1Track = i;
-        mdBreakdown.ramP1Track = i;
         break;
       }
     }
+    mdBreakdown.ramP1Track = ramP1Track;
     for (int i = 0; i < 4; i++) {
       ((MDEncoder *)page4.encoders[i])->track = ramP1Track;
     }

@@ -51,7 +51,7 @@ $(PDENAME).o: $(PDEFILES) $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	echo $(wildcard $(BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	java $(JAVA_FLAGS) processing.app.preproc.PdePreprocessor ./$(PDENAME) $(PDEFILES)
 	$(CXX) $(CXXFLAGS) -c $(PDENAME).cpp -o $@
-#	rm $(PDENAME).cpp
+	rm $(PDENAME).cpp
 
 upload: $(PDENAME).hex
 	midi-send -I 0x41 -b -i${MIDI_INPUT_PORT} -o${MIDI_OUTPUT_PORT} $<

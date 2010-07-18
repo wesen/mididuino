@@ -77,6 +77,9 @@ void MDClass::sendRequest(uint8_t type, uint8_t param) {
 }
 
 void MDClass::triggerTrack(uint8_t track, uint8_t velocity) {
+  if (track > 15)
+    return;
+  
   if (global.drumMapping[track] != -1 && global.baseChannel != 127) {
     MidiUart.sendNoteOn(global.baseChannel, global.drumMapping[track], velocity);
   }
