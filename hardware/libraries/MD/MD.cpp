@@ -170,6 +170,10 @@ uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
 }
 
 uint8_t MDClass::trackGetPitch(uint8_t track, uint8_t pitch) {
+  if (isMidiTrack(track)) {
+    return pitch;
+  }
+  
   tuning_t const *tuning = getModelTuning(kit.models[track]);
   
   if (tuning == NULL)
@@ -225,7 +229,19 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
   triggerTrack(track, 100);
 }
 
+bool MDClass::isMidiTrack(uint8_t track) {
+  return ((kit.models[track] >= MID_01_MODEL) &&
+          (kit.models[track] <= MID_16_MODEL)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 bool MDClass::isMelodicTrack(uint8_t track) {
+  if (isMidiTrack(track)) {
+    return true;
+  }
   return (getModelTuning(kit.models[track]) != NULL);
 }
 

@@ -279,6 +279,10 @@ class MDClass {
 	 * Returns true if the machine on the given track (0 to 15) is melodic.
 	 **/
   bool isMelodicTrack(uint8_t track);
+	/**
+	 * Returns true if the machine on the given track (0 to 15) is a MIDI machine.
+	 **/
+  bool isMidiTrack(uint8_t track);
 
 	/**
 	 * Set the LFO parameter of track to the given value.
