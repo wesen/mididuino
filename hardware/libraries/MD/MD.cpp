@@ -230,7 +230,7 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
 }
 
 bool MDClass::isMidiTrack(uint8_t track) {
-  return ((kit.models[track] >= MID_01_MODEL) &&
+  if ((kit.models[track] >= MID_01_MODEL) &&
           (kit.models[track] <= MID_16_MODEL)) {
     return true;
   } else {
