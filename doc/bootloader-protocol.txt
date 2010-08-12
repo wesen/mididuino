@@ -1,0 +1,174 @@
+[[wiki|MIDI-CTRL]] -> [[Developer Manual]] -> [[Internals]]
+
+{{toc}}
+
+h1. MiniCommand bootloader protocol
+
+h2. Introduction
+
+The bootloader receives MIDI sysex messages, and uses those to reflash the device. Each device supporting the bootloader protocol has a unique ID. Each data message contains a block of firmware data, and has to be acknowledge and flashed by the receiving device before the next block is sent. As target devices can only flash blocks of their page size, pages are usually split in smaller blocks of 64 bytes.
+
+h2. Message Format
+
+- The first two sysex bytes signal an extended sysex address (first byte 0x00), starting with 0x13.
+- The third byte is the device ID. A device should discard messages not matching its device ID.
+- The fourth byte is the CMD data field, identifying the command contained in the sysex message.
+- Following bytes are additional data for the CMD.
+
+00: 0xF0
+01: 0x00
+02: 0x13
+03: DEVICE_ID
+04: CMD
+05: data...
+...
+XX: 0xF7
+
+h3. DEVICE_ID
+
+0x37 - midicommand (atmega168 16 Mhz) (deprecated)
+0x38 - mididuino USB (atmega32 16 Mhz) dev board (deprecated)
+0x41 - minicommand 2.0 (atmega64 + SRAM 16 Mhz)
+0x43 - monojoystick 2.0 (atmega64 + SRAM 16 Mhz)
+0x45 - ruinwesen usb-midi board (atmega32u4 16 Mhz)
+0x50 - Faderfox USB-Midi (at90usb162 8 Mhz)
+
+h3. CMD
+
+0x01 - CMD_BOOT_DATA_BLOCK
+0x02 - CMD_DATA_BLOCK_ACK
+0x03 - CMD_FIRMWARE_CHECKSUM
+0x04 - CMD_MAIN_PROGRAM
+0x05 - CMD_START_BOOTLOADER
+0x10 - CMD_DATA_BLOCK_NAK
+
+h3. 7-bit encoding of integer values
+
+Longer values are encoded as 14-bit values (2 bytes, for example checksum), 21-bit values (for example firmware length), or 27-bit values (for example firmware block address). The values are encoded in a LSB manner:
+
+* Encoding a 21 bit value
+
+ <pre><code class="c">
+      unsigned char b = firmware_len & 0x7F;
+      outbuf[idx++] = b;
+      b = (firmware_len >> 7) & 0x7F;
+      outbuf[idx++] = b;
+      b = (firmware_len >> 14) & 0x7F;
+      outbuf[idx++] = b;
+ </code></pre>
+
+* Encoding a 14 bit value
+
+ <pre><code class="c">
+      b = firmware_checksum & 0x7F;
+      outbuf[idx++] = b;
+      b = (firmware_checksum >> 7) & 0x7f;
+      outbuf[idx++] = b;
+ </code></pre>
+
+* Encoding a 28 bit value
+
+ <pre><code class="c">
+    address_bytes[0] = address & 0x7F;
+    address >>= 7;
+    address_bytes[1] = address & 0x7F;
+    address >>= 7;
+    address_bytes[2] = address & 0x7F;
+    address >>= 7;
+    address_bytes[3] = address & 0x7F;
+    memcpy(outbuf + idx, address_bytes, 4);
+ </code></pre>
+
+h3. 7-bit encoding of 8-bit data blocks
+
+Binary 8-bit data blocks are encoded into 7 bits values in the following manner. The 8-bit bytes are separated into groups of 7 8-bit values (called B0 B1 B2 B3 B4 B5 B6). The first 7-bit value stores the MSB of the following 7 bytes. The following 7-bit values store the lower 7 bits of the 8-bit values. If less than 7 8-bit bytes have to be encoded, the MSB of the missing bytes are set to 0, and the missing bytes are not padded.
+
+* Encoding of seven 8-bit values (B0 B1 B2 B3 B4 B5 B6)
+
+00: 0 MSB6 MSB4 MSB4 MSB3 MSB2 MSB1 MSB0
+01: lower 7 bits of B0
+02: lower 7 bits of B1
+03: lower 7 bits of B2
+04: lower 7 bits of B3
+05: lower 7 bits of B4
+06: lower 7 bits of B5
+07: lower 7 bits of B6
+
+* Encoding of four 8-bit values (B0 B1 B2 B3)
+
+00: 0 0 0 0 MSB3 MSB2 MSB1 MSB0
+01: lower 7 bits of B0
+02: lower 7 bits of B1
+03: lower 7 bits of B2
+04: lower 7 bits of B3
+
+h2. Messages
+
+h3. BOOT_DATA_BLOCK message format
+
+This message is used to transfer a firmware data block to the target device. It needs to be answered by either DATA_BLOCK_ACK  or DATA_BLOCK_NAK.
+
+00: 0xf0
+01: 0x00
+02: 0x13
+03: DEVICE_ID
+04: 0x01 (CMD_BOOT_DATA_BLOCK)
+05: len (usually 64)
+06-09: address (28-bit value, see 2.4)
+10-XX: data (7-bit encoded binary data, see 2.5)
+XX+1: checksum
+XX+2: 0xF7
+
+The checksum is calculated by xoring all the bytes starting at address 0x04 (command) up to address XX (last data byte).
+
+h3. FIRMWARE_CHECKSUM message format
+
+This message is used to transfer the checksum of the complete firmware to the target device. The target device then stores this checksum into its eeprom, and uses it to check that the stored firmware is valid on bootup. If the firmware checksum doesn't match the stored firmware, the bootloader is started.
+
+00: 0xf0
+01: 0x00
+02: 0x13
+03: DEVICE_ID
+04: 0x03 (CMD_FIRMWARE_CHECKSUM)
+05-07: firmware length (21-bit value, see 2.4)
+08-09: firmware checksum (14-bit value, see 2.4)
+10: 0xF7
+
+The firmware checksum is calculated by adding all the bytes of the firmware into an unsigned 16-bit word.
+
+ <pre><code class="c">
+      unsigned short firmware_len = 0;
+      unsigned short firmware_checksum = 0;
+      for (i = 0; i < max_address; i++) {
+        firmware_checksum += flashram[i];
+      }
+      firmware_len = max_address;
+</code></pre>
+
+h3. DATA_BLOCK_ACK message format
+
+This message is used by the target device to signal that it did process the previous message correctly (for example, start the bootloader, or write the previous firmware data block correctly). The flashing software has to wait for an ACK message before it can carry on, as this is used to do flow control (writing a firmware page to flash memory takes time).
+
+The target device sends this message every time it starts in bootloader mode.
+
+h3. DATA_BLOCK_NAK message format
+
+This message is used by the target device to signal that it didn't process the previous message (either due to a bad checksum, or due to another error).
+
+h3. MAIN_PROGRAM message format
+
+This message is used by the flashing software to instruct the target device to start the currently laoded firmware.
+
+h3. START_BOOTLOADER message format
+
+This message is used by the flashing software to instruct the target device to start in bootloader mode.
+      
+4. Bootloader protocol
+
+The flashing software first sends a command to switch the target device into bootloader mode. This command has to be answered by a CMD_DATA_BLOCK_ACK message by the target device once it has switched itself to the bootloader.
+
+The flashing software then sends blocks of data to the target device using the BOOT_DATA_BLOCK, splitting the firmware into smaller blocks of usually 64 bytes. Each block contains the length of data, the address at which it has to be written, the data, and a simple checksum of the message. Each of these message has to be answered by a CMD_DATA_BLOCK_ACK message by the target device.
+
+After sending the firmware data, the flashing software sends a complete checksum of the firmware using the FIRMWARE_CHECKSUM message. This causes the target device to write the firmware checksum into its EEPROM (for verification on booting).
+
+Finally, the flashing software sends the MAIN_PROGRAM message to make the target device start the newly loaded firmware.
