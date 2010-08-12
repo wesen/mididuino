@@ -53,12 +53,16 @@ class Encoder {
 	/**
 	 * If this variable is set to true, and pressmode to false, an
 	 * encoder-turn with the encoder pressed down will lead to an
-	 * increment by 5 times the value (default true).
+	 * increment by fastmodestep times the value (default true).
 	 *
 	 * This will work with the parent update() method, not if update()
 	 * is overloaded.
 	 **/
   bool fastmode;
+  /**
+   * This variable sets the step width for fast mode (default 5)
+   **/
+  uint8_t fastmodestep;
 	/**
 	 * If this variable is set to true, turning the encoder while the
 	 * button is pressed will have no effect on the encoder value.
