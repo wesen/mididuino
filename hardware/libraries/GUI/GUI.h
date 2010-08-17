@@ -288,6 +288,8 @@ class GuiClass {
   void put_p_string_fill(PGM_P str);
 	/** Display the string at the given idx (in 1 character increments). **/
   void put_string_at(uint8_t idx, const char *str);
+	/** Display the string at the given idx (in 1 character increments). **/
+  void put_string_at(uint8_t idx, const char *str, uint8_t len);
 	/** Display the program-space string at the given idx (in 1 character increments). **/
   void put_p_string_at(uint8_t idx, PGM_P str);
 	/** Display the string at the given idx (in 1 character increments) and fill up with whitespace. **/

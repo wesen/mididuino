@@ -172,6 +172,17 @@ void GuiClass::display() {
   GUI.clearFlashLine();
 }
 
+inline char 
+suppress_zero(char* dst, uint16_t value)
+{
+  dst[3] = ' ';
+  dst[2] = value % 10 + '0';
+  value /= 10;
+  dst[1] = value ? (value % 10 + '0') : ' ';
+  value /= 10;
+  dst[0] = value ? (value % 10 + '0') : ' ';
+}
+
 char hex2c(uint8_t hex) {
   if (hex < 10) {
     return hex + '0';
@@ -199,19 +210,13 @@ void GuiClass::put_valuex(uint8_t idx, uint8_t value) {
 void GuiClass::put_value_at(uint8_t idx, uint8_t value) {
   char *data = lines[curLine].data;
   lines[curLine].changed = true;
-  data[idx] = value / 100 + '0';
-  data[idx+1] = (value % 100) / 10 + '0';
-  data[idx+2] = (value % 10) + '0';
-  data[idx+3] = ' ';
+  suppress_zero(&data[idx], value);
 }
 
 void GuiClass::put_value_at(uint8_t idx, int value) {
   char *data = lines[curLine].data;
   lines[curLine].changed = true;
-  data[idx] = (value % 1000) / 100 + '0';
-  data[idx+1] = (value % 100) / 10 + '0';
-  data[idx+2] = (value % 10) + '0';
-  data[idx+3] = ' ';
+  suppress_zero(&data[idx], value);
 }
 
 void GuiClass::put_value16_at(uint8_t idx, uint16_t value) {
@@ -248,10 +253,20 @@ void GuiClass::put_p_string_fill(uint8_t idx, PGM_P str) {
   put_p_string_at_fill(idx << 2, str);
 }
 
-
 void GuiClass::put_string_at(uint8_t idx, const char *str) {
   char *data = lines[curLine].data;
   m_strncpy(data + idx, str, sizeof(lines[0].data) - idx);
+  lines[curLine].changed = true;
+}
+
+static inline uint8_t min(uint8_t a, uint8_t b)
+{
+  return (a > b) ? b : a;
+}
+
+void GuiClass::put_string_at(uint8_t idx, const char *str, uint8_t len) {
+  char *data = lines[curLine].data;
+  m_strncpy(data + idx, str, min(len, sizeof(lines[0].data) - idx));
   lines[curLine].changed = true;
 }
 
@@ -408,10 +423,7 @@ void GuiClass::flash_put_valuex(uint8_t idx, uint8_t value, uint16_t duration) {
 
 void GuiClass::flash_put_value_at(uint8_t idx, uint8_t value, uint16_t duration) {
   char *data = lines[curLine].flash;
-  data[idx] = value / 100 + '0';
-  data[idx+1] = (value % 100) / 10 + '0';
-  data[idx+2] = (value % 10) + '0';
-  data[idx+3] = ' ';
+  suppress_zero(&data[idx], value);
   flash(duration);
 }
 
