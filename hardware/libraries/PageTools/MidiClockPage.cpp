@@ -5,8 +5,8 @@
 Merger merger;
 
 const char *MidiClockPage::clockSourceEnum[] = {
-    "NO", "IN1", "IN2"
-  };
+  "NO", "IN1", "IN2"
+};
 
 static const char *mergerConfigStrings[] = {
   "NONE   ",
@@ -118,9 +118,9 @@ void MidiClockPage::setup() {
 }
 
 void MidiClockPage::show() {
-    GUI.flash_strings_fill("MIDI CLOCK", "SETUP");
-    redisplayPage();
-  }
+  GUI.flash_strings_fill("MIDI CLOCK", "SETUP");
+  redisplayPage();
+}
 
 void MidiClockPage::loop() {
   bool changed = false;
@@ -167,9 +167,9 @@ void MidiClockPage::loop() {
     changed = true;
   }
   if (mergerEncoder.hasChanged()) {
-      uint8_t mask = mergerConfigMasks[mergerEncoder.getValue()];
-      merger.setMergeMask(mask);
-      changed = true;
+    uint8_t mask = mergerConfigMasks[mergerEncoder.getValue()];
+    merger.setMergeMask(mask);
+    changed = true;
   }
 
   if (changed) {
@@ -178,7 +178,7 @@ void MidiClockPage::loop() {
   }
 }
 
- bool MidiClockPage::handleEvent(gui_event_t *event) {
+bool MidiClockPage::handleEvent(gui_event_t *event) {
   if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
     GUI.sketch->popPage(this);
     return true;
