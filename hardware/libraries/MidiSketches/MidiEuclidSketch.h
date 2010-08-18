@@ -55,6 +55,8 @@ public:
     encoders[3] = &basePitchEncoder;
     encoders[2] = &octavesEncoder;
     encoders[1] = &scaleEncoder;
+    encoders[3]->setValue(80, true);
+    euclid->basePitch = encoders[3]->getValue();
   }
 
   void loop() {
@@ -75,14 +77,35 @@ public:
   }
 };
 
+class PitchEuclidConfigPage3 :
+public EncoderPage {
+ public:
+  RangeEncoder noteLengthEncoder;
+  PitchEuclid *euclid;
+
+ PitchEuclidConfigPage3(PitchEuclid *_euclid) :
+  noteLengthEncoder(0, 8, "LEN"),
+    euclid(_euclid) {
+      encoders[0] = &noteLengthEncoder;
+      noteLengthEncoder.setValue(1);
+    }
+
+  void loop() {
+    if (noteLengthEncoder.hasChanged()) {
+      euclid->setNoteLength(noteLengthEncoder.getValue());
+    }
+  }
+};
+
 class PitchEuclidSketch : 
 public Sketch, public ClockCallback {
 public:
   PitchEuclidConfigPage1 page1;
   PitchEuclidConfigPage2 page2;
-	PitchEuclid pitchEuclid;
+  PitchEuclidConfigPage3 page3;
+  PitchEuclid pitchEuclid;
 
- PitchEuclidSketch() : page1(&pitchEuclid), page2(&pitchEuclid) {
+ PitchEuclidSketch() : page1(&pitchEuclid), page2(&pitchEuclid), page3(&pitchEuclid) {
   }
 
   void setup() {
@@ -97,6 +120,10 @@ public:
     } 
     else if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
       GUI.setPage(&page2);
+      return true;
+    } 
+    else if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+      GUI.setPage(&page3);
       return true;
     } 
     else if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
