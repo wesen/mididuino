@@ -10,7 +10,7 @@ class AutoMidiControllerSketch : public Sketch {
   AutoEncoderPage<AutoNameCCEncoder> autoPages[4];
   SwitchPage switchPage;
   
-  AutoMidiControllerSketch() {
+ AutoMidiControllerSketch() {
 		delay(100);
   }
   
@@ -24,6 +24,10 @@ class AutoMidiControllerSketch : public Sketch {
       autoPages[i].setShortName(name);
       for (uint8_t j = 0; j < 4; j++) {
         ccHandler.addEncoder(&autoPages[i].realEncoders[j]);
+	char name[4] = "P00";
+	name[3] = '0' + j;
+	autoPages[i].realEncoders[j].setName(name);
+	autoPages[i].realEncoders[j].initCCEncoder(0, j);
       }
     }
     
