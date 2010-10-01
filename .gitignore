@@ -1,4 +1,5 @@
 *.o
+hardware/tools/avr
 TAGS
 .#*
 *.elf
