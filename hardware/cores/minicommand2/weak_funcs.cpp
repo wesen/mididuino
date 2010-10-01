@@ -75,6 +75,7 @@ public:
 
 	void setupClockCallbacks() {
 		MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&DefaultCallbacks::on16Callback);
+		// on32callbacks weakly linked, XXX check performance
 		MidiClock.addOn32Callback(this, (midi_clock_callback_ptr_t)&DefaultCallbacks::on32Callback);
 	}
 	
