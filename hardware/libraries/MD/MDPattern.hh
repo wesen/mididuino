@@ -26,53 +26,53 @@
  * firmwares that need to manipulate all the patterns on the MD.
  **/
 class MDPatternShort {
-	/**
-	 * \addtogroup md_pattern_global 
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_pattern_global 
+   * @{
+   **/
 public:
-	uint8_t origPosition;
-	uint8_t kit;
-	uint8_t patternLength;
+  uint8_t origPosition;
+  uint8_t kit;
+  uint8_t patternLength;
 
-	MDPatternShort() {
-	}
+  MDPatternShort() {
+  }
 
-	/** Read in a pattern message from a sysex buffer. **/
-	bool fromSysex(uint8_t *sysex, uint16_t len);
-	/* @} */
+  /** Read in a pattern message from a sysex buffer. **/
+  bool fromSysex(uint8_t *sysex, uint16_t len);
+  /* @} */
 };
 
 class MDPattern : public ElektronPattern {
-	/**
-	 * \addtogroup md_pattern_global 
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_pattern_global 
+   * @{
+   **/
 public:
   uint8_t origPosition;
 
-	uint8_t getPosition() { return origPosition; }
-	void setPosition(uint8_t _pos) { origPosition = _pos; }
+  uint8_t getPosition() { return origPosition; }
+  void setPosition(uint8_t _pos) { origPosition = _pos; }
 
-	/* SUPER IMPORTANT DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES */
+  /* SUPER IMPORTANT DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES */
 
-	/**
-	 * Stores the trigger patterns for each track as a 64-bit bit mask (bit set: trigger).
-	 * Use the 64-bit version of the bit-accessing macros to manipulate it.
-	 **/
+  /**
+   * Stores the trigger patterns for each track as a 64-bit bit mask (bit set: trigger).
+   * Use the 64-bit version of the bit-accessing macros to manipulate it.
+   **/
   uint64_t trigPatterns[16];
-	/**
-	 * Stores the lockPattern for each track as 24-bit bit mask (bit set: parameter is locked)
-	 **/
+  /**
+   * Stores the lockPattern for each track as 24-bit bit mask (bit set: parameter is locked)
+   **/
   uint32_t lockPatterns[16];
 
-	/** Stores the accent pattern as a 64-bit bitmask. **/
+  /** Stores the accent pattern as a 64-bit bitmask. **/
   uint64_t accentPattern;
-	/** Stores the accent pattern as a 64-bit bitmask. **/
+  /** Stores the accent pattern as a 64-bit bitmask. **/
   uint64_t slidePattern;
-	/** Stores the accent pattern as a 64-bit bitmask. **/
+  /** Stores the accent pattern as a 64-bit bitmask. **/
   uint64_t swingPattern;
-	/** Stores the swing amount as a 32-bit value. **/
+  /** Stores the swing amount as a 32-bit value. **/
   uint32_t swingAmount;
 
   uint8_t accentAmount;
@@ -83,11 +83,11 @@ public:
   uint8_t kit;
   uint8_t numLockedRows; // unused
 
-	uint8_t getKit() { return kit; }
-	void    setKit(uint8_t _kit) { kit = _kit; }
+  uint8_t getKit() { return kit; }
+  void    setKit(uint8_t _kit) { kit = _kit; }
 
-	uint8_t getLength() { return patternLength; }
-	void    setLength(uint8_t _len) { patternLength = _len; }
+  uint8_t getLength() { return patternLength; }
+  void    setLength(uint8_t _len) { patternLength = _len; }
 
   uint32_t accentEditAll;
   uint32_t slideEditAll;
@@ -98,55 +98,57 @@ public:
 
   uint8_t numRows;
   int8_t paramLocks[16][24];
-	int8_t getLockIdx(uint8_t track, uint8_t param) {
-		return paramLocks[track][param];
-	}
-	void setLockIdx(uint8_t track, uint8_t param, int8_t value) {
-		paramLocks[track][param] = value;
-	}
+  int8_t getLockIdx(uint8_t track, uint8_t param) {
+    return paramLocks[track][param];
+  }
+  void setLockIdx(uint8_t track, uint8_t param, int8_t value) {
+    paramLocks[track][param] = value;
+  }
 
   bool isExtraPattern;
 
   MDPattern() : ElektronPattern() {
-		maxSteps = 64;
-		maxParams = 24;
-		maxTracks = 16;
-		maxLocks = 64;
+    maxSteps = 64;
+    maxParams = 24;
+    maxTracks = 16;
+    maxLocks = 64;
 
     isExtraPattern = false;
-		init();
+    init();
   }
 
   /* XXX TODO extra pattern 64 */
 
-	/** Read in a pattern message from a sysex buffer. **/
+  /** Read in a pattern message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
-	/** Convert the pattern object into a sysex buffer to be sent to the machinedrum. **/
+  /** Convert the pattern object into a sysex buffer to be sent to the machinedrum. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-	/**
-	 * Convert the pattern object by using the specified encoder. This
-	 * allows the pattern to be sent directly to uart without rendering
-	 * it into a big intermediary buffer.
-	 **/
-	uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
+  /**
+   * Convert the pattern object by using the specified encoder. This
+   * allows the pattern to be sent directly to uart without rendering
+   * it into a big intermediary buffer.
+   **/
+  uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
 
-	bool isTrackEmpty(uint8_t track);
+  bool isTrackEmpty(uint8_t track);
 	
   void clearPattern();
   void clearTrack(uint8_t track);
   
   void clearTrig(uint8_t track, uint8_t trig);
   inline void setTrig(uint8_t track, uint8_t trig) {
-		SET_BIT64(trigPatterns[track], trig);
-	}
-	inline bool isTrigSet(uint8_t track, uint8_t trig) {
-		return IS_BIT_SET64(trigPatterns[track], trig);
-	}
-	void setNote(uint8_t track, uint8_t step, uint8_t pitch);
+    SET_BIT64(trigPatterns[track], trig);
+  }
+  inline bool isTrigSet(uint8_t track, uint8_t trig) {
+    return IS_BIT_SET64(trigPatterns[track], trig);
+  }
+  void setNote(uint8_t track, uint8_t step, uint8_t pitch);
 
-	virtual void recalculateLockPatterns();
+  virtual void recalculateLockPatterns();
 
-	/* @} */
+  void swapTracks(uint8_t srcTrack, uint8_t dstTrack);
+
+  /* @} */
 };
 
 #endif /* MDPATTERN_H__ */
