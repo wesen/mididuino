@@ -1449,20 +1449,24 @@ public class Sketch {
 
   protected void size(String buildPath, String suggestedClassName)
   throws RunnerException {
-    long size = 0;
+    long ramSize = 0;
+    long flashSize = 0;
     long maxsize = Preferences.getInteger("boards." + Preferences.get("board") + ".upload.maximum_size");
     Sizer sizer = new Sizer(buildPath, suggestedClassName);
     try {
-      size = sizer.computeSize();
-      System.out.println("Binary sketch size: " + size + " bytes (of a " +
-                         maxsize + " byte maximum)");      
+      sizer.computeSize();
+      ramSize = sizer.getRamSize();
+      flashSize = sizer.getFlashSize();
+      System.out.println("Binary sketch size: " + flashSize + " bytes in FLASH, " 
+                         + ramSize + " bytes in RAM");
     } catch (RunnerException e) {
       System.err.println("Couldn't determine program size: " + e.getMessage());
     }
 
-    if (size > maxsize)
+    if ((flashSize > maxsize) || (ramSize > maxsize)) {
       throw new RunnerException(
       "Sketch too big; see http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it.");
+    }
   }
 
 
