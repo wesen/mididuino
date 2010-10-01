@@ -33,7 +33,8 @@ import java.util.*;
 public class Sizer implements MessageConsumer {
   private String buildPath, sketchName;
   private String firstLine;
-  private long size;
+  private long ramSize;
+  private long flashSize;
   private RunnerException exception;
 
   public Sizer(String buildPath, String sketchName) {
@@ -41,19 +42,26 @@ public class Sizer implements MessageConsumer {
     this.sketchName = sketchName;
   }
   
-  public long computeSize() throws RunnerException {
+  public long getRamSize() {
+    return ramSize;
+  }
+  
+  public long getFlashSize() {
+    return flashSize;
+  }
+  
+  public void computeSize() throws RunnerException {
     String avrBasePath = Base.getAvrBasePath();
     String commandSize[] = new String[] {
       avrBasePath + "avr-size",
       " "
     };
     
-    commandSize[1] = buildPath + File.separator + sketchName + ".hex";
+    commandSize[1] = buildPath + File.separator + sketchName + ".elf";
 
     int r = 0;
     try {
       exception = null;
-      size = -1;
       firstLine = null;
       Process process = Runtime.getRuntime().exec(commandSize);
       MessageSiphon in = new MessageSiphon(process.getInputStream(), this);
@@ -81,11 +89,6 @@ public class Sizer implements MessageConsumer {
     
     if (exception != null)
       throw exception;
-      
-    if (size == -1)
-      throw new RunnerException(firstLine);
-      
-    return size;
   }
   
   public void message(String s) {
@@ -94,10 +97,11 @@ public class Sizer implements MessageConsumer {
     else {
       StringTokenizer st = new StringTokenizer(s, " ");
       try {
-        st.nextToken();
-        st.nextToken();
-        st.nextToken();
-        size = (new Integer(st.nextToken().trim())).longValue();
+        long textSize = (new Integer(st.nextToken().trim())).longValue();
+        long dataSize = (new Integer(st.nextToken().trim())).longValue();
+        long bssSize = (new Integer(st.nextToken().trim())).longValue();
+        flashSize = textSize + dataSize;
+        ramSize = dataSize + bssSize;
       } catch (NoSuchElementException e) {
         exception = new RunnerException(e.toString());
       } catch (NumberFormatException e) {
