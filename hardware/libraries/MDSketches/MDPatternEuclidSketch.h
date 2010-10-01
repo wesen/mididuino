@@ -46,7 +46,7 @@ public Sketch, MDCallback {
 
     MDTask.addOnPatternChangeCallback(this, (md_callback_ptr_t)&MDPatternEuclidSketch::onPatternChange);
     MDSysexListener.addOnPatternMessageCallback(this,
-																								(md_callback_ptr_t)&MDPatternEuclidSketch::onPatternMessage);
+						(md_callback_ptr_t)&MDPatternEuclidSketch::onPatternMessage);
   }
 
   virtual void show() {
@@ -61,11 +61,11 @@ public Sketch, MDCallback {
     }
   }
 
-	void getName(char *n1, char *n2) {
-		m_strncpy_p(n1, PSTR("EUC "), 5);
-		m_strncpy_p(n2, PSTR("LID "), 5);
-	}
-	
+  void getName(char *n1, char *n2) {
+    m_strncpy_p(n1, PSTR("EUC "), 5);
+    m_strncpy_p(n2, PSTR("LID "), 5);
+  }
+  
   virtual bool handleEvent(gui_event_t *event) {
     if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
       pushPage(&switchPage);

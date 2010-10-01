@@ -69,8 +69,8 @@ class LeoTriggerClass {
   bool handleEvent(gui_event_t *event) {
     for (uint8_t i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
       if (EVENT_PRESSED(event, i)) {
-				triggerTrack(trackStart + (i - Buttons.BUTTON1));
-				return true;
+	triggerTrack(trackStart + (i - Buttons.BUTTON1));
+	return true;
       }
     }
     return false;
@@ -114,12 +114,12 @@ bool MDKitSelectEncoderChanged = false;
 
 // special handler to avoid loading new kits if ENCODER1 is held down
 void MDKitSelectEncoderHandleSpecial(Encoder *enc) {
-	if (BUTTON_UP(Buttons.ENCODER1)) {
-		MD.loadKit(enc->getValue());
-		MDKitSelectEncoderChanged = false;
-	} else {
-		MDKitSelectEncoderChanged = true;
-	}
+  if (BUTTON_UP(Buttons.ENCODER1)) {
+    MD.loadKit(enc->getValue());
+    MDKitSelectEncoderChanged = false;
+  } else {
+    MDKitSelectEncoderChanged = true;
+  }
 }
 
 // set to true when the pattern encoder is moved but no pattern loading
@@ -127,12 +127,12 @@ bool MDPatternSelectEncoderChanged = false;
 
 // special handler to avoid loading new patterns if ENCODER1 is held down
 void MDPatternSelectEncoderHandleSpecial(Encoder *enc) {
-	if (BUTTON_UP(Buttons.ENCODER1)) {
-		MD.loadPattern(enc->getValue());
-		MDPatternSelectEncoderChanged = false;
-	} else {
-		MDPatternSelectEncoderChanged = true;
-	}
+  if (BUTTON_UP(Buttons.ENCODER1)) {
+    MD.loadPattern(enc->getValue());
+    MDPatternSelectEncoderChanged = false;
+  } else {
+    MDPatternSelectEncoderChanged = true;
+  }
 }
 
 
@@ -144,13 +144,13 @@ class LeoTriggerPage : public EncoderPage {
   MDPatternSelectEncoder patternSelectEncoder;
   
  LeoTriggerPage() :
-	trackStartEncoder("STR"), triggerOnOffEncoder("TRG"),
+  trackStartEncoder("STR"), triggerOnOffEncoder("TRG"),
     kitSelectEncoder("KIT"), patternSelectEncoder("PAT") {
-
-		// set special handlers for kit and pattern select encoders
-		kitSelectEncoder.handler = MDKitSelectEncoderHandleSpecial;
-		patternSelectEncoder.handler = MDPatternSelectEncoderHandleSpecial;
-		
+    
+    // set special handlers for kit and pattern select encoders
+    kitSelectEncoder.handler = MDKitSelectEncoderHandleSpecial;
+    patternSelectEncoder.handler = MDPatternSelectEncoderHandleSpecial;
+    
     setEncoders(&trackStartEncoder, &triggerOnOffEncoder, &kitSelectEncoder, &patternSelectEncoder);
   }
   
@@ -174,17 +174,17 @@ class LeoTriggerPage : public EncoderPage {
   }
   
   virtual bool handleEvent(gui_event_t *event) {
-		// change kit only if encoder1 is not pressed
-		// when encoder1 is released, then change kit if it was moved
-		if (EVENT_RELEASED(event, Buttons.ENCODER1)) {
-			if (MDKitSelectEncoderChanged) {
-				MDKitSelectEncoderHandleSpecial(&kitSelectEncoder);
-			}
-			if (MDPatternSelectEncoderChanged) {
-				MDPatternSelectEncoderHandleSpecial(&patternSelectEncoder);
-			}
-			return true;
-		}
+    // change kit only if encoder1 is not pressed
+    // when encoder1 is released, then change kit if it was moved
+    if (EVENT_RELEASED(event, Buttons.ENCODER1)) {
+      if (MDKitSelectEncoderChanged) {
+	MDKitSelectEncoderHandleSpecial(&kitSelectEncoder);
+      }
+      if (MDPatternSelectEncoderChanged) {
+	MDPatternSelectEncoderHandleSpecial(&patternSelectEncoder);
+      }
+      return true;
+    }
 		
     return leoTrigger.handleEvent(event);
   }
@@ -222,30 +222,30 @@ class MuteTrigPage : public EncoderPage, MDCallback {
 
 void LeoMDLFOEncoderHandle(Encoder *enc) {
   MDLFOEncoder *mdEnc = (MDLFOEncoder *)enc;
-	if (BUTTON_DOWN(Buttons.BUTTON1)) {
-		for (uint8_t i = 0; i < 16; i++) {
-			MD.setLFOParam(i, mdEnc->param, mdEnc->getValue());
-		}
-	} else {
-		MD.setLFOParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
-	}
+  if (BUTTON_DOWN(Buttons.BUTTON1)) {
+    for (uint8_t i = 0; i < 16; i++) {
+      MD.setLFOParam(i, mdEnc->param, mdEnc->getValue());
+    }
+  } else {
+    MD.setLFOParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
+  }
 }
 
 
 class LeoMDLFOTrackSelectPage : public EncoderPage {
-	/**
-	 * \addtogroup md_lfo_page
-	 *
-	 * @{
-	 **/
-public:
+  /**
+   * \addtogroup md_lfo_page
+   *
+   * @{
+   **/
+ public:
   MDTrackFlashEncoder trackEncoder;
   MDLFOPage *lfoPage1, *lfoPage2;
 
  LeoMDLFOTrackSelectPage(MDLFOPage *_lfoPage1, MDLFOPage *_lfoPage2) : trackEncoder("TRK") {
     encoders[0] = &trackEncoder;
     lfoPage1 = _lfoPage1;
-		lfoPage2 = _lfoPage2;
+    lfoPage2 = _lfoPage2;
   }  
 
   virtual void loop() {
@@ -254,64 +254,63 @@ public:
       lfoPage2->setTrack(trackEncoder.getValue());
     }
   }
-	/* @} */
+  /* @} */
 };
 
 class LeoMDLFOPage : public MDLFOPage, MDCallback {
  public:
-	bool isInPage1;
+  bool isInPage1;
 	
  LeoMDLFOPage() : MDLFOPage() {
-		isInPage1 = true;
+    isInPage1 = true;
     MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)(&LeoMDLFOPage::onKitChanged));
-		for (int i = 0; i < 4; i++) {
-			lfoEncoders[i].handler = LeoMDLFOEncoderHandle;
-		}
-	}
+    for (int i = 0; i < 4; i++) {
+      lfoEncoders[i].handler = LeoMDLFOEncoderHandle;
+    }
+  }
 
-	void onKitChanged() {
-		loadFromKit();
-	}
+  void onKitChanged() {
+    loadFromKit();
+  }
 	
-	virtual bool handleEvent(gui_event_t *event) {
-		for (uint8_t i = Buttons.ENCODER1; i < Buttons.ENCODER4; i++) {
-			if (EVENT_PRESSED(event, i)) {
-				uint8_t enci = i - Buttons.ENCODER1;
-				if (lfoEncoders[enci].max < 127) {
-					lfoEncoders[enci].setValue(random(0, lfoEncoders[enci].max), true);
-					return true;
-				}
-			}
-		}
-
-		return false;
+  virtual bool handleEvent(gui_event_t *event) {
+    for (uint8_t i = Buttons.ENCODER1; i < Buttons.ENCODER4; i++) {
+      if (EVENT_PRESSED(event, i)) {
+	uint8_t enci = i - Buttons.ENCODER1;
+	if (lfoEncoders[enci].max < 127) {
+	  lfoEncoders[enci].setValue(random(0, lfoEncoders[enci].max), true);
+	  return true;
 	}
+      }
+    }
+
+    return false;
+  }
 };
 
 class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   LeoTriggerPage triggerPage;
   LeoScalePage scalePage;
 
-	LeoMDLFOPage lfoPage1;
-	LeoMDLFOPage lfoPage2;
-	LeoMDLFOTrackSelectPage lfoSelectPage;
+  LeoMDLFOPage lfoPage1;
+  LeoMDLFOPage lfoPage2;
+  LeoMDLFOTrackSelectPage lfoSelectPage;
 
-	MuteTrigPage muteTrigPage;
+  MuteTrigPage muteTrigPage;
   ScrollSwitchPage switchPage;
   AutoEncoderPage<MDEncoder> autoMDPage;
 
-	MDPitchEuclidConfigPage1 euclidPage1;
-	MDPitchEuclidConfigPage2 euclidPage2;
-	MDPitchEuclid pitchEuclid;
+  MDPitchEuclidConfigPage1 euclidPage1;
+  MDPitchEuclidConfigPage2 euclidPage2;
+  MDPitchEuclid pitchEuclid;
 
  public:
  LeoSketch()
-	 :
-	lfoSelectPage(&lfoPage1, &lfoPage2),
-		euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid)
-		
-		{
-	}
+   :
+  lfoSelectPage(&lfoPage1, &lfoPage2),
+    euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid)
+    {
+    }
 	
   virtual void setup() {
     triggerPage.setName("TRIGGER");
@@ -320,27 +319,27 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
     scalePage.setName("SCALE");
     switchPage.addPage(&scalePage);
 
-		// lfo page setup
-		lfoPage1.setName("LFOS 1/2");
-		lfoPage1.initLFOParams(0, 1, 5, 6);
-		lfoPage2.setName("LFOS 2/2");
-		lfoPage2.initLFOParams(2, 3, 4, 7);
-		switchPage.addPage(&lfoPage1);
-		switchPage.addPage(&lfoPage2);
+    // lfo page setup
+    lfoPage1.setName("LFOS 1/2");
+    lfoPage1.initLFOParams(0, 1, 5, 6);
+    lfoPage2.setName("LFOS 2/2");
+    lfoPage2.initLFOParams(2, 3, 4, 7);
+    switchPage.addPage(&lfoPage1);
+    switchPage.addPage(&lfoPage2);
 
-		// euclid config
-		MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&LeoSketch::on16Callback);
-		euclidPage1.setName("EUCLID 1/2");
-		euclidPage2.setName("EUCLID 2/2");
-		switchPage.addPage(&euclidPage1);
-		switchPage.addPage(&euclidPage2);
+    // euclid config
+    MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&LeoSketch::on16Callback);
+    euclidPage1.setName("EUCLID 1/2");
+    euclidPage2.setName("EUCLID 2/2");
+    switchPage.addPage(&euclidPage1);
+    switchPage.addPage(&euclidPage2);
 
-		// auto page setup
-		autoMDPage.setup();
-		autoMDPage.setName("AUTO LEARN");
-		ccHandler.setup();
+    // auto page setup
+    autoMDPage.setup();
+    autoMDPage.setName("AUTO LEARN");
+    ccHandler.setup();
 
-		switchPage.addPage(&autoMDPage);
+    switchPage.addPage(&autoMDPage);
 
     muteTrigPage.setName("MUTE & TRIG");
     switchPage.addPage(&muteTrigPage);
@@ -354,43 +353,42 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   }
 
   virtual bool handleEvent(gui_event_t *event) {
-		if ((currentPage() == &scalePage) ||
-				(currentPage() == &triggerPage)) {
-			if (EVENT_PRESSED(event, Buttons.ENCODER4)) {
-				pushPage(&switchPage);
-				return true;
-			}
-		} else if (currentPage() == &switchPage) {
-			if (EVENT_RELEASED(event, Buttons.ENCODER4) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
-				if (!switchPage.setSelectedPage()) {
-					popPage(&switchPage);
-				}
-				return true;
-			}
-		} else {
-			if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
-				MidiUart.sendNoteOn(0, 0);
-				pushPage(&switchPage);
-				return true;
-			} 
-		}
+    if ((currentPage() == &scalePage) ||
+	(currentPage() == &triggerPage)) {
+      if (EVENT_PRESSED(event, Buttons.ENCODER4)) {
+	pushPage(&switchPage);
+	return true;
+      }
+    } else if (currentPage() == &switchPage) {
+      if (EVENT_RELEASED(event, Buttons.ENCODER4) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
+	if (!switchPage.setSelectedPage()) {
+	  popPage(&switchPage);
+	}
+	return true;
+      }
+    } else {
+      if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
+	pushPage(&switchPage);
+	return true;
+      } 
+    }
 
-		if (currentPage() == &lfoSelectPage) {
-			if (EVENT_RELEASED(event, Buttons.BUTTON2)) {
-				popPage(&lfoSelectPage);
-			}
-		} else if ((currentPage() == &lfoPage1) || (currentPage() == &lfoPage2)) {
-				if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
-					pushPage(&lfoSelectPage);
-				}
-			}
+    if (currentPage() == &lfoSelectPage) {
+      if (EVENT_RELEASED(event, Buttons.BUTTON2)) {
+	popPage(&lfoSelectPage);
+      }
+    } else if ((currentPage() == &lfoPage1) || (currentPage() == &lfoPage2)) {
+      if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+	pushPage(&lfoSelectPage);
+      }
+    }
 
     return false;
   }
 
-	void on16Callback(uint32_t counter) {
-		pitchEuclid.on16Callback(counter);
-	}
+  void on16Callback(uint32_t counter) {
+    pitchEuclid.on16Callback(counter);
+  }
 	
 };
 
