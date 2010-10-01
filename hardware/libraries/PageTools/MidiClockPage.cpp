@@ -21,13 +21,23 @@ static const char *mergerConfigStrings[] = {
 
 static uint8_t mergerConfigMasks[] = {
   0,
+
   Merger::MERGE_CC_MASK,
+
   Merger::MERGE_NOTE_MASK,
+
   Merger::MERGE_SYSEX_MASK,
+
   Merger::MERGE_CC_MASK | Merger::MERGE_NOTE_MASK,
+
   Merger::MERGE_CC_MASK | Merger::MERGE_SYSEX_MASK,
+
   Merger::MERGE_NOTE_MASK | Merger::MERGE_SYSEX_MASK,
-  Merger::MERGE_CC_MASK | Merger::MERGE_NOTE_MASK | Merger::MERGE_SYSEX_MASK,
+
+  Merger::MERGE_CC_MASK | Merger::MERGE_NOTE_MASK |
+  Merger::MERGE_PRGCHG_MASK | Merger::MERGE_SYSEX_MASK |
+  Merger::MERGE_AT_MASK | Merger::MERGE_PITCH_MASK |
+  Merger::MERGE_CHANPRESS_MASK
 };
 
 void MidiClockPage::writeClockSettings() {
