@@ -18,7 +18,7 @@ uint8_t MDClass::noteToTrack(uint8_t pitch) {
   if (MD.loadedGlobal) {
     for (i = 0; i < sizeof(MD.global.drumMapping); i++) {
       if (pitch == MD.global.drumMapping[i])
-				return i;
+	return i;
     }
     return 128;
   } else {
@@ -88,8 +88,8 @@ void MDClass::triggerTrack(uint8_t track, uint8_t velocity) {
 void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
   if (global.baseChannel > 15)
     return;
-	if ((track > 15) || (param > 33))
-		return;
+  if ((track > 15) || (param > 33))
+    return;
 
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
@@ -155,12 +155,12 @@ uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
     off = ccStored - cc;
     if (ccStored >= cc) {
       if (offset != NULL) {
-				*offset = off;
+	*offset = off;
       }
       if (off <= tuning->offset)
-				return i + tuning->base;
+	return i + tuning->base;
       else 
-				return 128;
+	return 128;
     }
   }
   off = ABS(pgm_read_byte(&tuning->tuning[tuning->len - 1]) - cc);
@@ -234,7 +234,7 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
 
 bool MDClass::isMidiTrack(uint8_t track) {
   if ((kit.models[track] >= MID_01_MODEL) &&
-          (kit.models[track] <= MID_16_MODEL)) {
+      (kit.models[track] <= MID_16_MODEL)) {
     return true;
   } else {
     return false;
@@ -407,9 +407,9 @@ bool MDClass::waitBlocking(MDBlockCurrentStatusCallback *cb, uint16_t timeout) {
   do {
     current_clock = read_slowclock();
     handleIncomingMidi();
-		GUI.display();
+    GUI.display();
   } while ((clock_diff(start_clock, current_clock) < timeout) && !cb->received);
-	return cb->received;
+  return cb->received;
 }
 
 
@@ -420,7 +420,7 @@ uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
     (&cb, (md_status_callback_ptr_t)&MDBlockCurrentStatusCallback::onStatusResponseCallback);
   MD.sendRequest(MD_STATUS_REQUEST_ID, type);
 
-	bool ret = waitBlocking(&cb, timeout);
+  bool ret = waitBlocking(&cb, timeout);
 	
   MDSysexListener.removeOnStatusResponseCallback(&cb);
 
@@ -430,9 +430,9 @@ uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
 bool MDClass::getBlockingKit(uint8_t kit, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnKitMessageCallback(&cb,
-																					(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+					  (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestKit(kit);
-	bool ret = waitBlocking(&cb, timeout);
+  bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnKitMessageCallback(&cb);
 
   return ret;
@@ -441,9 +441,9 @@ bool MDClass::getBlockingKit(uint8_t kit, uint16_t timeout) {
 bool MDClass::getBlockingPattern(uint8_t pattern, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnPatternMessageCallback(&cb,
-																							(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+					      (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestPattern(pattern);
-	bool ret = waitBlocking(&cb, timeout);
+  bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnPatternMessageCallback(&cb);
 
   return ret;
@@ -452,9 +452,9 @@ bool MDClass::getBlockingPattern(uint8_t pattern, uint16_t timeout) {
 bool MDClass::getBlockingGlobal(uint8_t global, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnGlobalMessageCallback(&cb,
-																						 (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+					     (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestGlobal(global);
-	bool ret = waitBlocking(&cb, timeout);
+  bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnGlobalMessageCallback(&cb);
 
   return ret;
