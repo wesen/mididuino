@@ -1,6 +1,6 @@
 #include <MD.h>
-#include <MDStudioPages.h>
 #include <MDStudioSketch.h>
+#include <MDStudioPages.h>
 
 MDStudioSketch sketch;
 
