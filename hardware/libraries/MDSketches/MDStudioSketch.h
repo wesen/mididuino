@@ -36,6 +36,7 @@ public Sketch, MDCallback {
   /* XXX insert pages here */
   MDSwapTrackPage swapTrackPage;
   MDSwapPatternPage swapPatternPage;
+  MDTransposePatternPage transposePatternPage;
 
   MDStudioSketch();
 
@@ -60,7 +61,6 @@ public Sketch, MDCallback {
   void onPatternChange();
 
   void onPatternMessage();
-
 };
 
 /* @} @} @} */

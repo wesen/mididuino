@@ -3,7 +3,8 @@
 
 MDStudioSketch::MDStudioSketch() :
   swapTrackPage(&pattern),
-  swapPatternPage(this) {
+  swapPatternPage(this),
+  transposePatternPage(&pattern) {
   patternCb = NULL;
   patternCbPtr = NULL;
 }
@@ -16,6 +17,9 @@ void MDStudioSketch::setup() {
   swapPatternPage.setup();
   swapPatternPage.setName("SWAP PATTERNS");
   switchPage.addPage(&swapPatternPage);
+
+  transposePatternPage.setName("TRANSPOSE PAT.");
+  switchPage.addPage(&transposePatternPage);
 
   switchPage.parent = this;
    
@@ -51,6 +55,11 @@ bool MDStudioSketch::handleEvent(gui_event_t *event) {
       return true;
     }
   } else {
+    if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+      GUI.flash_p_strings_fill(PSTR("REQUESTING"), PSTR("PATTERN"));
+      MD.requestPattern(MD.currentPattern);
+      return true;
+    }
     if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
       pushPage(&switchPage);
       return true;
