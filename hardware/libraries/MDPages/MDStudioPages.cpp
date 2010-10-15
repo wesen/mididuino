@@ -119,3 +119,13 @@ void MDSwapPatternPage::onPatternMessage() {
 void MDSwapPatternPage::onPatternChange() {
   srcEncoder.setValue(MD.currentPattern);
 }
+
+/* MDTransposePatternPage */
+
+MDTransposePatternPage::MDTransposePatternPage(MDPattern *_pattern) :
+  pattern(_pattern), trackEncoder("TRK") {
+  setEncoders(&trackEncoder);
+}
+
+bool MDTransposePatternPage::handleEvent(gui_event_t *event) {
+}

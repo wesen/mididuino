@@ -39,6 +39,20 @@ class MDSwapTrackPage : public EncoderPage {
   
 };
 
+/**
+ * @}
+ **/
+
+/**
+ * \addtogroup md_swap_pattern_page MachineDrum Swap Pattern Page
+ *
+ * @{
+ **/
+
+/**
+ * This page is used to swap patterns on the MD.
+ **/
+
 class MDSwapPatternPage : public EncoderPage, MDCallback {
  public:
   MDPatternSelectEncoder srcEncoder;
@@ -63,6 +77,31 @@ class MDSwapPatternPage : public EncoderPage, MDCallback {
   virtual bool handleEvent(gui_event_t *event);
   void swapPattern();
 };
+
+/**
+ * @}
+ **/
+
+/**
+ * \addtogroup md_transpose_pattern_page MachineDrum Transpose Pattern Page
+ *
+ * @{
+ **/
+
+/**
+ * This page is used to transpose tracks or a whole pattern on the MD.
+ **/
+
+class MDTransposePatternPage : public EncoderPage {
+ public:
+  MDTrackFlashEncoder trackEncoder;
+  MDPattern *pattern;
+
+  MDTransposePatternPage(MDPattern *_pattern);
+  virtual bool handleEvent(gui_event_t *event);
+  
+};
+
 
 /* @} @} @} */
 
