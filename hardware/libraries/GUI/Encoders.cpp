@@ -28,9 +28,9 @@ class Encoder;
  **/
 void CCEncoderHandle(Encoder *enc) {
   CCEncoder *ccEnc = (CCEncoder *)enc;
-	uint8_t channel = ccEnc->getChannel();
-	uint8_t cc = ccEnc->getCC();
-	uint8_t value = ccEnc->getValue();
+  uint8_t channel = ccEnc->getChannel();
+  uint8_t cc = ccEnc->getCC();
+  uint8_t value = ccEnc->getValue();
 	
   MidiUart.sendCC(channel, cc, value);
 }
@@ -161,6 +161,7 @@ void CharEncoder::setChar(char c) {
 
 /* notePitchEncoder */
 NotePitchEncoder::NotePitchEncoder(char *_name) : RangeEncoder(0, 127, _name) {
+  setName(_name);
 }
 
 void NotePitchEncoder::displayAt(int i) {
@@ -173,6 +174,7 @@ void MidiTrackEncoder::displayAt(int i) {
   GUI.put_value(i, getValue() + 1);
 }
 
+/* auto name CC encoder */
 void AutoNameCCEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
   CCEncoder::initCCEncoder(_channel, _cc);
   setCCName();
