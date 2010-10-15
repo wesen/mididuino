@@ -123,7 +123,7 @@ void MDSwapPatternPage::onPatternChange() {
 /* MDTransposePatternPage */
 
 MDTransposePatternPage::MDTransposePatternPage(MDPattern *_pattern) :
-  pattern(_pattern), trackEncoder("TRK") {
+  pattern(_pattern), trackEncoder("TRK"), offsetEncoder(-48, 48, "OFF") {
   setEncoders(&trackEncoder);
 }
 

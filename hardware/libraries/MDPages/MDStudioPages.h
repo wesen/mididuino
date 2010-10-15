@@ -5,6 +5,7 @@
 
 #include <GUI.h>
 #include <MD.h>
+#include <Scales.h>
 
 /**
  * \addtogroup MD Elektron MachineDrum
@@ -95,11 +96,37 @@ class MDSwapPatternPage : public EncoderPage, MDCallback {
 class MDTransposePatternPage : public EncoderPage {
  public:
   MDTrackFlashEncoder trackEncoder;
+  RangeEncoder offsetEncoder;
   MDPattern *pattern;
 
   MDTransposePatternPage(MDPattern *_pattern);
   virtual bool handleEvent(gui_event_t *event);
-  
+  void transposePattern(uint8_t track, int value);
+};
+
+/**
+ * @}
+ **/
+
+/**
+ * \addtogroup md_scale_pattern_page MachineDrum Scale Pattern Page
+ *
+ * @{
+ **/
+
+/**
+ * This page is used to adjust tracks or a whole pattern to a specific scale on the MD.
+ **/
+
+class MDScalePatternPage : public EncoderPage {
+ public:
+  MDTrackFlashEncoder trackEncoder;
+  ScaleEncoder scaleEncoder;
+  NotePitchEncoder baseNoteEncoder;
+
+  MDScalePatternPage(MDPattern *_pattern);
+  virtual bool handleEvent(gui_event_t *event);
+  void scalePattern(uint8_t track, scale_t *scale, uint8_t baseNote);
 };
 
 
