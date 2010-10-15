@@ -24,6 +24,7 @@
  **/
 
 typedef struct scale_s {
+  char *name;
   uint8_t size;
   uint8_t pitches[12];
 } scale_t;
@@ -77,6 +78,24 @@ extern scale_t minorMaj7ArpMin9;
 
 uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves = 0);
 uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
+
+#ifdef MIDIDUINO
+
+/**
+ * Encoder that allows the user to choose a scale, displaying the scale name.
+ **/
+
+class ScaleEncoder : public RangeEncoder {
+public:
+  scale_t **scales;
+  uint8_t numScales;
+  ScaleEncoder(char *_name = NULL, scale_t *_scales[] = NULL, uint8_t _numScales = 0);
+
+  scale_t *getScale();
+  void displayAt(int i);
+};
+
+#endif
 
 /* @} @} @} */
 
