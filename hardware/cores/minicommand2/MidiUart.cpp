@@ -29,10 +29,10 @@ MidiUartClass::MidiUartClass() : MidiUartParent() {
 
 void MidiUartClass::initSerial() {
   running_status = 0;
-	setSpeed(31250);
+  setSpeed(31250);
 	
-	//  UBRR0H = (UART_BAUDRATE_REG >> 8);
-	//  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
+  //  UBRR0H = (UART_BAUDRATE_REG >> 8);
+  //  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
 
   UCSR0C = (3<<UCSZ00); 
   
@@ -46,16 +46,16 @@ void MidiUartClass::initSerial() {
 
 void MidiUartClass::setSpeed(uint32_t speed) {
 #ifdef TX_IRQ
-	// empty TX buffer before switching speed
-	while (!txRb.isEmpty())
-		;
+  // empty TX buffer before switching speed
+  while (!txRb.isEmpty())
+    ;
 #endif
 	
-	uint32_t cpu = (F_CPU / 16);
-	cpu /= speed;
-	cpu--;
-	UBRR0H = ((cpu >> 8) & 0xFF);
-	UBRR0L = (cpu & 0xFF);
+  uint32_t cpu = (F_CPU / 16);
+  cpu /= speed;
+  cpu--;
+  UBRR0H = ((cpu >> 8) & 0xFF);
+  UBRR0L = (cpu & 0xFF);
 }
 
 void MidiUartClass::putc_immediate(uint8_t c) {
@@ -76,10 +76,10 @@ void MidiUartClass::putc(uint8_t c) {
   } else {
     if (txRb.isFull()) {
       while (txRb.isFull()) {
-				uint8_t tmp = SREG;
-				sei();
-				delayMicroseconds(10);
-				SREG = tmp;
+	uint8_t tmp = SREG;
+	sei();
+	delayMicroseconds(10);
+	SREG = tmp;
       }
       goto again;
     } else {
@@ -119,9 +119,9 @@ SIGNAL(USART0_RX_vect) {
       MidiClock.handleMidiStop();
       break;
 
-		case MIDI_CONTINUE:
-			MidiClock.handleMidiContinue();
-			break;
+    case MIDI_CONTINUE:
+      MidiClock.handleMidiContinue();
+      break;
 
     default:
       MidiUart.rxRb.put(c);
@@ -204,10 +204,10 @@ SIGNAL(USART1_RX_vect) {
   }
 
 #if 0
-    // show overflow debug
-    if (MidiUart.rxRb.overflow) {
-      setLed();
-    }
+  // show overflow debug
+  if (MidiUart.rxRb.overflow) {
+    setLed();
+  }
 #endif
 }
 
