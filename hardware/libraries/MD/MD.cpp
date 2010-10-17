@@ -325,7 +325,7 @@ void MDClass::muteTrack(uint8_t track, bool mute) {
       
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
-  uint8_t cc = 16 + b;
+  uint8_t cc = 12 + b;
   MidiUart.sendCC(channel + global.baseChannel, cc, mute ? 1 : 0);
 }
 
