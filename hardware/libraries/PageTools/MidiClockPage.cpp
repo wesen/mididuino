@@ -124,7 +124,8 @@ void MidiClockPage::setup() {
   encoders[1] = &transmitEncoder;
   encoders[2] = &immediateEncoder;
   encoders[3] = &mergerEncoder;
-  
+
+  EncoderPage::setup();
 }
 
 void MidiClockPage::show() {
