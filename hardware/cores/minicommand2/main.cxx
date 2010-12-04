@@ -13,13 +13,17 @@ extern "C" {
 void timer_init(void) {
   TCCR0 = _BV(CS01);
   //  TIMSK |= _BV(TOIE0);
-  
+
+  /* fast timer for the MIDI clock, called 7812 times per second
+   * (every 128 uS)
+   */
   TCCR1A = _BV(WGM10); //  | _BV(COM1A1) | _BV(COM1B1); 
   TCCR1B |= _BV(CS10) | _BV(WGM12); // every cycle
 #ifdef MIDIDUINO_MIDI_CLOCK
   TIMSK |= _BV(TOIE1);
 #endif
 
+  /* slow timer, called 977 times per second (every 1.024 ms). */
   TCCR2 = _BV(WGM20) | _BV(WGM21) | _BV(CS20) | _BV(CS21); // ) | _BV(CS21); // | _BV(COM21);
   TIMSK |= _BV(TOIE2);
 }
@@ -39,7 +43,7 @@ void init(void) {
   SET_BIT(DDRD, PD4);
   SET_BIT(PORTD, PD4);
 
-  // activate background pwm
+  // activate background LED pwm
   TCCR3B = _BV(WGM32) | _BV(CS30);
   TCCR3A = _BV(WGM30) | _BV(COM3A1);
   OCR3A = 160;
@@ -51,14 +55,13 @@ void init(void) {
   timer_init();
 }
 
-
 void (*jump_to_boot)(void) = (void(*)(void))0xFF11;
 
 void start_bootloader(void) {
   cli();
   eeprom_write_word(START_MAIN_APP_ADDR, 0);
-	wdt_enable(WDTO_30MS); 
-	while(1) {};
+  wdt_enable(WDTO_30MS); 
+  while(1) {};
 }
 
 void setup();
@@ -119,8 +122,8 @@ ISR(TIMER2_OVF_vect) {
     lastRunningStatusReset = slowclock;
   }
 
-	MidiUart.tickActiveSense();
-	MidiUart2.tickActiveSense();
+  MidiUart.tickActiveSense();
+  MidiUart2.tickActiveSense();
   
   //  SET_BIT(OUTPUTPORT, OUTPUTPIN);
 
@@ -181,9 +184,9 @@ int main(void) {
 
   OUTPUTDDR |= _BV(OUTPUTPIN);
   setup();
-	setupEventHandlers();
-	setupMidiCallbacks();
-	setupClockCallbacks();
+  setupEventHandlers();
+  setupMidiCallbacks();
+  setupClockCallbacks();
   sei();
 
   for (;;) {
