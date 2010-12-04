@@ -40,37 +40,37 @@
  * SwitchSketchPage described further below.
  **/
 class Sketch : public PageContainer {
-	/**
-	 * \addtogroup gui_sketch
-	 * @{
-	 **/
+  /**
+   * \addtogroup gui_sketch
+   * @{
+   **/
 	
 public:
 
-	/** This is the name of the sketch. **/
+  /** This is the name of the sketch. **/
   char *name;
-	/**
-	 * Used in a monster configuration to mute the sketch. The actual
-	 * functionality is handled by the child class. (default false)
-	 **/
+  /**
+   * Used in a monster configuration to mute the sketch. The actual
+   * functionality is handled by the child class. (default false)
+   **/
   bool muted;
-	/**
-	 * Set to true if the sketch is used in a monster firmware. (default false)
-	 **/
+  /**
+   * Set to true if the sketch is used in a monster firmware. (default false)
+   **/
   bool monster;
 
-	/** Create a new sketch with the given name. **/
+  /** Create a new sketch with the given name. **/
   Sketch(char *_name = NULL) {
     name = _name;
     muted = false;
     monster = false;
   }
 
-	/**
-	 * Initialize the runtime of the sketch, and set the monster
-	 * status. If the sketch is used in a monster firmware, it is
-	 * automatically muted at first.
-	 **/
+  /**
+   * Initialize the runtime of the sketch, and set the monster
+   * status. If the sketch is used in a monster firmware, it is
+   * automatically muted at first.
+   **/
   virtual void setupMonster(bool _monster) {
     monster = _monster;
     if (monster) {
@@ -79,99 +79,99 @@ public:
     setup();
   }
 
-	/** Returns true if the sketch is the currently active sketch in the GUI. **/
+  /** Returns true if the sketch is the currently active sketch in the GUI. **/
   bool isVisible() {
     return GUI.sketch == this;
   }
 
-	/**
-	 * Do the runtime initialization of the sketch, needs to be
-	 * overloaded by the child class.
-	 **/
+  /**
+   * Do the runtime initialization of the sketch, needs to be
+   * overloaded by the child class.
+   **/
   virtual void setup() {
   }
 
-	/**
-	 * Event handler for the overall sketch. Sketch-wide functionality
-	 * and page switching needs to be implemented in this method.
-	 **/
+  /**
+   * Event handler for the overall sketch. Sketch-wide functionality
+   * and page switching needs to be implemented in this method.
+   **/
   virtual bool handleEvent(gui_event_t *event) {
     return false;
   }
 
-	/**
-	 * This method is called by the GUI main loop to handle a button
-	 * event. The default implementation first defers the handling to
-	 * the currently active page, and if that page doesn't handle the
-	 * event, the sketch-wide handleEvent() method is called.
-	 **/
+  /**
+   * This method is called by the GUI main loop to handle a button
+   * event. The default implementation first defers the handling to
+   * the currently active page, and if that page doesn't handle the
+   * event, the sketch-wide handleEvent() method is called.
+   **/
   bool handleTopEvent(gui_event_t *event) {
     Page *curPage = currentPage();
     if (curPage != NULL) {
       if (curPage->handleEvent(event)) {
-				return true;
+        return true;
       }
     }
     return handleEvent(event);
   }
 
-	/**
-	 * The loop() method of the sketch is called on every iteration of
-	 * the GUI main loop.
-	 *
-	 * This method could check for changes in encoders of specific pages
-	 * (although that code may be better kept in the page code itself).
-	 **/
+  /**
+   * The loop() method of the sketch is called on every iteration of
+   * the GUI main loop.
+   *
+   * This method could check for changes in encoders of specific pages
+   * (although that code may be better kept in the page code itself).
+   **/
   virtual void loop() {
   }
 
-	/**
-	 * not used at the moment.
-	 **/
+  /**
+   * not used at the moment.
+   **/
   virtual void destroy() {
   }
 
-	/** This method is called by the GUI class when the sketch is displayed. **/
+  /** This method is called by the GUI class when the sketch is displayed. **/
   virtual void show() {
   }
 
-	/** This method is called when the sketch is removed from view. **/
+  /** This method is called when the sketch is removed from view. **/
   virtual void hide() {
   }
 
-	/**
-	 * This method is called by the SketchSwitchPage to execute a special function of the sketch.
-	 * pressed signals if the extra button is pressed (true) or released (false).
-	 *
-	 * For example, the MDWesenLivePatch triggers the reverse sampling when doExtra() is called.
-	 **/
+  /**
+   * This method is called by the SketchSwitchPage to execute a special function of the sketch.
+   * pressed signals if the extra button is pressed (true) or released (false).
+   *
+   * For example, the MDWesenLivePatch triggers the reverse sampling when doExtra() is called.
+   **/
   virtual void doExtra(bool pressed) {
   }
 
-	/**
-	 * This method is called by the SketchSwitchPage when the mute functionality is triggered.
-	 * pressed signals if the mute button is pressed (true), or released (false).
-	 *
-	 * The default implementation toggle the mute variable when the button is pressed.
-	 **/
+  /**
+   * This method is called by the SketchSwitchPage when the mute functionality is triggered.
+   * pressed signals if the mute button is pressed (true), or released (false).
+   *
+   * The default implementation toggle the mute variable when the button is pressed.
+   **/
   virtual void mute(bool pressed) {
     if (pressed) {
       muted = !muted;
     }
   }
 
-	/** Returns the special page with index i (usually i is either 0 or 1 in the SketchSwitchPage). **/
+  /** Returns the special page with index i (usually i is either 0 or 1 in the SketchSwitchPage). **/
   virtual Page *getPage(uint8_t i) {
     return NULL;
   }
 
-	/** Returns a two line name (3 characters on each line) to be used by the SketchSwitchPage. **/
+  /** Returns a two line name (3 characters on each line) to be used by the SketchSwitchPage. **/
   virtual void getName(char *n1, char *n2) {
     n1[0] = '\0';
     n2[0] = '\0';
   }
 
-	/* @} */
+  /* @} */
 };
 
 /**
@@ -195,16 +195,16 @@ public:
  *
  */
 class SketchSwitchPage : public Page {
-	/**
-	 * \addtogroup gui_sketch_switchpage
-	 * @{
-	 **/
+  /**
+   * \addtogroup gui_sketch_switchpage
+   * @{
+   **/
 	
 public:
   Sketch *sketches[4];
   Page *tmpPage;
 
-	/** Create a sketch switch page switching between different sketches. **/
+  /** Create a sketch switch page switching between different sketches. **/
   SketchSwitchPage(char *_name = "SELECT SKETCH:",
 		   Sketch *s1 = NULL, Sketch *s2 = NULL, Sketch *s3 = NULL, Sketch *s4 = NULL) :
     Page(_name) {
@@ -217,25 +217,25 @@ public:
 
   virtual void loop() { };
   virtual void display();
-	/**
-	 * Handles standard events.
-	 *
-	 * - BUTTON1 + Encoder triggers the mute functionality of the selected sketch.
-	 * - BUTTON2 + Encoder triggers the extra functionality of the selected sketch.
-	 * - BUTTON3 + Encoder pushes the getPage(0) of the selected sketch.
-	 * - BUTTON4 + Encoder pushes the getPage(1) of the selected sketch.
-	 * - Encoder activates the selected sketch.
-	 **/
+  /**
+   * Handles standard events.
+   *
+   * - BUTTON1 + Encoder triggers the mute functionality of the selected sketch.
+   * - BUTTON2 + Encoder triggers the extra functionality of the selected sketch.
+   * - BUTTON3 + Encoder pushes the getPage(0) of the selected sketch.
+   * - BUTTON4 + Encoder pushes the getPage(1) of the selected sketch.
+   * - Encoder activates the selected sketch.
+   **/
   virtual bool handleEvent(gui_event_t *event);
 
   virtual bool handlePopEvent(gui_event_t *event);
-	/**
-	 * This method should be called by a separate event handler when a monster firmware is built.
-	 * It checks if all buttons where pressed to activate the sketch switch page.
-	 **/
+  /**
+   * This method should be called by a separate event handler when a monster firmware is built.
+   * It checks if all buttons where pressed to activate the sketch switch page.
+   **/
   virtual bool handleGlobalEvent(gui_event_t *event);
 
-	/* @} */
+  /* @} */
 };
 
 /* @} */

@@ -26,16 +26,16 @@
  * This page is used to configure the MDBreakdown object.
  **/ 
 class BreakdownPage : public EncoderPage {
-	/**
-	 * \addtogroup md_breakdown_page 
-	 *
-	 * @{
-	 */
+  /**
+   * \addtogroup md_breakdown_page 
+   *
+   * @{
+   */
 	
  public:
-    EnumEncoder repeatSpeedEncoder, breakdownEncoder;
+  EnumEncoder repeatSpeedEncoder, breakdownEncoder;
 
-  BreakdownPage() : EncoderPage() {
+ BreakdownPage() : EncoderPage() {
     repeatSpeedEncoder.initEnumEncoder(MDBreakdown::repeatSpeedNames, REPEAT_SPEED_CNT, "SPD", 0);
     breakdownEncoder.initEnumEncoder(MDBreakdown::breakdownNames, BREAKDOWN_CNT, "BRK", 0);
     encoders[0] = &repeatSpeedEncoder;
@@ -44,6 +44,7 @@ class BreakdownPage : public EncoderPage {
   
   virtual void setup() {
     mdBreakdown.setup();
+    EncoderPage::setup();
   }
   
   virtual void loop() {
@@ -57,8 +58,8 @@ class BreakdownPage : public EncoderPage {
 
   virtual bool handleEvent(gui_event_t *event) {
     if (EVENT_PRESSED(event, Buttons.BUTTON1) &&
-				!BUTTON_DOWN(Buttons.BUTTON2) &&
-				!BUTTON_DOWN(Buttons.BUTTON3)) {
+        !BUTTON_DOWN(Buttons.BUTTON2) &&
+        !BUTTON_DOWN(Buttons.BUTTON3)) {
       mdBreakdown.storedBreakdownActive = !mdBreakdown.storedBreakdownActive;
       if (mdBreakdown.storedBreakdownActive) {
         GUI.flash_p_strings_fill(PSTR("BREAKDOWN ON"), PSTR(""));
@@ -79,7 +80,7 @@ class BreakdownPage : public EncoderPage {
     mdBreakdown.stopBreakdown();
   }
 
-	/* @} */
+  /* @} */
 };
 
 /* @} @} @} */

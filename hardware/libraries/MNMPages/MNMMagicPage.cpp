@@ -93,7 +93,8 @@ void MagicSwitchPage::setup()  {
   magicPages[3].setup(MNM_MODEL_AMP_DEC, MNM_MODEL_LFO1_DPTH, MNM_MODEL_LFO2_DPTH, MNM_MODEL_LFO3_DPTH);
   magicPages[3].setShortName("LFO");
 
-  setPage(&magicPages[0]); 
+  setPage(&magicPages[0]);
+  SwitchPage::setup();
 }
 
 void MagicSwitchPage::setPage(Page *page)  {
