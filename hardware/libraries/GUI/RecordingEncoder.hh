@@ -28,10 +28,10 @@
  **/
 template <int N>
 class RecordingEncoder : public Encoder {
-	/**
-	 * \addtogroup gui_recording_encoder
-	 * @{
-	 **/
+  /**
+   * \addtogroup gui_recording_encoder
+   * @{
+   **/
 	
 public:
   Encoder *realEnc;
@@ -41,7 +41,7 @@ public:
   bool playing;
   int currentPos;
 
-	/** Create a recording encoder wrapper for the actual encoder _realEnc. **/
+  /** Create a recording encoder wrapper for the actual encoder _realEnc. **/
   RecordingEncoder(Encoder *_realEnc = NULL) {
     initRecordingEncoder(_realEnc);
   }
@@ -88,7 +88,7 @@ public:
     realEnc->displayAt(i);
   }
 
-	/* @} */
+  /* @} */
 };
 
 /* RecordingEncoder */
@@ -122,7 +122,7 @@ int RecordingEncoder<N>::update(encoder_t *enc) {
   if (recording) {
     if (!recordChanged) {
       if (enc->normal != 0 || enc->button != 0) {
-				recordChanged = true;
+        recordChanged = true;
       }
     }
     if (recordChanged) {

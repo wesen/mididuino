@@ -1,5 +1,28 @@
-#ifndef AUTOMDPAGE_H__
-#define AUTOMDPAGE_H__
+/* Copyight (c) 2010 - http://ruinwesen.com/ */
+
+#ifndef AUTOENCODERPAGE_H__
+#define AUTOENCODERPAGE_H__
+
+#include <GUI.h>
+#include <CCHandler.h>
+
+/**
+ * \addtogroup GUI
+ *
+ * @{
+ *
+ * \addtogroup PageTools
+ *
+ * @{
+ *
+ * \addtogroup AutoEncoderPage
+ *
+ * @{
+ *
+ * \file
+ * Recording Encoder Page implementation
+ **/
+ 
 
 // possibly clever specializition on CCEncoder to avoid duplicaiton of code
 // XXX
@@ -7,9 +30,20 @@
 
 // template specialization of handleEvent
 
-#include <GUI.h>
-#include <CCHandler.h>
-
+/**
+ * Creates a page feature 4 encoders that can be configured using a
+ * template class parameter. These 4 encoders are overlayed with
+ * recording encoder to provide recording functionality. The page also
+ * provides autolearning functionality to MIDI learn 4 encoders on the
+ * fly.
+ *
+ * The page functionality is mapped in the following way:
+ *
+ * - BUTTON2 (lower left): autoLearnLast4
+ * - BUTTON3 (lower right): hold to record knob movements
+ * - BUTTON4 (upper right) + encoder: clear recording
+ *
+ **/
 template <typename EncoderType> 
 class AutoEncoderPage : public EncoderPage, public ClockCallback {
  public:
@@ -73,9 +107,9 @@ void AutoEncoderPage<EncoderType>::setup() {
     recEncoders[i].initRecordingEncoder(&realEncoders[i]);
     encoders[i] = &recEncoders[i];
     ccHandler.addEncoder(&realEncoders[i]);
-    // XXX set CC to nothing
   }
   MidiClock.addOn32Callback(this, (midi_clock_callback_ptr_t)&AutoEncoderPage<EncoderType>::on32Callback);
+  EncoderPage::setup();
 }
 
 template <typename EncoderType>
@@ -90,10 +124,10 @@ void AutoEncoderPage<EncoderType>::autoLearnLast4() {
     incoming_cc_t *cc = &ccs[i];
     for (uint8_t j = 0; j < 4; j++) {
       if ((realEncoders[j].getCC() == cc->cc) &&
-					(realEncoders[j].getChannel() == cc->channel)) {
-				ccAssigned[i] = j;
-				encoderAssigned[j] = i;
-				break;
+          (realEncoders[j].getChannel() == cc->channel)) {
+        ccAssigned[i] = j;
+        encoderAssigned[j] = i;
+        break;
       }
     }
   }
@@ -102,21 +136,21 @@ void AutoEncoderPage<EncoderType>::autoLearnLast4() {
     incoming_cc_t *cc = &ccs[i];
     if (ccAssigned[i] != -1) {
       if ((realEncoders[ccAssigned[i]].getChannel() != cc->channel) &&
-					(realEncoders[ccAssigned[i]].getCC() != cc->cc)) {
-				realEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-				realEncoders[ccAssigned[i]].setValue(cc->value);
-				clearRecording(ccAssigned[i]);
+          (realEncoders[ccAssigned[i]].getCC() != cc->cc)) {
+        realEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
+        realEncoders[ccAssigned[i]].setValue(cc->value);
+        clearRecording(ccAssigned[i]);
       }
     } else {
       for (uint8_t j = 0; j < 4; j++) {
-				if (encoderAssigned[j] == -1) {
-					ccAssigned[i] = j;
-					encoderAssigned[j] = i;
-					realEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-					realEncoders[ccAssigned[i]].setValue(cc->value);
-					clearRecording(ccAssigned[i]);
-					break;
-				}
+        if (encoderAssigned[j] == -1) {
+          ccAssigned[i] = j;
+          encoderAssigned[j] = i;
+          realEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
+          realEncoders[ccAssigned[i]].setValue(cc->value);
+          clearRecording(ccAssigned[i]);
+          break;
+        }
       }
     }
   }
@@ -142,16 +176,17 @@ bool AutoEncoderPage<EncoderType>::handleEvent(gui_event_t *event) {
   if (BUTTON_DOWN(Buttons.BUTTON4)) {
     for (uint8_t i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
       if (EVENT_PRESSED(event, i)) {
-				GUI.setLine(GUI.LINE1);
-				GUI.flash_string_fill("CLEAR");
-				GUI.setLine(GUI.LINE2);
-				GUI.flash_put_value(0, i);
-				clearRecording(i);
+        GUI.setLine(GUI.LINE1);
+        GUI.flash_string_fill("CLEAR");
+        GUI.setLine(GUI.LINE2);
+        GUI.flash_put_value(0, i);
+        clearRecording(i);
       }
     }
   }
   return false;
 }
-				      
 
-#endif /* AUTOMDPAGE_H__ */
+/** @} @} @} **/
+
+#endif /* AUTOENCODERPAGE_H__ */

@@ -29,6 +29,7 @@ bool MDSwapTrackPage::handleEvent(gui_event_t *event) {
 
 void MDSwapPatternPage::setup() {
   MDTask.addOnPatternChangeCallback(this, (md_callback_ptr_t)&MDSwapPatternPage::onPatternChange);
+  EncoderPage::setup();
 }
 
 MDSwapPatternPage::MDSwapPatternPage(MDStudioSketch *_sketch) :
