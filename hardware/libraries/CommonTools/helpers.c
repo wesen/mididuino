@@ -52,11 +52,11 @@ void m_memcpy_p(void *dst, PGM_P src, uint16_t cnt) {
 }
 
 static char tohex(uint8_t i) {
-	if (i < 10) {
-		return i + '0';
-	} else {
-		return i - 10 + 'a';
-	}
+  if (i < 10) {
+    return i + '0';
+  } else {
+    return i - 10 + 'a';
+  }
 }
 
 /**
@@ -71,89 +71,89 @@ static char tohex(uint8_t i) {
  **/
 uint16_t m_vsnprintf(char *dst, uint16_t len, const char *fmt, va_list lp) {
 
-	char *ptr = dst;
-	char *end = ptr + len - 1;
-	while ((*fmt != 0) && (ptr < end)) {
-		if (*fmt == '%') {
-			fmt++;
-			switch (*fmt) {
-			case '\0':
-				goto end;
-				break;
+  char *ptr = dst;
+  char *end = ptr + len - 1;
+  while ((*fmt != 0) && (ptr < end)) {
+    if (*fmt == '%') {
+      fmt++;
+      switch (*fmt) {
+      case '\0':
+        goto end;
+        break;
 
-			case 'b': // byte
-				{
-					uint8_t i = va_arg(lp, int);
-					if ((ptr + 3) < end) {
-						*(ptr++) = i / 100 + '0';
-						*(ptr++) = (i % 100) / 10 + '0';
-						*(ptr++) = (i % 10) + '0';
-					} else {
-						goto end;
-					}
-				}
-				break;
+      case 'b': // byte
+        {
+          uint8_t i = va_arg(lp, int);
+          if ((ptr + 3) < end) {
+            *(ptr++) = i / 100 + '0';
+            *(ptr++) = (i % 100) / 10 + '0';
+            *(ptr++) = (i % 10) + '0';
+          } else {
+            goto end;
+          }
+        }
+        break;
 
-			case 'B': // short
-				{
-					uint16_t i = va_arg(lp, int);
-					if ((ptr + 5) < end) {
-						*(ptr++) = i / 10000 + '0';
-						*(ptr++) = (i % 10000) / 1000 + '0';
-						*(ptr++) = (i % 1000) / 100 + '0';
-						*(ptr++) = (i % 100) / 10 + '0';
-						*(ptr++) = (i % 10)  + '0';
-					} else {
-						goto end;
-					}
-				}
-				break;
+      case 'B': // short
+        {
+          uint16_t i = va_arg(lp, int);
+          if ((ptr + 5) < end) {
+            *(ptr++) = i / 10000 + '0';
+            *(ptr++) = (i % 10000) / 1000 + '0';
+            *(ptr++) = (i % 1000) / 100 + '0';
+            *(ptr++) = (i % 100) / 10 + '0';
+            *(ptr++) = (i % 10)  + '0';
+          } else {
+            goto end;
+          }
+        }
+        break;
 
-			case 'x': // hex 8
-				{
-					uint8_t i = va_arg(lp, int);
-					if ((ptr + 2) < end) {
-						*(ptr++) = tohex(i / 16);
-						*(ptr++) = tohex(i % 16);
-					} else {
-						goto end;
-					}
-				}
-				break;
+      case 'x': // hex 8
+        {
+          uint8_t i = va_arg(lp, int);
+          if ((ptr + 2) < end) {
+            *(ptr++) = tohex(i / 16);
+            *(ptr++) = tohex(i % 16);
+          } else {
+            goto end;
+          }
+        }
+        break;
 
-			case 'X': // hex 16
-				{
-					uint16_t i = va_arg(lp, int);
-					if ((ptr + 4) < end) {
-						*(ptr++) = tohex((i >> 12) & 0xF);
-						*(ptr++) = tohex((i >> 8) & 0xF);
-						*(ptr++) = tohex((i >> 4) & 0xF);
-						*(ptr++) = tohex(i & 0xF);
-					} else {
-						goto end;
-					}
-				}
-				break;
+      case 'X': // hex 16
+        {
+          uint16_t i = va_arg(lp, int);
+          if ((ptr + 4) < end) {
+            *(ptr++) = tohex((i >> 12) & 0xF);
+            *(ptr++) = tohex((i >> 8) & 0xF);
+            *(ptr++) = tohex((i >> 4) & 0xF);
+            *(ptr++) = tohex(i & 0xF);
+          } else {
+            goto end;
+          }
+        }
+        break;
 
-			case 's': // string
-				{
-					const char *ptr2 = va_arg(lp, char *);
-					while ((ptr < end) && *ptr2) {
-						*ptr++ = *ptr2++;
-					}
-				}
-				break;
-			}
-		} else {
-			*ptr++ = *fmt;
-		}
-		fmt++;
-	}
+      case 's': // string
+        {
+          const char *ptr2 = va_arg(lp, char *);
+          while ((ptr < end) && *ptr2) {
+            *ptr++ = *ptr2++;
+          }
+        }
+        break;
+      }
+    } else {
+      *ptr++ = *fmt;
+    }
+    fmt++;
+  }
 
-	*ptr = '\0';
-	ptr++;
+  *ptr = '\0';
+  ptr++;
  end:
-	return ptr - dst;
+  return ptr - dst;
 }
 
 /**
@@ -167,11 +167,11 @@ uint16_t m_vsnprintf(char *dst, uint16_t len, const char *fmt, va_list lp) {
  * - %s (string)
  **/
 uint16_t m_snprintf(char *dst, uint16_t len, const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
-	uint16_t ret = m_vsnprintf(dst, len, fmt, lp);
-	va_end(lp);
-	return ret;
+  va_list lp;
+  va_start(lp, fmt);
+  uint16_t ret = m_vsnprintf(dst, len, fmt, lp);
+  va_end(lp);
+  return ret;
 }
 
 /** Copy cnt bytes from src to dst. **/
@@ -423,11 +423,11 @@ uint8_t interpolate_8(uint8_t start, uint8_t end, uint8_t amount) {
 #ifdef HOST_MIDIDUINO
 void hexdump(uint8_t *data, uint16_t len) {
   uint8_t cnt = 0;
-	uint16_t i;
+  uint16_t i;
   for (i = 0; i < len; i++) {
-		if (cnt == 0) {
-			printf("%.4x: ", i);
-		}
+    if (cnt == 0) {
+      printf("%.4x: ", i);
+    }
     printf("%.2x ", data[i]);
     cnt++;
     if (cnt == 8) {
