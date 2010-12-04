@@ -5,13 +5,37 @@
 #include <CCHandler.h>
 #include <AutoEncoderPage.h>
 
+/**
+ * \addtogroup MIDI
+ *
+ * @{
+ *
+ * \addtogroup midi_sketches MIDI Sketches
+ *
+ * @{
+ *
+ * \addtogroup AutoMidiControllerSketch
+ *
+ * @{
+ *
+ * \file
+ * Automagic MIDI sketch
+ **/
+
+/**
+ * Creates a sketch featuring 4 autoencoderpages providing magic
+ * learning and autorecording functionality for 4 MIDI encoders.
+ *
+ * Page switching is mapped to BUTTON1 (upper left).
+ **/
+
 class AutoMidiControllerSketch : public Sketch {
-  public:
+ public:
   AutoEncoderPage<AutoNameCCEncoder> autoPages[4];
   SwitchPage switchPage;
   
- AutoMidiControllerSketch() {
-		delay(100);
+  AutoMidiControllerSketch() {
+    delay(100);
   }
   
   void setup() {
@@ -23,12 +47,11 @@ class AutoMidiControllerSketch : public Sketch {
       name[1] = '0' + i;
       autoPages[i].setShortName(name);
       for (uint8_t j = 0; j < 4; j++) {
-        ccHandler.addEncoder(&autoPages[i].realEncoders[j]);
-	char name[4] = "P00";
 	name[3] = '0' + j;
-	autoPages[i].realEncoders[j].setName(name);
-	autoPages[i].realEncoders[j].initCCEncoder(0, j);
+	autoPages[i].realEncoders[j].initCCEncoder(0, j + i * 4);
+        autoPages[i].realEncoders[j].setCCName();
       }
+      autoPages[i].redisplay = true;
     }
     
     switchPage.initPages(&autoPages[0], &autoPages[1], &autoPages[2], &autoPages[3]);
@@ -84,10 +107,9 @@ class AutoMidiControllerSketch : public Sketch {
       return NULL;
     }
   }
-  
-  
-  
 };
+
+/** @} @} @} */
 
 #endif /* AUTO_MIDI_CONTROLLER_H__ */
 
