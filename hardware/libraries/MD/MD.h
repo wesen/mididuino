@@ -216,6 +216,15 @@ public:
   void sendRequest(uint8_t type, uint8_t param);
 
   /**
+   * Get the base PITCH (the lowest note that can be played on the
+   * track. The track has to melodic, else the base pitch returned
+   * will be 128;
+   *
+   * This uses the kit information stored in the kit variable.
+   **/
+  uint8_t trackGetBasePitch(uint8_t track);
+  
+  /**
    * Get the actual PITCH value for the MIDI pitch for the given
    * track. If the track is melodic, this will lookup the actual PITCH
    * setting to be set on the machinedrum by using the pitch lookup
