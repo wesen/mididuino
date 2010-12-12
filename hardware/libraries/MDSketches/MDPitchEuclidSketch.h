@@ -93,6 +93,13 @@ public:
     }
     if (trackEncoder.hasChanged()) {
       euclid->mdTrack = trackEncoder.getValue();
+      if (MD.loadedKit) {
+        uint8_t basePitch = MD.trackGetBasePitch(euclid->mdTrack);
+        if (basePitch != 128) {
+          basePitchEncoder.setValue(basePitch);
+          euclid->basePitch = basePitch;
+        }
+      }
     }
   }
 };
