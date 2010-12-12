@@ -3,6 +3,7 @@
 #ifndef CCHANDLER_H__
 #define CCHANDLER_H__
 
+#include "WProgram.h"
 #include "Encoders.hh"
 #include "Circular.hh"
 #include "Midi.h"
