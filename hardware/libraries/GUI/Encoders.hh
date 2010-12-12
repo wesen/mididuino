@@ -72,6 +72,12 @@ public:
    **/
   bool pressmode;
 
+  /**
+   * If this variable is set, the encoder is locked, and won't update
+   * on calls to checkHandle.
+   **/
+  bool locked;
+
   /** Handling function. **/
   encoder_handle_t handler;
 

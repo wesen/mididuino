@@ -63,12 +63,16 @@ Encoder::Encoder(const char *_name, encoder_handle_t _handler)
     handler(_handler),
     fastmode(true),
     fastmodestep(5),
-    pressmode(false)
+    pressmode(false),
+    locked(false)
 {
   setName(_name);
 }
 
 void Encoder::checkHandle() {
+  if (locked)
+    return;
+  
   if (cur != old) {
     if (handler != NULL)
       handler(this);
