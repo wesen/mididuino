@@ -280,7 +280,7 @@ void MDClass::setTrackRouting(uint8_t track, uint8_t output) {
 }
 
 void MDClass::setTempo(uint16_t tempo) {
-  uint8_t data[3] = { 0x61, tempo >> 7, tempo & 0x7F };
+  uint8_t data[3] = { 0x61, (tempo >> 7) & 0x7F, tempo & 0x7F };
   MD.sendSysex(data, countof(data));
 }
 
