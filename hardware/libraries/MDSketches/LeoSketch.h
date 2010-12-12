@@ -30,8 +30,9 @@ class LeoTriggerClass {
  public:
   bool isTriggerOn;
   const static scale_t *scales[];
-  const static char *scaleNames[];
-  uint8_t currentScale;
+
+  const scale_t *currentScale;
+  //  uint8_t currentScale;
   uint8_t numOctaves;
   uint8_t basePitch;
   uint8_t scaleSpread;
@@ -45,20 +46,8 @@ class LeoTriggerClass {
   }
   
   void triggerTrack(uint8_t track) {
-    uint8_t pitch = randomScalePitch(scales[currentScale], numOctaves);
+    uint8_t pitch = randomScalePitch(currentScale, numOctaves);
     uint8_t value = MIN(127, pitch * scaleSpread + basePitch);
-
-#if 0
-    GUI.setLine(GUI.LINE1);
-    GUI.flash_put_value(0, track);
-    GUI.flash_put_value(1, pitch);
-    GUI.flash_put_value(2, value);
-    GUI.setLine(GUI.LINE2);
-    GUI.flash_put_value(0, currentScale);
-    GUI.flash_put_value(1, numOctaves);
-    GUI.flash_put_value(2, basePitch);
-    GUI.flash_put_value(3, scaleSpread);
-#endif
 
     MD.setTrackParam(track, 0, value);
     
@@ -123,17 +112,25 @@ class ScaleSelectEncoder: public VarRangeEncoder {
 
 class LeoScalePage : public EncoderPage {
  public:
-  ScaleSelectEncoder scaleSelectEncoder;
+  //  ScaleSelectEncoder scaleSelectEncoder;
+  ScaleEncoder scaleSelectEncoder;
   VarRangeEncoder basePitchEncoder;
   VarRangeEncoder spreadEncoder;
   VarRangeEncoder octaveEncoder;
 
  LeoScalePage() :
-  scaleSelectEncoder(&leoTrigger.currentScale, 0, countof(LeoTriggerClass::scales) - 1, "SCL"),
+  //  scaleSelectEncoder(&leoTrigger.currentScale, 0, countof(LeoTriggerClass::scales) - 1, "SCL"),
+  scaleSelectEncoder("SCL", LeoTriggerClass::scales, countof(LeoTriggerClass::scales) - 1),
     basePitchEncoder(&leoTrigger.basePitch, 0, 127, "BAS"),
     spreadEncoder(&leoTrigger.scaleSpread, 1, 10, "SPR"),
     octaveEncoder(&leoTrigger.numOctaves, 0, 5, "OCT") {
     setEncoders(&scaleSelectEncoder, &basePitchEncoder, &spreadEncoder, &octaveEncoder);
+  }
+
+  void loop() {
+    if (scaleSelectEncoder.hasChanged()) {
+      leoTrigger.currentScale = scaleSelectEncoder.getScale();
+    }
   }
 
   virtual bool handleEvent(gui_event_t *event) {
@@ -340,12 +337,19 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
 
  public:
  LeoSketch() :
-  lfoSelectPage(&lfoPage1, &lfoPage2),
-    euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid)
-    {
-    }
+   lfoSelectPage(&lfoPage1, &lfoPage2),
+   euclidPage1(&pitchEuclid),
+   euclidPage2(&pitchEuclid, LeoTriggerClass::scales, countof(LeoTriggerClass::scales) - 1)
+  {
+  }
 	
   virtual void setup() {
+    /* clock setup */
+    MidiClock.stop();
+    MidiClock.mode = MidiClock.EXTERNAL_MIDI;
+    MidiClock.useImmediateClock = true;
+    MidiClock.start();
+    
     triggerPage.setName("TRIGGER");
     switchPage.addPage(&triggerPage);
 
