@@ -68,11 +68,12 @@ class LeoTriggerClass {
   }
 
   bool handleEvent(gui_event_t *event) {
-    for (uint8_t i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
-      if (EVENT_PRESSED(event, i)) {
-	triggerTrack(trackStart + (i - Buttons.BUTTON1));
-	return true;
-      }
+    if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+      triggerTrack(trackStart);
+    }
+    if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+      triggerTrack(trackStart + 1);
+      return true;
     }
     return false;
   }
@@ -308,6 +309,8 @@ class LeoMDLFOPage : public MDLFOPage, MDCallback {
     for (uint8_t i = Buttons.ENCODER1; i < Buttons.ENCODER4; i++) {
       if (EVENT_PRESSED(event, i)) {
 	uint8_t enci = i - Buttons.ENCODER1;
+        // randomize all separately if button3 is pressed
+        // randomize same if track is set to ALL XXX
 	if (lfoEncoders[enci].max < 127) {
 	  lfoEncoders[enci].setValue(random(0, lfoEncoders[enci].max), true);
 	  return true;
@@ -336,8 +339,7 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   MDPitchEuclid pitchEuclid;
 
  public:
- LeoSketch()
-   :
+ LeoSketch() :
   lfoSelectPage(&lfoPage1, &lfoPage2),
     euclidPage1(&pitchEuclid), euclidPage2(&pitchEuclid)
     {
@@ -368,6 +370,7 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
     // auto page setup
     autoMDPage.setup();
     autoMDPage.setName("AUTO LEARN");
+    autoMDPage.clearButton = Buttons.BUTTON1;
     ccHandler.setup();
 
     switchPage.addPage(&autoMDPage);
@@ -384,36 +387,53 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   }
 
   virtual bool handleEvent(gui_event_t *event) {
-    if ((currentPage() == &scalePage) ||
-	(currentPage() == &triggerPage)) {
-      if (EVENT_PRESSED(event, Buttons.ENCODER4)) {
-	pushPage(&switchPage);
-	return true;
-      }
-    } else if (currentPage() == &switchPage) {
-      if (EVENT_RELEASED(event, Buttons.ENCODER4) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
+    // handle modal pages first
+    if (currentPage() == &switchPage) {
+      if (EVENT_RELEASED(event, Buttons.BUTTON4)) {
 	if (!switchPage.setSelectedPage()) {
 	  popPage(&switchPage);
 	}
 	return true;
       }
-    } else {
-      if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
-	pushPage(&switchPage);
-	return true;
-      } 
+      
+      return false;
     }
 
+    // return from lfoSelectPage
     if (currentPage() == &lfoSelectPage) {
-      if (EVENT_RELEASED(event, Buttons.BUTTON2)) {
+      if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
 	popPage(&lfoSelectPage);
+        return true;
       }
-    } else if ((currentPage() == &lfoPage1) || (currentPage() == &lfoPage2)) {
-      if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
-	pushPage(&lfoSelectPage);
+      
+      return false;
+    }
+
+    // page select on button 4 always
+    if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
+      pushPage(&switchPage);
+      return true;
+    }
+
+    if ((currentPage() == &lfoPage1) ||
+        (currentPage() == &lfoPage2)) {
+      if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+        pushPage(&lfoSelectPage);
+        return true;
       }
     }
 
+    // hold on button2 except for autoMDPage
+    if (currentPage() != &autoMDPage) {
+      if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+        // start hold XXX
+        return true;
+      } else if (EVENT_RELEASED(event, Buttons.BUTTON2)) {
+        // release hold XXX
+        return true;
+      }
+    }
+    
     return false;
   }
 
