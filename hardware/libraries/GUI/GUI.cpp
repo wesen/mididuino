@@ -79,17 +79,17 @@ void GuiClass::loop() {
     EventRB.getp(&event);
     for (int i = 0; i < eventHandlers.size; i++) {
       if (eventHandlers.arr[i] != NULL) {
-				bool ret = eventHandlers.arr[i](&event);
-				if (ret) {
-					continue;
-				}
+        bool ret = eventHandlers.arr[i](&event);
+        if (ret) {
+          continue;
+        }
       }
     }
 		
     if (sketch != NULL) {
       bool ret = sketch->handleTopEvent(&event);
       if (ret)
-				continue;
+        continue;
     }
   }
 
@@ -132,33 +132,33 @@ void GuiClass::display() {
       uint16_t clock = read_slowclock();
       uint16_t diff = clock_diff(lines[i].flashTimer, clock);
       if (diff > lines[i].duration) {
-				lines[i].changed = true;
-				lines[i].flashActive = false;
+        lines[i].changed = true;
+        lines[i].flashActive = false;
       }
       if (lines[i].flashChanged) {
-				for (int j = 0; j < 16; j++) {
-					if (lines[i].flash[j] == 0) {
-						lines[i].flash[j] = ' ';
-					}
-				}
+        for (int j = 0; j < 16; j++) {
+          if (lines[i].flash[j] == 0) {
+            lines[i].flash[j] = ' ';
+          }
+        }
 #ifdef HOST_MIDIDUINO
-				printf("%s\n", lines[i].flash);
+        printf("%s\n", lines[i].flash);
 #else
-				LCD.goLine(i);
-				LCD.puts(lines[i].flash);
+        LCD.goLine(i);
+        LCD.puts(lines[i].flash);
 #endif
-				lines[i].flashChanged = false;
+        lines[i].flashChanged = false;
       }
     }
 
     if (lines[i].changed && !lines[i].flashActive) {
       for (int j = 0; j < 16; j++) {
-				if (lines[i].data[j] == 0) {
-					lines[i].data[j] = ' ';
-				}
+        if (lines[i].data[j] == 0) {
+          lines[i].data[j] = ' ';
+        }
       }
 #ifdef HOST_MIDIDUINO
-			printf("%s\n", lines[i].data);
+      printf("%s\n", lines[i].data);
 #else
       LCD.goLine(i);
       LCD.puts(lines[i].data);
@@ -307,83 +307,83 @@ void GuiClass::put_p_string(PGM_P str) {
 }
 
 void GuiClass::printf(const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	put_string(buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  put_string(buf);
+  va_end(lp);
 }
 
 void GuiClass::printf_fill(const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	put_string_fill(buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  put_string_fill(buf);
+  va_end(lp);
 }
 
 void GuiClass::printf_at(uint8_t idx, const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	put_string_at(idx, buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  put_string_at(idx, buf);
+  va_end(lp);
 }
 
 void GuiClass::printf_at_fill(uint8_t idx, const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	put_string_at_fill(idx, buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  put_string_at_fill(idx, buf);
+  va_end(lp);
 }
 
 void GuiClass::flash_printf(const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	flash_string(buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  flash_string(buf);
+  va_end(lp);
 }
 
 void GuiClass::flash_printf_fill(const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	flash_string_fill(buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  flash_string_fill(buf);
+  va_end(lp);
 }
 
 void GuiClass::flash_printf_at(uint8_t idx, const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	flash_string_at(idx, buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  flash_string_at(idx, buf);
+  va_end(lp);
 }
 
 void GuiClass::flash_printf_at_fill(uint8_t idx, const char *fmt, ...) {
-	va_list lp;
-	va_start(lp, fmt);
+  va_list lp;
+  va_start(lp, fmt);
 
-	char buf[17];
-	m_vsnprintf(buf, sizeof(buf), fmt, lp);
-	flash_string_at_fill(idx, buf);
-	va_end(lp);
+  char buf[17];
+  m_vsnprintf(buf, sizeof(buf), fmt, lp);
+  flash_string_at_fill(idx, buf);
+  va_end(lp);
 }
 
 void GuiClass::clearLine() {
