@@ -1,0 +1,483 @@
+<p>In this tutorial, we are going to build some simple MIDI controller
+firmwares for the MiniCommand. This will show how to use CCEncoders,
+the EncoderPage, the SwitchPage and the AutoEncoderPage.</p>
+
+<h3>Preliminary steps</h3>
+
+<p>First, download the MidiCtrl 0017 environment for your operating
+system at http://ruinwesen.com/files and connect your MiniCommand to
+your computer, connecting the output of your USB-MIDI adapter to the
+first input of the MiniCommand (left port), and the input of your
+USB-MIDI adapter to the output of the MiniCommand (middle port).
+Configure the MidiCtrl environment to use the correct USB-MIDI
+adapter, and fire up a new sketch. All the methods and classes used in
+this tutorial are documented at the <a
+href="http://ruinwesen.com/support-files/doxygen/index.html">Midi-Ctrl
+javadoc page</a>.</p>
+
+<h3>A simple MIDI controller</h3>
+
+<p>In the first firmware, we are going to build a simple MIDI controller.
+It features 4 encoders named P1, P2, P3 and P4 each sending out a
+different CC when moved. The MidiCtrl environment provides an
+abstraction for encoders, mapping the actual hardware encoders to a
+C++ object. The C++ object handles displaying the values of the
+encoder, moving by 5 step increments when pressed, and sending out the
+actual CC MIDI message when the encoder is moved. The class is called
+<a href="http://ruinwesen.com/support-files/doxygen/group__gui__ccencoder__class.html">CCEncoder</a>, and we will need four of them.</p>
+
+<pre>
+CCEncoder encoders[4];
+</pre>
+
+<p>We now need to group these 4 encoders into an abstraction called a
+<a
+href="http://ruinwesen.com/support-files/doxygen/group__gui__pages.html">Page</a>.
+A Page groups 4 encoders, and handles the whole displaying and GUI
+actions. We are going to use the most basic Page existing, called the
+<a
+href="http://ruinwesen.com/support-files/doxygen/group__gui__encoder__page.html">EncoderPage</a>.
+We initialise our EncoderPage to handle the 4 previously created
+encoders.</p>
+
+<pre>
+EncoderPage encoderPage(&encoders[0], &encoders[1], &encoders[2], &encoders[3]);
+</pre>
+
+<p>Now that we have created our encoders and our page, we need to
+initialise them. When a sketch is run, the MidiCtrl framework first
+calls the setup() function. This is where we are going to intiialise
+the CC channel and number of our CCEncoders, and set the EncoderPage
+as the active page. To set the name (3 characters) of our encoders, we use the <a
+href="http://ruinwesen.com/support-files/doxygen/group__gui__encoder__class.html#ga502914d6c98b00e60e5966c6959b52cc">setName</a>
+method of the Encoder class. To configure the CC parameters of our
+encoders, we use the <a
+href="http://ruinwesen.com/support-files/doxygen/group__gui__ccencoder__class.html#ga2019850dfbbf76653d0312e00b206555">initCCEncoder</a>
+method, which takes the channel as first argument, and the CC number
+as second argument. This is our setup() method, and with that, our
+sketch is complete, and you can upload the sketch by pressing the
+Upload button or by pressind Control-U (or Apple-U on a mac). We now
+have a simple MIDI controller firmwares that sends out CC messages
+when an encoder is turned.</p>
+
+<pre>
+CCEncoder encoders[4];
+EncoderPage encoderPage(&encoders[0], &encoders[1], &encoders[2], &encoders[3]);
+
+void setup() {
+  encoders[0].initCCEncoder(0, 0);
+  encoders[0].setName("P1");
+  encoders[1].initCCEncoder(0, 1);
+  encoders[1].setName("P2");
+  encoders[2].initCCEncoder(0, 2);
+  encoders[2].setName("P3");
+  encoders[3].initCCEncoder(0, 3);
+  encoders[3].setName("P4");
+
+  encoderPage.setup();
+  GUI.setPage(&encoderPage);
+}
+</pre>
+
+<h3>Receiving CC messages</h3>
+
+<p>Our simple firmware is missing a very useful feature. Imagine that
+you are controlling Ableton Live with the previous firmware, with the
+4 parameters mapped to different controls in Ableton. If you move a
+control in Ableton, the knob values won't update on the MiniCommand,
+resulting in jumps when you move the knob again. While sounding
+simple, this is actually a pretty tricky feature to implement.
+Thankfully, there is an object in the MidiCtrl environment handling
+the mapping and updating automatically. This object is called the
+CCHandler. It gets initialised with all available CCEncoders, and will
+update their value when receiving a CC message. We need to add the
+CCHandler to our previous sketch by first including necessary files:</p>
+
+<pre>
+#include <WProgram.h>
+#include <CCHandler.h>
+</pre>
+
+<p>In our setup() method, we now need to initialise the CChandler, and
+add our four encoders to it.</p>
+
+<pre>
+void setup() {
+  ccHandler.setup();
+ 
+  encoders[0].initCCEncoder(0, 0);
+  encoders[0].setName("P1");
+  encoders[1].initCCEncoder(0, 1);
+  encoders[1].setName("P2");
+  encoders[2].initCCEncoder(0, 2);
+  encoders[2].setName("P3");
+  encoders[3].initCCEncoder(0, 3);
+  encoders[3].setName("P4");
+  
+  for (uint8_t i = 0; i < 4; i++) {
+    ccHandler.addEncoder(&encoders[i]);
+  }
+
+  encoderPage.setup();
+  GUI.setPage(&encoderPage);
+}
+</pre>
+
+<p>Our second firmware is now complete, and can be uploaded to the
+MiniCommand. When receiving CC values, it will now update the knobs
+accordingly.
+</p>
+
+<h3>Adding recording and playback functionality</h3>
+
+<p>If you have been using the MagicMidiController firmware on the
+MiniCommand, you know that it is possible to record 2 bars of knob
+movement, and have them play back when MIDI sync is active. We are now
+going to add this functionality to our existing sketch. For this, we
+are first going to activate MIDI Clock functionality by initialising
+the MidiClockPage. This page allows to configure the MIDI Clock
+settings (on which port MIDI clock is received, if MIDI clock is sent
+out of the MIDI output (to chain controllers), and additionally also
+configure the MIDI merge settings. To activate the MidiClockPage,
+include the MidiClockPage.h, add call initClockPage() at the end of
+the setup() method.</p>
+
+<pre>
+#include <MidiClockPage.h>
+
+void setup() {
+   ...
+   ...
+
+   initClockPage();
+}
+</pre>
+
+<p>We now need to replace our EncoderPage with the much more powerful
+AutoEncoderPage. This page provides its own encoders, and overlays the
+actual CCEncoders with AutoRecordingEncoders, which provide the
+recording functionality. You don't need to worry about the actual
+implementation detail, just know that the AutoEncoderPage provides
+recording by holding BUTTON3 (lower right) while the MIDI clock is
+playing (the LED is blinking). You can hold BUTTON4 and press an
+encoder to clear the recording. Also, the recording overdubs over
+previously recorded movements, so feel free to go crazy jamming with
+it.</p>
+
+<p>The setup() method needs to be modified to configure the actual
+encoders of the encoderPage (called "realEncoders"), and tell the
+encoderPage that it has been setup correctly (else it will
+reinitialize itself and overwrite the configured CC settings).</p>
+
+<pre>
+#include <AutoEncoderPage.h>
+#include <CCHandler.h>
+#include <MidiClockPage.h>
+
+AutoEncoderPage<AutoNameCCEncoder> encoderPage;
+
+void setup() {
+  ccHandler.setup();
+  
+  encoderPage.setup();
+  encoderPage.realEncoders[0].initCCEncoder(0, 0);
+  encoderPage.realEncoders[0].setName("P1");
+  encoderPage.realEncoders[1].initCCEncoder(0, 1);
+  encoderPage.realEncoders[1].setName("P2");
+  encoderPage.realEncoders[2].initCCEncoder(0, 2);
+  encoderPage.realEncoders[2].setName("P3");
+  encoderPage.realEncoders[3].initCCEncoder(0, 3);
+  encoderPage.realEncoders[3].setName("P4");
+  
+  encoderPage.isSetup = true;
+  
+  GUI.setPage(&encoderPage);
+  
+  initClockPage();
+}
+</pre>
+
+<p>The AutoEncoderPage also provides magic midi
+learning when you pressing BUTTON2 (lower left), mapping the 4
+encoders to the 4 last received CC values, so be careful not to press
+this button if you don't want to override your settings. If you want
+this functionality however, and want the names of the encoders to
+update accordingly, you can replace the CCencoders by
+AutoNameCCEncoders. These will update their name to show the CC and
+channel when they are MIDI learned.</p>
+
+<pre>
+AutoEncoderPage<AutoNameCCEncoder> encoderPage;
+</pre>
+
+<h3>Adding multiple pages</h3>
+
+<p>This is all sweet and fine, but only 4 encoders is a bit limited.
+What we are going to do in the next firmware is add a second
+encoderPage, handling 4 more virtual encoders, and add a SwitchPage
+that allows us to switch between the two configured encoderPages. The
+second encoderPage is setup very similarly to the first:</p>
+
+<pre>
+CCEncoder encoders2[4];
+EncoderPage encoderPage2(&encoders2[0], &encoders2[1], &encoders2[2], &encoders2[3]);
+
+void setup() {
+   ...
+
+  encoders2[0].initCCEncoder(1, 0);
+  encoders2[0].setName("P5");
+  encoders2[1].initCCEncoder(1, 1);
+  encoders2[1].setName("P6");
+  encoders2[2].initCCEncoder(1, 2);
+  encoders2[2].setName("P7");
+  encoders2[3].initCCEncoder(1, 3);
+  encoders2[3].setName("P8");
+
+   ...
+}
+</pre>
+
+<p>In order to switch between pages, we have to create a switchPage,
+initialize it with our two encoderPages, and give both of these
+encoderPages a shortName that will be displayed by the switchPage.</p>
+
+</pre>
+SwitchPage switchPage;
+
+void setup() {
+   ...
+
+     encoderPage.setup();
+  encoderPage.setShortName("PG1");
+  encoderPage2.setup();
+  encoderPage2.setShortName("PG2");
+  
+  switchPage.initPages(&encoderPage, &encoderPage2);
+
+  ...
+}
+</pre>
+
+<p>And finally, we have to activate the switchPage when BUTTON1 (upper
+left) is pressed. This is done by adding an event handler to the
+sketch. Each time a button or an encoder is pressed or released, the
+MidiCtrl framework creates a gui_event_t structure that is filled with
+information about the event. This event information is then passed to
+eventHandlers, first in the active page, then to an overall event
+handler. This overall firmware handler is a method called handleEvent,
+and this is where we are going to push our switchPage on top of the
+GUI, and pop the page when the button is released. The handleEvent
+returns false if the event has not been handled, and true if the event
+has been handled. The event status itself can be checked with the
+macros EVENT_PRESSED(event, BUTTON) and EVENT_RELEASED. The buttons
+are called Buttons.BUTTON1 to BUTTON4, and Buttons.ENCODER1 to ENCODER4.</p>
+
+<pre>
+bool handleEvent(gui_event_t *event) {
+  if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+    GUI.pushPage(&switchPage);
+    return true;
+  } else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
+    GUI.popPage(&switchPage);
+    return true;
+  }
+  
+  return false;
+}
+</pre>
+
+<p>You can now upload the sketch to the MiniCommand, and enjoy your
+two pages of CC encoders.</p>
+
+<pre>
+CCEncoder encoders[4];
+EncoderPage encoderPage(&encoders[0], &encoders[1], &encoders[2], &encoders[3]);
+CCEncoder encoders2[4];
+EncoderPage encoderPage2(&encoders2[0], &encoders2[1], &encoders2[2], &encoders2[3]);
+
+SwitchPage switchPage;
+
+void setup() {
+  encoders[0].initCCEncoder(0, 0);
+  encoders[0].setName("P1");
+  encoders[1].initCCEncoder(0, 1);
+  encoders[1].setName("P2");
+  encoders[2].initCCEncoder(0, 2);
+  encoders[2].setName("P3");
+  encoders[3].initCCEncoder(0, 3);
+  encoders[3].setName("P4");
+
+  encoders2[0].initCCEncoder(1, 0);
+  encoders2[0].setName("P5");
+  encoders2[1].initCCEncoder(1, 1);
+  encoders2[1].setName("P6");
+  encoders2[2].initCCEncoder(1, 2);
+  encoders2[2].setName("P7");
+  encoders2[3].initCCEncoder(1, 3);
+  encoders2[3].setName("P8");
+
+  encoderPage.setup();
+  encoderPage.setShortName("PG1");
+  encoderPage2.setup();
+  encoderPage2.setShortName("PG2");
+  
+  switchPage.initPages(&encoderPage, &encoderPage2);
+
+  GUI.setPage(&encoderPage);
+}
+
+bool handleEvent(gui_event_t *event) {
+  if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+    GUI.pushPage(&switchPage);
+    return true;
+  } else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
+    GUI.popPage(&switchPage);
+    return true;
+  }
+  
+  return false;
+}
+</pre>
+
+<h3>Four pages of recording encoders</h3>
+
+<p>In this final part, we are going to take the concept one step
+further and handle 4 pages of recording encoders. In the process, we
+are going to refactor the initialization of the encoders and pages. We
+first create 4 AutoEncoderPages and a SwitchPage.</p>
+
+<pre>
+AutoEncoderPage<CCEncoder> encoderPage[4];
+SwitchPage switchPage;
+</pre>
+
+<p>We now go through each page in a loop, set its name to PGX, and
+initialize it. We then set the CC parameter and the name of each
+CCEncoder in each page, incrementing a param_idx counter so that we
+have CC0, CC1, CC2, CC3 on the first page, CC4, CC5, CC6, CC7 on the
+second page, etc... We finally tell each encoderPage that it has been
+initialized by setting isSetup to true, and to redisplay (because we
+overwrote the encoder names).</p>
+
+<pre>
+void setup() {
+  ...
+  
+  uint8_t param_idx = 0;
+  for (uint8_t page_idx = 0; page_idx < 4; page_idx++) {
+    char pageName[4] = "PG ";
+    pageName[2] = page_idx + '0';
+    encoderPage[page_idx].setShortName(pageName);
+    encoderPage[page_idx].setup();
+
+    for (uint8_t encoder_idx = 0; encoder_idx < 4; encoder_idx++) {
+       char name[4] = "P00"; 
+       name[1] = (param_idx / 10) + '0';
+       name[2] = (param_idx % 10) + '0';
+
+       CCEncoder *encoder = &encoderPage[page_idx].realEncoders[encoder_idx];
+       encoder->setName(name);
+       encoder->initCCEncoder(0, param_idx);
+       
+       param_idx++;
+    }
+    
+    encoderPage[page_idx].isSetup = true;
+    encoderPage[page_idx].redisplay = true;
+  }
+
+  ...
+}
+</pre>
+
+<p>Finally, we initialize the switchPage with the four
+AutoEncoderPages, and add the event handler to push the switchPage in
+front when BUTTON1 is held.
+</p>
+
+<pre>
+#include <AutoEncoderPage.h>
+#include <CCHandler.h>
+#include <MidiClockPage.h>
+
+AutoEncoderPage<CCEncoder> encoderPage[4];
+SwitchPage switchPage;
+
+void setup() {
+  ccHandler.setup();
+  
+  uint8_t param_idx = 0;
+  for (uint8_t page_idx = 0; page_idx < 4; page_idx++) {
+    char pageName[4] = "PG ";
+    pageName[2] = page_idx + '0';
+    encoderPage[page_idx].setShortName(pageName);
+    encoderPage[page_idx].setup();
+
+    for (uint8_t encoder_idx = 0; encoder_idx < 4; encoder_idx++) {
+       char name[4] = "P00"; 
+       name[1] = (param_idx / 10) + '0';
+       name[2] = (param_idx % 10) + '0';
+
+       CCEncoder *encoder = &encoderPage[page_idx].realEncoders[encoder_idx];
+       encoder->setName(name);
+       encoder->initCCEncoder(0, param_idx);
+       
+       param_idx++;
+    }
+    
+    encoderPage[page_idx].isSetup = true;
+    encoderPage[page_idx].redisplay = true;
+  }
+  switchPage.initPages(&encoderPage[0], &encoderPage[1], &encoderPage[2], &encoderPage[3]);
+
+  GUI.setPage(&encoderPage[0]);
+}
+
+bool handleEvent(gui_event_t *event) {
+  if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
+    GUI.pushPage(&switchPage);
+    return true;
+  } else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
+    GUI.popPage(&switchPage);
+    return true;
+  }
+  
+  return false;
+}
+
+</pre>
+
+<p>Et voila, our four page MIDI controller firmware is ready to go.
+You can record each encoder separately when synced to MIDI, and switch
+between the pages with BUTTON1 + ENCODER.
+</p>
+
+<p>A final nice feature to have is the possibility to clear all
+recorded encoders on all pages with holding one BUTTON4 (which is
+already used to clear encoder recording), and pressing BUTTON1. To do this,
+we are going to add some code to the sketch event handler. This code
+checks if BUTTON4 is held down (by using the BUTTON_DOWN macro, which
+checks the status of the button, and not the event), and BUTTON1 has
+been pressed (which is an event, not a continuous state). If that's
+the case, we flash a short message to tell the user that all encoders
+are being cleared, and call the clearRecording method of each encoderPage.</p>
+
+<pre>
+bool handleEvent(gui_event_t *evt) {
+   ...
+
+  if (BUTTON_DOWN(Buttons.BUTTON4) && EVENT_PRESSED(event, Buttons.BUTTON1)) {
+    GUI.flash_strings_fill("CLEAR ALL", "");
+    for (uint8_t i = 0; i < 4; i++) {
+      encoderPage[i].clearRecording();
+    }
+    return true;
+  }
+
+  ...
+}
+</pre>
+
+<p>I hope you enjoyed this tutorial, and hope to see you soon for our
+next one :)</p>
