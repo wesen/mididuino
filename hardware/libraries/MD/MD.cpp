@@ -141,6 +141,15 @@ void MDClass::setCompressorParam(uint8_t param, uint8_t value) {
 
 /*** tunings ***/
 
+uint8_t MDClass::trackGetBasePitch(uint8_t track) {
+  tuning_t const *tuning = getModelTuning(kit.models[track]);
+  
+  if (tuning == NULL)
+    return 128;
+
+  return tuning->base;
+}
+
 
 uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
   tuning_t const *tuning = getModelTuning(kit.models[track]);
@@ -249,7 +258,46 @@ bool MDClass::isMelodicTrack(uint8_t track) {
 }
 
 void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {
+  // make sure we don't go outside boundaries
+  if (track > 15) {
+    return;
+  }
+
   uint8_t data[3] = { 0x62, track << 3 | param, value };
+  MDLFO *lfo = MD.kit.lfos + track;
+  switch (param) {
+  case MD_LFO_TRACK:
+    lfo->destinationTrack = value;
+    break;
+
+  case MD_LFO_PARAM:
+    lfo->destinationParam = value;
+    break;
+
+  case MD_LFO_SHP1:
+    lfo->shape1 = value;
+    break;
+
+  case MD_LFO_SHP2:
+    lfo->shape2 = value;
+    break;
+
+  case MD_LFO_UPDTE:
+    lfo->type = value;
+    break;
+
+  case MD_LFO_SPEED:
+    lfo->speed = value;
+    break;
+
+  case MD_LFO_DEPTH:
+    lfo->depth = value;
+    break;
+
+  case MD_LFO_SHMIX:
+    lfo->mix = value;
+    break;
+  }
   MD.sendSysex(data, countof(data));
 }
 
