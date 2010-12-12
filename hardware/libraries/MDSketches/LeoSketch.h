@@ -251,14 +251,17 @@ public:
   }
 };
 
+void MDLFOEncoderHandle(Encoder *enc);
+
 void LeoMDLFOEncoderHandle(Encoder *enc) {
   MDLFOEncoder *mdEnc = (MDLFOEncoder *)enc;
-  if (BUTTON_DOWN(Buttons.BUTTON1)) {
+  // change params for all lfos when button 1 is down
+  if (BUTTON_DOWN(Buttons.BUTTON3) || (mdEnc->track == MD_ALL_TRACKS)) {
     for (uint8_t i = 0; i < 16; i++) {
       MD.setLFOParam(i, mdEnc->param, mdEnc->getValue());
     }
   } else {
-    MD.setLFOParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
+    MDLFOEncoderHandle(enc);
   }
 }
 
@@ -273,7 +276,8 @@ public:
   MDTrackFlashEncoder trackEncoder;
   MDLFOPage *lfoPage1, *lfoPage2;
 
-  LeoMDLFOTrackSelectPage(MDLFOPage *_lfoPage1, MDLFOPage *_lfoPage2) : trackEncoder("TRK") {
+  LeoMDLFOTrackSelectPage(MDLFOPage *_lfoPage1, MDLFOPage *_lfoPage2) :
+    trackEncoder("TRK", 0, true) {
     encoders[0] = &trackEncoder;
     lfoPage1 = _lfoPage1;
     lfoPage2 = _lfoPage2;
@@ -303,17 +307,39 @@ public:
   void onKitChanged() {
     loadFromKit();
   }
+
+  /* XXX let this be for now, as the order of display is incorrect.
+  void loop() {
+    if (lfoEncoders[0].hasChanged()) {
+      // redisplay param encoder when destination track is changed.
+      // does it for page 2 as well but we don't care
+      lfoEncoders[1].redisplay = true;
+    }
+  }
+  */
 	
   virtual bool handleEvent(gui_event_t *event) {
     for (uint8_t i = Buttons.ENCODER1; i < Buttons.ENCODER4; i++) {
       if (EVENT_PRESSED(event, i)) {
 	uint8_t enci = i - Buttons.ENCODER1;
-        // randomize all separately if button3 is pressed
-        // randomize same if track is set to ALL XXX
-	if (lfoEncoders[enci].max < 127) {
-	  lfoEncoders[enci].setValue(random(0, lfoEncoders[enci].max), true);
-	  return true;
-	}
+        if (BUTTON_DOWN(Buttons.BUTTON3)) {
+          uint8_t param = lfoEncoders[enci].param;
+          
+          // randomize all separately if button3 is pressed
+          for (uint8_t i = 0; i < 16; i++) {
+            uint8_t value = random(0, lfoEncoders[enci].max);
+            MD.setLFOParam(i, param, value);
+            if (i == lfoEncoders[enci].track) {
+              lfoEncoders[enci].setValue(value);
+            }
+          }
+        } else {
+          // randomize same if track is set to ALL XXX
+          if (lfoEncoders[enci].max < 127) {
+            lfoEncoders[enci].setValue(random(0, lfoEncoders[enci].max), true);
+            return true;
+          }
+        }
       }
     }
 
@@ -370,6 +396,8 @@ public:
     MidiClock.addOn16Callback(this, (midi_clock_callback_ptr_t)&LeoSketch::on16Callback);
     euclidPage1.setName("EUCLID 1/2");
     euclidPage2.setName("EUCLID 2/2");
+    euclidPage2.trackEncoder.allNone = true;
+    euclidPage2.trackEncoder.max = MD_ALL_TRACKS;
     switchPage.addPage(&euclidPage1);
     switchPage.addPage(&euclidPage2);
 
