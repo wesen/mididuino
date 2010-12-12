@@ -13,6 +13,12 @@
  * @{
  **/
 
+/**
+ * Simple defines to mark for all tracks and for no tracks.
+ **/
+#define MD_ALL_TRACKS 17
+#define MD_NO_TRACK   16
+
 #define MD_ASSIGN_MACHINE_ID                             0x5b
 #define MD_ASSIGN_MACHINE_INIT_SYNTHESIS                 0
 #define MD_ASSIGN_MACHINE_INIT_SYNTHESIS_EFFECTS         1
