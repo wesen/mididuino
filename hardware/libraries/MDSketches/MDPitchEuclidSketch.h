@@ -23,20 +23,20 @@
  **/
 
 class MDPitchEuclidConfigPage1 : 
-public EncoderPage {
- public:
+  public EncoderPage {
+public:
   RangeEncoder pitchLengthEncoder;
   RangeEncoder pulseEncoder;
   RangeEncoder lengthEncoder;
   RangeEncoder offsetEncoder;
   MDPitchEuclid *euclid;
 
- MDPitchEuclidConfigPage1(MDPitchEuclid *_euclid) :
-  euclid(_euclid), 
-		pitchLengthEncoder(1, 32, "PTC", 4),
-		pulseEncoder(1, 32, "PLS", 3),
-		lengthEncoder(2, 32, "LEN", 8),
-		offsetEncoder(0, 32, "OFF", 0) {
+  MDPitchEuclidConfigPage1(MDPitchEuclid *_euclid) :
+    euclid(_euclid), 
+    pitchLengthEncoder(1, 32, "PTC", 4),
+    pulseEncoder(1, 32, "PLS", 3),
+    lengthEncoder(2, 32, "LEN", 8),
+    offsetEncoder(0, 32, "OFF", 0) {
     encoders[0] = &pitchLengthEncoder;
     encoders[1] = &pulseEncoder;
     encoders[2] = &lengthEncoder;
@@ -46,7 +46,7 @@ public EncoderPage {
   void loop() {
     if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
       euclid->track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(),
-															offsetEncoder.getValue());
+                              offsetEncoder.getValue());
     }
     if (pitchLengthEncoder.hasChanged()) {
       euclid->setPitchLength(pitchLengthEncoder.getValue());
@@ -55,30 +55,33 @@ public EncoderPage {
 };
 
 class MDPitchEuclidConfigPage2 : 
-public EncoderPage {
- public:
+  public EncoderPage {
+public:
   MDMelodicTrackFlashEncoder trackEncoder;
-  RangeEncoder scaleEncoder;
+  ScaleEncoder scaleEncoder;
   RangeEncoder octavesEncoder;
   NotePitchEncoder basePitchEncoder;
   MDPitchEuclid *euclid;
 
- MDPitchEuclidConfigPage2(MDPitchEuclid *_euclid) :
-  euclid(_euclid),
-		trackEncoder("TRK", 0),
-		scaleEncoder(0, MDPitchEuclid::NUM_SCALES - 1, "SCL", 0),
-		basePitchEncoder("BAS"),
-		octavesEncoder(0, 4, "OCT")
-			{
-				encoders[0] = &trackEncoder;
-				encoders[3] = &basePitchEncoder;
-				encoders[2] = &octavesEncoder;
-				encoders[1] = &scaleEncoder;
-			}
+  MDPitchEuclidConfigPage2(MDPitchEuclid *_euclid,
+                           const scale_t **scales = MDPitchEuclid::scales,
+                           uint8_t scaleCount = countof(MDPitchEuclid::scales) -1
+                           ) :
+    euclid(_euclid),
+    trackEncoder("TRK", 0),
+    scaleEncoder("SCL", scales, scaleCount),
+    basePitchEncoder("BAS"),
+    octavesEncoder(0, 4, "OCT")
+  {
+    encoders[0] = &trackEncoder;
+    encoders[3] = &basePitchEncoder;
+    encoders[2] = &octavesEncoder;
+    encoders[1] = &scaleEncoder;
+  }
 
   void loop() {
     if (scaleEncoder.hasChanged()) {
-      euclid->currentScale = MDPitchEuclid::scales[scaleEncoder.getValue()];
+      euclid->currentScale = scaleEncoder.getScale();
       euclid->randomizePitches();
     }
     if (basePitchEncoder.hasChanged()) {
@@ -95,16 +98,16 @@ public EncoderPage {
 };
 
 class MDPitchEuclidSketch : 
-public Sketch, public MDCallback, public ClockCallback {
- public:
+  public Sketch, public MDCallback, public ClockCallback {
+public:
   MDPitchEuclidConfigPage1 page1;
   MDPitchEuclidConfigPage2 page2;
   MDPitchEuclid pitchEuclid;
 
- MDPitchEuclidSketch() :page1(&pitchEuclid), page2(&pitchEuclid) {
+  MDPitchEuclidSketch() :page1(&pitchEuclid), page2(&pitchEuclid) {
   }
 
-	void getName(char *n1, char *n2) {
+  void getName(char *n1, char *n2) {
     m_strncpy_p(n1, PSTR("EUC "), 5);
     m_strncpy_p(n2, PSTR("LID "), 5);
   }
@@ -130,9 +133,9 @@ public Sketch, public MDCallback, public ClockCallback {
     if (pressed) {
       pitchEuclid.muted = !pitchEuclid.muted;
       if (pitchEuclid.muted) {
-				GUI.flash_strings_fill("EUCLID", "MUTED");
+        GUI.flash_strings_fill("EUCLID", "MUTED");
       } else {
-				GUI.flash_strings_fill("EUCLID", "UNMUTED");
+        GUI.flash_strings_fill("EUCLID", "UNMUTED");
       }
     }
   }
@@ -158,10 +161,10 @@ public Sketch, public MDCallback, public ClockCallback {
     } 
     else if (EVENT_PRESSED(event, Buttons.ENCODER1)) {
       pitchEuclid.randomizePitches();
-			return true;
+      return true;
     }
 
-		return false;
+    return false;
   }
 
   void on16Callback(uint32_t counter) {
