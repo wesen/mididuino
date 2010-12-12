@@ -160,13 +160,16 @@ class MDTrackFlashEncoder : public RangeEncoder {
    *
    * @{
    **/
-	
  public:
- MDTrackFlashEncoder(char *_name = NULL, uint8_t init = 0) : RangeEncoder(0, 15, _name, init) {
+  MDTrackFlashEncoder(char *_name = NULL, uint8_t init = 0, bool _allNone = false) :
+    RangeEncoder(0, _allNone ? MD_ALL_TRACKS : 15, _name, init) {
+    allNone = _allNone;
   }
 
+  bool allNone;
+
   virtual void displayAt(int i);
-	
+  
   /* @} */
 };
 
@@ -184,8 +187,8 @@ class MDMelodicTrackFlashEncoder : public MDTrackFlashEncoder {
 	
  public:
  MDMelodicTrackFlashEncoder(char *_name = NULL, uint8_t init = 0) : MDTrackFlashEncoder(_name, init) {
-  }
-
+ }
+  
   virtual void displayAt(int i);
 	
   /* @} */
