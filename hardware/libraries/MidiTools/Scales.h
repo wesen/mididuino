@@ -88,11 +88,11 @@ uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
 
 class ScaleEncoder : public RangeEncoder {
 public:
-  scale_t **scales;
+  const scale_t **scales;
   uint8_t numScales;
-  ScaleEncoder(char *_name = NULL, scale_t *_scales[] = NULL, uint8_t _numScales = 0);
+  ScaleEncoder(char *_name = NULL, const scale_t *_scales[] = NULL, uint8_t _numScales = 0);
 
-  scale_t *getScale();
+  const scale_t *getScale();
   void displayAt(int i);
 };
 

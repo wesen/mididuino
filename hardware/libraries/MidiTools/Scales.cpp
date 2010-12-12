@@ -288,18 +288,18 @@ scale_t minorMaj7ArpMin9 = {
 #ifdef MIDIDUINO
 
 /* scales Encoder */
-ScaleEncoder::ScaleEncoder(char *_name, scale_t *_scales[], uint8_t _numScales) :
+ScaleEncoder::ScaleEncoder(char *_name, const scale_t *_scales[], uint8_t _numScales) :
   RangeEncoder(0, _numScales, _name) {
   scales = _scales;
   numScales = _numScales;
 }
 
-scale_t *ScaleEncoder::getScale() {
+const scale_t *ScaleEncoder::getScale() {
   return scales[getValue()];
 }
 
 void ScaleEncoder::displayAt(int i) {
-  GUI.put_string_at(i * 4, getScale()->name);
+  GUI.put_string_at(i * 4, getScale()->shortName);
 }
 
 #endif /* MIDIDUINO */
