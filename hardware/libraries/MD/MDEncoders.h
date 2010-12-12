@@ -82,6 +82,34 @@ class MDFXEncoder : public RangeEncoder {
   /* @} */
 };
 
+/** This is the prototype of the handler method for the MD tempo encoder. **/
+void MDTempoEncoderHandle(Encoder *enc);
+
+
+/**
+ * This encoder controls the tempo of the MachineDrum.
+ **/
+class MDTempoEncoder : public RangeEncoder {
+  /**
+   * \addtogroup md_encoders
+   *
+   * @{
+   **/
+
+public:
+  MDTempoEncoder(char *_name = NULL, int init = 120) :
+    RangeEncoder(300, 30, _name, init, MDTempoEncoderHandle) {
+  }
+
+  void displayAt(int i) {
+    GUI.put_value_at(i << 2, getValue());
+    redisplay = false;
+  }
+/** @} **/
+};
+
+
+
 /**
  * This encoder controls a LFO parameter on a given track by sending sysex messages.
  **/

@@ -65,6 +65,12 @@ void MDFXEncoderHandle(Encoder *enc) {
   MD.sendFXParam(mdEnc->param, mdEnc->getValue(), mdEnc->effect);
 }
 
+void MDTempoEncoderHandle(Encoder *enc) {
+  RangeEncoder *rEnc = (RangeEncoder *)enc;
+
+  MD.setTempo(rEnc->getValue() * 24);
+}
+
 MDFXEncoder::MDFXEncoder(uint8_t _param, uint8_t _effect, char *_name, uint8_t init) :
   RangeEncoder(127, 0, _name, init) {
   initMDFXEncoder(_effect, _param);
