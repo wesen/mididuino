@@ -27,7 +27,7 @@
  **/
 
 class LeoTriggerClass {
- public:
+public:
   bool isTriggerOn;
   const static scale_t *scales[];
 
@@ -43,6 +43,8 @@ class LeoTriggerClass {
     currentScale = 0;
     numOctaves = 1;
     scaleSpread = 5;
+    trackStart = 1;
+    basePitch = MIDI_NOTE_C2;
   }
   
   void triggerTrack(uint8_t track) {
@@ -100,9 +102,9 @@ const scale_t *LeoTriggerClass::scales[] = {
 LeoTriggerClass leoTrigger;
 
 class ScaleSelectEncoder: public VarRangeEncoder {
- public:
+public:
   ScaleSelectEncoder(uint8_t *_var, int _max = 127, int _min = 0, const char *_name = NULL, int init = 0) :
-  VarRangeEncoder(_var, _max, _min, _name, init) {
+    VarRangeEncoder(_var, _max, _min, _name, init) {
   }
   
   void displayAt(int i) {
@@ -111,25 +113,31 @@ class ScaleSelectEncoder: public VarRangeEncoder {
 };
 
 class LeoScalePage : public EncoderPage {
- public:
+public:
   //  ScaleSelectEncoder scaleSelectEncoder;
   ScaleEncoder scaleSelectEncoder;
-  VarRangeEncoder basePitchEncoder;
+  NotePitchEncoder basePitchEncoder;
+  //  VarRangeEncoder basePitchEncoder;
   VarRangeEncoder spreadEncoder;
   VarRangeEncoder octaveEncoder;
 
- LeoScalePage() :
-  //  scaleSelectEncoder(&leoTrigger.currentScale, 0, countof(LeoTriggerClass::scales) - 1, "SCL"),
-  scaleSelectEncoder("SCL", LeoTriggerClass::scales, countof(LeoTriggerClass::scales) - 1),
-    basePitchEncoder(&leoTrigger.basePitch, 0, 127, "BAS"),
+  LeoScalePage() :
+    //  scaleSelectEncoder(&leoTrigger.currentScale, 0, countof(LeoTriggerClass::scales) - 1, "SCL"),
+    scaleSelectEncoder("SCL", LeoTriggerClass::scales, countof(LeoTriggerClass::scales) - 1),
+    //    basePitchEncoder(&leoTrigger.basePitch, 0, 127, "BAS"),
+    basePitchEncoder("BAS"),
     spreadEncoder(&leoTrigger.scaleSpread, 1, 10, "SPR"),
     octaveEncoder(&leoTrigger.numOctaves, 0, 5, "OCT") {
     setEncoders(&scaleSelectEncoder, &basePitchEncoder, &spreadEncoder, &octaveEncoder);
+    basePitchEncoder.setValue(leoTrigger.basePitch);
   }
 
   void loop() {
     if (scaleSelectEncoder.hasChanged()) {
       leoTrigger.currentScale = scaleSelectEncoder.getScale();
+    }
+    if (basePitchEncoder.hasChanged()) {
+      leoTrigger.basePitch = basePitchEncoder.getValue();
     }
   }
 
@@ -166,16 +174,17 @@ void MDPatternSelectEncoderHandleSpecial(Encoder *enc) {
 
 
 class LeoTriggerPage : public EncoderPage {
- public:
+public:
   MDTrackFlashEncoder trackStartEncoder;
   BoolEncoder triggerOnOffEncoder;
   MDKitSelectEncoder kitSelectEncoder;
   MDPatternSelectEncoder patternSelectEncoder;
   
- LeoTriggerPage() :
-  trackStartEncoder("STR"), triggerOnOffEncoder("TRG"),
+  LeoTriggerPage() :
+    trackStartEncoder("STR"), triggerOnOffEncoder("TRG", leoTrigger.isTriggerOn),
     kitSelectEncoder("KIT"), patternSelectEncoder("PAT") {
-    
+
+    trackStartEncoder.setValue(leoTrigger.trackStart);
     // set special handlers for kit and pattern select encoders
     kitSelectEncoder.handler = MDKitSelectEncoderHandleSpecial;
     patternSelectEncoder.handler = MDPatternSelectEncoderHandleSpecial;
@@ -208,13 +217,18 @@ class LeoTriggerPage : public EncoderPage {
 };
  
 class MuteTrigPage : public EncoderPage, MDCallback {
- public:
+public:
   MDTrackFlashEncoder trackEncoder;
   MDTrigGroupEncoder trigEncoder;
   MDMuteGroupEncoder muteEncoder;
+  MDTempoEncoder tempoEncoder;
 
- MuteTrigPage() : trackEncoder("TRK"), trigEncoder(0, "TRG", 16), muteEncoder(0, "MUT", 16) {
-    setEncoders(&trackEncoder, &trigEncoder, &muteEncoder);
+  MuteTrigPage() :
+    trackEncoder("TRK"),
+    trigEncoder(0, "TRG", 16),
+    muteEncoder(0, "MUT", 16),
+    tempoEncoder("TMP") {
+    setEncoders(&trackEncoder, &trigEncoder, &muteEncoder, &tempoEncoder);
     MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)(&MuteTrigPage::onKitChanged));
   }
 
@@ -255,11 +269,11 @@ class LeoMDLFOTrackSelectPage : public EncoderPage {
    *
    * @{
    **/
- public:
+public:
   MDTrackFlashEncoder trackEncoder;
   MDLFOPage *lfoPage1, *lfoPage2;
 
- LeoMDLFOTrackSelectPage(MDLFOPage *_lfoPage1, MDLFOPage *_lfoPage2) : trackEncoder("TRK") {
+  LeoMDLFOTrackSelectPage(MDLFOPage *_lfoPage1, MDLFOPage *_lfoPage2) : trackEncoder("TRK") {
     encoders[0] = &trackEncoder;
     lfoPage1 = _lfoPage1;
     lfoPage2 = _lfoPage2;
@@ -275,10 +289,10 @@ class LeoMDLFOTrackSelectPage : public EncoderPage {
 };
 
 class LeoMDLFOPage : public MDLFOPage, MDCallback {
- public:
+public:
   bool isInPage1;
 	
- LeoMDLFOPage() : MDLFOPage() {
+  LeoMDLFOPage() : MDLFOPage() {
     isInPage1 = true;
     MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)(&LeoMDLFOPage::onKitChanged));
     for (int i = 0; i < 4; i++) {
@@ -323,11 +337,11 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   MDPitchEuclidConfigPage2 euclidPage2;
   MDPitchEuclid pitchEuclid;
 
- public:
- LeoSketch() :
-   lfoSelectPage(&lfoPage1, &lfoPage2),
-   euclidPage1(&pitchEuclid),
-   euclidPage2(&pitchEuclid, LeoTriggerClass::scales, countof(LeoTriggerClass::scales) - 1)
+public:
+  LeoSketch() :
+    lfoSelectPage(&lfoPage1, &lfoPage2),
+    euclidPage1(&pitchEuclid),
+    euclidPage2(&pitchEuclid, LeoTriggerClass::scales, countof(LeoTriggerClass::scales) - 1)
   {
   }
 	
