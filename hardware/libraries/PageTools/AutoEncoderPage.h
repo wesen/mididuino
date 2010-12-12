@@ -52,6 +52,13 @@ class AutoEncoderPage : public EncoderPage, public ClockCallback {
 
   bool muted;
 
+  /** Button to press to autolearn last 4. **/
+  uint8_t learnButton;
+  /** Button to press to start/stop recording. **/
+  uint8_t recordButton;
+  /** Button to press to clear recordings. **/
+  uint8_t clearButton;
+
   void on32Callback(uint32_t counter);
   void startRecording();
   void stopRecording();
@@ -101,6 +108,10 @@ void AutoEncoderPage<EncoderType>::clearRecording(uint8_t i) {
 
 template <typename EncoderType>
 void AutoEncoderPage<EncoderType>::setup() {
+  learnButton = Buttons.BUTTON2;
+  recordButton = Buttons.BUTTON3;
+  clearButton = Buttons.BUTTON4;
+  
   muted = false;
   for (uint8_t i = 0; i < 4; i++) {
     realEncoders[i].setName("___");
@@ -158,22 +169,22 @@ void AutoEncoderPage<EncoderType>::autoLearnLast4() {
 
 template <typename EncoderType>
 bool AutoEncoderPage<EncoderType>::handleEvent(gui_event_t *event) {
-  if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+  if (EVENT_PRESSED(event, learnButton)) {
     autoLearnLast4();
     return true;
   }
-  if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+  if (EVENT_PRESSED(event, recordButton)) {
     startRecording();
     return true;
   }
-  if (EVENT_RELEASED(event, Buttons.BUTTON3)) {
+  if (EVENT_RELEASED(event, recordButton)) {
     stopRecording();
     return true;
   }
-  if (EVENT_PRESSED(event, Buttons.BUTTON4) || EVENT_RELEASED(event, Buttons.BUTTON4)) {
+  if (EVENT_PRESSED(event, clearButton) || EVENT_RELEASED(event, clearButton)) {
     return true;
   }
-  if (BUTTON_DOWN(Buttons.BUTTON4)) {
+  if (BUTTON_DOWN(clearButton)) {
     for (uint8_t i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
       if (EVENT_PRESSED(event, i)) {
         GUI.setLine(GUI.LINE1);
