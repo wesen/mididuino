@@ -30,6 +30,7 @@ class LeoTriggerClass {
  public:
   bool isTriggerOn;
   const static scale_t *scales[];
+  const static char *scaleNames[];
   uint8_t currentScale;
   uint8_t numOctaves;
   uint8_t basePitch;
@@ -80,18 +81,48 @@ class LeoTriggerClass {
 const scale_t *LeoTriggerClass::scales[] = {
   &ionianScale,
   &aeolianScale,
+
+  &harmonicMinorScale,
+  &melodicMinorScale,
+  &lydianDominantScale,
+
+  &wholeToneScale,
+  &wholeHalfStepScale,
+  &halfWholeStepScale,
+
   &bluesScale,
   &majorPentatonicScale,
+  &minorPentatonicScale,
+  &suspendedPentatonicScale,
+  &inSenScale,
+
+  &majorBebopScale,
+  &dominantBebopScale,
+  &minorBebopScale,
+
+  &majorArp,
+  &minorArp,
   &majorMaj7Arp,
   &majorMin7Arp,
-  &minorMin7Arp
+  &minorMin7Arp,
 };
 
 LeoTriggerClass leoTrigger;
 
+class ScaleSelectEncoder: public VarRangeEncoder {
+ public:
+  ScaleSelectEncoder(uint8_t *_var, int _max = 127, int _min = 0, const char *_name = NULL, int init = 0) :
+  VarRangeEncoder(_var, _max, _min, _name, init) {
+  }
+  
+  void displayAt(int i) {
+    GUI.put_string_at(i * 4, LeoTriggerClass::scales[getValue()]->shortName);
+  }
+};
+
 class LeoScalePage : public EncoderPage {
  public:
-  VarRangeEncoder scaleSelectEncoder;
+  ScaleSelectEncoder scaleSelectEncoder;
   VarRangeEncoder basePitchEncoder;
   VarRangeEncoder spreadEncoder;
   VarRangeEncoder octaveEncoder;
