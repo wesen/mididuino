@@ -229,6 +229,13 @@ public:
   /** Executes the encoder actions by calling checkHandle() on each encoder. **/
   virtual void finalize();
 
+  /** Call this to lock all encoders in the page. **/
+  void lockEncoders();
+  /** Call this to unlock all encoders in the page. If their value
+      changed while locked, they will send out their new value.
+  **/
+  void unlockEncoders();
+
   /**
    * Used to display the names of the encoders on its own (useful if
    * the encoders can update their name, for example when

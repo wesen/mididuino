@@ -82,6 +82,22 @@ void EncoderPage::displayNames() {
   }
 }
 
+void EncoderPage::lockEncoders() {
+  for (uint8_t i = 0; i < 4; i++) {
+    if (encoders[i] != NULL) {
+      encoders[i]->locked = true;
+    }
+  }
+}
+
+void EncoderPage::unlockEncoders() {
+  for (uint8_t i = 0; i < 4; i++) {
+    if (encoders[i] != NULL) {
+      encoders[i]->locked = false;
+      encoders[i]->checkHandle();
+    }
+  }
+}
 
 void SwitchPage::display() {
   if (redisplay) {
