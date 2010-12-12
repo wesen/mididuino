@@ -230,11 +230,8 @@ public:
    * variable pointed to by _var.
    **/
   VarRangeEncoder(uint8_t *_var, int _max = 127, int _min = 0, const char *_name = NULL, int init = 0) :
-    RangeEncoder(_max, _min, _name, init, VarRangeEncoderHandle) {
+    RangeEncoder(_max, _min, _name, _var == NULL ? init : *_var, VarRangeEncoderHandle) {
     var = _var;
-    if (var != NULL) {
-      *var = init;
-    }
     handler = VarRangeEncoderHandle;
   }
 
