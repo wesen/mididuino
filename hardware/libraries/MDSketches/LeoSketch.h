@@ -203,18 +203,6 @@ class LeoTriggerPage : public EncoderPage {
   }
   
   virtual bool handleEvent(gui_event_t *event) {
-    // change kit only if encoder1 is not pressed
-    // when encoder1 is released, then change kit if it was moved
-    if (EVENT_RELEASED(event, Buttons.ENCODER1)) {
-      if (MDKitSelectEncoderChanged) {
-	MDKitSelectEncoderHandleSpecial(&kitSelectEncoder);
-      }
-      if (MDPatternSelectEncoderChanged) {
-	MDPatternSelectEncoderHandleSpecial(&patternSelectEncoder);
-      }
-      return true;
-    }
-		
     return leoTrigger.handleEvent(event);
   }
 };
@@ -391,8 +379,9 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
   }
 
   virtual bool handleEvent(gui_event_t *event) {
+    EncoderPage *_currentPage = (EncoderPage *)currentPage();
     // handle modal pages first
-    if (currentPage() == &switchPage) {
+    if (_currentPage == &switchPage) {
       if (EVENT_RELEASED(event, Buttons.BUTTON4)) {
 	if (!switchPage.setSelectedPage()) {
 	  popPage(&switchPage);
@@ -404,7 +393,7 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
     }
 
     // return from lfoSelectPage
-    if (currentPage() == &lfoSelectPage) {
+    if (_currentPage == &lfoSelectPage) {
       if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
 	popPage(&lfoSelectPage);
         return true;
@@ -419,8 +408,8 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
       return true;
     }
 
-    if ((currentPage() == &lfoPage1) ||
-        (currentPage() == &lfoPage2)) {
+    if ((_currentPage == &lfoPage1) ||
+        (_currentPage == &lfoPage2)) {
       if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
         pushPage(&lfoSelectPage);
         return true;
@@ -428,12 +417,12 @@ class LeoSketch : public Sketch, public MDCallback, public ClockCallback {
     }
 
     // hold on button2 except for autoMDPage
-    if (currentPage() != &autoMDPage) {
+    if (_currentPage != &autoMDPage) {
       if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
-        // start hold XXX
+        _currentPage->lockEncoders();
         return true;
       } else if (EVENT_RELEASED(event, Buttons.BUTTON2)) {
-        // release hold XXX
+        _currentPage->unlockEncoders();
         return true;
       }
     }
