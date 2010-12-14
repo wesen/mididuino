@@ -141,9 +141,6 @@ public:
     }
   }
 
-  virtual bool handleEvent(gui_event_t *event) {
-    return leoTrigger.handleEvent(event);
-  }
 };
 
 // set to true when the kit encoder is moved but no kit loading
@@ -211,9 +208,6 @@ public:
     }
   }
   
-  virtual bool handleEvent(gui_event_t *event) {
-    return leoTrigger.handleEvent(event);
-  }
 };
  
 class MuteTrigPage : public EncoderPage, MDCallback {
@@ -246,9 +240,6 @@ public:
     }
   }
 
-  virtual bool handleEvent(gui_event_t *event) {
-    return leoTrigger.handleEvent(event);
-  }
 };
 
 void MDLFOEncoderHandle(Encoder *enc);
@@ -468,8 +459,8 @@ public:
         return true;
       }
     }
-    
-    return false;
+
+    return leoTrigger.handleEvent(event);
   }
 
   void on16Callback(uint32_t counter) {
