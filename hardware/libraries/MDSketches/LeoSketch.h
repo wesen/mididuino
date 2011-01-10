@@ -460,6 +460,11 @@ public:
       }
     }
 
+    if ((_currentPage == &lfoPage1) ||
+        (_currentPage == &lfoPage2)) {
+      // no trigs on lfo page 1 and lfo page 2
+      return false;
+    }
     return leoTrigger.handleEvent(event);
   }
 
