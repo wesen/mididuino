@@ -47,7 +47,7 @@ class Encoder {
 	
 public:
   /** Old value (before move), current value. **/
-  int old, cur;
+  int old, cur, old_lock;
   /** Short name. **/
   char name[4];
   /**
@@ -106,6 +106,15 @@ public:
    * the handling function handler if it is different from NULL.
    **/
   virtual void checkHandle();
+  /**
+   * Lock the encoder so that changes don't trigger an action. This is released by unlock.
+   **/
+  virtual void lock();
+  /**
+   * Unlock the encoder. If the value has changed compared to the
+   * value before the lock(), an update is triggered.
+   **/
+  virtual void unlock();
 
   /** Returns true if the encoder value changed. **/
   virtual bool hasChanged();

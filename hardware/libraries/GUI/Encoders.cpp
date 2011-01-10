@@ -70,12 +70,11 @@ Encoder::Encoder(const char *_name, encoder_handle_t _handler)
 }
 
 void Encoder::checkHandle() {
-  if (locked)
-    return;
-  
   if (cur != old) {
-    if (handler != NULL)
-      handler(this);
+    if (!locked) {
+      if (handler != NULL)
+        handler(this);
+    }
   }
   
   old = cur;
@@ -97,13 +96,24 @@ void Encoder::setValue(int value, bool handle) {
   redisplay = true;
 }
 
+void Encoder::lock() {
+  old_lock = old;
+  locked = true;
+}
+
+void Encoder::unlock() {
+  locked = false;
+  old = old_lock;
+  checkHandle();
+}
+
 void Encoder::displayAt(int i) {
   GUI.put_value(i, getValue());
   redisplay = false;
 }
 
 bool Encoder::hasChanged() {
-  return old != cur;
+  return old != cur && !locked;
 }
 
 void Encoder::clear() {

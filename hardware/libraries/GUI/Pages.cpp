@@ -58,7 +58,10 @@ void EncoderPage::display() {
   GUI.setLine(GUI.LINE2);
   for (uint8_t i = 0; i < 4; i++) {
     if (encoders[i] != NULL)
-      if (encoders[i]->hasChanged() || redisplay || encoders[i]->redisplay) {
+      if (
+          // we need to check "by hand" here to bypass the lock protection
+          (encoders[i]->old != encoders[i]->cur)  ||
+          redisplay || encoders[i]->redisplay) {
         encoders[i]->displayAt(i);
       }
   }
@@ -85,7 +88,7 @@ void EncoderPage::displayNames() {
 void EncoderPage::lockEncoders() {
   for (uint8_t i = 0; i < 4; i++) {
     if (encoders[i] != NULL) {
-      encoders[i]->locked = true;
+      encoders[i]->lock();
     }
   }
 }
@@ -93,8 +96,7 @@ void EncoderPage::lockEncoders() {
 void EncoderPage::unlockEncoders() {
   for (uint8_t i = 0; i < 4; i++) {
     if (encoders[i] != NULL) {
-      encoders[i]->locked = false;
-      encoders[i]->checkHandle();
+      encoders[i]->unlock();
     }
   }
 }
