@@ -1,7 +1,7 @@
-CXX = llvm-g++-4.2
-#CXX = g++
-CC = llvm-gcc-4.2
-#CC = gcc
+#CXX = llvm-g++-4.2
+CXX = g++
+#CC = llvm-gcc-4.2
+CC = gcc
 #ARCHFLAGS = -arch x86_64
 
 BASE_DIR=../..
@@ -21,7 +21,7 @@ CXXFLAGS += -I$(CPPUNITDIR)/src
 CLDFLAGS += $(CPPUNITDIR)/cppunitlite.a
 
 CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g -O4
-CFLAGS += -O4
+CFLAGS += -O2
 CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
 
 UNAME=$(shell uname)
