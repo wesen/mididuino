@@ -1,0 +1,8 @@
+MIDI tracks now respond to note events.
+
+Encoders can now be locked/unlocked through the EncoderPage.
+
+MDPattern has a swapTracks method.
+
+MDKit has a swapTracks method.
+
