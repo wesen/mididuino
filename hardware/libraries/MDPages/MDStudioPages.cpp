@@ -14,8 +14,15 @@ bool MDSwapTrackPage::handleEvent(gui_event_t *event) {
     uint8_t dst = dstEncoder.getValue();
     if (src != dst) {
       pattern->swapTracks(src, dst);
-      ElektronDataToSysexEncoder encoder(&MidiUart);
-      pattern->toSysex(encoder);
+      MD.kit.swapTracks(src, dst);
+      {
+        ElektronDataToSysexEncoder encoder(&MidiUart);
+        pattern->toSysex(encoder);
+      }
+      {
+        ElektronDataToSysexEncoder encoder(&MidiUart);
+        MD.kit.toSysex(encoder);
+      }
       GUI.flash_p_strings_fill(PSTR("SWAPPED TRACKS"), PSTR(""));
     }
     return true;
