@@ -31,12 +31,12 @@ public:
   }
   
   void callbackNone() {
-		//    printf("call none\n");
+    //    printf("call none\n");
     callbackNoneCalled = true;
   }
 
   void callbackNone2() {
-		//    printf("call none2 \n");
+    //    printf("call none2 \n");
     callbackNone2Called = true;
   }
   
@@ -53,8 +53,8 @@ public:
 };
 
 struct CallbackFixture {
-  CallbackVector<Foobar, 4>                   callbackNoneList;
-  CallbackVector1<Foobar, 4, int>           callbackIntList;
+  CallbackVector<Foobar, 4>            callbackNoneList;
+  CallbackVector1<Foobar, 4, int>      callbackIntList;
   CallbackVector2<Foobar, 4, int, int> callbackInt2List;
   Foobar foobar;
 };
