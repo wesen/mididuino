@@ -146,6 +146,11 @@ public:
 
   virtual void recalculateLockPatterns();
 
+  /**
+   * Swap two tracks of the patterns by copying hits, param locks and
+   * other information from one to the other. The kit information of
+   * course needs to be swapped separately.
+   **/
   void swapTracks(uint8_t srcTrack, uint8_t dstTrack);
 
   /* @} */

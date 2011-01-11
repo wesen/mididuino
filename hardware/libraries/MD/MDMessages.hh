@@ -225,6 +225,11 @@ public:
    **/
   uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
 
+  /**
+   * Swap two machines.
+   **/
+  void swapTracks(uint8_t srcTrack, uint8_t dstTrack);
+
   /* @} */
 };
 

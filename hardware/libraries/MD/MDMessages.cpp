@@ -219,6 +219,65 @@ uint16_t MDKit::toSysex(ElektronDataToSysexEncoder &encoder) {
   return enclen + 5;
 }
 
+uint8_t swapNumber(uint8_t num, uint8_t a, uint8_t b) {
+  if (num == a) {
+    return b;
+  } else if (num == b) {
+    return a;
+  } else {
+    return num;
+  }
+}
+
+void MDKit::swapTracks(uint8_t srcTrack, uint8_t dstTrack) {
+  uint8_t _params[24];
+  uint8_t _level;
+  uint32_t _model;
+  MDLFO _lfo;
+  uint8_t _trigGroup;
+  uint8_t _muteGroup;
+
+  /* adjust lfo destination, as well as trig and mute groups. */
+#if 0
+  for (uint8_t i = 0; i < 16; i++) {
+    lfos[i].destinationTrack = swapNumber(lfos[i].destinationTrack, srcTrack, dstTrack);
+    trigGroups[i] = swapNumber(trigGroups[i], srcTrack, dstTrack);
+    muteGroups[i] = swapNumber(muteGroups[i], srcTrack, dstTrack);
+    if (models[i] == CTR_8P_MODEL) {
+      for (uint8_t j = 8; j < 24; j += 2) {
+        params[i][j] = swapNumber(params[i][j], srcTrack, dstTrack);
+      }
+    }
+  }
+#endif
+
+  /* swap params */
+  m_memcpy(_params, params[srcTrack], 24);
+  m_memcpy(params[srcTrack], params[dstTrack], 24);
+  m_memcpy(params[dstTrack], _params, 24);
+
+  m_memcpy(&_lfo, &lfos[srcTrack], sizeof(_lfo));
+  m_memcpy(&lfos[srcTrack], &lfos[dstTrack], sizeof(_lfo));
+  m_memcpy(&lfos[dstTrack], &_lfo, sizeof(_lfo));
+  
+  /* swap level, model, trig group, mute group */
+  _level = levels[srcTrack];
+  levels[srcTrack] = levels[dstTrack];
+  levels[dstTrack] = _level;
+
+  _model = models[srcTrack];
+  models[srcTrack] = models[dstTrack];
+  models[dstTrack] = _model;
+ 
+  _trigGroup = trigGroups[srcTrack];
+  trigGroups[srcTrack] = trigGroups[dstTrack];
+  trigGroups[dstTrack] = _trigGroup;
+  
+  _muteGroup = muteGroups[srcTrack];
+  muteGroups[srcTrack] = muteGroups[dstTrack];
+  muteGroups[dstTrack] = _muteGroup;
+}
+
 bool MDSong::fromSysex(uint8_t *data, uint16_t len) {
   if (len < 0x1a - 7)
     return false;
