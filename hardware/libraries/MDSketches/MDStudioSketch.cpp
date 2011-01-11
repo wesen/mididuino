@@ -56,8 +56,23 @@ bool MDStudioSketch::handleEvent(gui_event_t *event) {
     }
   } else {
     if (EVENT_PRESSED(event, Buttons.BUTTON3)) {
+      if (MD.currentPattern == -1) {
+        GUI.flash_p_strings_fill(PSTR("NO MD"), PSTR("FOUND"));
+        return true;
+      }
       GUI.flash_p_strings_fill(PSTR("REQUESTING"), PSTR("PATTERN"));
-      MD.requestPattern(MD.currentPattern);
+      bool result = MD.getBlockingPattern(MD.currentPattern);
+      if (result) {
+        GUI.flash_p_strings_fill(PSTR("REQUESTING"), PSTR("KIT"));
+        result = MD.getBlockingKit(pattern.kit);
+        if (result) {
+          GUI.flash_p_strings_fill(PSTR("GOT"), PSTR("PAT + KIT"));
+        } else {
+          GUI.flash_p_strings_fill(PSTR("ERROR"), PSTR("KIT"));
+        }
+      } else {
+        GUI.flash_p_strings_fill(PSTR("ERROR"), PSTR("PATTERN"));
+      }
       return true;
     }
     if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
