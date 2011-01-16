@@ -27,11 +27,11 @@ class ClockCallback {
 typedef void (ClockCallback::*midi_clock_callback_ptr_t)(uint32_t count);
 
 class MidiClockClass {
-	/**
-	 * \addtogroup midi_clock 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_clock 
+   *
+   * @{
+   **/
 	
  public:
   volatile uint32_t indiv96th_counter;
@@ -76,8 +76,8 @@ class MidiClockClass {
     EXTERNAL,
     EXTERNAL_UART2
   } clock_mode_t;
-  #define INTERNAL_MIDI INTERNAL
-  #define EXTERNAL_MIDI EXTERNAL
+#define INTERNAL_MIDI INTERNAL
+#define EXTERNAL_MIDI EXTERNAL
 
 #else  
   typedef enum {
@@ -136,8 +136,8 @@ class MidiClockClass {
   void handleClock();
   void handleImmediateClock();
   void updateClockInterval();
-	void incrementCounters();
-	void callCallbacks();
+  void incrementCounters();
+  void callCallbacks();
 
   void handleMidiStart();
   void handleMidiContinue();
@@ -156,7 +156,7 @@ class MidiClockClass {
     return state == STARTED;
   }
 
-	/* @} */
+  /* @} */
 };
 
 extern MidiClockClass MidiClock;
