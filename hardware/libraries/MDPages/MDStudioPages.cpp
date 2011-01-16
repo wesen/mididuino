@@ -1,7 +1,11 @@
 #include <MDStudioSketch.h>
 #include <MDStudioPages.h>
 
-/* MDSwapTrackPage */
+/***************************************************************************
+ *
+ * MDSwapTrackPage
+ *
+ ***************************************************************************/
 
 MDSwapTrackPage::MDSwapTrackPage(MDPattern *_pattern) :
   pattern(_pattern), srcEncoder("TR1"), dstEncoder("TR2") {
@@ -32,7 +36,11 @@ bool MDSwapTrackPage::handleEvent(gui_event_t *event) {
 }
 
 
-/* MDSwapPatternPage */
+/***************************************************************************
+ *
+ * MDSwapPatternPage
+ *
+ ***************************************************************************/
 
 void MDSwapPatternPage::setup() {
   MDTask.addOnPatternChangeCallback(this, (md_callback_ptr_t)&MDSwapPatternPage::onPatternChange);
@@ -128,7 +136,11 @@ void MDSwapPatternPage::onPatternChange() {
   srcEncoder.setValue(MD.currentPattern);
 }
 
-/* MDTransposePatternPage */
+/***************************************************************************
+ *
+ * MDTransposePatternPage
+ *
+ ***************************************************************************/
 
 MDTransposePatternPage::MDTransposePatternPage(MDPattern *_pattern) :
   pattern(_pattern), trackEncoder("TRK"), offsetEncoder(-48, 48, "OFF") {
