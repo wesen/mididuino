@@ -22,10 +22,10 @@
 
 /** Represents a task that is executed at a regular interval. **/
 class Task {
-	/**
-	 * \addtogroup helpers_task
-	 * @{
-	 **/
+  /**
+   * \addtogroup helpers_task
+   * @{
+   **/
 	
 public:
   uint16_t interval;
@@ -34,7 +34,7 @@ public:
 
   void (*taskFunction)();
 
-	/** Create a task to be executed approximately every _interval ticks, calling the function _taskFunction. **/
+  /** Create a task to be executed approximately every _interval ticks, calling the function _taskFunction. **/
   Task(uint16_t _interval, void (*_taskFunction)() = NULL) {
     interval = _interval;
     lastExecution = 0;
@@ -42,14 +42,14 @@ public:
     starting = true;
   }
 
-	/** Execute the task by calling the taskFunction. **/
+  /** Execute the task by calling the taskFunction. **/
   virtual void run() {
     if (taskFunction != NULL) {
       taskFunction();
     }
   }
 
-	/** Check if the task needs to be executed. **/
+  /** Check if the task needs to be executed. **/
   void checkTask() {
     uint16_t clock = read_slowclock();
     if (clock_diff(lastExecution, clock) > interval || starting) {
@@ -59,7 +59,7 @@ public:
     }
   }
 
-	/** Remove the task, calling its cleanup code (empty for now). **/
+  /** Remove the task, calling its cleanup code (empty for now). **/
   virtual void destroy() {
   }
 
@@ -68,7 +68,7 @@ public:
   }
 #endif
 
-	/* @} */
+  /* @} */
 };
 
 /* @} @} */
