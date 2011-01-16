@@ -8,6 +8,8 @@
 #include <TestResultStdErr.h>
 #include <Test.h>
 
+#include "test_helpers.h"
+
 #include <MD.h>
 
 /***************************************************************************
@@ -55,9 +57,6 @@ void initMDKit(MDKit &kit) {
     kit.dynamics[param] = param * 4;
   }
 }
-
-#define M_CHECK_EQUAL(val1, val2) \
-  if ((val1) != (val2)) { printf("failure at line %d in %s\n", __LINE__, __FILE__); return false; } 
 
 bool cmp_lfos(MDLFO &lfo, MDLFO &lfo2) {
   M_CHECK_EQUAL(lfo.destinationTrack, lfo2.destinationTrack);

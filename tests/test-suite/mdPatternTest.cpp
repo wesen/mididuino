@@ -1,10 +1,110 @@
+/*
+ * MidiCtrl - MD Pattern unit tests
+ *
+ * (c) 2010 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+
 #include <CppUnitLite2.h>
 #include <TestResultStdErr.h>
 
 #include "WProgram.h"
 #include <MD.h>
 
-#include "../pattern-tests/PrintMDPattern.h"
+#include "test_helpers.h"
+
+/***************************************************************************
+ *
+ * Comparison and initialization functions
+ *
+ ***************************************************************************/
+
+void print_pattern_track(MDPattern &pat, uint8_t track) {
+  for (uint32_t i = 0; i < pat.patternLength; i++) {
+    if (IS_BIT_SET64(pat.trigPatterns[track], i)) {
+      printf("X   ");
+    } else {
+      printf(".   ");
+    }
+  }
+  printf("\n");
+}
+
+void print_pattern_locks(MDPattern &pat, uint8_t track) {
+  for (uint8_t param = 0; param < 24; param++) {
+    if (pat.isParamLocked(track, param)) {
+      printf("P%.2d (idx: %d): ", param, pat.paramLocks[track][param]);
+      for (uint8_t i = 0; i < pat.patternLength; i++) {
+        uint8_t lock = pat.getLock(track, i, param);
+        if (lock != 255) {
+          printf("%.3d ", lock);
+        } else {
+          printf("    ");
+        }
+      }
+      printf("\n");
+    }
+  }
+}
+
+bool cmp_patterns(MDPattern &pat, MDPattern &pat2) {
+  M_CHECK_EQUAL(pat.origPosition, pat2.origPosition);
+  M_CHECK_EQUAL_L(pat.accentPattern, pat2.accentPattern);                       
+  M_CHECK_EQUAL_L(pat.slidePattern, pat2.slidePattern);                         
+  M_CHECK_EQUAL_L(pat.swingPattern, pat2.swingPattern);                         
+  M_CHECK_EQUAL(pat.swingAmount, pat2.swingAmount);                           
+  M_CHECK_EQUAL(pat.accentAmount, pat2.accentAmount);                         
+  M_CHECK_EQUAL(pat.patternLength, pat2.patternLength);                       
+  M_CHECK_EQUAL(pat.doubleTempo, pat2.doubleTempo);                           
+  M_CHECK_EQUAL(pat.scale, pat2.scale);                                       
+  M_CHECK_EQUAL(pat.kit, pat2.kit);                                           
+  
+  for (uint8_t track = 0; track < 16; track++) {
+    M_CHECK_EQUAL_L(pat.trigPatterns[track], pat2.trigPatterns[track]);         
+    M_CHECK_EQUAL(pat.lockPatterns[track], pat2.lockPatterns[track]);         
+    M_CHECK_EQUAL_L(pat.accentPatterns[track], pat2.accentPatterns[track]);     
+    M_CHECK_EQUAL_L(pat.slidePatterns[track], pat2.slidePatterns[track]);       
+    M_CHECK_EQUAL_L(pat.swingPatterns[track], pat2.swingPatterns[track]);       
+
+    for (uint8_t param = 0; param < 24; param++) {                         
+      M_CHECK_EQUAL(pat.isParamLocked(track, param),                         
+                    pat2.isParamLocked(track, param));                        
+      for (uint8_t step = 0; step < pat.patternLength; step++) {                          
+        M_CHECK_EQUAL(pat.getLock(track, step, param),                       
+                      pat2.getLock(track, step, param));                      
+      }                               
+    } 
+  }
+
+  
+  return true;
+}
+
+bool cmp_pattern_tracks(MDPattern &pat, uint8_t idx1,
+                        MDPattern &pat2, uint8_t idx2) {
+  M_CHECK_EQUAL_L(pat.trigPatterns[idx1], pat2.trigPatterns[idx2]);
+  M_CHECK_EQUAL(pat.lockPatterns[idx1], pat2.lockPatterns[idx2]);
+  M_CHECK_EQUAL_L(pat.accentPatterns[idx1], pat2.accentPatterns[idx2]);
+  M_CHECK_EQUAL_L(pat.slidePatterns[idx1], pat2.slidePatterns[idx2]);
+  M_CHECK_EQUAL_L(pat.swingPatterns[idx1], pat2.slidePatterns[idx2]);
+
+  for (uint8_t param = 0; param < 24; param++) {
+    M_CHECK_EQUAL(pat.isParamLocked(idx1, param),
+                  pat2.isParamLocked(idx2, param));
+    for (uint8_t step = 0; step < pat.patternLength; step++) {
+      M_CHECK_EQUAL(pat.getLock(idx1, step, param),
+                    pat2.getLock(idx1, step, param));
+    }
+  }
+
+  return true;
+}
+
+/***************************************************************************
+ *
+ * Test Fixture
+ *
+ ***************************************************************************/
 
 struct MDPatternFixture {
   MDPatternFixture() {
@@ -15,52 +115,23 @@ struct MDPatternFixture {
   MDPattern pattern2;
 };
 
+/***************************************************************************
+ *
+ * MD Pattern tests
+ *
+ ***************************************************************************/
+
 /** Check that a pattern is initially empty. **/
 TEST_F (MDPatternFixture, MDPatternTestInit) {
+  pattern.clearPattern();
   for (uint8_t i = 0; i < 16; i++) {
     CHECK(pattern.isTrackEmpty(i));
   }
 }
 
-#define M_CHECK_EQUAL(val1, val2) \
-  if ((val1) != (val2)) { return false; }
-
-bool cmp_patterns(MDPattern &pat, MDPattern &pat2) {
-
-  M_CHECK_EQUAL(pat.origPosition, pat2.origPosition);
-  M_CHECK_EQUAL(pat.accentPattern, pat2.accentPattern);                       
-  M_CHECK_EQUAL(pat.slidePattern, pat2.slidePattern);                         
-  M_CHECK_EQUAL(pat.swingPattern, pat2.swingPattern);                         
-  M_CHECK_EQUAL(pat.swingAmount, pat2.swingAmount);                           
-  M_CHECK_EQUAL(pat.accentAmount, pat2.accentAmount);                         
-  M_CHECK_EQUAL(pat.patternLength, pat2.patternLength);                       
-  M_CHECK_EQUAL(pat.doubleTempo, pat2.doubleTempo);                           
-  M_CHECK_EQUAL(pat.scale, pat2.scale);                                       
-  M_CHECK_EQUAL(pat.kit, pat2.kit);                                           
-  
-  for (uint8_t track = 0; track < 16; track++) {
-    M_CHECK_EQUAL(pat.trigPatterns[track], pat2.trigPatterns[track]);         
-    M_CHECK_EQUAL(pat.lockPatterns[track], pat2.lockPatterns[track]);         
-    M_CHECK_EQUAL(pat.accentPatterns[track], pat2.accentPatterns[track]);     
-    M_CHECK_EQUAL(pat.slidePatterns[track], pat2.slidePatterns[track]);       
-    M_CHECK_EQUAL(pat.swingPatterns[track], pat2.swingPatterns[track]);       
-
-    for (uint8_t param = 0; param < 24; param++) {                         
-      M_CHECK_EQUAL(pat.isParamLocked(track, param),                         
-                    pat2.isParamLocked(track, param));                        
-      for (uint8_t step = 0; step < 32; step++) {                          
-        M_CHECK_EQUAL(pat.getLock(track, step, param),                       
-                    pat2.getLock(track, step, param));                      
-      }                               
-    } 
-  }
-
-  
-  return true;
-}
 
 /**
- * Check that an empty pattenr is converted to and from sysex correctly.
+ * Check that an empty pattern is converted to and from sysex correctly.
  **/
 TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
   MDPattern p2;
@@ -463,7 +534,6 @@ TEST_F (MDPatternFixture, MDPatternClearLockSkip) {
 }
 
 TEST_F (MDPatternFixture, MDPatternClearLockSkipClearOne) {
-  PrintMDPattern pattern;
   pattern.init();
   pattern.patternLength = 64;
 
