@@ -1,20 +1,33 @@
+/*
+ * MidiCtrl - MDKit unit tests
+ *
+ * (c) 2010 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #include <CppUnitLite2.h>
 #include <TestResultStdErr.h>
 #include <Test.h>
 
 #include <MD.h>
 
-struct MDKitFixture {
-  MDKitFixture() {
+/***************************************************************************
+ *
+ * Initialization functions for MD Kit tests
+ *
+ ***************************************************************************/
+
+void initMDLFO(MDLFO &lfo, uint8_t track) {
+  lfo.destinationTrack = track;
+  lfo.destinationParam = track * 2;
+  lfo.shape1 = 1;
+  lfo.shape2 = 2;
+  lfo.type = 0;
+  for (uint8_t i = 0; i < 31; i++) {
+    lfo.state[i] = track;
   }
-
-  MDKit kit;
-  MDKit kit2;
-
-
-};
-
-void initMDLFO(MDLFO &lfo) {
+  lfo.speed = track;
+  lfo.depth = track;
+  lfo.mix = track;
 }
 
 void initMDKit(MDKit &kit) {
@@ -30,6 +43,8 @@ void initMDKit(MDKit &kit) {
     kit.levels[track] = track;
     kit.trigGroups[track] = track;
     kit.muteGroups[track] = track;
+
+    initMDLFO(kit.lfos[track], track);
     
   }
 
@@ -42,7 +57,20 @@ void initMDKit(MDKit &kit) {
 }
 
 #define M_CHECK_EQUAL(val1, val2) \
-  if ((val1) != (val2)) { return false; } 
+  if ((val1) != (val2)) { printf("failure at line %d in %s\n", __LINE__, __FILE__); return false; } 
+
+bool cmp_lfos(MDLFO &lfo, MDLFO &lfo2) {
+  M_CHECK_EQUAL(lfo.destinationTrack, lfo2.destinationTrack);
+  M_CHECK_EQUAL(lfo.destinationParam, lfo2.destinationParam);
+  M_CHECK_EQUAL(lfo.shape1, lfo2.shape1);
+  M_CHECK_EQUAL(lfo.shape2, lfo2.shape2);
+  M_CHECK_EQUAL(lfo.type, lfo2.type);
+  for (uint8_t i = 0; i < 31; i++) {
+    M_CHECK_EQUAL(lfo.state[i], lfo2.state[i]);
+  }
+
+  return true;
+}
 
 bool cmp_kits(MDKit &kit, MDKit &kit2) { 
   for (uint8_t track = 0; track < 16; track++) { 
@@ -53,6 +81,9 @@ bool cmp_kits(MDKit &kit, MDKit &kit2) {
     M_CHECK_EQUAL(kit.levels[track], kit2.levels[track]);
     M_CHECK_EQUAL(kit.trigGroups[track], kit2.trigGroups[track]);
     M_CHECK_EQUAL(kit.muteGroups[track], kit2.muteGroups[track]);
+    if (!cmp_lfos(kit.lfos[track], kit2.lfos[track])) {
+      return false;
+    }
   } 
   for (uint8_t param = 0; param < 8; param++) {
     M_CHECK_EQUAL(kit.reverb[param], kit2.reverb[param]);
@@ -64,9 +95,31 @@ bool cmp_kits(MDKit &kit, MDKit &kit2) {
   return true;
 }
 
+/***************************************************************************
+ *
+ * Test fixture
+ *
+ ***************************************************************************/
+
+struct MDKitFixture {
+  MDKitFixture() {
+    initMDKit(kit);
+  }
+
+  MDKit kit;
+  MDKit kit2;
+
+
+};
+
+/***************************************************************************
+ *
+ * MDKit tests
+ *
+ ***************************************************************************/
+
 TEST_F (MDKitFixture, MDKitSysex) {
   uint8_t data[4092];
-  initMDKit(kit);
   uint16_t len = kit.toSysex(data, sizeof(data));
   bool ret = kit2.fromSysex(data + 6, len - 7);
   CHECK(ret);
@@ -74,9 +127,42 @@ TEST_F (MDKitFixture, MDKitSysex) {
   CHECK(ret);
 }
 
+TEST_F (MDKitFixture, MDKitSysexDecoder) {
+  uint8_t data[4092];
+  uint8_t data2[4092];
+  uint16_t len = kit.toSysex(data, sizeof(data));
+  m_memcpy(data2, data, len);
+  bool ret = kit2.fromSysex(data + 6, len - 7);
+  CHECK(ret);
+  ret = cmp_kits(kit, kit2);
+  CHECK(ret);
+
+  /* check that the data hasn't changed. */
+  for (uint16_t i = 0; i < len; i++) {
+    CHECK(data[i] == data2[i]);
+  }
+  
+  /* decode a second time to check that it still works. */
+  ret = kit2.fromSysex(data + 6, len - 7);
+  CHECK(ret);
+  ret = cmp_kits(kit, kit2);
+  CHECK(ret);
+}
+
+TEST_F (MDKitFixture, MDKitSysexEncoder) {
+  uint8_t data[4092];
+  uint16_t len = kit.toSysex(data, sizeof(data));
+  /* check that the message header is correct, as that was wrong. **/
+  CHECK_EQUAL(data[0], 0xF0);
+  CHECK_EQUAL(data[6], 0x52);
+  CHECK_EQUAL(data[7], 0x04);
+  CHECK_EQUAL(data[8], 0x01);
+  /* check that the encoded length is correct. */
+  CHECK_EQUAL(len, 0x4d1);
+}
+
 TEST_F (MDKitFixture, MDKitSwap) {
-  initMDKit(kit);
-  initMDKit(kit2);
+  m_memcpy(&kit2, &kit, sizeof(kit));
   // check that both kits have been initialized successfully
   CHECK(cmp_kits(kit, kit2));
 

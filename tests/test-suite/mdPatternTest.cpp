@@ -15,12 +15,53 @@ struct MDPatternFixture {
   MDPattern pattern2;
 };
 
+/** Check that a pattern is initially empty. **/
 TEST_F (MDPatternFixture, MDPatternTestInit) {
   for (uint8_t i = 0; i < 16; i++) {
     CHECK(pattern.isTrackEmpty(i));
   }
 }
 
+#define M_CHECK_EQUAL(val1, val2) \
+  if ((val1) != (val2)) { return false; }
+
+bool cmp_patterns(MDPattern &pat, MDPattern &pat2) {
+
+  M_CHECK_EQUAL(pat.origPosition, pat2.origPosition);
+  M_CHECK_EQUAL(pat.accentPattern, pat2.accentPattern);                       
+  M_CHECK_EQUAL(pat.slidePattern, pat2.slidePattern);                         
+  M_CHECK_EQUAL(pat.swingPattern, pat2.swingPattern);                         
+  M_CHECK_EQUAL(pat.swingAmount, pat2.swingAmount);                           
+  M_CHECK_EQUAL(pat.accentAmount, pat2.accentAmount);                         
+  M_CHECK_EQUAL(pat.patternLength, pat2.patternLength);                       
+  M_CHECK_EQUAL(pat.doubleTempo, pat2.doubleTempo);                           
+  M_CHECK_EQUAL(pat.scale, pat2.scale);                                       
+  M_CHECK_EQUAL(pat.kit, pat2.kit);                                           
+  
+  for (uint8_t track = 0; track < 16; track++) {
+    M_CHECK_EQUAL(pat.trigPatterns[track], pat2.trigPatterns[track]);         
+    M_CHECK_EQUAL(pat.lockPatterns[track], pat2.lockPatterns[track]);         
+    M_CHECK_EQUAL(pat.accentPatterns[track], pat2.accentPatterns[track]);     
+    M_CHECK_EQUAL(pat.slidePatterns[track], pat2.slidePatterns[track]);       
+    M_CHECK_EQUAL(pat.swingPatterns[track], pat2.swingPatterns[track]);       
+
+    for (uint8_t param = 0; param < 24; param++) {                         
+      M_CHECK_EQUAL(pat.isParamLocked(track, param),                         
+                    pat2.isParamLocked(track, param));                        
+      for (uint8_t step = 0; step < 32; step++) {                          
+        M_CHECK_EQUAL(pat.getLock(track, step, param),                       
+                    pat2.getLock(track, step, param));                      
+      }                               
+    } 
+  }
+
+  
+  return true;
+}
+
+/**
+ * Check that an empty pattenr is converted to and from sysex correctly.
+ **/
 TEST_F (MDPatternFixture, MDPatternEmptyToFromSysex) {
   MDPattern p2;
   uint8_t buf[8192], buf2[8192]; 
@@ -64,6 +105,9 @@ bool reimportSysex(MDPattern *p) {
   return p->fromSysex(buf + 6, len - 7);
 }
 
+/**
+ * Check that setting and clearing triggers in a track pattern works correctly.
+ **/
 TEST_F (MDPatternFixture, MDPatternSetTrig) {
   for (uint8_t track = 0; track < 16; track++) {
     pattern.setTrig(track, 0);
@@ -94,6 +138,9 @@ TEST_F (MDPatternFixture, MDPatternSetTrig) {
   }
 }
 
+/**
+ * Check that exporting and reimporting triggers set in a pattern works correctly.
+ **/
 TEST_F (MDPatternFixture, MDPatternSetTrigSysex) {
   for (uint8_t track = 0; track < 16; track++) {
     pattern.setTrig(track, 0);
@@ -132,6 +179,9 @@ TEST_F (MDPatternFixture, MDPatternSetTrigSysex) {
   }
 }
 
+/**
+ * Check that setting a single param lock works correctly.
+ **/
 TEST_F (MDPatternFixture, MDPatternSingleLock) {
   for (uint8_t track = 0 ; track < 16 ; track++) {
     CHECK_EQUAL(255, pattern.getLock(track, 0, 0));

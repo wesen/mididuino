@@ -60,6 +60,7 @@ test: \
    dataEncoderTest.host.o \
    mnmDataEncoderTest.host.o \
    mdPatternTest.host.o \
+   mdGlobalTests.o \
    mdKitTests.o \
    mdMessagesTest.host.o \
    mnmPatternTest.host.o \
