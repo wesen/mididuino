@@ -153,6 +153,39 @@ public:
    **/
   void swapTracks(uint8_t srcTrack, uint8_t dstTrack);
 
+  /**
+   * Reverse a track in a pattern.
+   **/
+  void reverseTrack(uint8_t track);
+
+  /**
+   * Reverse the whole pattern.
+   **/
+  void reversePattern();
+
+  /**
+   * Block-reverse a track in the pattern. The track is first
+   * separated into groups of blocKSize hits, and those blocks are
+   * then reversed. For example, reversing the 16 step pattern with
+   * block size 4 would result in :
+   *
+   * 0 1 2 3  4 5 6 7  8 9 a b  c d e f ->
+   * c d e f  8 9 a b  4 5 6 7  0 1 2 3
+   *
+   * The same pattern reversed with a slice length of 3 would result in:
+   *
+   * 0 1 2  3 4 5  6 7 8  9 0 a  b c d  e f
+   * e f  b c d  9 0 a  6 7 8  3 4 5  0 1 2
+   *
+   **/
+  void reverseBlockTrack(uint8_t track, uint8_t blockSize);
+
+  /**
+   * Block-reverse the whole pattern.
+   **/
+  void reverseBlockPattern(uint8_t blockSize);
+    
+
   /* @} */
 };
 

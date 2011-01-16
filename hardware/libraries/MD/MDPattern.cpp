@@ -281,6 +281,23 @@ uint16_t MDPattern::toSysex(ElektronDataToSysexEncoder &encoder) {
   return sysexLength + 5;
 }
 
+void MDPattern::recalculateLockPatterns() {
+  for (uint8_t track = 0; track < 16; track++) {
+    lockPatterns[track] = 0;
+    for (uint8_t param = 0; param < 24; param++) {
+      if (paramLocks[track][param] != -1) {
+	SET_BIT32(lockPatterns[track], param);
+      }
+    }
+  }
+}
+
+/***************************************************************************
+ *
+ * Pattern edit functions
+ *
+ ***************************************************************************/
+
 bool MDPattern::isTrackEmpty(uint8_t track) {
   return ((trigPatterns[track] == 0) &&
 	  (lockPatterns[track] == 0));
@@ -303,22 +320,17 @@ void MDPattern::clearTrig(uint8_t track, uint8_t trig) {
   }
 }
 
-void MDPattern::recalculateLockPatterns() {
-  for (uint8_t track = 0; track < 16; track++) {
-    lockPatterns[track] = 0;
-    for (uint8_t param = 0; param < 24; param++) {
-      if (paramLocks[track][param] != -1) {
-	SET_BIT32(lockPatterns[track], param);
-      }
-    }
-  }
-}
-
 void MDPattern::setNote(uint8_t track, uint8_t step, uint8_t pitch) {
   // XXX real pitch conversion
   addLock(track, step, 0, pitch);
   setTrig(track, step);
 }
+
+/***************************************************************************
+ *
+ * Pattern manipulation functions
+ *
+ ***************************************************************************/
 
 void MDPattern::swapTracks(uint8_t srcTrack, uint8_t dstTrack) {
   // slidePatterns, swingPattern, accentPatterns
@@ -351,5 +363,24 @@ void MDPattern::swapTracks(uint8_t srcTrack, uint8_t dstTrack) {
   for (uint8_t i = 0; i < 24; i++) {
     paramLocks[srcTrack][i] = paramLocks[dstTrack][i];
     paramLocks[dstTrack][i] = _paramLocks[i];
+  }
+}
+
+void MDPattern::reverseTrack(uint8_t track) {
+}
+
+void MDPattern::reversePattern() {
+  for (uint8_t i = 0; i < 16; i++) {
+    reverseTrack(i);
+  }
+}
+
+
+void MDPattern::reverseBlockTrack(uint8_t track, uint8_t blockSize) {
+}
+
+void MDPattern::reverseBlockPattern(uint8_t blockSize) {
+  for (uint8_t i = 0; i < 16; i++) {
+    reverseBlockTrack(i, blockSize);
   }
 }
