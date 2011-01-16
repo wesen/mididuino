@@ -8,9 +8,9 @@ class PrintMDPattern : public MDPattern {
   void printTrig(int track) {
     for (int i = 0; i < patternLength; i++) {
       if (IS_BIT_SET64(trigPatterns[track], i)) {
-				printf("X   ");
+        printf("X   ");
       } else {
-				printf(".   ");
+        printf(".   ");
       }
     }
     printf("\n");
@@ -21,17 +21,17 @@ class PrintMDPattern : public MDPattern {
 
     for (int param = 0; param < 24; param++) {
       if (isParamLocked(track, param)) {
-				printf("P%.2d (idx: %d): ", param, paramLocks[track][param]);
-				//	printf("    ");
-				for (int i = 0; i < patternLength; i++) {
-					uint8_t lock = getLock(track, i, param);
-					if (lock != 255) {
-						printf("%.3d ", lock);
-					} else {
-						printf("    ");
-					}
-				}
-				printf("\n");
+        printf("P%.2d (idx: %d): ", param, paramLocks[track][param]);
+        //	printf("    ");
+        for (int i = 0; i < patternLength; i++) {
+          uint8_t lock = getLock(track, i, param);
+          if (lock != 255) {
+            printf("%.3d ", lock);
+          } else {
+            printf("    ");
+          }
+        }
+        printf("\n");
       }
     }
   }
