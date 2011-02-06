@@ -104,7 +104,7 @@ void Encoder::lock() {
 void Encoder::unlock() {
   locked = false;
   old = old_lock;
-  checkHandle();
+  //  checkHandle();
 }
 
 void Encoder::displayAt(int i) {
