@@ -1,5 +1,6 @@
 #include <MDStudioSketch.h>
 #include <MDStudioPages.h>
+#include <pstrs.h>
 
 MDStudioSketch::MDStudioSketch() :
   swapTrackPage(&pattern),
@@ -22,6 +23,8 @@ void MDStudioSketch::setup() {
   switchPage.addPage(&transposePatternPage);
 
   switchPage.parent = this;
+  /* set initial page */
+  setPage(&swapTrackPage);
    
   MDTask.addOnPatternChangeCallback(this, (md_callback_ptr_t)&MDStudioSketch::onPatternChange);
   MDTask.addOnKitChangeCallback(this, (md_callback_ptr_t)&MDStudioSketch::onKitChanged);
@@ -60,10 +63,10 @@ bool MDStudioSketch::handleEvent(gui_event_t *event) {
         GUI.flash_p_strings_fill(PSTR("NO MD"), PSTR("FOUND"));
         return true;
       }
-      GUI.flash_p_strings_fill(PSTR("REQUESTING"), PSTR("PATTERN"));
+      GUI.flash_p_strings_fill(P_REQUESTING, PSTR("PATTERN"));
       bool result = MD.getBlockingPattern(MD.currentPattern);
       if (result) {
-        GUI.flash_p_strings_fill(PSTR("REQUESTING"), PSTR("KIT"));
+        GUI.flash_p_strings_fill(P_REQUESTING, PSTR("KIT"));
         result = MD.getBlockingKit(pattern.kit);
         if (result) {
           GUI.flash_p_strings_fill(PSTR("GOT"), PSTR("PAT + KIT"));

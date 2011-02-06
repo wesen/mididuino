@@ -47,19 +47,15 @@ public Sketch, MDCallback {
    ** displayed first. Use this to set the default page.
    **/
   virtual void show();
-
   /** This method is called when the extra button is pressed on a monster firmware page. **/
   virtual void doExtra(bool pressed);
-
- /** Return the name of the firmware for a MDMonster display page. **/
+  /** Return the name of the firmware for a MDMonster display page. **/
   void getName(char *n1, char *n2);
-
+  
   virtual bool handleEvent(gui_event_t *event);
 
   void requestPattern(uint8_t pattern, MDCallback *cb, md_callback_ptr_t ptr);
-  
   void onPatternChange();
-
   void onPatternMessage();
 };
 
