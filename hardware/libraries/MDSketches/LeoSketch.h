@@ -101,6 +101,8 @@ const scale_t *LeoTriggerClass::scales[] = {
 
 LeoTriggerClass leoTrigger;
 
+/* deprecated
+   
 class ScaleSelectEncoder: public VarRangeEncoder {
 public:
   ScaleSelectEncoder(uint8_t *_var, int _max = 127, int _min = 0, const char *_name = NULL, int init = 0) :
@@ -111,6 +113,7 @@ public:
     GUI.put_string_at(i * 4, LeoTriggerClass::scales[getValue()]->shortName);
   }
 };
+*/
 
 class LeoScalePage : public EncoderPage {
 public:
