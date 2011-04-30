@@ -2,22 +2,23 @@
 #define MIDI_EUCLID_SKETCH_H__
 
 #include <PitchEuclid.h>
+#include <Scales.h>
 
 class PitchEuclidConfigPage1 : 
-public EncoderPage {
+  public EncoderPage {
 public:
   RangeEncoder pitchLengthEncoder;
   RangeEncoder pulseEncoder;
   RangeEncoder lengthEncoder;
   RangeEncoder offsetEncoder;
-	PitchEuclid *euclid;
+  PitchEuclid *euclid;
 
   PitchEuclidConfigPage1(PitchEuclid *_euclid) :
-  pitchLengthEncoder(1, 32, "PTC", 4),
-  pulseEncoder(1, 32, "PLS", 3),
-  lengthEncoder(2, 32, "LEN", 8),
-		offsetEncoder(0, 32, "OFF", 0),
-		euclid(_euclid) {
+    pitchLengthEncoder(1, 32, "PTC", 4),
+    pulseEncoder(1, 32, "PLS", 3),
+    lengthEncoder(2, 32, "LEN", 8),
+    offsetEncoder(0, 32, "OFF", 0),
+    euclid(_euclid) {
     encoders[0] = &pitchLengthEncoder;
     encoders[1] = &pulseEncoder;
     encoders[2] = &lengthEncoder;
@@ -27,7 +28,7 @@ public:
   void loop() {
     if (pulseEncoder.hasChanged() || lengthEncoder.hasChanged() || offsetEncoder.hasChanged()) {
       euclid->track.setEuclid(pulseEncoder.getValue(), lengthEncoder.getValue(),
-      offsetEncoder.getValue());
+                              offsetEncoder.getValue());
     }
     if (pitchLengthEncoder.hasChanged()) {
       euclid->setPitchLength(pitchLengthEncoder.getValue());
@@ -36,20 +37,22 @@ public:
 };
 
 class PitchEuclidConfigPage2 : 
-public EncoderPage {
+  public EncoderPage {
 public:
   MidiTrackEncoder trackEncoder;
-  RangeEncoder scaleEncoder;
+  ScaleEncoder scaleEncoder;
   RangeEncoder octavesEncoder;
   NotePitchEncoder basePitchEncoder;
-	PitchEuclid *euclid;
+  PitchEuclid *euclid;
 
-  PitchEuclidConfigPage2(PitchEuclid *_euclid) :
-  trackEncoder("TRK", 0),
-		scaleEncoder(0, PitchEuclid::NUM_SCALES - 1, "SCL", 0),
-  basePitchEncoder("BAS"),
-		octavesEncoder(0, 4, "OCT"),
-		euclid(_euclid)
+  PitchEuclidConfigPage2(PitchEuclid *_euclid,
+                         const scale_t **scales = PitchEuclid::scales,
+                         uint8_t scaleCount = countof(PitchEuclid::scales) - 1) :
+    trackEncoder("TRK", 0),
+    scaleEncoder("SCL", scales, scaleCount),
+    basePitchEncoder("BAS"),
+    octavesEncoder(0, 4, "OCT"),
+    euclid(_euclid)
   {
     encoders[0] = &trackEncoder;
     encoders[3] = &basePitchEncoder;
@@ -61,7 +64,7 @@ public:
 
   void loop() {
     if (scaleEncoder.hasChanged()) {
-      euclid->currentScale = (scale_t *)PitchEuclid::scales[scaleEncoder.getValue()];
+      euclid->currentScale = (scale_t *)scaleEncoder.getScale();
       euclid->randomizePitches();
     }
     if (basePitchEncoder.hasChanged()) {
@@ -78,17 +81,17 @@ public:
 };
 
 class PitchEuclidConfigPage3 :
-public EncoderPage {
- public:
+  public EncoderPage {
+public:
   RangeEncoder noteLengthEncoder;
   PitchEuclid *euclid;
 
- PitchEuclidConfigPage3(PitchEuclid *_euclid) :
-  noteLengthEncoder(0, 8, "LEN"),
+  PitchEuclidConfigPage3(PitchEuclid *_euclid) :
+    noteLengthEncoder(0, 8, "LEN"),
     euclid(_euclid) {
-      encoders[0] = &noteLengthEncoder;
-      noteLengthEncoder.setValue(1);
-    }
+    encoders[0] = &noteLengthEncoder;
+    noteLengthEncoder.setValue(1);
+  }
 
   void loop() {
     if (noteLengthEncoder.hasChanged()) {
@@ -98,14 +101,14 @@ public EncoderPage {
 };
 
 class PitchEuclidSketch : 
-public Sketch, public ClockCallback {
+  public Sketch, public ClockCallback {
 public:
   PitchEuclidConfigPage1 page1;
   PitchEuclidConfigPage2 page2;
   PitchEuclidConfigPage3 page3;
   PitchEuclid pitchEuclid;
 
- PitchEuclidSketch() : page1(&pitchEuclid), page2(&pitchEuclid), page3(&pitchEuclid) {
+  PitchEuclidSketch() : page1(&pitchEuclid), page2(&pitchEuclid), page3(&pitchEuclid) {
   }
 
   void setup() {
@@ -131,7 +134,7 @@ public:
     }
   }
 
-    void getName(char *n1, char *n2) {
+  void getName(char *n1, char *n2) {
     m_strncpy_p(n1, PSTR("MID "), 5);
     m_strncpy_p(n2, PSTR("EUC "), 5);
   }
@@ -168,7 +171,9 @@ public:
     }
   }
 
-
+  void on16Callback(uint32_t counter) {
+    pitchEuclid.on16Callback(counter);
+  }
 };
 
 #endif /* MIDI_EUCLID_SKETCH_H__ */
