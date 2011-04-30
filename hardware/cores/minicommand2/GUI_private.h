@@ -118,10 +118,13 @@ class ButtonsClass {
   static const uint8_t BUTTON2 = 5;
   static const uint8_t BUTTON3 = 6;
   static const uint8_t BUTTON4 = 7;
+  
   static const uint8_t ENCODER1 = 0;
   static const uint8_t ENCODER2 = 1;
   static const uint8_t ENCODER3 = 2;
   static const uint8_t ENCODER4 = 3;
+
+  static const uint8_t NO_BUTTON = 255;
 
   static const uint16_t ENCODER1_MASK = _BV(ENCODER1);
   static const uint16_t ENCODER2_MASK = _BV(ENCODER2);
