@@ -1,14 +1,33 @@
 #include "PitchEuclid.h"
 
 
-const scale_t *PitchEuclid::scales[PitchEuclid::NUM_SCALES] = {
+const scale_t *PitchEuclid::scales[] = {
   &ionianScale,
   &aeolianScale,
+
+  &harmonicMinorScale,
+  &melodicMinorScale,
+  &lydianDominantScale,
+
+  &wholeToneScale,
+  &wholeHalfStepScale,
+  &halfWholeStepScale,
+
   &bluesScale,
   &majorPentatonicScale,
+  &minorPentatonicScale,
+  &suspendedPentatonicScale,
+  &inSenScale,
+
+  &majorBebopScale,
+  &dominantBebopScale,
+  &minorBebopScale,
+
+  &majorArp,
+  &minorArp,
   &majorMaj7Arp,
   &majorMin7Arp,
-  &minorMin7Arp
+  &minorMin7Arp,
 };
 
 PitchEuclid::PitchEuclid(scale_t *scale) : track(3, 8, 0) {

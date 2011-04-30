@@ -7,7 +7,7 @@
 #include <MidiClock.h>
 
 class PitchEuclid : public ClockCallback {
-public:
+ public:
   EuclidDrumTrack track;
   scale_t *currentScale;
 
@@ -35,8 +35,8 @@ public:
   void randomizePitches();
   void on16Callback(uint32_t counter);
 
-	static const uint8_t NUM_SCALES = 7;
-	static const scale_t *scales[NUM_SCALES];
+  static const uint8_t NUM_SCALES = 21;
+  static const scale_t *scales[NUM_SCALES];
 };
 
 
