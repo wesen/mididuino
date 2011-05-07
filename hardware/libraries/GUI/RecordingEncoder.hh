@@ -62,6 +62,7 @@ public:
   virtual char *getName() {
     return realEnc->getName();
   }
+
   virtual void setName(char *_name) {
     realEnc->setName(_name);
   }

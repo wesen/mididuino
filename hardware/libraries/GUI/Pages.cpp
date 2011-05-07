@@ -28,7 +28,6 @@ void Page::redisplayPage() {
   redisplay = true;
 }
   
-
 void EncoderPage::update() {
   encoder_t _encoders[GUI_NUM_ENCODERS];
 

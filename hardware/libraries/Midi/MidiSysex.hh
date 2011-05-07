@@ -134,11 +134,11 @@ class MidiSysexClass {
 };
 
 class MididuinoSysexListenerClass : public MidiSysexListenerClass {
-	/**
-	 * \addtogroup midi_sysex 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_sysex 
+   *
+   * @{
+   **/
 	
  public:
   MididuinoSysexListenerClass();
