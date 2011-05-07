@@ -58,9 +58,9 @@ class EvolverControllerSketch : public Sketch {
     autoPage.setup();
     autoPage.setShortName("EVO");
     autoPage.realEncoders[0].initEvolverController("FRQ", 16, 164);
-    autoPage.realEncoders[1].initEvolverController("ENV", 16, 198);
-    autoPage.realEncoders[2].initEvolverController("ATK", 16, 110);
-    autoPage.realEncoders[3].initEvolverController("DEC", 16, 110);
+    autoPage.realEncoders[1].initEvolverController("ENV", 17, 198);
+    autoPage.realEncoders[2].initEvolverController("ATK", 18, 110);
+    autoPage.realEncoders[3].initEvolverController("DEC", 19, 110);
     autoPage.redisplay = true;
     
     setPage(&autoPage);
@@ -101,7 +101,6 @@ PitchEuclidSketch sketch;
 AutoMidiControllerSketch sketch2;
 EvolverControllerSketch sketch3;
 SketchSwitchPage sketchSwitchPage(NULL, &sketch, &sketch2, &sketch3);
-
 
 void setup() {
   sketch.setupMonster(true);
