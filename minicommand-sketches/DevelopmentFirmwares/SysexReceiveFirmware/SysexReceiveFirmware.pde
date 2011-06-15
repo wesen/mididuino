@@ -1,3 +1,9 @@
+/*
+ * MidiCtrl - Sketch to demonstrate how to receive and parse Sysex message
+ *
+ * (c) 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #include <AutoMidiController.h>
 #include <GUI.h>
 

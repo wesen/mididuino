@@ -190,6 +190,10 @@ SIGNAL(USART1_RX_vect) {
       MidiClock.handleMidiStart();
       break;
 
+    case MIDI_CONTINUE:
+      MidiClock.handleMidiContinue();
+      break;
+
     case MIDI_STOP:
       MidiClock.handleMidiStop();
       break;
