@@ -24,8 +24,8 @@
  **/
 
 typedef struct scale_s {
-  char *name;
-  char *shortName;
+  const char *name;
+  const char *shortName;
   uint8_t size;
   uint8_t pitches[12];
 } scale_t;
