@@ -427,7 +427,7 @@ void ArpeggiatorClass::addNote(uint8_t pitch, uint8_t velocity) {
   if (replaced)
     return;
 
-  uint8_t replaceNote = 128;
+  //  uint8_t replaceNote = 128;
   if (numNotes == NUM_NOTES) {
     orderedNotes[0] = 128;
     numNotes--;
