@@ -9,3 +9,4 @@ TAGS
 *.out
 *.swp
 build
+*.d
