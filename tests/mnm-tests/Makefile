@@ -12,9 +12,10 @@ INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I../../host
 EXCLUDE = %MDArpeggiator.cpp
 OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
 OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
+DEPS = $(subst .host.o,.d,$(OBJS))
 
-CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
-CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
+CFLAGS += -Wall -Werror -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
+CXXFLAGS += $(CFLAGS)
 CLDFLAGS =  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
 
 UNAME=$(shell uname)
@@ -34,6 +35,19 @@ CFLAGS += $(INCS)
 
 all: mnmPatternTest mnmPatternTestFile
 
+%.d:%.c
+	set -e; $(CC) -MM $(CFLAGS) $< \
+	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
+	[ -s $@ ] || rm -f $@
+
+%.d:%.cpp
+	set -e; $(CXX) -MM $(CXXFLAGS) $< \
+	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
+	[ -s $@ ] || rm -f $@
+
+include $(DEPS)
+
+
 %.host.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
@@ -51,7 +65,7 @@ mnmPatternTestFile: mnmPatternTestFile.host.o $(OBJS)
 
 
 clean:
-	- rm -f *.o mnmTest mnmPatternTest mnmPatternTestFile *.host.o
+	- rm -f *.o mnmTest mnmPatternTest mnmPatternTestFile *.host.o $(OBJS) $(DEPS)
 
 libclean:
 	rm -rf $(OBJS)
