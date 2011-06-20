@@ -7,48 +7,48 @@
 #include "MidiUartOSX.h"
 
 void getMidiName(MIDIEndpointRef ep, char *buf, uint16_t len) {
-		CFStringRef pname, pmanuf, pmodel;
-		char name[64], manuf[64], model[64];
+  CFStringRef pname, pmanuf, pmodel;
+  char name[64], manuf[64], model[64];
     
-		MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
-		MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
-		MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
+  MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
+  MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
+  MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
     
-		CFStringGetCString(pname, name, sizeof(name), 0);
-		CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
-		CFStringGetCString(pmodel, model, sizeof(model), 0);
-		CFRelease(pname);
-		CFRelease(pmanuf);
-		CFRelease(pmodel);
+  CFStringGetCString(pname, name, sizeof(name), 0);
+  CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
+  CFStringGetCString(pmodel, model, sizeof(model), 0);
+  CFRelease(pname);
+  CFRelease(pmanuf);
+  CFRelease(pmodel);
 
-		snprintf(buf, len, "%s - %s", name, manuf);
+  snprintf(buf, len, "%s - %s", name, manuf);
 }
     
 	
 void MidiUartOSXClass::listInputMidiDevices() {
-	unsigned long   iNumDevs, i;
+  unsigned long   iNumDevs, i;
 	
-	iNumDevs = MIDIGetNumberOfSources();
+  iNumDevs = MIDIGetNumberOfSources();
 	
-	for (i = 0; i < iNumDevs; i++) {
-		char buf[128];
-		MIDIEndpointRef ep = MIDIGetSource(i);
-		getMidiName(ep, buf, countof(buf));
-		printf("%ld) %s\n", i, buf);
-	}
+  for (i = 0; i < iNumDevs; i++) {
+    char buf[128];
+    MIDIEndpointRef ep = MIDIGetSource(i);
+    getMidiName(ep, buf, countof(buf));
+    printf("%ld) %s\n", i, buf);
+  }
 }
 
 void MidiUartOSXClass::listOutputMidiDevices() {
-	unsigned long   iNumDevs, i;
+  unsigned long   iNumDevs, i;
 	
-	iNumDevs = MIDIGetNumberOfDestinations();
+  iNumDevs = MIDIGetNumberOfDestinations();
 	
-	for (i = 0; i < iNumDevs; i++) {
-		char buf[128];
-		MIDIEndpointRef ep = MIDIGetDestination(i);
-		getMidiName(ep, buf, countof(buf));
-		printf("%ld) %s\n", i, buf);
-	}  
+  for (i = 0; i < iNumDevs; i++) {
+    char buf[128];
+    MIDIEndpointRef ep = MIDIGetDestination(i);
+    getMidiName(ep, buf, countof(buf));
+    printf("%ld) %s\n", i, buf);
+  }  
 }    
 
 MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
@@ -68,14 +68,14 @@ MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
 static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *connRefCon) {
   MidiUartOSXClass *uart = (MidiUartOSXClass *)refCon;
   if (uart != NULL) {
-    if (uart->outPort != NULL && uart->dest != NULL) {
+    if ((uart->outPort != 0) && (uart->dest != 0)) {
       MIDIPacket *packet = (MIDIPacket *)pktlist->packet;
       unsigned int j;
       int i;
       for (j = 0; j < pktlist->numPackets; j++) {
-				for (i = 0; i < packet->length; i++) {
-					uart->rxRb.put(packet->data[i]);
-				}
+        for (i = 0; i < packet->length; i++) {
+          uart->rxRb.put(packet->data[i]);
+        }
 	
 	packet = MIDIPacketNext(packet);
       }
@@ -95,20 +95,20 @@ void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
     return;
   }
 
-	MidiUartHostParent::init(_inputDevice, _outputDevice);
+  MidiUartHostParent::init(_inputDevice, _outputDevice);
 	
   inputDevice = _inputDevice;
   outputDevice = _outputDevice;
   MIDIClientCreate(CFSTR("MIDI Send"), NULL, NULL, &client);
   MIDIOutputPortCreate(client, CFSTR("Output port"), &outPort);
-	char buf[128];
+  char buf[128];
   dest = MIDIGetDestination(outputDevice);
-	getMidiName(dest, buf, countof(buf));
-	printf("opening output device  \"%s\"\n", buf);
+  getMidiName(dest, buf, countof(buf));
+  printf("opening output device  \"%s\"\n", buf);
   MIDIInputPortCreate(client, CFSTR("Input port"), midiReadProc, this, &inPort);
   src = MIDIGetSource(inputDevice);
-	getMidiName(src, buf, countof(buf));
-	printf("opening input device:  \"%s\"\n", buf);
+  getMidiName(src, buf, countof(buf));
+  printf("opening input device:  \"%s\"\n", buf);
   MIDIPortConnectSource(inPort, src, NULL);
 }
 
@@ -126,8 +126,8 @@ void MidiUartOSXClass::midiSendLong(unsigned char *buf, unsigned long len) {
 }
 
 void MidiUartOSXClass::midiSendShort(unsigned char status,
-																		 unsigned char byte1,
-																		 unsigned char byte2) {
+                                     unsigned char byte1,
+                                     unsigned char byte2) {
   static struct MIDIPacketList pktlist;
   
   pktlist.numPackets = 1;
