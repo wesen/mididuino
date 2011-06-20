@@ -172,7 +172,7 @@ void GuiClass::display() {
   GUI.clearFlashLine();
 }
 
-inline char 
+inline void
 suppress_zero(char* dst, uint16_t value)
 {
   dst[3] = ' ';
