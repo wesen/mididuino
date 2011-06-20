@@ -6,6 +6,15 @@
 #include <MidiUartParent.hh>
 #include "MidiUartOSX.h"
 
+/***************************************************************************
+ *
+ * Helper methods
+ *
+ ***************************************************************************/
+
+/**
+ * Get the name of a midi endpoint.
+ **/
 void getMidiName(MIDIEndpointRef ep, char *buf, uint16_t len) {
   CFStringRef pname, pmanuf, pmodel;
   char name[64], manuf[64], model[64];
@@ -23,8 +32,10 @@ void getMidiName(MIDIEndpointRef ep, char *buf, uint16_t len) {
 
   snprintf(buf, len, "%s - %s", name, manuf);
 }
-    
-	
+
+/**
+ * List the available midi input devices.
+ **/
 void MidiUartOSXClass::listInputMidiDevices() {
   unsigned long   iNumDevs, i;
 	
@@ -38,6 +49,9 @@ void MidiUartOSXClass::listInputMidiDevices() {
   }
 }
 
+/**
+ * List the available midi output devices.
+ **/
 void MidiUartOSXClass::listOutputMidiDevices() {
   unsigned long   iNumDevs, i;
 	
@@ -49,22 +63,62 @@ void MidiUartOSXClass::listOutputMidiDevices() {
     getMidiName(ep, buf, countof(buf));
     printf("%ld) %s\n", i, buf);
   }  
-}    
-
-MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
-  inputDevice = -1;
-  outputDevice = -1;
-  outPort = NULL;
-  dest = NULL;
-  client = NULL;
-  inPort = NULL;
-  src = NULL;
-  
-  if ((_inputDevice >= 0) && (_outputDevice >= 0)) {
-    init(_inputDevice, _outputDevice);
-  }
 }
 
+/**
+ * Returns the endpoint number of the first midi input device matching
+ * the given name.
+ **/
+int MidiUartOSXClass::getInputMidiDevice(const char *name) {
+  unsigned long   iNumDevs, i;
+	
+  iNumDevs = MIDIGetNumberOfSources();
+	
+  for (i = 0; i < iNumDevs; i++) {
+    char buf[128];
+    MIDIEndpointRef ep = MIDIGetSource(i);
+    getMidiName(ep, buf, countof(buf));
+    if (strcasestr(buf, name) != NULL) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+/**
+ * Returns the endpoint number of the midi output device matching the
+ * given name.
+ **/
+int MidiUartOSXClass::getOutputMidiDevice(const char *name) {
+  unsigned long   iNumDevs, i;
+	
+  iNumDevs = MIDIGetNumberOfDestinations();
+	
+  for (i = 0; i < iNumDevs; i++) {
+    char buf[128];
+    MIDIEndpointRef ep = MIDIGetDestination(i);
+    getMidiName(ep, buf, countof(buf));
+    if (strcasestr(buf, name) != NULL) {
+      return i;
+    }
+  }  
+
+  return -1;
+}
+
+/***************************************************************************
+ *
+ * Callbacks
+ *
+ ***************************************************************************/
+
+/**
+ * Read callback for receiving MIDI data.
+ *
+ * Puts the received data into the receive buffer of the uart for
+ * processing in the main loop.
+ **/
 static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *connRefCon) {
   MidiUartOSXClass *uart = (MidiUartOSXClass *)refCon;
   if (uart != NULL) {
@@ -83,11 +137,52 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *conn
   }
 }
 
+/**
+ * Callback when a sysex message has been sent, frees the request buffer.
+ **/
 static void midiSysexSent(MIDISysexSendRequest *request) {
   printf("refcon : %p\n", request->completionRefCon);
   free(request);
 }
 
+/***************************************************************************
+ *
+ * MIDI initialization
+ *
+ ***************************************************************************/
+
+MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
+  inputDevice = -1;
+  outputDevice = -1;
+  outPort = NULL;
+  dest = NULL;
+  client = NULL;
+  inPort = NULL;
+  src = NULL;
+  
+  if ((_inputDevice >= 0) && (_outputDevice >= 0)) {
+    init(_inputDevice, _outputDevice);
+  }
+}
+
+MidiUartOSXClass::MidiUartOSXClass(const char *_inputDevice, const char *_outputDevice) {
+  outPort = NULL;
+  dest = NULL;
+  client = NULL;
+  inPort = NULL;
+  src = NULL;
+  
+  if (_inputDevice && _outputDevice) {
+    init(_inputDevice, _outputDevice);
+  }
+}
+
+void MidiUartOSXClass::init(const char *_inputDeviceName, const char *_outputDeviceName) {
+  int _inputDevice = MidiUartOSXClass::getInputMidiDevice(_inputDeviceName);
+  int _outputDevice = MidiUartOSXClass::getOutputMidiDevice(_outputDeviceName);
+
+  init(_inputDevice, _outputDevice);
+}
 
 void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
   if ((inputDevice >= 0) || (outputDevice >= 0)) {
@@ -112,6 +207,11 @@ void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
   MIDIPortConnectSource(inPort, src, NULL);
 }
 
+/**
+ * Send a long midi message.
+ *
+ * Allocate a midi sysex send request buffer (which is later on freed by the send completion callback.
+ **/
 void MidiUartOSXClass::midiSendLong(unsigned char *buf, unsigned long len) {
   struct MIDISysexSendRequest *sysexReq = (struct MIDISysexSendRequest *)malloc(sizeof(struct MIDISysexSendRequest) + len);
 
@@ -125,6 +225,9 @@ void MidiUartOSXClass::midiSendLong(unsigned char *buf, unsigned long len) {
   MIDISendSysex(sysexReq);
 }
 
+/**
+ * Send a short midi message.
+ **/
 void MidiUartOSXClass::midiSendShort(unsigned char status,
                                      unsigned char byte1,
                                      unsigned char byte2) {
@@ -139,6 +242,9 @@ void MidiUartOSXClass::midiSendShort(unsigned char status,
   MIDISend(outPort, dest, &pktlist); 
 }
 
+/**
+ * Run the Carbon run loop.
+ **/
 void MidiUartOSXClass::runLoop() {
   CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
 }
