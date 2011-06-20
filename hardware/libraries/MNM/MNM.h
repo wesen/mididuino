@@ -145,9 +145,9 @@ class MNMClass {
     setAutoMute(false);
   }
   
-  PGM_P getMachineName(uint8_t machine);
-  PGM_P getModelParamName(uint8_t model, uint8_t param);
-  void getPatternName(uint8_t pattern, char str[5]);
+  static PGM_P getMachineName(uint8_t machine);
+  static PGM_P getModelParamName(uint8_t model, uint8_t param);
+  static void getPatternName(uint8_t pattern, char str[5]);
 
   void revertToCurrentKit(bool reloadKit = true);
   void revertToCurrentTrack(bool reloadTrack = true) {
