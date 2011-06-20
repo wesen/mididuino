@@ -17,6 +17,12 @@
  * Elektron Monomachine encoding and decoding routines
  **/
 
+/***************************************************************************
+ *
+ * MNM Sysex Encoder
+ *
+ ***************************************************************************/
+
 void MNMDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen), MidiUartParent *_uart)
 {
   ElektronDataToSysexEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen), _uart);
@@ -146,6 +152,12 @@ uint16_t MNMSysexToDataEncoder::finish() {
 	
 }
 
+/***************************************************************************
+ *
+ * MNM Sysex Decoder
+ *
+ ***************************************************************************/
+
 void MNMSysexDecoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
   DataDecoder::init(DATA_ENCODER_INIT(_data, _maxLen));
   cnt7 = 0;
@@ -181,9 +193,16 @@ DATA_ENCODER_RETURN_TYPE MNMSysexDecoder::get8(uint8_t *c) {
 
   DATA_ENCODER_CHECK(getNextByte(&byte));
 
+#ifdef HOST_MIDIDUINO
+  //  printf("%x (%c)\n", byte, byte);
+#endif
+
   if (IS_BIT_SET(byte, 7)) {
     repeatCount = byte & 0x7F;
     DATA_ENCODER_CHECK(getNextByte(&repeatByte));
+#ifdef HOST_MIDIDUINO
+    //    printf("%x (%c)\n", repeatByte, repeatByte);
+#endif
     goto again;
   } else {
     *c = byte;
