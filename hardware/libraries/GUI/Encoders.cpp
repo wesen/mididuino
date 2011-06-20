@@ -59,12 +59,12 @@ void TempoEncoderHandle(Encoder *enc) {
 Encoder::Encoder(const char *_name, encoder_handle_t _handler)
   : old(0),
     cur(0),
-    redisplay(false),
-    handler(_handler),
     fastmode(true),
     fastmodestep(5),
     pressmode(false),
-    locked(false)
+    locked(false),
+    handler(_handler),
+    redisplay(false)
 {
   setName(_name);
 }
