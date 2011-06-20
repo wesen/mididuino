@@ -1,3 +1,4 @@
+
 #ifndef MNM_MESSAGES_H__
 #define MNM_MESSAGES_H__
 
@@ -5,22 +6,22 @@
 #include "MNMDataEncoder.hh"
 
 /*
-class MNMMidiMap {
-public:
+  class MNMMidiMap {
+  public:
   uint8_t range;
   uint8_t pattern;
   uint8_t offset;
   uint8_t length;
   int8_t transpose;
   uint8_t timing;
-};
+  };
 */
 
 class MNMGlobal {
 public:
   uint8_t origPosition;
 
-	/* XXX Don't change the order of declaration, important for decoding */
+  /* XXX Don't change the order of declaration, important for decoding */
 	
   uint8_t autotrackChannel;
   uint8_t baseChannel;
@@ -55,25 +56,29 @@ public:
   uint8_t midiSeqLegato[6]; /* always true */
   uint8_t legato[6]; /* not unsed */
 
-	uint8_t mapRange[32];
-	uint8_t mapPattern[32];
-	uint8_t mapOffset[32];
-	uint8_t mapLength[32];
-	int8_t mapTranspose[32];
-	uint8_t mapTiming[32];
+  uint8_t mapRange[32];
+  uint8_t mapPattern[32];
+  uint8_t mapOffset[32];
+  uint8_t mapLength[32];
+  int8_t mapTranspose[32];
+  uint8_t mapTiming[32];
 
   uint8_t globalRouting;
-	bool pgmChangeIn;
-	uint8_t unused[5];
+  bool pgmChangeIn;
+  uint8_t unused[5];
 
   uint32_t baseFreq;
 
+  #ifdef HOST_MIDIDUINO
+  void print();
+  #endif
+  
   MNMGlobal() {
   }
 
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-	uint16_t toSysex(MNMDataToSysexEncoder &encoder);
+  uint16_t toSysex(MNMDataToSysexEncoder &encoder);
 };
 
 class MNMTrackModifier {
@@ -118,24 +123,24 @@ class MNMKit {
 public:
   uint8_t origPosition;
   char name[17];
-	uint8_t levels[6];
-	uint8_t parameters[6][72];
-	uint8_t models[6];
-	uint8_t types[6];
+  uint8_t levels[6];
+  uint8_t parameters[6][72];
+  uint8_t models[6];
+  uint8_t types[6];
   uint16_t patchBusIn;
-	uint8_t mirrorLR;
-	uint8_t mirrorUD;
-	uint8_t destPages[6][6][2];
-	uint8_t destParams[6][6][2];
-	int8_t destRanges[6][6][2];
-	uint8_t lpKeyTrack;
-	uint8_t hpKeyTrack;
+  uint8_t mirrorLR;
+  uint8_t mirrorUD;
+  uint8_t destPages[6][6][2];
+  uint8_t destParams[6][6][2];
+  int8_t destRanges[6][6][2];
+  uint8_t lpKeyTrack;
+  uint8_t hpKeyTrack;
 
-	uint8_t trigPortamento;
-	uint8_t trigTracks[6];
-	uint8_t trigLegatoAmp;
-	uint8_t trigLegatoFilter;
-	uint8_t trigLegatoLFO;
+  uint8_t trigPortamento;
+  uint8_t trigTracks[6];
+  uint8_t trigLegatoAmp;
+  uint8_t trigLegatoFilter;
+  uint8_t trigLegatoLFO;
 	
   static const uint8_t MULTIMODE_ALL = 0;
   static const uint8_t MULTIMODE_SPLIT_KEY = 1;
@@ -149,10 +154,14 @@ public:
 
   MNMKit() {
   }
+
+  #ifdef HOST_MIDIDUINO
+  void print();
+  #endif
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-	uint16_t toSysex(MNMDataToSysexEncoder &encoder);
+  uint16_t toSysex(MNMDataToSysexEncoder &encoder);
 };
 
 class MNMRow {
@@ -182,7 +191,7 @@ public:
   
   bool fromSysex(uint8_t *sysex, uint16_t len);
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-	uint16_t toSysex(MNMDataToSysexEncoder &encoder);
+  uint16_t toSysex(MNMDataToSysexEncoder &encoder);
 };
 
 
