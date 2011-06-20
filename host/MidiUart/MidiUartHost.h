@@ -18,11 +18,11 @@
 class MidiUartHostParent;
 
 class MidiUartHostSysexListener : public MidiSysexListenerClass {
- protected:
+protected:
   MidiUartHostParent *uart;
 
- public:
- MidiUartHostSysexListener(MidiUartHostParent *_uart) : MidiSysexListenerClass() {
+public:
+  MidiUartHostSysexListener(MidiUartHostParent *_uart) : MidiSysexListenerClass() {
     uart = _uart;
     ids[0] = 0xFF;
   }
@@ -33,20 +33,22 @@ class MidiUartHostSysexListener : public MidiSysexListenerClass {
 class MidiClass;
 
 class MidiUartHostParent : public MidiUartParent, public MidiCallback {
- protected:
+protected:
+  uint8_t _sysexBuf[8192];
   MidiClass outputMidi;
   MidiUartHostSysexListener sysexListener;
 
   void onOutputMessage(uint8_t *msg, uint8_t len);
   
- public:
+public:
   int inputDevice;
   int outputDevice;
   volatile RingBuffer<RX_BUF_SIZE, RX_BUF_TYPE> rxRb;
   
- MidiUartHostParent(int _inputDevice = -1, int _outputDevice = -1) : sysexListener(this) {
+  MidiUartHostParent(int _inputDevice = -1, int _outputDevice = -1) :
+    outputMidi(NULL, _sysexBuf, sizeof(_sysexBuf)),
+    sysexListener(this) {
     init(_inputDevice, _outputDevice);
-    // add sysex listener XXX
   }
   
   virtual void putc(uint8_t c) { outputMidi.handleByte(c); }
