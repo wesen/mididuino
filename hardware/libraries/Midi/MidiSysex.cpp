@@ -45,8 +45,8 @@ bool MidiSysexClass::isListenerActive(MidiSysexListenerClass *listener) {
     return true;
   if (sysexLongId) {
     if (recvIds[0] == listener->ids[0] &&
-				recvIds[1] == listener->ids[1] &&
-				recvIds[2] == listener->ids[2])
+        recvIds[1] == listener->ids[1] &&
+        recvIds[2] == listener->ids[2])
       return true;
     else
       return false;
@@ -130,7 +130,7 @@ bool MidiSysexClass::recordByte(uint8_t c) {
 }
 
 MididuinoSysexListenerClass::MididuinoSysexListenerClass() 
-	: MidiSysexListenerClass() {
+  : MidiSysexListenerClass() {
   ids[0] = MIDIDUINO_SYSEX_VENDOR_1;
   ids[1] = MIDIDUINO_SYSEX_VENDOR_2;
   ids[2] = BOARD_ID;

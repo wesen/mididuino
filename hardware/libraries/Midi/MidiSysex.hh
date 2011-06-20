@@ -24,18 +24,18 @@ class MidiSysexClass;
  **/
 
 class MidiSysexListenerClass {
-	/**
-	 * \addtogroup midi_sysex 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_sysex 
+   *
+   * @{
+   **/
 	
- public:
+public:
   uint8_t ids[3];
-	MidiSysexClass *sysex;
+  MidiSysexClass *sysex;
 
   MidiSysexListenerClass(MidiSysexClass *_sysex = NULL) {
-		sysex = _sysex;
+    sysex = _sysex;
     ids[0] = 0;
     ids[1] = 0;
     ids[2] = 0;
@@ -55,25 +55,25 @@ class MidiSysexListenerClass {
   }
 #endif
 
-	/* @} */
+  /* @} */
 };
 
 #define NUM_SYSEX_SLAVES 4
 
 class MidiSysexClass {
-	/**
-	 * \addtogroup midi_sysex 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_sysex 
+   *
+   * @{
+   **/
 	
- protected:
+protected:
   bool aborted;
   bool recording;
   uint8_t recvIds[3];
   bool sysexLongId;
 
- public:
+public:
   void startRecord(uint8_t *buf = NULL, uint16_t maxLen = 0);
   void stopRecord();
   
@@ -108,9 +108,9 @@ class MidiSysexClass {
   bool addSysexListener(MidiSysexListenerClass *listener) {
     for (int i = 0; i < NUM_SYSEX_SLAVES; i++) {
       if (listeners[i] == NULL || listeners[i] == listener) {
-				listeners[i] = listener;
-				listener->sysex = this;
-				return true;
+        listeners[i] = listener;
+        listener->sysex = this;
+        return true;
       }
     }
     return false;
@@ -130,7 +130,7 @@ class MidiSysexClass {
   void end();
   void handleByte(uint8_t byte);
 
-	/* @} */
+  /* @} */
 };
 
 class MididuinoSysexListenerClass : public MidiSysexListenerClass {
@@ -140,7 +140,7 @@ class MididuinoSysexListenerClass : public MidiSysexListenerClass {
    * @{
    **/
 	
- public:
+public:
   MididuinoSysexListenerClass();
   virtual void handleByte(uint8_t byte);
 
@@ -149,7 +149,7 @@ class MididuinoSysexListenerClass : public MidiSysexListenerClass {
   }
 #endif
 
-	/* @} */
+  /* @} */
 };
 
 // extern MidiSysexClass MidiSysex;

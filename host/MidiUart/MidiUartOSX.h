@@ -25,8 +25,8 @@ class MidiUartOSXClass : public MidiUartHostParent {
  public:
   MidiUartOSXClass(int _inputDevice = -1, int _outputDevice = -1);
   ~MidiUartOSXClass() {
-		// XXX
-	}
+    // XXX
+  }
 
   static void listInputMidiDevices();
   static void listOutputMidiDevices();  

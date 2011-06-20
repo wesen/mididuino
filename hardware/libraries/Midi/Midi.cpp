@@ -22,9 +22,9 @@ const midi_parse_t midi_parse[] = {
 };
 
 MidiClass::MidiClass(MidiUartParent *_uart, uint8_t *_sysexBuf, uint16_t _sysexBufLen)
-	: midiSysex(_sysexBuf, _sysexBufLen) {
-	sysexBuf = _sysexBuf;
-	sysexBufLen = _sysexBufLen;
+  : midiSysex(_sysexBuf, _sysexBufLen) {
+  sysexBuf = _sysexBuf;
+  sysexBufLen = _sysexBufLen;
   midiActive = true;
   uart = _uart;
   receiveChannel = 0xFF;
@@ -47,30 +47,30 @@ void MidiClass::handleByte(uint8_t byte) {
     if (MidiClock.mode == MidiClock.EXTERNAL_MIDI) {
       switch (byte) {
       case MIDI_CLOCK:
-				MidiClock.handleClock();
-				break;
+        MidiClock.handleClock();
+        break;
 	
       case MIDI_START:
-				MidiClock.handleMidiStart();
-				break;
+        MidiClock.handleMidiStart();
+        break;
 
       case MIDI_CONTINUE:
-				MidiClock.handleMidiContinue();
-				break;
+        MidiClock.handleMidiContinue();
+        break;
 	
 				
       case MIDI_STOP:
-				MidiClock.handleMidiStop();
-				break;
+        MidiClock.handleMidiStop();
+        break;
       }
     }
 
     CLEAR_LOCK();
 #endif
 
-		if (byte == MIDI_ACTIVE_SENSE) {
-			uart->recvActiveSenseTimer = 0;
-		}
+    if (byte == MIDI_ACTIVE_SENSE) {
+      uart->recvActiveSenseTimer = 0;
+    }
 		
     return;
   }
@@ -91,11 +91,11 @@ void MidiClass::handleByte(uint8_t byte) {
   case midi_wait_sysex:
     if (MIDI_IS_STATUS_BYTE(byte)) {
       if (byte != MIDI_SYSEX_END) {
-				in_state = midi_wait_status;
-				midiSysex.abort();
-				goto again;
+        in_state = midi_wait_status;
+        midiSysex.abort();
+        goto again;
       } else {
-				midiSysex.end();
+        midiSysex.end();
       }
     } else {
       midiSysex.handleByte(byte);
@@ -105,43 +105,43 @@ void MidiClass::handleByte(uint8_t byte) {
   case midi_wait_status:
     {
       if (byte == MIDI_SYSEX_START) {
-				in_state = midi_wait_sysex;
-				midiSysex.reset();
-				last_status = running_status = 0;
-				return;
+        in_state = midi_wait_sysex;
+        midiSysex.reset();
+        last_status = running_status = 0;
+        return;
       }
 
       if (MIDI_IS_STATUS_BYTE(byte)) {
-				last_status = byte;
-				running_status = 0;
+        last_status = byte;
+        running_status = 0;
       } else {
-				if (last_status == 0)
-					break;
-				running_status = 1;
+        if (last_status == 0)
+          break;
+        running_status = 1;
       }
 
       uint8_t status = last_status;
       if (MIDI_IS_VOICE_STATUS_BYTE(status)) {
-				status = MIDI_VOICE_TYPE_NIBBLE(status);
+        status = MIDI_VOICE_TYPE_NIBBLE(status);
       }
 
       uint8_t i;
       for (i = 0; midi_parse[i].midi_status != 0; i++) {
-				if (midi_parse[i].midi_status == status) {
-					in_state = midi_parse[i].next_state;
-					msg[0] = last_status;
-					in_msg_len = 1;
-					break;
-				}
+        if (midi_parse[i].midi_status == status) {
+          in_state = midi_parse[i].next_state;
+          msg[0] = last_status;
+          in_msg_len = 1;
+          break;
+        }
       }
       callback = i;
 
       if (midi_parse[i].midi_status == 0) {
-				in_state = midi_ignore_message;
-				return;
+        in_state = midi_ignore_message;
+        return;
       }
       if (running_status)
-				goto again;
+        goto again;
     }
     break;
 
@@ -152,20 +152,20 @@ void MidiClass::handleByte(uint8_t byte) {
     }
 
 #ifdef HOST_MIDIDUINO
-		messageCallback.call(msg, in_msg_len);
+    messageCallback.call(msg, in_msg_len);
 #endif
 		
     if (callback < 7) {
       midiCallbacks[callback].call(msg);
 #if 0
-			Vector<midi_callback_func_t, 4> *vec = midiCallbackFunctions + callback;
-			for (int i = 0; i < vec->size; i++) {
-				MidiUart.printfString("callback %b, vec %b", callback, i);
-				if (vec->arr[i] != NULL) {
-					MidiUart.printfString("not empty");
-					(vec->arr[i])(msg);
-				}
-			}
+      Vector<midi_callback_func_t, 4> *vec = midiCallbackFunctions + callback;
+      for (int i = 0; i < vec->size; i++) {
+        MidiUart.printfString("callback %b, vec %b", callback, i);
+        if (vec->arr[i] != NULL) {
+          MidiUart.printfString("not empty");
+          (vec->arr[i])(msg);
+        }
+      }
 #endif
     } else if (last_status == MIDI_SONG_POSITION_PTR) {
 #ifndef HOST_MIDIDUINO

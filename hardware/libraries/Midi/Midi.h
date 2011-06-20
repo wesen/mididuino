@@ -37,6 +37,9 @@ extern "C" {
 #define MIDI_CHAN_PRESS_CB  5
 #define MIDI_PITCH_WHEEL_CB 6
 
+/**
+ * Structure to hold state-transitions for incoming MIDI messages.
+ **/
 typedef struct {
   uint8_t      midi_status;
   midi_state_t next_state;
@@ -44,17 +47,25 @@ typedef struct {
 
 class MidiSysexClass;
 
+/**
+ * Callback type for a MIDI message.
+ **/
 typedef void(MidiCallback::*midi_callback_ptr_t)(uint8_t *msg);
+#ifdef HOST_MIDIDUINO
+/**
+ * Callbacks with message length on the host.
+ **/
 typedef void(MidiCallback::*midi_callback_ptr2_t)(uint8_t *msg, uint8_t len);
+#endif
 
 #include "MidiSysex.hh"
 
 class MidiClass {
-	/**
-	 * \addtogroup midi_class
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_class
+   *
+   * @{
+   **/
 	
  private:
   midi_state_t in_state;
@@ -77,11 +88,11 @@ class MidiClass {
   MidiSysexClass midiSysex;
   uint8_t receiveChannel;
 
-	/*
-  uint8_t sysexBuf[SYSEX_BUF_SIZE];
-	*/
-	uint8_t *sysexBuf;
-	uint16_t sysexBufLen;
+  /*
+    uint8_t sysexBuf[SYSEX_BUF_SIZE];
+  */
+  uint8_t *sysexBuf;
+  uint16_t sysexBufLen;
 
   MidiClass(MidiUartParent *_uart = NULL, uint8_t *_sysexBuf = NULL, uint16_t _sysexBufLen = 0);
 
@@ -90,11 +101,11 @@ class MidiClass {
 
 #ifdef HOST_MIDIDUINO
   void addOnMessageCallback(MidiCallback *obj,
-														void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+                            void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
     messageCallback.add(obj, func);
   }
   void removeOnMessageCallback(MidiCallback *obj,
-															 void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+                               void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
     messageCallback.remove(obj, func);
   }
   void removeOnMessageCallback(MidiCallback *obj) {
@@ -172,7 +183,7 @@ class MidiClass {
     midiCallbacks[MIDI_PITCH_WHEEL_CB].remove(obj);
   }
 
-	/* @} */
+  /* @} */
   
 };
 
