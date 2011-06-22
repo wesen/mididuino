@@ -10,3 +10,4 @@ TAGS
 *.swp
 build
 *.d
+doc/html
