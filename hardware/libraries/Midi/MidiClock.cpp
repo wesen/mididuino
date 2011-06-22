@@ -47,12 +47,14 @@ void MidiClockClass::handleMidiStart() {
     MidiUart.sendRaw(MIDI_START);
   init();
   state = STARTING;
+  onStartCallbacks.call();
 }
 
 void MidiClockClass::handleMidiStop() {
   state = PAUSED;
   if (transmit)
     MidiUart.sendRaw(MIDI_STOP);
+  onStopCallbacks.call();
 }
 
 
@@ -60,13 +62,17 @@ void MidiClockClass::handleMidiContinue() {
   if (transmit) {
     MidiUart.sendRaw(MIDI_CONTINUE);
     /* XXX remove send start hack */
-    MidiUart.sendRaw(MIDI_START);
+    if (indiv96th_counter == 0) {
+      MidiUart.sendRaw(MIDI_START);
+    }
   }
   state = STARTING;
 
   counter = 10000;
   rx_clock = rx_last_clock = 0;
   isInit = false;
+
+  onContinueCallbacks.call();
 }
 
 void MidiClockClass::start() {
@@ -75,6 +81,7 @@ void MidiClockClass::start() {
     state = STARTED;
     if (transmit)
       MidiUart.sendRaw(MIDI_START);
+    onStartCallbacks.call();
   }
 }
 
@@ -83,6 +90,7 @@ void MidiClockClass::stop() {
     state = PAUSED;
     if (transmit)
       MidiUart.sendRaw(MIDI_STOP);
+    onStopCallbacks.call();
   }
 }
 

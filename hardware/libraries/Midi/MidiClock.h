@@ -25,6 +25,7 @@ class ClockCallback {
 };
 
 typedef void (ClockCallback::*midi_clock_callback_ptr_t)(uint32_t count);
+typedef void (ClockCallback::*midi_clock_callback_ptr0_t)();
 
 class MidiClockClass {
   /**
@@ -68,8 +69,6 @@ class MidiClockClass {
   } state;
 
 #if defined(MIDIDUINO) || defined(HOST_MIDIDUINO)
-
-
   typedef enum {
     OFF = 0,
     INTERNAL,
@@ -78,7 +77,6 @@ class MidiClockClass {
   } clock_mode_t;
 #define INTERNAL_MIDI INTERNAL
 #define EXTERNAL_MIDI EXTERNAL
-
 #else  
   typedef enum {
     OFF = 0,
@@ -131,6 +129,41 @@ class MidiClockClass {
   void removeOn16Callback(ClockCallback *obj) {
     on16Callbacks.remove(obj);
   }
+
+  CallbackVector<ClockCallback, 8> onStartCallbacks;
+  CallbackVector<ClockCallback, 8> onStopCallbacks;
+  CallbackVector<ClockCallback, 8> onContinueCallbacks;
+
+  void addOnStartCallback(ClockCallback *obj, midi_clock_callback_ptr0_t func) {
+    onStartCallbacks.add(obj, func);
+  }
+  void removeOnStartCallback(ClockCallback *obj, midi_clock_callback_ptr0_t func) {
+    onStartCallbacks.remove(obj, func);
+  }
+  void removeOnStartCallback(ClockCallback *obj) {
+    onStartCallbacks.remove(obj);
+  }
+
+  void addOnStopCallback(ClockCallback *obj, midi_clock_callback_ptr0_t func) {
+    onStopCallbacks.add(obj, func);
+  }
+  void removeOnStopCallback(ClockCallback *obj, midi_clock_callback_ptr0_t func) {
+    onStopCallbacks.remove(obj, func);
+  }
+  void removeOnStopCallback(ClockCallback *obj) {
+    onStopCallbacks.remove(obj);
+  }
+
+  void addOnContinueCallback(ClockCallback *obj, midi_clock_callback_ptr0_t func) {
+    onContinueCallbacks.add(obj, func);
+  }
+  void removeOnContinueCallback(ClockCallback *obj, midi_clock_callback_ptr0_t func) {
+    onContinueCallbacks.remove(obj, func);
+  }
+  void removeOnContinueCallback(ClockCallback *obj) {
+    onContinueCallbacks.remove(obj);
+  }
+  
   
   void init();
   void handleClock();
