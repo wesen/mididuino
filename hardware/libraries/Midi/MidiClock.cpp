@@ -11,7 +11,7 @@
 
 MidiClockClass::MidiClockClass() {
   init();
-  mode = OFF;
+  mode = EXTERNAL;
   setTempo(120);
   transmit = false;
   useImmediateClock = false;
