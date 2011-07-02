@@ -1,0 +1,3 @@
+[submodule "thirdparty/CppUnitLite2"]
+	path = thirdparty/CppUnitLite2
+	url = git@github.com:wesen/CppUnitLite2.git
