@@ -1,3 +1,9 @@
+/*
+ * MidiCtrl - Host implementation of hardware interfacing stubs.
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef GUI_PRIVATE_H__
 #define GUI_PRIVATE_H__
 
@@ -12,7 +18,7 @@ class EncodersClass {
  public:
   encoder_t encoders[GUI_NUM_ENCODERS];
 
-  EncodersClass() { }
+  EncodersClass();
 
   void poll(uint16_t sr) { }
   void clearEncoders() { }
@@ -36,8 +42,6 @@ typedef struct button_s {
   uint16_t press_time;
   uint16_t last_press_time;
 } button_t;
-
-
 
 class ButtonsClass {
  public:

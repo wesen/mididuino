@@ -1,3 +1,9 @@
+/*
+ * MidiCtrl - Hardware interface to minicommand2
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -5,6 +11,12 @@
 #include "WProgram.h"
 
 #include "GUI_private.h"
+
+/***************************************************************************
+ *
+ * Read out the shift register by bitbanging the SR165
+ *
+ ***************************************************************************/
 
 /*
   $SR165_OUT$        output pin for the shift register
@@ -77,7 +89,11 @@ uint16_t SR165Class::read16() {
   return res;
 }
 
-/**********************************************/
+/***************************************************************************
+ *
+ * Poll hardware encoders 
+ *
+ ***************************************************************************/
 
 #define ENCODER_NORMAL(i) (encoders[(i)].normal)
 #define ENCODER_SHIFT(i)  (encoders[(i)].shift)

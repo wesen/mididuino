@@ -1,12 +1,14 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - GUI Encoder classes
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #include "Encoders.hh"
 #include "MidiTools.h"
 #include "Midi.h"
 
 #include "GUI.h"
-
-/* handlers */
 
 /**
  * \addtogroup GUI
@@ -21,6 +23,12 @@
  * Encoder classes
  **/
 class Encoder;
+
+/***************************************************************************
+ *
+ * Encoder handlers
+ *
+ ***************************************************************************/
 
 /**
  * Handle a change in a CCEncoder by sending out the CC, using the
@@ -55,6 +63,12 @@ void TempoEncoderHandle(Encoder *enc) {
   MidiClock.setTempo(enc->getValue());
 }
 #endif
+
+/***************************************************************************
+ *
+ * Base Encoder class
+ *
+ ***************************************************************************/
 
 Encoder::Encoder(const char *_name, encoder_handle_t _handler)
   : old(0),
@@ -126,6 +140,12 @@ int Encoder::update(encoder_t *enc) {
   return cur;
 }
 
+/***************************************************************************
+ *
+ * Child encoder classes
+ *
+ ***************************************************************************/
+
 /* EnumEncoder */
 void EnumEncoder::displayAt(int i) {
   GUI.put_string_at(i * 4, enumStrings[getValue()]);
@@ -140,7 +160,6 @@ void PEnumEncoder::displayAt(int i) {
 
 
 /* RangeEncoder */
-
 int RangeEncoder::update(encoder_t *enc) {
   int inc = enc->normal + (pressmode ? 0 : (fastmode ? fastmodestep * enc->button : enc->button));
   
@@ -184,6 +203,7 @@ void NotePitchEncoder::displayAt(int i) {
   GUI.put_string_at(i * 4, name);
 }
 
+/* Midi track encoder */
 void MidiTrackEncoder::displayAt(int i) {
   GUI.put_value(i, getValue() + 1);
 }
@@ -193,6 +213,8 @@ void AutoNameCCEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
   CCEncoder::initCCEncoder(_channel, _cc);
   setCCName();
   GUI.redisplay();
-
 }
 
+/**
+ * @} @}
+ **/
