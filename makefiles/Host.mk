@@ -16,7 +16,7 @@ CLDCXX   = g++
 CLDC     = gcc
 
 # ARCHFLAGS = -arch i386 -arch ppc  -mmacosx-version-min=10.4
-HOST_BASE_DIR  = $(CURDIR)../host
+HOST_BASE_DIR  = $(abspath $(CURDIR)../host)
 HOST_LIBS      += MidiUart GUI Tools
 HOST_LIB_DIRS  = $(foreach lib,$(HOST_LIBS),$(HOST_BASE_DIR)/$(lib))
 HOST_INC_FLAGS = $(foreach dir,$(HOST_LIB_DIRS),-I$(dir)) -I$(HOST_BASE_DIR)
