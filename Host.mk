@@ -1,3 +1,9 @@
+#
+# MidiCtrl - Host specific makefile settings
+#
+# (c)  July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+#
+
 CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 include $(CURDIR)MidiCtrl.mk
