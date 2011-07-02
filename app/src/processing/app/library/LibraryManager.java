@@ -283,7 +283,7 @@ public class LibraryManager {
           if (!quiet) {
             System.out.println("adding depended on library " + dependLibrary.getName());
           }
-          addLibrary(libraries, dependLibrary);
+          addLibrary(libraries, dependLibrary, quiet);
         }
       }
     }

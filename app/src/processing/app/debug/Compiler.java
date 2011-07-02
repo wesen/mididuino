@@ -150,8 +150,6 @@ public class Compiler implements MessageConsumer {
       e.printStackTrace();
     }
 
-    
-
     List baseCommandObjcopy = new ArrayList(Arrays.asList(new String[] {
       avrBasePath + "avr-objcopy",
       "-O",
@@ -528,7 +526,7 @@ public class Compiler implements MessageConsumer {
     List result = new ArrayList();
     try {
       Sketch sketch = new Sketch(null, path);
-      sketch.preprocess("/tmp/build",  target);
+      sketch.preprocess(Base.getBuildFolder().getAbsolutePath(),  target);
       
       Vector<Library> libraries = new Vector();
       LibraryManager libraryManager = new LibraryManager(); 
@@ -544,16 +542,12 @@ public class Compiler implements MessageConsumer {
           libraryManager.addLibrary(libraries, libraryManager.get(item), true);
         }
       } 
-      
-
 
       for (Library library : libraries) {
-        String path2 = library.getFolder().getAbsolutePath();
-        result.add(path2);
+        result.add(library.getName());
       }
       
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (RunnerException e) {
       // TODO Auto-generated catch block
@@ -802,7 +796,14 @@ public class Compiler implements MessageConsumer {
       }
     }
   }
-	
+  
+  public static void PrintList(java.util.List printList) {
+    for(int j = 0; j < printList.size(); j++) {
+      System.out.print((String)printList.get(j) + " ");
+    }
+    System.out.println();
+  }
+  
   public static void main(String args[]) {
     String midictrlDir = null;
     String board = "minicommand2";
@@ -811,6 +812,8 @@ public class Compiler implements MessageConsumer {
       return;
     }
     java.util.List printList = new ArrayList();
+    
+    
     int i;
     for (i = 0; i < args.length; i++) {
       if (args[i].equals("--board")) {
@@ -842,23 +845,27 @@ public class Compiler implements MessageConsumer {
     }
   
 
-
-    if (args.length > i) {
+    for (i = 0; i < args.length ; i++) {
       if (args[i].equals("--print-c-flags")) {
-        printList = Compiler.getCompilerFlags();
+        PrintList(Compiler.getCompilerFlags());
       } else if (args[i].equals("--print-cxx-flags")) {
-        printList = Compiler.getCompilerFlags();
+        PrintList(Compiler.getCompilerFlags());
       } else if (args[i].equals("--print-ld-flags")) {
-        printList = Compiler.getLinkerFlags();
+        PrintList(Compiler.getLinkerFlags());
       } else if (args[i].equals("--libraries")) {
-        printList = Compiler.getLibraries(args[i+1], target);
+        PrintList(Compiler.getLibraries(args[i+1], target));
+      } else if (args[i].equals("--make")) {
+        System.out.print("MIDICTRL_LIBS += ");
+        PrintList(Compiler.getLibraries(args[i+1], target));
+        System.out.print("CFLAGS += ");
+        PrintList(Compiler.getCompilerFlags());
+        System.out.print("CXXFLAGS += ");
+        PrintList(Compiler.getCompilerFlags());
+        System.out.print("CLDFLAGS += ");
+        PrintList(Compiler.getLinkerFlags());
       }
-      
     }
     
-    for(int j = 0; j < printList.size(); j++) {
-      System.out.print((String)printList.get(j) + " ");
-    }
-    System.out.println();
+    
   }
 }
