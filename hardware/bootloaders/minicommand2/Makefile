@@ -1,4 +1,4 @@
-include ../../../AVR.mk
+include ../../../makefiles/AVR.mk
 
 PROJ=bootloader
 

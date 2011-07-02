@@ -1,7 +1,7 @@
 MIDICTRL_LIBS = MidiTools GUI
 MIDICTRL_HOST_EXCLUDE = %MidiClock.cpp %ModalGui.cpp %MDArpeggiator.cpp
 
-include ../../Host.mk
+include ../../makefiles/Host.mk
 
 all: ccHandler
 

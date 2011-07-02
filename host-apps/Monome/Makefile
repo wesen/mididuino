@@ -1,7 +1,7 @@
 MIDICTRL_LIBS = Monome
 HOST_LIBS = 
 
-include ../../Host.mk
+include ../../makefiles/Host.mk
 
 all: monometest monometest2
 

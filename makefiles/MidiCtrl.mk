@@ -1,7 +1,7 @@
 # Get the directory of this makefile
 CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
-MIDICTRL_BASE_DIR  = $(CURDIR)
+MIDICTRL_BASE_DIR  = $(CURDIR)..
 MIDICTRL_LIB_DIR   ?= $(MIDICTRL_BASE_DIR)/hardware/libraries
 MIDICTRL_JAR_DIR   ?= $(MIDICTRL_BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
 CLASSPATH=$(subst jar ,jar:,$(wildcard $(MIDICTRL_JAR_DIR)/*.jar))

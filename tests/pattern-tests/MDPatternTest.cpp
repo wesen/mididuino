@@ -22,7 +22,7 @@ int main() {
   }
   size_t len = fread(data, 1, 8192, f);
   fclose(f);
-  printf("len: %x\n", len);
+  printf("len: %lx\n", len);
   if (!pattern.fromSysex(data + 6, len - 7)) {
     printf("ARGS\n");
   } else {

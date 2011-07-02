@@ -1,4 +1,4 @@
-include ../../../Host.mk
+include ../../../makefiles/Host.mk
 
 all: midi-send midi-merge midi-console
 
