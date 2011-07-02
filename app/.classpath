@@ -4,7 +4,7 @@
 	<classpathentry kind="lib" path="lib/antlr.jar"/>
 	<classpathentry kind="lib" path="lib/jna.jar"/>
 	<classpathentry kind="lib" path="lib/oro.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/midi-ctrl-core"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

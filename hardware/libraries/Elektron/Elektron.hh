@@ -4,7 +4,6 @@
 #define ELEKTRON_H__
 
 #include "WProgram.h"
-
 #include <inttypes.h>
 
 /**

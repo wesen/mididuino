@@ -1,0 +1,12 @@
+include ../../../makefiles/Host.mk
+
+all: midi-send 
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+midi-send: midi-send.o midi-apple.o logging.o
+	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
+
+clean:
+	- rm -f *.o midi-send midi-merge midi-console

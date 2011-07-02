@@ -3,6 +3,8 @@
 #ifndef ELEKTRON_PATTERN_H__
 #define ELEKTRON_PATTERN_H__
 
+#include "Elektron.hh"
+
 /**
  * \addtogroup Elektron
  *

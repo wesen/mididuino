@@ -11,6 +11,7 @@
 
 #include <inttypes.h>
 #include "midi.h"
+#include "midi-common.hh"
 #include "logging.h"
 
 // 55: midi command 168
@@ -38,7 +39,7 @@ int firmwareChecksumSent = 0;
 
 int waitingForBootloader = 0;
 
-unsigned char bootmsg[] = { 0xF0, 0x00, 0x13, 0x37, 0x05, 0xF7 };
+unsigned char bootmsg[] = { 0xF0, 0x00, 0x13, 0x37, CMD_START_BOOTLOADER, 0xF7 };
 
 #define MAX_KB_SIZE 256 /* should be enough for now */
 unsigned char flashram[MAX_KB_SIZE * 1024];

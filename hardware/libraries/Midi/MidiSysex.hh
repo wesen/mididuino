@@ -3,6 +3,7 @@
 #ifndef MIDISYSEX_H__
 #define MIDISYSEX_H__
 
+#include "WProgram.h"
 #include <inttypes.h>
 
 #ifndef SYSEX_BUF_SIZE
