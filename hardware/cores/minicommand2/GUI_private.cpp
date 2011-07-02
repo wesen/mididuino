@@ -7,13 +7,13 @@
 #include "GUI_private.h"
 
 /*
-	$SR165_OUT$        output pin for the shift register
-	$SR165_SHLOAD$     SHL pin for the shift register
-	$SR165_CLK$        CLK pin for the shift register
+  $SR165_OUT$        output pin for the shift register
+  $SR165_SHLOAD$     SHL pin for the shift register
+  $SR165_CLK$        CLK pin for the shift register
 
-	$SR165_DATA_PORT$  data port for the shift register
-	$SR165_DDR_PORT$   ddr port for the shift register
-	$SR165_PIN_PORT$   pin port for the shift register
+  $SR165_DATA_PORT$  data port for the shift register
+  $SR165_DDR_PORT$   ddr port for the shift register
+  $SR165_PIN_PORT$   pin port for the shift register
 */
 
 #define SR165_DELAY() { } // asm("nop"); } // asm("nop");  asm("nop");  }
@@ -109,17 +109,17 @@ void EncodersClass::poll(uint16_t sr) {
       volatile int8_t *val = &(ENCODER_NORMAL(i));
       
       if (BUTTON_DOWN(i)) {
-				val = &(ENCODER_BUTTON(i));
+        val = &(ENCODER_BUTTON(i));
       }
 			
       if (((sr_old2s[i] & 3) == 0 && (sr_old & 3) == 1 && (sr & 3) == 3) ||
-					(((sr_old2s[i] & 3) == 3) && (sr_old & 3) == 2 && (sr & 3) == 0)){
-				if (*val < 64)
-					(*val)++;
+          (((sr_old2s[i] & 3) == 3) && (sr_old & 3) == 2 && (sr & 3) == 0)){
+        if (*val < 64)
+          (*val)++;
       } else if (((sr_old2s[i] & 3) == 0 && (sr_old & 3) == 2 && (sr & 3) == 3) ||
-								 ((sr_old2s[i] & 3) == 3 && (sr_old & 3) == 1 && (sr & 3) == 0)) {
-				if (*val > -64)
-					(*val)--;
+                 ((sr_old2s[i] & 3) == 3 && (sr_old & 3) == 1 && (sr & 3) == 0)) {
+        if (*val > -64)
+          (*val)--;
       }
       sr_old2s[i] = sr_old & 3;
     }
@@ -153,39 +153,39 @@ void ButtonsClass::poll(uint8_t but) {
 
     // disable button stuff for now
     /*
-			uint16_t sclock = read_slowclock();
-			if (BUTTON_PRESSED(i)) {
+      uint16_t sclock = read_slowclock();
+      if (BUTTON_PRESSED(i)) {
       B_PRESS_TIME(i) =  sclock;
       
       if (B_PRESSED_ONCE(i)) {
-			uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), B_PRESS_TIME(i));
-			if (diff < DOUBLE_CLICK_TIME) {
-			SET_B_DOUBLE_CLICK(i);
-			CLEAR_B_PRESSED_ONCE(i);
-			}
+      uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), B_PRESS_TIME(i));
+      if (diff < DOUBLE_CLICK_TIME) {
+      SET_B_DOUBLE_CLICK(i);
+      CLEAR_B_PRESSED_ONCE(i);
+      }
       } else {
-			B_LAST_PRESS_TIME(i) = B_PRESS_TIME(i);
-			SET_B_PRESSED_ONCE(i);
+      B_LAST_PRESS_TIME(i) = B_PRESS_TIME(i);
+      SET_B_PRESSED_ONCE(i);
       }
-			}
+      }
     
-			if (BUTTON_DOWN(i) && B_PRESSED_ONCE(i)) {
+      if (BUTTON_DOWN(i) && B_PRESSED_ONCE(i)) {
       uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), sclock);
       if (diff > LONG_CLICK_TIME) {
-			SET_B_LONG_CLICK(i);
-			CLEAR_B_PRESSED_ONCE(i);
+      SET_B_LONG_CLICK(i);
+      CLEAR_B_PRESSED_ONCE(i);
       }
-			}
+      }
 
-			if (BUTTON_UP(i) && B_PRESSED_ONCE(i)) {
+      if (BUTTON_UP(i) && B_PRESSED_ONCE(i)) {
       uint16_t diff = clock_diff(B_LAST_PRESS_TIME(i), sclock);
       if (diff > LONG_CLICK_TIME) {
-			CLEAR_B_PRESSED_ONCE(i);
+      CLEAR_B_PRESSED_ONCE(i);
       } else if (diff > DOUBLE_CLICK_TIME) {
-			CLEAR_B_PRESSED_ONCE(i);
-			SET_B_CLICK(i);
+      CLEAR_B_PRESSED_ONCE(i);
+      SET_B_CLICK(i);
       }
-			}
+      }
     */
 
     but_tmp >>= 1;
