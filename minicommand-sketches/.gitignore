@@ -1,3 +1,4 @@
 applet/
 *.elf
 *.hex
+.midictrl.flags

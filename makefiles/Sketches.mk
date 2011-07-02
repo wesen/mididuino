@@ -41,10 +41,9 @@ CORE = minicommand2
 MIDICTRL_LIB_DIRS += $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)
 
 .midictrl.flags: $(PDENAME).pde
-	java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --make $(CURRENT_DIR)/$(PDENAME).pde > $@
+	@java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --make $(CURRENT_DIR)/$(PDENAME).pde > $@
 
 include .midictrl.flags
-
 include $(CURDIR)MidiCtrl.mk
 
 
@@ -91,7 +90,7 @@ testflags:
 	cd $(MIDICTRL_BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-c-flags
 
 $(PDENAME).o: $(PDEFILES) $(wildcard $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
-	java $(JAVA_FLAGS) processing.app.preproc.PdePreprocessor ./$(PDENAME) $(PDEFILES)
+	@java $(JAVA_FLAGS) processing.app.preproc.PdePreprocessor ./$(PDENAME) $(PDEFILES) > /dev/null
 	$(CXX) $(CXXFLAGS) -c $(PDENAME).cpp -o $@
 	rm $(PDENAME).cpp
 
@@ -103,6 +102,9 @@ $(PDENAME)whole.elf: $(PDENAME).cpp $(COBJS)
 
 $(PDENAME).elf: $(PDENAME).o $(MIDICTRL_OBJS)
 	$(CXX) $(CLDFLAGS) -g -o $@ $^ 
+
+clean:
+	- rm *.elf *.hex *.o .midictrl.flags
 
 libclean:
 	rm -rf $(MIDICTRL_HOST_OBJS) $(HOST_OBJS)
