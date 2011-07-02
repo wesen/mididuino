@@ -39,6 +39,10 @@ endif
 CXXFLAGS += $(INCS)
 CFLAGS += $(INCS)
 
+CPPSOURCES := $(shell find . -name '*.cpp')
+OBJFILES = $(foreach file,$(CPPSOURCES),$(subst .cpp,.o,$(file)))
+HOSTOBJFILES = $(foreach file,$(CPPSOURCES),$(subst .cpp,.host.o,$(file)))
+
 all: test
 
 %.host.o: %.cpp
@@ -47,30 +51,12 @@ all: test
 %.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-test: \
-   main.host.o \
-   bitTests.host.o \
-   listTest.host.o \
-   arpTest.host.o \
-   stackTest.host.o \
-   miscTest.host.o \
-   midiTest.host.o \
-   callbackTest.host.o \
-   noteHandlerTest.host.o \
-   dataEncoderTest.host.o \
-   mnmDataEncoderTest.host.o \
-   mdPatternTest.host.o \
-   mdGlobalTests.o \
-   mdKitTests.o \
-   mdMessagesTest.host.o \
-   mnmPatternTest.host.o \
-   mnmMessagesTest.host.o \
-   clockTests.host.o \
-   $(OBJS)
+test: $(HOSTOBJFILES) $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 
 clean:
 	- rm -f *.o test
+	- find . -name \*.o -print0 | xargs -0 rm
 
 libclean:
 	rm -rf $(OBJS)
