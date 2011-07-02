@@ -8,17 +8,20 @@ UNAME=$(shell uname)
 ISWIN=$(findstring CYGWIN,$(UNAME))
 ISMAC=$(findstring Darwin,$(UNAME))
 
+CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
+MIDICTRL_BASE_DIR  ?= $(abspath $(CURDIR)..)
+
 ifneq (,$(ISMAC))
-MIDICTRL_BASE_DIR=/Applications/MidiCtrl.app/Contents/Resources/Java
+APP_DIR := /Applications/MidiCtrl.app/Contents/Resources/Java
 endif
 
 ifneq (,$(ISWIN))
-MIDICTRL_BASE_DIR = C:/Program Files/MidiCtrl
+APP_DIR := C:/Program Files/MidiCtrl
 endif
 
-JAR_DIR = $(MIDICTRL_BASE_DIR)
-CLASSPATH = $(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
-JAVA_FLAGS += -Duser.dir="$(MIDICTRL_BASE_DIR)" -cp "$(CLASSPATH)"
+JAR_DIR := $(APP_DIR)
+CLASSPATH :=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
+JAVA_FLAGS := -Duser.dir="$(MIDICTRL_BASE_DIR)" -cp "$(CLASSPATH)"
 
 PDEDIR ?= .
 CURRENT_DIR := $(shell pwd)
@@ -34,22 +37,28 @@ AVR_ARCH = atmega64
 F_CPU = 16000000L
 CORE = minicommand2
 
-MIDICTRL_LIBS += GUI
+# Read out the libraries from the midi ctrl environment
+MIDICTRL_LIB_DIRS += $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)
 
-#LDIRS := $(shell java -cp "$(CLASSPATH)" processing.app.debug.Compiler --dir "$(BASE_DIR)" --board $(CORE) --libraries `pwd`/$(TARGET).pde)
-#LDIRS += $(CORE_DIR)
-#INCS = $(foreach dir,$(LDIRS),-I$(dir))
+.midictrl.flags: $(PDENAME).pde
+	java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --make $(CURRENT_DIR)/$(PDENAME).pde > $@
 
-# read out compile flags from the actual MidiCtrl app
-CFLAGS = $(shell cd $(MIDICTRL_BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-c-flags)
-CXXFLAGS = $(shell cd $(MIDICTRL_BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-cxx-flags)
-CLDFLAGS = $(shell cd $(MIDICTRL_BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-ld-flags)
+include .midictrl.flags
 
-# include general midi settings
-CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(CURDIR)MidiCtrl.mk
 
+
 all: $(PDENAME).hex
+
+printinfo:
+	@echo "MidiCtrl base dir: " $(MIDICTRL_BASE_DIR)
+	@echo "Application dir: " $(APP_DIR)
+	@echo "JAR dir: " $(JAR_DIR)
+	@echo "Classpath: " $(CLASSPATH)
+	@echo "CFLAGS: " $(CFLAGS)
+	@echo "CXXFLAGS: " $(CXXFLAGS)
+	@echo "CLDFLAGS: " $(CLDFLAGS)
+	@echo "Libraries: " $(MIDICTRL_LIBS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -92,6 +101,8 @@ upload: $(PDENAME).hex
 $(PDENAME)whole.elf: $(PDENAME).cpp $(COBJS)
 	$(CXX) $(CLDFLAGS) $(CFLAGS) -o $@ -fwhole-program --combine $^ $(SRCS)
 
-$(PDENAME).elf: $(PDENAME).o $(OBJS)
+$(PDENAME).elf: $(PDENAME).o $(MIDICTRL_OBJS)
 	$(CXX) $(CLDFLAGS) -g -o $@ $^ 
 
+libclean:
+	rm -rf $(MIDICTRL_HOST_OBJS) $(HOST_OBJS)
