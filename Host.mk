@@ -20,7 +20,7 @@ HOST_OBJS  = $(foreach dir,$(HOST_LIB_DIRS),$(foreach file,$(wildcard $(dir)/*.c
 HOST_OBJS += $(foreach dir,$(HOST_LIB_DIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
 HOST_DEPS = $(subst .host.o,.d,$(HOST_OBJS))
 
-MIDICTRL_HOST_EXCLUDE =  %MDArpeggiator.cpp
+MIDICTRL_HOST_EXCLUDE +=  %MDArpeggiator.cpp 
 MIDICTRL_HOST_OBJS  = $(foreach dir,$(MIDICTRL_LIB_DIRS),$(foreach file,$(filter-out $(MIDICTRL_HOST_EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
 MIDICTRL_HOST_OBJS  += $(foreach dir,$(MIDICTRL_LIB_DIRS),$(foreach file,$(filter-out $(MIDICTRL_HOST_EXCLUDE),$(wildcard $(dir)/*.c)),$(subst .c,.host.o,$(file))))
 MIDICTRL_HOST_DEPS = $(subst .host.o,.d,$(MIDICTRL_HOST_OBJS))
