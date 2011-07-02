@@ -1,14 +1,6 @@
-CC = gcc-4.0
-ARCHFLAGS = -arch i386 -arch ppc -mmacosx-version-min=10.4
-#ARCHFLAGS = -arch i386 
-#ARCHFLAGS = -arch ppc
-#CFLAGS += -mno-cygwin
-CFLAGS += -W -Wall $(ARCHFLAGS) -g
-#LDFLAGS += -lwinmm
-DLLTOOL = dlltool
-CFLAGS +=  -isysroot /Developer/SDKs/MacOSX10.4u.sdk
+include ../../../Host.mk
 
-all: midi-send
+all: midi-send midi-merge midi-console
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -16,23 +8,11 @@ all: midi-send
 midi-send: midi-send.o midi-apple.o logging.o
 	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
 
-midi-merge: midi-merge.c
+midi-merge: midi-merge.o
 	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
 
-midi-console: midi-console.c
+midi-console: midi-console.o
 	$(CC) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
 
 clean:
-	- rm -f *.o *.exe
-
-winmm.lib:
-	cp /c/WINDOWS/SYSTEM32/WINMM.DLL winmm.dll
-	$(DLLTOOL) -l winmm.lib -z winmm.def --export-all-symbols winmm.dll
-#	$(DLLTOOL) -e winmm.def winmm..dll
-	rm -f winmm.dll
-
-mmsystem.lib:
-	cp /c/WINDOWS/SYSTEM32/mmsystem.dll mmsystem.dll
-	$(DLLTOOL) -l mmsystem.lib -z mmsystem.def --export-all-symbols mmsystem.dll
-#	$(DLLTOOL) -e mmsystem.def mmsystem.dll
-	rm -f mmsystem.dll
+	- rm -f *.o midi-send midi-merge midi-console
