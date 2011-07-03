@@ -5,6 +5,8 @@
  */
 #include "GUI_private.h"
 
+#include <GUI.h>
+
 EncodersClass Encoders;
 ButtonsClass Buttons;
 
@@ -44,6 +46,13 @@ void ButtonsClass::clearButtons() {
   }
 }
 
+/** single GUI loop tick **/
+void ButtonsClass::tick() {
+  for (uint8_t i = 0; i < GUI_NUM_BUTTONS; i++) {
+    STORE_B_OLD(i, B_CURRENT(i));
+  }
+}
+
 void ButtonsClass::pressButton(uint8_t button) {
   STORE_B_CURRENT(button, 0);
 }
@@ -56,4 +65,10 @@ void ButtonsClass::printButtons() {
   for (uint8_t i = 0; i < GUI_NUM_BUTTONS; i++) {
     printf("Button %d: %x\n", i, B_CURRENT(i));
   }
+}
+
+void GUI_tick() {
+  pollEventGUI();
+  GUI.loop();
+  Buttons.tick();
 }

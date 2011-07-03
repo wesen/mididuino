@@ -133,8 +133,15 @@ class ButtonsClass {
   void pressButton(uint8_t button);
   void releaseButton(uint8_t button);
   void printButtons();
+
+  void tick();
 };
 
 extern ButtonsClass Buttons;
+
+/**
+ * Make a single tick of the GUI (update buttons status etc...)
+ **/
+extern void GUI_tick();
 
 #endif /* GUI_PRIVATE_H__ */
