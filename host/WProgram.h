@@ -9,12 +9,7 @@
 #define PSTR(s) (s)
 
 #define GUI_NUM_ENCODERS 4
-#define GUI_NUM_BUTTONS 4
-
-#define BUTTON_PRESSED(i) false
-#define BUTTON_RELEASED(i) false
-#define BUTTON_DOWN(i) false
-#define BUTTON_UP(i) true
+#define GUI_NUM_BUTTONS 8
 
 #include <stdio.h>
 
