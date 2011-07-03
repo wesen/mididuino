@@ -96,9 +96,7 @@ uint16_t SR165Class::read16() {
  ***************************************************************************/
 
 #define ENCODER_NORMAL(i) (encoders[(i)].normal)
-#define ENCODER_SHIFT(i)  (encoders[(i)].shift)
 #define ENCODER_BUTTON(i) (encoders[(i)].button)
-#define ENCODER_BUTTON_SHIFT(i) (encoders[(i)].button_shift)
 
 EncodersClass::EncodersClass() {
   clearEncoders();
