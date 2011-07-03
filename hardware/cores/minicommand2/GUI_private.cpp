@@ -152,9 +152,11 @@ ButtonsClass::ButtonsClass() {
 
 void ButtonsClass::clear() {
   for (int i = 0; i < GUI_NUM_BUTTONS; i++) {
+    /*
     CLEAR_B_DOUBLE_CLICK(i);
     CLEAR_B_CLICK(i);
     CLEAR_B_LONG_CLICK(i);
+    */
     STORE_B_OLD(i, B_CURRENT(i));
   }
 }
