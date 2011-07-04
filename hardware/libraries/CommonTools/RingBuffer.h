@@ -27,11 +27,11 @@
  * 255 elements, use T = uint16_t.
  **/
 template <class C, int N, class T = uint8_t>
-class CRingBuffer {
-	/**
-	 * \addtogroup helpers_cringbuffer
-	 * @{
-	 **/
+  class CRingBuffer {
+  /**
+   * \addtogroup helpers_cringbuffer
+   * @{
+   **/
   volatile T rd, wr;
   volatile C buf[N];
   
@@ -39,38 +39,47 @@ class CRingBuffer {
   volatile uint8_t overflow;
 
   CRingBuffer();
-	/** Add a new element c to the ring buffer. **/
+  /** Reset the ring buffer. **/
+  void reset() volatile;
+  /** Add a new element c to the ring buffer. **/
   bool put(C c) volatile;
-	/** Copy a new element pointed to by c to the ring buffer. **/
+  /** Copy a new element pointed to by c to the ring buffer. **/
   bool putp(C *c) volatile;
-	/** Return the next element in the ring buffer. **/
+  /** Return the next element in the ring buffer. **/
   C get() volatile;
-	/** Copy the next element into dst. **/
+  /** Copy the next element into dst. **/
   bool getp(C *dst) volatile;
-	/** Get the next element without removing it from the ring buffer. **/
+  /** Get the next element without removing it from the ring buffer. **/
   C peek() volatile;
-	/** Returns true if the ring buffer is empty. **/
+  /** Returns true if the ring buffer is empty. **/
   bool isEmpty() volatile;
-	/** Returns true if the ring buffer is full. **/
+  /** Returns true if the ring buffer is full. **/
   bool isFull() volatile;
-	/** Returns the number of elements in the ring buffer. **/
-	T size() volatile;
+  /** Returns the number of elements in the ring buffer. **/
+  T size() volatile;
 
-	/* @} */
+  /* @} */
 };
 
 template <int N, class T = uint8_t>
   class RingBuffer : public CRingBuffer<uint8_t, N, T> {
  public:
   
-  RingBuffer() {
-  };
+ RingBuffer() {
+ };
 };
 
 #define RB_INC(x) (T)(((x) + 1) % N)
 
 template <class C, int N, class T>
   CRingBuffer<C, N, T>::CRingBuffer() {
+  rd = 0;
+  wr = 0;
+  overflow = 0;
+}
+
+template <class C, int N, class T>
+  void CRingBuffer<C, N, T>::reset() volatile {
   rd = 0;
   wr = 0;
   overflow = 0;
@@ -88,11 +97,11 @@ template <class C, int N, class T >
 }
 
 template <class C, int N, class T> T CRingBuffer<C, N, T>::size() volatile {
-	if (wr >= rd) {
-		return wr - rd;
-	} else {
-		return 256 << (sizeof(T) - 1) - rd + wr;
-	}
+  if (wr >= rd) {
+    return wr - rd;
+  } else {
+    return 256 << (sizeof(T) - 1) - rd + wr;
+  }
 }
 
 template <class C, int N, class T>

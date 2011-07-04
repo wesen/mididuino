@@ -13,7 +13,6 @@ extern "C" {
 
 #ifdef __cplusplus
   void __mainInnerLoop(bool callLoop = true);
-
 }
 #endif
 

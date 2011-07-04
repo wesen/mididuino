@@ -4,6 +4,7 @@
 # (c)  July 2011 - Manuel Odendahl - wesen@ruinwesen.com
 #
 
+# get the current OS
 UNAME=$(shell uname)
 ISWIN=$(findstring CYGWIN,$(UNAME))
 ISMAC=$(findstring Darwin,$(UNAME))
@@ -12,40 +13,42 @@ CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
 MIDICTRL_BASE_DIR  ?= $(abspath $(CURDIR)..)
 
 ifneq (,$(ISMAC))
-APP_DIR := /Applications/MidiCtrl.app/Contents/Resources/Java
+# default location of application folder
+APP_DIR ?= /Applications/MidiCtrl.app/Contents/Resources/Java
 endif
 
 ifneq (,$(ISWIN))
-APP_DIR := C:/Program Files/MidiCtrl
+APP_DIR ?= C:/Program Files/MidiCtrl
 endif
 
+# prepare the java settings
 JAR_DIR := $(APP_DIR)
-CLASSPATH :=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
+CLASSPATH := $(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
 JAVA_FLAGS := -Duser.dir="$(MIDICTRL_BASE_DIR)" -cp "$(CLASSPATH)"
 
+# get the current sketch name
 PDEDIR ?= .
 CURRENT_DIR := $(shell pwd)
 PDENAME := $(notdir $(CURRENT_DIR))
 PDEFILES=$(wildcard $(PDEDIR)/*.pde)
 
 # settings for minicommand2
-CC=avr-gcc
-CXX=avr-g++
+CC = avr-gcc
+CXX = avr-g++
 OBJCOPY = avr-objcopy
-UISP=uisp
 AVR_ARCH = atmega64
 F_CPU = 16000000L
 CORE = minicommand2
 
-# Read out the libraries from the midi ctrl environment
+# add the core directory to the include path
 MIDICTRL_LIB_DIRS += $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)
 
-.midictrl.flags: $(PDENAME).pde
+# Read out the libraries from the midi ctrl environment
+.midictrl.flags: $(PDEFILES)
 	@java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --make $(CURRENT_DIR)/$(PDENAME).pde > $@
 
 include .midictrl.flags
 include $(CURDIR)MidiCtrl.mk
-
 
 all: $(PDENAME).hex
 
@@ -86,9 +89,7 @@ printinfo:
 %.ee_srec: %.elf
 	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O srec $< $@
 
-testflags:	
-	cd $(MIDICTRL_BASE_DIR) && java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --print-c-flags
-
+# build the PDE by calling the preprocessor
 $(PDENAME).o: $(PDEFILES) $(wildcard $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	@java $(JAVA_FLAGS) processing.app.preproc.PdePreprocessor ./$(PDENAME) $(PDEFILES) > /dev/null
 	$(CXX) $(CXXFLAGS) -c $(PDENAME).cpp -o $@

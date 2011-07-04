@@ -12,3 +12,5 @@ build
 *.d
 doc/html
 mididuino-dist
+cscope.files
+cscope.out

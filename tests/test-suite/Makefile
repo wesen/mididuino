@@ -4,7 +4,7 @@
 # (c)  July 2011 - Manuel Odendahl - wesen@ruinwesen.com
 #
 
-MIDICTRL_LIBS = Midi MidiTools GUI Elektron MD MNM Sequencer
+MIDICTRL_LIBS = Midi MidiTools GUI Elektron MD MNM Sequencer GUI
 
 include ../../makefiles/Host.mk
 

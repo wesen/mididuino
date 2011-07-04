@@ -96,9 +96,7 @@ uint16_t SR165Class::read16() {
  ***************************************************************************/
 
 #define ENCODER_NORMAL(i) (encoders[(i)].normal)
-#define ENCODER_SHIFT(i)  (encoders[(i)].shift)
 #define ENCODER_BUTTON(i) (encoders[(i)].button)
-#define ENCODER_BUTTON_SHIFT(i) (encoders[(i)].button_shift)
 
 EncodersClass::EncodersClass() {
   clearEncoders();
@@ -154,9 +152,11 @@ ButtonsClass::ButtonsClass() {
 
 void ButtonsClass::clear() {
   for (int i = 0; i < GUI_NUM_BUTTONS; i++) {
+    /*
     CLEAR_B_DOUBLE_CLICK(i);
     CLEAR_B_CLICK(i);
     CLEAR_B_LONG_CLICK(i);
+    */
     STORE_B_OLD(i, B_CURRENT(i));
   }
 }
