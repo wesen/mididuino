@@ -1,12 +1,12 @@
-/***************************************************************************
+/*
+ * MidiCtrl - Main routines for minicommand2 (startup + main loop)
  *
- * Main file for minicommand2
- *
- ***************************************************************************/
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #include <Midi.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 extern "C" {
 #include <avr/io.h>
 #include <avr/interrupt.h>

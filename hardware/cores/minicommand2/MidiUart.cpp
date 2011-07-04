@@ -1,4 +1,11 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Midi Uart implementation for the minicommand2
+ * use interrupt driven UART receive and sending
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 
 #include <avr/interrupt.h>
 #include <util/delay.h>

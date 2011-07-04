@@ -1,4 +1,13 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Weak functions for standard Midi-Ctrl functions
+ *
+ * This is used so that the user doesn't have to flesh out all
+ * necessary functions in his sketch, but can override them at will.
+ *
+ * (c) 2009-2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "Midi.h"
 #include <GUI.h>
 
