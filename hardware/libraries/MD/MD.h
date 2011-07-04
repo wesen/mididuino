@@ -1,10 +1,13 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Interface to the Elektron MachineDrum
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef MD_H__
 #define MD_H__
 
-#include "WProgram.h"
-
+#include "PlatformConfig.h"
 #include "Elektron.hh"
 
 

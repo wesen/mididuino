@@ -1,9 +1,13 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - MachineDrum note recorder
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef MDRECORDER_H__
 #define MDRECORDER_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "ListPool.hh"
 
 /**

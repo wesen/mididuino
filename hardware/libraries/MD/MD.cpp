@@ -1,4 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Implementation of common general functions for the Elektron Machinedrum
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "MD.h"
 #include "helpers.h"
 

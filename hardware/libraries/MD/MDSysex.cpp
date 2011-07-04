@@ -1,5 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Sysex interface to the MachineDrum (listener)
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
+#include "Platform.h"
 #include "helpers.h"
 #include "MD.h"
 #include "MDSysex.hh"
