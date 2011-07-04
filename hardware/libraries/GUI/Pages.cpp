@@ -1,6 +1,10 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - GUI pages implementation
+ *
+ * (c) 200 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
-#include "WProgram.h"
+#include "Platform.h"
 #include "GUI.h"
 #include "Pages.hh"
 

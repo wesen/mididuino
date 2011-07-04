@@ -5,12 +5,11 @@
 
 #include <stdlib.h>
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "Vector.hh"
 #include "Task.hh"
 
 #if defined(MIDIDUINO_USE_GUI) || defined(HOST_MIDIDUINO)
-
 #define MIDIDUINO_GUI_ACTIVE 1
 
 #include "Events.hh"

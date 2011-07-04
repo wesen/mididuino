@@ -1,6 +1,13 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Modal GUI page implementation
+ *
+ * Modal GUI pages call the gui event polling loop on their own, to
+ * bypass the normal GUI stack.
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
-#include "WProgram.h"
+#include "Platform.h"
 
 #include "Events.hh"
 #include "GUI.h"
@@ -45,7 +52,7 @@ public:
     if (GUI.sketch != NULL) {
       GUI.sketch->pushPage(this);
       while (!hasPressedKey) {
-				__mainInnerLoop(true);
+        __mainInnerLoop(true);
       }
       GUI.sketch->popPage(this);
 
@@ -68,12 +75,12 @@ public:
     // check buttons and encoders, small hack really, because all in one byte
     for (int i = 0; i < 8; i++) {
       if (EVENT_PRESSED(event, i) && buttonMask & _BV(i)) {
-				pressedKey = i;
-				hasPressedKey = true;
+        pressedKey = i;
+        hasPressedKey = true;
       }
       if (EVENT_RELEASED(event, i) && releaseMask & _BV(i)) {
-				pressedKey = -1;
-				hasPressedKey = true;
+        pressedKey = -1;
+        hasPressedKey = true;
       }
     }
     return true;
@@ -148,9 +155,9 @@ public:
   virtual void loop() {
     for (int i = 0; i < 4; i++) {
       if (charEncoders[i].hasChanged()) {
-				MidiUart.sendCC(2, i);
-				name[cursorPos + i] = charEncoders[i].getChar();
-				lineChanged = true;
+        MidiUart.sendCC(2, i);
+        name[cursorPos + i] = charEncoders[i].getChar();
+        lineChanged = true;
       }
     }
   }
@@ -180,14 +187,14 @@ public:
       GUI.sketch->pushPage(this);
 
       while (hasPressedKey == false) {
-				__mainInnerLoop(true);
+        __mainInnerLoop(true);
       }
       GUI.sketch->popPage(this);
 
       if (pressedKey == 1) {
-				return NULL;
+        return NULL;
       } else {
-				return name;
+        return name;
       }
     } else {
       return NULL;
