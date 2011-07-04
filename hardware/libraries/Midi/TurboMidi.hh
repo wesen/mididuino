@@ -1,9 +1,13 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - TurboMidi implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef TURBOMIDI_H__
 #define TURBOMIDI_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 
 /**
  * \addtogroup Midi
@@ -41,105 +45,105 @@
 #define TURBOMIDI_SPEED_20x   10
 
 class TurboMidiSysexListenerClass : public MidiSysexListenerClass {
-	/**
-	 * \addtogroup midi_turbomidi
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_turbomidi
+   *
+   * @{
+   **/
 public:
-	TurboMidiSysexListenerClass();
+  TurboMidiSysexListenerClass();
 
-	bool isGenericMessage;
+  bool isGenericMessage;
 	
-	virtual void handleByte(uint8_t byte);
-	virtual void start() { isGenericMessage = false; }
-	virtual void end();
+  virtual void handleByte(uint8_t byte);
+  virtual void start() { isGenericMessage = false; }
+  virtual void end();
 
-	void    setup() {
-		MidiSysex.addSysexListener(this);
-	}
+  void    setup() {
+    MidiSysex.addSysexListener(this);
+  }
 		
-	void    setupTurboMidiSlave();
+  void    setupTurboMidiSlave();
 
-	bool    sendSpeedRequest();
-	void    sendSpeedNegotiationRequest(uint8_t speed1, uint8_t speed2);
-	void    sendSpeedTest1(uint8_t speed1);
-	void    sendSpeedTest2(uint8_t speed2);
+  bool    sendSpeedRequest();
+  void    sendSpeedNegotiationRequest(uint8_t speed1, uint8_t speed2);
+  void    sendSpeedTest1(uint8_t speed1);
+  void    sendSpeedTest2(uint8_t speed2);
 
-	void    sendSpeedAnswer();
-	void    sendSpeedNegotiationAck();
-	void    sendSpeedTest1Result();
-	void    sendSpeedTest2Result();
+  void    sendSpeedAnswer();
+  void    sendSpeedNegotiationAck();
+  void    sendSpeedTest1Result();
+  void    sendSpeedTest2Result();
 
-	bool    startTurboMidi();
-	void    stopTurboMidi();
+  bool    startTurboMidi();
+  void    stopTurboMidi();
 
-	static uint32_t tmSpeeds[12];
+  static uint32_t tmSpeeds[12];
 	
-	uint8_t currentSpeed;
+  uint8_t currentSpeed;
 
-	void setSpeed(uint8_t speed);
+  void setSpeed(uint8_t speed);
 	
-	uint16_t slaveSpeeds;
-	uint16_t certifiedSlaveSpeeds;
+  uint16_t slaveSpeeds;
+  uint16_t certifiedSlaveSpeeds;
 
-	static const uint16_t speeds =
-		_BV(TURBOMIDI_SPEED_1x)
-		| _BV(TURBOMIDI_SPEED_2x)
-		| _BV(TURBOMIDI_SPEED_3_33x)
-		| _BV(TURBOMIDI_SPEED_4x)
-		//		| _BV(TURBOMIDI_SPEED_5x)
-		//		| _BV(TURBOMIDI_SPEED_6_66x)
-		//		| _BV(TURBOMIDI_SPEED_8x)
-		;
+  static const uint16_t speeds =
+    _BV(TURBOMIDI_SPEED_1x)
+    | _BV(TURBOMIDI_SPEED_2x)
+    | _BV(TURBOMIDI_SPEED_3_33x)
+    | _BV(TURBOMIDI_SPEED_4x)
+    //		| _BV(TURBOMIDI_SPEED_5x)
+    //		| _BV(TURBOMIDI_SPEED_6_66x)
+    //		| _BV(TURBOMIDI_SPEED_8x)
+    ;
 
-	static const uint16_t certifiedSpeeds =
-		_BV(TURBOMIDI_SPEED_1x)
-		| _BV(TURBOMIDI_SPEED_2x)
-		| _BV(TURBOMIDI_SPEED_3_33x)
-		| _BV(TURBOMIDI_SPEED_4x) 
-		//		| _BV(TURBOMIDI_SPEED_5x)
-		//		| _BV(TURBOMIDI_SPEED_6_66x)
-		//		| _BV(TURBOMIDI_SPEED_8x)
-		;
+  static const uint16_t certifiedSpeeds =
+    _BV(TURBOMIDI_SPEED_1x)
+    | _BV(TURBOMIDI_SPEED_2x)
+    | _BV(TURBOMIDI_SPEED_3_33x)
+    | _BV(TURBOMIDI_SPEED_4x) 
+    //		| _BV(TURBOMIDI_SPEED_5x)
+    //		| _BV(TURBOMIDI_SPEED_6_66x)
+    //		| _BV(TURBOMIDI_SPEED_8x)
+    ;
 		
 
-	typedef enum {
-		tm_state_normal = 0,
+  typedef enum {
+    tm_state_normal = 0,
 
-		/* master states */
-		tm_master_wait_req_answer,
-		tm_master_req_answer_recvd,
-		tm_master_wait_speed_ack,
-		tm_master_speed_ack_recvd,
-		tm_master_wait_test_1,
-		tm_master_test_1_recvd,
-		tm_master_wait_test_2,
-		tm_master_test_2_recvd,
-		tm_master_ok,
+    /* master states */
+    tm_master_wait_req_answer,
+    tm_master_req_answer_recvd,
+    tm_master_wait_speed_ack,
+    tm_master_speed_ack_recvd,
+    tm_master_wait_test_1,
+    tm_master_test_1_recvd,
+    tm_master_wait_test_2,
+    tm_master_test_2_recvd,
+    tm_master_ok,
 
-		/* slave states */
-		tm_slave_req_answer_sent,
-		tm_slave_wait_speed_neg,
-		tm_slave_speed_ack_sent,
-		tm_slave_wait_test_1,
-		tm_slave_test_1_sent,
-		tm_slave_wait_test_2,
-		tm_slave_test_2_sent,
-		tm_slave_ok,
+    /* slave states */
+    tm_slave_req_answer_sent,
+    tm_slave_wait_speed_neg,
+    tm_slave_speed_ack_sent,
+    tm_slave_wait_test_1,
+    tm_slave_test_1_sent,
+    tm_slave_wait_test_2,
+    tm_slave_test_2_sent,
+    tm_slave_ok,
 		
-	} tm_state_t;
+  } tm_state_t;
 
-	tm_state_t state;
+  tm_state_t state;
 
-	bool    blockForState(tm_state_t state, uint16_t timeout = 3000);	
+  bool    blockForState(tm_state_t state, uint16_t timeout = 3000);	
 	
 #ifdef HOST_MIDIDUINO
-	virtual ~TurboMidiSysexListenerClass() {
-	}
+  virtual ~TurboMidiSysexListenerClass() {
+  }
 #endif
 
-	/* @} */
+  /* @} */
 };
 
 extern TurboMidiSysexListenerClass TurboMidi;

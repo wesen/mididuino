@@ -1,13 +1,16 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - MIDI Sysex listener implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef MIDISYSEX_H__
 #define MIDISYSEX_H__
 
-#include "WProgram.h"
-#include <inttypes.h>
+#include "PlatformConfig.h"
 
 #ifndef SYSEX_BUF_SIZE
-#define SYSEX_BUF_SIZE 128
+#error Please define a sysex buffer size (SYSEX_BUF_SIZE) in your platform configuration file
 #endif
 
 class MidiSysexClass;

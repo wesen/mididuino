@@ -1,7 +1,10 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - MIDI receive state machine implementation
+ *
+ * (c) 2008 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
-#include "WProgram.h"
-
+#include "Platform.h"
 #include "Midi.h"
 #include "MidiClock.h"
 

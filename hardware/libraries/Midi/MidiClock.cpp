@@ -1,12 +1,15 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Midi Clock implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
+#include "Platform.h"
 #include "MidiClock.h"
 #include "midi-common.hh"
-#include "helpers.h"
 #include "MidiUartParent.hh"
 
 // #include "MidiUart.h"
-
 // #define DEBUG_MIDI_CLOCK 0
 
 MidiClockClass::MidiClockClass() {
