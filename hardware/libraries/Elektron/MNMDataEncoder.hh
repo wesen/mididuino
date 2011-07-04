@@ -1,9 +1,13 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Encoder for MNM sysex messages
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef MNM_DATA_ENCODER_H__
 #define MNM_DATA_ENCODER_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "ElektronDataEncoder.hh"
 #include "DataEncoder.hh"
 

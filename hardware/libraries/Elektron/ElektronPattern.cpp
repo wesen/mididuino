@@ -1,4 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Parent class for both MD and MNM patterns
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "ElektronPattern.hh"
 
 bool ElektronPattern::isParamLocked(uint8_t track, uint8_t param) {
