@@ -4,6 +4,7 @@
  * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
  */
 
+
 #include "Platform.h"
 #include "MD.h"
 #include "helpers.h"
@@ -474,7 +475,7 @@ uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
     (&cb, (md_status_callback_ptr_t)&MDBlockCurrentStatusCallback::onStatusResponseCallback);
   MD.sendRequest(MD_STATUS_REQUEST_ID, type);
 
-  bool ret = waitBlocking(&cb, timeout);
+  waitBlocking(&cb, timeout);
 	
   MDSysexListener.removeOnStatusResponseCallback(&cb);
 

@@ -7,7 +7,7 @@
 class ClockHandler : public ClockCallback {
 public:
   void on16th(uint32_t count) {
-    printf("count: %lu\n", count);
+    printf("count: %lu\n", (long unsigned int)count);
     fflush(stdout);
   }
 };
