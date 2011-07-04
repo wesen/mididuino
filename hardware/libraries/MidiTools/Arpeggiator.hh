@@ -7,6 +7,7 @@
 #define ARPEGGIATOR_H__
 
 #include "PlatformConfig.h"
+#include "MidiClock.h"
 
 /**
  * \addtogroup Midi

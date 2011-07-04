@@ -127,6 +127,8 @@
 #endif
 
 #ifdef AVR
+#include <avr/interrupt.h>
+
 /**
  * Declaration of temporary variable to store interrupt status.
  * Use this before using SET_LOCK() and CLEAR_LOCK().
