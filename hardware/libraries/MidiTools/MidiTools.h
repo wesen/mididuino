@@ -3,7 +3,7 @@
 #ifndef MIDITOOLS_H__
 #define MIDITOOLS_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 
 /**
  * \addtogroup Midi
@@ -16,7 +16,6 @@
  *
  * @{
  **/
-
 
 #define NOTE_C      0
 #define NOTE_C_SHARP 1

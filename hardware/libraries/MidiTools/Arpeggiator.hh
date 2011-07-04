@@ -1,9 +1,12 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
-
+/*
+ * MidiCtrl - Parent arpeggiator class
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 #ifndef ARPEGGIATOR_H__
 #define ARPEGGIATOR_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 
 /**
  * \addtogroup Midi
@@ -24,11 +27,11 @@
  **/
 
 typedef enum {
-	/**
-	 * \addtogroup midi_arpeggiator 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_arpeggiator 
+   *
+   * @{
+   **/
 	
   ARP_STYLE_UP = 0,
   ARP_STYLE_DOWN,
@@ -48,22 +51,22 @@ typedef enum {
   ARP_STYLE_ORDER,
   ARP_STYLE_CNT
 
-	/* @} */
+  /* @} */
 } arp_style_t;
 
 typedef enum {
-	/**
-	 * \addtogroup midi_arpeggiator 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_arpeggiator 
+   *
+   * @{
+   **/
 	
   RETRIG_OFF = 0,
   RETRIG_NOTE,
   RETRIG_BEAT,
   RETRIG_CNT
 
-	/* @} */
+  /* @} */
 } arp_retrig_type_t;
 
 extern const char *retrig_names[RETRIG_CNT];
@@ -73,11 +76,11 @@ extern const char *arp_names[ARP_STYLE_CNT];
 #define MAX_ARP_LEN 64
 
 class ArpeggiatorClass : public MidiCallback {
-	/**
-	 * \addtogroup midi_arpeggiator 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_arpeggiator 
+   *
+   * @{
+   **/
 	
 public:
   uint8_t notes[NUM_NOTES];
@@ -120,15 +123,15 @@ public:
   void onNoteOffCallback(uint8_t *msg);
   void onNoteOnCallback(uint8_t *msg);
 
-	/* @} */
+  /* @} */
 };
 
 class MDArpeggiatorClass : public ArpeggiatorClass, public ClockCallback {
-	/**
-	 * \addtogroup midi_arpeggiator 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_arpeggiator 
+   *
+   * @{
+   **/
 	
 public:
   uint8_t recordPitches[64];
@@ -155,7 +158,7 @@ public:
   void on16Callback();
   void startRecording();
 
-	/* @} */
+  /* @} */
 };
 
 /* @} @} @} */

@@ -1,5 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - CC Handler to receive and store incoming CC messages (for autolearn)
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
+#include "Platform.h"
 #include "CCHandler.h"
 #include "Midi.h"
 

@@ -1,4 +1,11 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Scales 
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
+#include "WMath.h"
 #include "helpers.h"
 #include "Scales.h"
 

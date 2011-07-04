@@ -1,9 +1,15 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Note input handler to record notes
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+/* XXX test and implement */
 
 #ifndef NOTEHANDLER_H__
 #define NOTEHANDLER_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "ListPool.hh"
 
 /**
@@ -25,25 +31,25 @@
  **/
 
 typedef struct incoming_note_s {
-	/**
-	 * \addtogroup midi_note_handler 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_note_handler 
+   *
+   * @{
+   **/
 	
   uint8_t channel;
   uint8_t pitch;
   uint8_t velocity;
 
-	/* @} */
+  /* @} */
 } incoming_note_t;
 
 class NoteHandler {
-	/**
-	 * \addtogroup midi_note_handler 
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_note_handler 
+   *
+   * @{
+   **/
 	
  public:
   ListPool<incoming_note_t, 8> incomingNotes;
@@ -58,7 +64,7 @@ class NoteHandler {
   void onNoteOnCallback(uint8_t *msg);
   void onNoteOffCallback(uint8_t *msg);
 
-	/* @} */
+  /* @} */
 	
 };
 
