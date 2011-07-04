@@ -8,6 +8,8 @@
 #define MDRECORDER_H__
 
 #include "PlatformConfig.h"
+#include "Midi.h"
+#include "MidiClock.h"
 #include "ListPool.hh"
 
 /**
