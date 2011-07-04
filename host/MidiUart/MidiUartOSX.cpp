@@ -1,9 +1,15 @@
+/*
+ * MidiCtrl - MacOSX implementation of MidiUart
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifdef __APPLE__
 
-#include "WProgram.h"
+#include "Platform.h"
 
-#include <midi-common.hh>
-#include <MidiUartParent.hh>
+#include "midi-common.hh"
+#include "MidiUartParent.hh"
 #include "MidiUartOSX.h"
 
 /***************************************************************************

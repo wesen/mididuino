@@ -1,6 +1,13 @@
+/*
+ * MidiCtrl - Host implementation of a MIDI Uart skeletton (with sysex listener)
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+
 #include <unistd.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 #include "MidiUartHost.h"
 
 uint8_t sysexBuf[8192];
