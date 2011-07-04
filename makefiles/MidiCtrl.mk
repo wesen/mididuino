@@ -26,5 +26,15 @@ default: all
 	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
 	[ -s $@ ] || rm -f $@
 
+%.host.d:%.c
+	set -e; $(CC) -MM $(CFLAGS) $< \
+	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
+	[ -s $@ ] || rm -f $@
+
+%.host.d:%.cpp
+	set -e; $(CXX) -MM $(CXXFLAGS) $< \
+	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
+	[ -s $@ ] || rm -f $@
+
 printlibs:
 	echo $(MIDICTRL_LIBS)
