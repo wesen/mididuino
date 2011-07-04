@@ -1,7 +1,14 @@
+/*
+ * MidiCtrl - MNM sysex listeners
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+
 #ifndef MNM_SYSEX_H__
 #define MNM_SYSEX_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "Midi.h"
 #include "MidiSysex.hh"
 #include "Vector.hh"

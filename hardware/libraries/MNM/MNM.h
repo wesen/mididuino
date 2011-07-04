@@ -1,9 +1,15 @@
+/*
+ * MidiCtrl - Interface class to the elektron monomachine
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef MNM_H__
 #define MNM_H__
 
 #include <inttypes.h>
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "MNMMessages.hh"
 #include "MNMPattern.hh"
 #include "MNMParams.hh"

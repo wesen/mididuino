@@ -1,9 +1,15 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - MachineDrum slicing firmware page
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef MD_SLICE_PAGE_H__
 #define MD_SLICE_PAGE_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
+
+/* XXX write implementaiton of MD slice page */
 
 /**
  * \addtogroup MD Elektron MachineDrum
