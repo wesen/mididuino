@@ -48,4 +48,6 @@
 // #define MIDIDUINO_EXTERNAL_RAM 1
 // #define MDIIDUINO_SD_CARD      1
 
+#include "HelperMacros.h"
+
 #endif /* PLATFORM_CONFIG_H__ */
