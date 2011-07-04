@@ -14,6 +14,9 @@ MIDICTRL_DEPS       += $(subst .o,.d,$(MIDICTRL_HOST_OBJS))
 CXXFLAGS += $(MIDICTRL_INC_FLAGS)
 CFLAGS += $(MIDICTRL_INC_FLAGS)
 
+CXXFlags += -Werror -Wall
+CFLAGS += -Werror -Wall
+
 default: all
 
 %.d:%.c
