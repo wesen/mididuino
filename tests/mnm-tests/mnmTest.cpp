@@ -1,4 +1,4 @@
-#include "WProgram.h"
+#include "Platform.h"
 #include "MidiSysex.hh"
 
 #include "MNMSysex.hh"
