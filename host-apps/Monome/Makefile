@@ -1,4 +1,4 @@
-MIDICTRL_LIBS = Monome
+MIDICTRL_LIBS = Monome GUI MidiTools
 HOST_LIBS = 
 
 include ../../makefiles/Host.mk

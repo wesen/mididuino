@@ -1,8 +1,15 @@
+/*
+ * MidiCtrl - Simple merger application
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+
 #include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 #include "MidiSysex.hh"
 
 #include "MidiUartOSX.h"

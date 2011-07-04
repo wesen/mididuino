@@ -1,8 +1,14 @@
+/*
+ * MidiCtrl - Simple test program for testing the CC Handler
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 #include "MidiSysex.hh"
 #include "CCHandler.h"
 #include "Encoders.hh"
@@ -11,20 +17,17 @@
 
 #include <stdio.h>
 
-MidiUartOSXClass MidiUart;
-MidiClass Midi;
-
 char *file = NULL;
 
 CCEncoder mnmEncoders[4];
-CCHandler ccHandler;
 
 void autoLearnLast4() {
   printf("AUTOLEARN\n");
   
   int8_t ccAssigned[4] = { 
     -1, -1, -1, -1             };
-  int8_t encoderAssigned[4] = { 
+  int8_t encoderAssigned[4] = {
+    
     -1, -1, -1, -1             };
   incoming_cc_t ccs[4];
   int count = ccHandler.incomingCCs.size();
@@ -83,54 +86,28 @@ void autoLearnLast4() {
   }
 }
 
-void hexDump(uint8_t *data, uint16_t len) {
-  uint8_t cnt = 0;
-  for (int i = 0; i < len; i++) {
-    if (cnt == 0) {
-      printf("%.4x: ", i & 0xFFF0);
-    }
-    printf("%.2x ", data[i]);
-    cnt++;
-    if (cnt == 8) {
-      printf(" ");
-    }
-    if (cnt == 16) {
-      printf("\n");
-      cnt = 0;
-    }
+class Callbacks : public MidiCallback {
+  
+public:
+  Callbacks() {
   }
-  if (cnt != 0) {
-    printf("\n");
+
+  void onControlChange(uint8_t *msg) {
   }
-}
 
-void handleIncomingMidi() {
-  //    printf("foo\n");
-  //    fflush(stdout);
-  MidiUart.runLoop();
-  while (MidiUart.avail()) {
-    uint8_t c = MidiUart.getc();
-    //      printf("%x\n", c);
-    //      fflush(stdout);
-    Midi.handleByte(c);
+  void onNoteOn(uint8_t *msg) {
+    autoLearnLast4();
   }
-  usleep(1000);
-}
+};
 
-void onCCCallback(uint8_t *msg) {
-  //  printf("%x %x %x\n", msg[0], msg[1], msg[2]);
-}
-
-void onNoteOnCallback(uint8_t *msg) {
-  autoLearnLast4();
-}
+Callbacks callbacks;
 
 int main(int argc, char *argv[]) {
   // signal(SIGINT, SIG_IGN);
   MidiUart.init(1, 1);
   ccHandler.setup();
-  Midi.addOnControlChangeCallback(onCCCallback);
-  Midi.addOnNoteOnCallback(onNoteOnCallback);
+  Midi.addOnControlChangeCallback(&callbacks, (midi_callback_ptr_t)&Callbacks::onControlChange);
+  Midi.addOnNoteOnCallback(&callbacks, (midi_callback_ptr_t)&Callbacks::onNoteOn);
   
   for (;;) {
     handleIncomingMidi();

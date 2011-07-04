@@ -1,5 +1,5 @@
 MIDICTRL_LIBS = MidiTools GUI
-MIDICTRL_HOST_EXCLUDE = %MidiClock.cpp %ModalGui.cpp %MDArpeggiator.cpp
+MIDICTRL_HOST_EXCLUDE = %ModalGui.cpp %MDArpeggiator.cpp
 
 include ../../makefiles/Host.mk
 
