@@ -1,7 +1,13 @@
+/*
+ * MidiCtrl - Formatting ring buffer (includes printf and vprintf)
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef FORMATTING_RINGBUFFER_H__
 #define FORMATTING_RINGBUFFER_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "RingBuffer.h"
 
 template <int N, class T = uint8_t> class FormattingRingBuffer :
