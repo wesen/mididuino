@@ -7,7 +7,7 @@
 #ifndef GUI_PRIVATE_H__
 #define GUI_PRIVATE_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 
 typedef struct encoder_s {
   int8_t normal;

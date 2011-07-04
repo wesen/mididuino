@@ -1,4 +1,4 @@
-#include "WProgram.h"
+#include "Platform.h"
 
 #include <inttypes.h>
 #include <unistd.h>
@@ -20,13 +20,13 @@ int main(void) {
 
   MidiUart.init(0, 0);
 
-	//  Midi.setOnControlChangeCallback(onCCCallback);
+  //  Midi.setOnControlChangeCallback(onCCCallback);
 
   MNMTask.setup();
   MNMTask.autoLoadKit = true;
   MNMTask.autoLoadGlobal = true;
   MNMTask.reloadGlobal = true;
-	//  MNMTask.addOnKitChangeCallback(onKitChanged);
+  //  MNMTask.addOnKitChangeCallback(onKitChanged);
 
   MNM.requestKit(0);
   

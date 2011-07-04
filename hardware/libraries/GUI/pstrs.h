@@ -1,7 +1,7 @@
 #ifndef PSTRS_H__
 #define PSTRS_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 
 extern const char *P_REQUESTING PROGMEM;
 

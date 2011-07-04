@@ -1,8 +1,13 @@
+/*
+ * MidiCtrl - C++ Wrapper around the SD Card library by Roland Riegel
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef SDCARD_H__
 #define SDCARD_H__
 
-#include "WProgram.h"
-#include <inttypes.h>
+#include "PlatformConfig.h"
 
 extern "C" {
 #include "byteordering.hh"

@@ -1,10 +1,10 @@
-#include <sys/time.h>#
+#include <sys/time.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <inttypes.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 #include "Elektron.hh"
 
 uint8_t origBuf[8192];

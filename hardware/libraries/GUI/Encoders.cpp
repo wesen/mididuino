@@ -4,10 +4,10 @@
  * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
  */
 
+#include "Platform.h"
 #include "Encoders.hh"
 #include "MidiTools.h"
 #include "Midi.h"
-
 #include "GUI.h"
 
 /**

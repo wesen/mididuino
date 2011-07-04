@@ -8,8 +8,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "WProgram.h"
-
+#include "Platform.h"
 #include "GUI_private.h"
 
 /***************************************************************************

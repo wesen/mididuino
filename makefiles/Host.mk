@@ -22,15 +22,15 @@ HOST_LIB_DIRS  = $(foreach lib,$(HOST_LIBS),$(HOST_BASE_DIR)/$(lib))
 HOST_INC_FLAGS = $(foreach dir,$(HOST_LIB_DIRS),-I$(dir)) -I$(HOST_BASE_DIR)
 HOST_OBJS      = $(foreach dir,$(HOST_LIB_DIRS),$(foreach file,$(wildcard $(dir)/*.cpp),$(subst .cpp,.host.o,$(file))))
 HOST_OBJS      += $(foreach dir,$(HOST_LIB_DIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
-HOST_DEPS      = $(subst .host.o,.d,$(HOST_OBJS))
+HOST_DEPS      = $(subst .host.o,.host.d,$(HOST_OBJS))
 
 MIDICTRL_HOST_EXCLUDE +=  %MDArpeggiator.cpp 
 MIDICTRL_HOST_OBJS    = $(foreach dir,$(MIDICTRL_LIB_DIRS),$(foreach file,$(filter-out $(MIDICTRL_HOST_EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
 MIDICTRL_HOST_OBJS    += $(foreach dir,$(MIDICTRL_LIB_DIRS),$(foreach file,$(filter-out $(MIDICTRL_HOST_EXCLUDE),$(wildcard $(dir)/*.c)),$(subst .c,.host.o,$(file))))
-MIDICTRL_HOST_DEPS    = $(subst .host.o,.d,$(MIDICTRL_HOST_OBJS))
+MIDICTRL_HOST_DEPS    = $(subst .host.o,.host.d,$(MIDICTRL_HOST_OBJS))
 
-CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
-CFLAGS   += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g	
+CXXFLAGS += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
+CFLAGS   += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g	
 #CLDFLAGS += -lreadline -L/opt/local/lib
 CLDFLAGS += --gc-sections
 
@@ -62,7 +62,7 @@ include $(MIDICTRL_HOST_DEPS)
 include $(HOST_DEPS)
 
 libclean:
-	rm -rf $(MIDICTRL_HOST_OBJS) $(HOST_OBJS)
+	rm -rf $(MIDICTRL_HOST_OBJS) $(HOST_OBJS) $(MIDICTRL_HOST_DEPS) $(HOST_DEPS)
 
 OBJS = $(MIDICTRL_HOST_OBJS) $(HOST_OBJS)
 

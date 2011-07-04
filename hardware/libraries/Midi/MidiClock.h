@@ -1,10 +1,15 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Midi clock interface
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+/* XXX write midi clock tests */
 
 #ifndef MIDICLOCK_H__
 #define MIDICLOCK_H__
 
-#include "WProgram.h"
-#include <inttypes.h>
+#include "PlatformConfig.h"
 #include "Callback.hh"
 #include "Vector.hh"
 #include "midi-common.hh"

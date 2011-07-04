@@ -1,29 +1,22 @@
-#ifndef WProgram_h
-#define WProgram_h
+/*
+ * MidiCtrl - Platform include file
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
-#ifndef HOST_MIDIDUINO
-#define HOST_MIDIDUINO
-#endif
+#ifndef PLATFORM_H__
+#define PLATFORM_H__
 
-#define _BV(i) (1 << (i))
-#define PSTR(s) (s)
-
-#define GUI_NUM_ENCODERS 4
-#define GUI_NUM_BUTTONS 8
+#include "PlatformConfig.h"
 
 #include <stdio.h>
 
 void handleIncomingMidi();
 
-#define BOARD_ID 0x89
-#define SYSEX_BUF_SIZE 8192
-
 #define setLed()
 #define clearLed()
 #define setLed2()
 #define clearLed2()
-
-#define PROGMEM
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,16 +28,19 @@ extern "C" {
 
 #include "helpers.h"
 
-
+#ifdef __cplusplus
 #include "WMath.h"
-
-#define MIDIDUINO_HANDLE_SYSEX
 #include "Midi.h"
 #include "MidiClock.h"
-
 #include "MidiUartHost.h"
 #include "GUI_private.h"
+#endif
+
+
+#ifdef __cplusplus
+#endif
 
 void hexDump(uint8_t *data, uint16_t len);
 
-#endif /* WProgram_h */
+
+#endif /* PLATFORM_H__ */

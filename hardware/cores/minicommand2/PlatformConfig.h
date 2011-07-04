@@ -1,22 +1,22 @@
-#ifndef WProgram_h
-#define WProgram_h
+/*
+ * MidiCtrl - Platform configuration file for the minicommand2 core
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#ifndef PLATFORM_CONFIG_H__
+#define PLATFORM_CONFIG_H__
+
+#include <inttypes.h>
 
 #define MIDIDUINO 1
 #define SYSEX_BUF_SIZE 6000
-//#define SYSEX_BUF_SIZE 128
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <inttypes.h>
-#include <avr/interrupt.h>
+#define FIRMWARE_LENGTH_ADDR ((uint16_t *)0x00)
+#define FIRMWARE_CHECKSUM_ADDR ((uint16_t *)0x02)
+#define START_MAIN_APP_ADDR ((uint16_t *)0x04)
 
-#ifdef __cplusplus
-  void __mainInnerLoop(bool callLoop = true);
-}
-#endif
-
-#include "helpers.h"
+#define BOARD_ID 0x41
 
 /* LCD configuration variables */
 #define LCD_DATA_PORT PORTF
@@ -48,19 +48,6 @@ extern "C" {
 // #define MIDIDUINO_EXTERNAL_RAM 1
 // #define MDIIDUINO_SD_CARD      1
 
-#include "mididuino_private.h"
+#include "HelperMacros.h"
 
-#ifdef __cplusplus
-
-#include "LCD.h"
-#include "GUI_private.h"
-#include "MidiUart.h"
-#include "MidiClock.h"
-#include "Stack.h"
-#include "GUI.h"
-#include "Midi.h"
-#include "WMath.h"
-
-#endif
-
-#endif /* WProgram_h */
+#endif /* PLATFORM_CONFIG_H__ */

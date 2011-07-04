@@ -1,13 +1,19 @@
+/*
+ * MidiCtrl - Simple Sysex Dumper
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-#include "WProgram.h"
+
+#include "Platform.h"
 #include "MidiSysex.hh"
 
 #include "MidiUartOSX.h"
-
-#include <stdio.h>
 
 char *file = NULL;
 
@@ -37,11 +43,11 @@ public:
     for (int i = 1; i < MidiSysex.recordLen; i+=3) {
       uint16_t addr = ptr[i] << 14 | (ptr[i+1] << 7) | ptr[i+2];
       if (addr != 0) {
-				//	char foobar[256] = "";
-				//	sprintf(foobar, "avr-addr2line -e %s -f %x", file, addr);
-				//	//	printf("%s\n", foobar);
-				//	system(foobar);
-				printf("%x\n", addr);
+        //	char foobar[256] = "";
+        //	sprintf(foobar, "avr-addr2line -e %s -f %x", file, addr);
+        //	//	printf("%s\n", foobar);
+        //	system(foobar);
+        printf("%x\n", addr);
       }
     }
     fflush(stdout);

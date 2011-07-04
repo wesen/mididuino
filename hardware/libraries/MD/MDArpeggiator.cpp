@@ -1,7 +1,13 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Implementation of an arpeggiator for the Elektron MachineDrum
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "helpers.h"
 #include "Arpeggiator.hh"
-#include <MD.h>
+#include "MD.h"
 
 void MDArpeggiatorClass::recordNote(int pos, uint8_t track, uint8_t note, uint8_t velocity) {
   uint8_t realPitch = MD.trackGetPitch(track, note);

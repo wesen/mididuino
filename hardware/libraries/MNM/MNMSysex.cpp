@@ -1,4 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Encode and decode MNM sysex messages
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "helpers.h"
 #include "MNMParams.hh"
 #include "MNMSysex.hh"

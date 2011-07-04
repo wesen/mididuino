@@ -1,10 +1,10 @@
 /**# Common AVR macros
-**
-** This file contains common avr macros use to access hardware
-** register bits, to test C conditions, to pack structures and
-  ** mathematical macros
-  **
-  **/
+ **
+ ** This file contains common avr macros use to access hardware
+ ** register bits, to test C conditions, to pack structures and
+ ** mathematical macros
+ **
+ **/
 
 #ifndef COMMON_H__
 #define COMMON_H__
@@ -12,7 +12,7 @@
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 
-  /** Define commonly used C symbols. **/
+/** Define commonly used C symbols. **/
 #ifndef NULL
 #define NULL 0
 #endif
@@ -22,18 +22,18 @@
 
 #define countof(arr) ((sizeof(arr)/sizeof(arr[0])))
 
-  /** Compile-time assertion in C. **/
+/** Compile-time assertion in C. **/
 #define C_ASSERT(e) extern char __C_ASSERT__[(e)?1:-1]
 
-  /** Compress a C structure to byte aligned boundaries. **/
+/** Compress a C structure to byte aligned boundaries. **/
 #define PACKED __attribute__ ((packed))
 
-  /** Math macros. **/
+/** Math macros. **/
 #define ABS(x) ((x) > 0 ? (x) : (-(x)))
 #define MIN(x, y) ((x) > (y) ? (y) : (x))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 
-  /** Bit-level access and test macros. **/
+/** Bit-level access and test macros. **/
 #define SET_BIT(port, bit)   ((port) |= (1 << (bit)))
 #define CLEAR_BIT(port, bit) ((port) &= ~(1 << (bit)))
 #define TOGGLE_BIT(port, bit) ((port) ^= (1 << (bit)))
@@ -65,15 +65,15 @@
 #define FIRMWARE_CHECKSUM_ADDR ((uint16_t *)0x02)
 #define START_MAIN_APP_ADDR ((uint16_t *)0x04)
 
-    void my_memcpy(void *dst, void *src, uint8_t cnt);
-    void my_strncpy(void *dst, char *src, uint8_t cnt);
-    void my_strncpy_fill(void *dst, char *src, uint8_t cnt);
-    void my_memcpy_p(void *dst, PGM_P src, uint8_t cnt);
-    void my_strncpy_p(void *dst, PGM_P src, uint8_t cnt);
-    void my_strncpy_p_fill(void *dst, PGM_P src, uint8_t cnt);
-    void my_memclr(void *dst, uint8_t cnt);
-    void my_str16cpy_fill(void *dst, char *src);
-    void my_str16cpy_p_fill(void *dst, PGM_P src);
-      void my_str16cpy_p(void *dst, PGM_P src);
+void my_memcpy(void *dst, void *src, uint8_t cnt);
+void my_strncpy(void *dst, char *src, uint8_t cnt);
+void my_strncpy_fill(void *dst, char *src, uint8_t cnt);
+void my_memcpy_p(void *dst, PGM_P src, uint8_t cnt);
+void my_strncpy_p(void *dst, PGM_P src, uint8_t cnt);
+void my_strncpy_p_fill(void *dst, PGM_P src, uint8_t cnt);
+void my_memclr(void *dst, uint8_t cnt);
+void my_str16cpy_fill(void *dst, char *src);
+void my_str16cpy_p_fill(void *dst, PGM_P src);
+void my_str16cpy_p(void *dst, PGM_P src);
 
 #endif /* COMMON_H__ **/

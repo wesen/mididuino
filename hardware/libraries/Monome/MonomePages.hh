@@ -1,8 +1,13 @@
+/*
+ * MidiCtrl - Class definitions for monome interface pages
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef MONOME_PAGES_H__
 #define MONOME_PAGES_H__
 
-#include "WProgram.h"
-#include <inttypes.h>
+#include "PlatformConfig.h"
 #include "Callback.hh"
 #include "Stack.h"
 
@@ -11,50 +16,50 @@ class MonomePageContainer;
 
 class MonomePage {
 public:
-	bool isSetup;
-	uint8_t buf[8];
-	bool needsRefresh;
-	uint8_t width;
-	uint8_t height;
-	uint8_t x;
-	uint8_t y;
-	MonomeParentClass *monome;
+  bool isSetup;
+  uint8_t buf[8];
+  bool needsRefresh;
+  uint8_t width;
+  uint8_t height;
+  uint8_t x;
+  uint8_t y;
+  MonomeParentClass *monome;
   MonomePageContainer *parent;
 
-	MonomePage(MonomeParentClass *_monome);
+  MonomePage(MonomeParentClass *_monome);
 
-	virtual bool handleEvent(monome_event_t *evt) {
-		return false;
-	}
-	virtual void setup() {
-		isSetup = true;
-	}
-	virtual void show() {
-	}
-	virtual void redisplayPage() {
-		needsRefresh = true;
-	}
-	virtual void hide() {
-	}
-	virtual void loop() {
-	}
+  virtual bool handleEvent(monome_event_t *evt) {
+    return false;
+  }
+  virtual void setup() {
+    isSetup = true;
+  }
+  virtual void show() {
+  }
+  virtual void redisplayPage() {
+    needsRefresh = true;
+  }
+  virtual void hide() {
+  }
+  virtual void loop() {
+  }
 	
-	uint8_t getBufLED(uint8_t x, uint8_t y) {
-		if (IS_BIT_SET(buf[y], x)) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-	void setLED(uint8_t x, uint8_t y, uint8_t status = 1);
-	void toggleLED(uint8_t x, uint8_t y);
-	void clearLED(uint8_t x, uint8_t y) {
-		setLED(x, y, 0);
-	}
+  uint8_t getBufLED(uint8_t x, uint8_t y) {
+    if (IS_BIT_SET(buf[y], x)) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  void setLED(uint8_t x, uint8_t y, uint8_t status = 1);
+  void toggleLED(uint8_t x, uint8_t y);
+  void clearLED(uint8_t x, uint8_t y) {
+    setLED(x, y, 0);
+  }
 };
 
 class MonomePageContainer {
- public:
+public:
   Stack<MonomePage *, 8> pageStack;
 
   virtual bool handleTopEvent(monome_event_t *event) {
@@ -72,8 +77,8 @@ class MonomePageContainer {
       page->setup();
       page->isSetup = true;
     }
-		page->redisplayPage();
-		page->show();
+    page->redisplayPage();
+    page->show();
     pageStack.push(page);
   }
 
@@ -88,7 +93,7 @@ class MonomePageContainer {
     pageStack.pop(&page);
     if (page != NULL) {
       page->parent = NULL;
-			page->hide();
+      page->hide();
     }
 
     page = currentPage();
@@ -107,33 +112,33 @@ class MonomePageContainer {
 
 class MonomePageSwitcher : public MonomeCallback {
 public:
-	MonomePage *pages[8];
-	MonomeParentClass *monome;
+  MonomePage *pages[8];
+  MonomeParentClass *monome;
 
-	MonomePageSwitcher(MonomeParentClass *_monome,
-										 MonomePage *p1 = NULL,
-										 MonomePage *p2 = NULL,
-										 MonomePage *p3 = NULL,
-										 MonomePage *p4 = NULL,
-										 MonomePage *p5 = NULL,
-										 MonomePage *p6 = NULL,
-										 MonomePage *p7 = NULL,
-										 MonomePage *p8 = NULL
-										 ) {
-		monome = _monome;
-		pages[0] = p1;
-		pages[1] = p2;
-		pages[2] = p3;
-		pages[3] = p4;
-		pages[4] = p5;
-		pages[5] = p6;
-		pages[6] = p7;
-		pages[7] = p8;
-	}
+  MonomePageSwitcher(MonomeParentClass *_monome,
+                     MonomePage *p1 = NULL,
+                     MonomePage *p2 = NULL,
+                     MonomePage *p3 = NULL,
+                     MonomePage *p4 = NULL,
+                     MonomePage *p5 = NULL,
+                     MonomePage *p6 = NULL,
+                     MonomePage *p7 = NULL,
+                     MonomePage *p8 = NULL
+                     ) {
+    monome = _monome;
+    pages[0] = p1;
+    pages[1] = p2;
+    pages[2] = p3;
+    pages[3] = p4;
+    pages[4] = p5;
+    pages[5] = p6;
+    pages[6] = p7;
+    pages[7] = p8;
+  }
 
-	void setup();
-	bool handleEvent(monome_event_t *event);
-	bool setPage(uint8_t page);
+  void setup();
+  bool handleEvent(monome_event_t *event);
+  bool setPage(uint8_t page);
 };
 
 #endif /* MONOME_PAGES_H__ */

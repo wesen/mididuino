@@ -1,5 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - MIDI sysex listener implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
+#include "Platform.h"
 #include "Midi.h"
 #include "MidiSysex.hh"
 

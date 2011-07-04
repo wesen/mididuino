@@ -3,8 +3,9 @@
 #ifndef MDPITCHEUCLIDSKETCH_H__
 #define MDPITCHEUCLIDSKETCH_H__
 
-#include <MD.h>
-#include <MDPitchEuclid.h>
+#include "Platform.h"
+#include "MD.h"
+#include "MDPitchEuclid.h"
 
 /**
  * \addtogroup MD Elektron MachineDrum

@@ -1,6 +1,9 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
-
-#include "WProgram.h"
+/*
+ * MidiCtrl - Parent arpegiator class implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+#include "Platform.h"
 #include "helpers.h"
 #include "Arpeggiator.hh"
 

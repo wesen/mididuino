@@ -1,9 +1,13 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - CC Handler to parse incoming CCs (for auto learn)
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef CCHANDLER_H__
 #define CCHANDLER_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "Encoders.hh"
 #include "Circular.hh"
 #include "Midi.h"
@@ -31,25 +35,25 @@ typedef void (*midi_learn_cc_callback_t)(CCEncoder *enc);
 void CCHandlerOnCCCallback(uint8_t *msg);
 
 typedef struct incoming_cc_s {
-	/**
-	 * \addtogroup midi_cc_handler
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_cc_handler
+   *
+   * @{
+   **/
 	
   uint8_t channel;
   uint8_t cc;
   uint8_t value;
 
-	/* @} */
+  /* @} */
 } incoming_cc_t;
 
 class CCHandler : public MidiCallback {
-	/**
-	 * \addtogroup midi_cc_handler
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup midi_cc_handler
+   *
+   * @{
+   **/
 	
  public:
   CircularBuffer<incoming_cc_t, 4> incomingCCs;
@@ -81,7 +85,7 @@ class CCHandler : public MidiCallback {
     callback = _callback;
   }
 
-	/* @} */
+  /* @} */
 };
 
 extern CCHandler ccHandler;

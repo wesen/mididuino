@@ -3,9 +3,10 @@
  *
  * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
  */
-#include "GUI_private.h"
 
-#include <GUI.h>
+#include "Platform.h"
+#include "GUI_private.h"
+#include "GUI.h"
 
 EncodersClass Encoders;
 ButtonsClass Buttons;

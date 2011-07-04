@@ -3,8 +3,8 @@
 #ifndef RINGBUFFER_H__
 #define RINGBUFFER_H__
 
-#include "WProgram.h"
-#include <inttypes.h>
+#include "PlatformConfig.h"
+#include "helpers.h"
 
 /**
  * \addtogroup CommonTools

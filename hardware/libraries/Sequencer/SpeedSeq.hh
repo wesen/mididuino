@@ -1,7 +1,14 @@
+/*
+ * MidiCtrl - Class for a sequencer with varying speed
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+
 #ifndef SPEEDSEQ_H__
 #define SPEEDSEQ_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 
 // update on 32th notes
 

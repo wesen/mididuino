@@ -3,8 +3,9 @@
 #ifndef AUTOENCODERPAGE_H__
 #define AUTOENCODERPAGE_H__
 
-#include <GUI.h>
-#include <CCHandler.h>
+#include "Platform.h"
+#include "GUI.h"
+#include "CCHandler.h"
 
 /**
  * \addtogroup GUI

@@ -1,8 +1,8 @@
-MIDICTRL_LIBS = GUI Elektron MidiTools
+MIDICTRL_LIBS = GUI Elektron MidiTools Midi
 
 include ../../makefiles/Host.mk
 
-all: profiler
+all: profiler merger
 
 profiler: profiler.host.o $(OBJS)
 	$(CLDCXX) $(CLDFLAGS) -o $@ $^

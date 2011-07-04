@@ -3,6 +3,7 @@
 #ifndef SCALES_H__
 #define SCALES_H__
 
+#include "GUI.h"
 #include <inttypes.h>
 
 /**
@@ -80,8 +81,6 @@ extern scale_t minorMaj7ArpMin9;
 uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves = 0);
 uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
 
-#ifdef MIDIDUINO
-
 /**
  * Encoder that allows the user to choose a scale, displaying the scale name.
  **/
@@ -95,8 +94,6 @@ public:
   const scale_t *getScale();
   void displayAt(int i);
 };
-
-#endif
 
 /* @} @} @} */
 

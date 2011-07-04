@@ -1,4 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - GUI implementation 
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "GUI.h"
 
 #if defined(MIDIDUINO_USE_GUI) || defined(HOST_MIDIDUINO)

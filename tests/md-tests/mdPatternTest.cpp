@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 #include <MD.h>
 
 #include "hexdump.hh"

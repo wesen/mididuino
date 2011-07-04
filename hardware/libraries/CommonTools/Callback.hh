@@ -22,8 +22,6 @@
  * @{
  */
 
-
-#include <inttypes.h>
 #include "helpers.h"
 
 /**

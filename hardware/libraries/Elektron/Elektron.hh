@@ -1,10 +1,15 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Elektron sysex data encoder
+ *
+ * This is used as parent class by the decoders for MNM and MD.
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #ifndef ELEKTRON_H__
 #define ELEKTRON_H__
 
-#include "WProgram.h"
-#include <inttypes.h>
+#include "PlatformConfig.h"
 
 /**
  * \addtogroup Elektron

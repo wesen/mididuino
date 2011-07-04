@@ -4,7 +4,7 @@
  * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
  */
 
-#include "WProgram.h"
+#include "Platform.h"
 
 #include "LCD.h"
 #include <string.h>

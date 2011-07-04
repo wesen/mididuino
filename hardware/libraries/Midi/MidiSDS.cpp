@@ -1,7 +1,14 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - MIDI Sample Dump Standard implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
+#include "Platform.h"
 #include "Midi.h"
 #include "MidiSDS.hh"
+
+/* XXX test and write implementation */
 
 void MidiSDSClass::sendGeneralMessage(uint8_t type) {
   uint8_t data[6] = {

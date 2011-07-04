@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <WProgram.h>
+#include "Platform.h"
 #include <MNM.h>
 
 bool compareMonoSysex(uint8_t *buf, uint8_t *buf2, uint16_t len) {

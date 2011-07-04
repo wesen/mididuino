@@ -1,14 +1,7 @@
 /* Copyright (c) 2009 - http://ruinwesen.com/ */
 
 #include <stdarg.h>
-
-#ifdef AVR
-#include "WProgram.h"
-#include <avr/pgmspace.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-#endif
-
+#include "Platform.h"
 #include "helpers.h"
 
 /**

@@ -1,9 +1,15 @@
+/*
+ * MidiCtrl - Sketch featuring 4 pages with automatic recording controllers
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef AUTO_MIDI_CONTROLLER_H__
 #define AUTO_MIDI_CONTROLLER_H__
 
-#include "WProgram.h"
-#include <CCHandler.h>
-#include <AutoEncoderPage.h>
+#include "PlatformConfig.h"
+#include "CCHandler.h"
+#include "AutoEncoderPage.h"
 
 /**
  * \addtogroup MIDI

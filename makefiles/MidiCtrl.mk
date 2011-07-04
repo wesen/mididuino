@@ -14,6 +14,9 @@ MIDICTRL_DEPS       += $(subst .o,.d,$(MIDICTRL_HOST_OBJS))
 CXXFLAGS += $(MIDICTRL_INC_FLAGS)
 CFLAGS += $(MIDICTRL_INC_FLAGS)
 
+CXXFlags += -Werror -Wall
+CFLAGS += -Werror -Wall
+
 default: all
 
 %.d:%.c
@@ -22,6 +25,16 @@ default: all
 	[ -s $@ ] || rm -f $@
 
 %.d:%.cpp
+	set -e; $(CXX) -MM $(CXXFLAGS) $< \
+	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
+	[ -s $@ ] || rm -f $@
+
+%.host.d:%.c
+	set -e; $(CC) -MM $(CFLAGS) $< \
+	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
+	[ -s $@ ] || rm -f $@
+
+%.host.d:%.cpp
 	set -e; $(CXX) -MM $(CXXFLAGS) $< \
 	| sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@ ; \
 	[ -s $@ ] || rm -f $@
