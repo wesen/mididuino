@@ -321,7 +321,7 @@ public class PdePreprocessor {
     int prototypeInsertionPoint = firstStatement(program);
   
     out.print(program.substring(0, prototypeInsertionPoint));
-    out.print("#include \"WProgram.h\"\n");    
+    out.print("#include \"Platform.h\"\n");    
     
     // print user defined prototypes
     for (int i = 0; i < prototypes.size(); i++) {

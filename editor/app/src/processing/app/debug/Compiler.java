@@ -370,7 +370,7 @@ public class Compiler implements MessageConsumer {
         }
         // XXX: DAM: if the lineNumber is less than sketch.getCode(0).getPreprocOffset()
         // we shouldn't subtract anything from it, as the error is above the
-        // location where the function prototypes and #include "WProgram.h"
+        // location where the function prototypes and #include "Platform.h"
         // were inserted.
         lineNumber -= sketch.getCode(fileIndex).getPreprocOffset();
       }
