@@ -36,7 +36,6 @@ extern "C" {
 #include "GUI_private.h"
 #endif
 
-
 #ifdef __cplusplus
 #endif
 
