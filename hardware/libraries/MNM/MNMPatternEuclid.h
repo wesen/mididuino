@@ -1,6 +1,7 @@
 #ifndef MNM_PATTERN_EUCLID_H__
 #define MNM_PATTERN_EUCLID_H__
 
+#include <Platform.h>
 #include <MNM.h>
 #include "PitchEuclid.h"
 
