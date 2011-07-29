@@ -14,3 +14,4 @@ doc/html
 mididuino-dist
 cscope.files
 cscope.out
+.DS_Store
