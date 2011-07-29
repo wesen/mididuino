@@ -1,3 +1,4 @@
+#include <Platform.h>
 #include "MNMMessages.hh"
 #include "MNMParams.hh"
 #include "helpers.h"

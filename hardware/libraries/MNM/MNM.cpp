@@ -1,3 +1,7 @@
+#include <Platform.h>
+#include <GUI.h>
+#include <MidiUartParent.hh>
+#include <MidiUart.h>
 #include "MNM.h"
 
 MNMClass::MNMClass() {
@@ -223,7 +227,7 @@ void MNMClass::requestGlobal(uint8_t _global) {
 }
 
 void MNMClass::assignMachine(uint8_t track, uint8_t model, bool initAll, bool initSynth) {
-  uint8_t data[] = { MNM_LOAD_GLOBAL_ID, track, model, 0x00 };
+  uint8_t data[] = { MNM_LOAD_MACHINE_ID, track, model, 0x00 };
   if (initAll) {
     data[3] = 0x01;
   } else if (initSynth) {
@@ -236,7 +240,7 @@ void MNMClass::assignMachine(uint8_t track, uint8_t model, bool initAll, bool in
 
 void MNMClass::setMachine(uint8_t track, uint8_t idx) {
   assignMachine(track, kit.models[idx]);
-  for (int i = 0; i < 56; i++) {
+    for (int i = 0; i < 56; i++) {
     setParam(track, i, kit.parameters[idx][i]);
   }
   setTrackLevel(track, kit.levels[idx]);
