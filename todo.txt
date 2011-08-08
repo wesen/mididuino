@@ -12,3 +12,5 @@ the top level include is required.
 Implement swing (?!?)
 
 Walk over midi sync implementation
+
+Add command line parameter processing for midi merger
