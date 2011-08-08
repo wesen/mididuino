@@ -48,7 +48,7 @@ public:
   void randomizePitches();
   void on16Callback(uint32_t counter);
 
-  static const uint8_t NUM_SCALES = 7;
+  static const uint8_t NUM_SCALES = 21;
   static const scale_t *scales[NUM_SCALES];
 
   /* @} */

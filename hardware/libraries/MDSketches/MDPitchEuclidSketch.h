@@ -24,16 +24,16 @@
  **/
 
 class MDPitchEuclidConfigPage1 : 
-  public EncoderPage {
-public:
+public EncoderPage {
+ public:
   RangeEncoder pitchLengthEncoder;
   RangeEncoder pulseEncoder;
   RangeEncoder lengthEncoder;
   RangeEncoder offsetEncoder;
   MDPitchEuclid *euclid;
 
-  MDPitchEuclidConfigPage1(MDPitchEuclid *_euclid) :
-    euclid(_euclid), 
+ MDPitchEuclidConfigPage1(MDPitchEuclid *_euclid) :
+  euclid(_euclid), 
     pitchLengthEncoder(1, 32, "PTC", 4),
     pulseEncoder(1, 32, "PLS", 3),
     lengthEncoder(2, 32, "LEN", 8),
@@ -56,29 +56,29 @@ public:
 };
 
 class MDPitchEuclidConfigPage2 : 
-  public EncoderPage {
-public:
+public EncoderPage {
+ public:
   MDMelodicTrackFlashEncoder trackEncoder;
   ScaleEncoder scaleEncoder;
   RangeEncoder octavesEncoder;
   NotePitchEncoder basePitchEncoder;
   MDPitchEuclid *euclid;
 
-  MDPitchEuclidConfigPage2(MDPitchEuclid *_euclid,
-                           const scale_t **scales = MDPitchEuclid::scales,
-                           uint8_t scaleCount = countof(MDPitchEuclid::scales) -1
-                           ) :
-    euclid(_euclid),
+ MDPitchEuclidConfigPage2(MDPitchEuclid *_euclid,
+                          const scale_t **scales = MDPitchEuclid::scales,
+                          uint8_t scaleCount = countof(MDPitchEuclid::scales) -1
+                          ) :
+  euclid(_euclid),
     trackEncoder("TRK", 0),
     scaleEncoder("SCL", scales, scaleCount),
     basePitchEncoder("BAS"),
     octavesEncoder(0, 4, "OCT")
-  {
-    encoders[0] = &trackEncoder;
-    encoders[3] = &basePitchEncoder;
-    encoders[2] = &octavesEncoder;
-    encoders[1] = &scaleEncoder;
-  }
+      {
+        encoders[0] = &trackEncoder;
+        encoders[3] = &basePitchEncoder;
+        encoders[2] = &octavesEncoder;
+        encoders[1] = &scaleEncoder;
+      }
 
   void loop() {
     if (scaleEncoder.hasChanged()) {
@@ -106,13 +106,13 @@ public:
 };
 
 class MDPitchEuclidSketch : 
-  public Sketch, public MDCallback, public ClockCallback {
-public:
+public Sketch, public MDCallback, public ClockCallback {
+ public:
   MDPitchEuclidConfigPage1 page1;
   MDPitchEuclidConfigPage2 page2;
   MDPitchEuclid pitchEuclid;
 
-  MDPitchEuclidSketch() :page1(&pitchEuclid), page2(&pitchEuclid) {
+ MDPitchEuclidSketch() :page1(&pitchEuclid), page2(&pitchEuclid) {
   }
 
   void getName(char *n1, char *n2) {

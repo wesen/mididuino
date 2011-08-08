@@ -5,11 +5,30 @@
 const scale_t *MDPitchEuclid::scales[MDPitchEuclid::NUM_SCALES] = {
   &ionianScale,
   &aeolianScale,
+
+  &harmonicMinorScale,
+  &melodicMinorScale,
+  &lydianDominantScale,
+
+  &wholeToneScale,
+  &wholeHalfStepScale,
+  &halfWholeStepScale,
+
   &bluesScale,
   &majorPentatonicScale,
+  &minorPentatonicScale,
+  &suspendedPentatonicScale,
+  &inSenScale,
+
+  &majorBebopScale,
+  &dominantBebopScale,
+  &minorBebopScale,
+
+  &majorArp,
+  &minorArp,
   &majorMaj7Arp,
   &majorMin7Arp,
-  &minorMin7Arp
+  &minorMin7Arp,
 };
 
 MDPitchEuclid::MDPitchEuclid() : track(3, 8, 0) {
