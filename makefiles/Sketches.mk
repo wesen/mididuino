@@ -43,14 +43,14 @@ CORE = minicommand2
 # add the core directory to the include path
 MIDICTRL_LIB_DIRS += $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)
 
+all: $(PDENAME).hex
+
 # Read out the libraries from the midi ctrl environment
 .midictrl.flags: $(PDEFILES)
 	@java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --make $(CURRENT_DIR)/$(PDENAME).pde > $@
 
 include .midictrl.flags
 include $(CURDIR)MidiCtrl.mk
-
-all: $(PDENAME).hex
 
 printinfo:
 	@echo "MidiCtrl base dir: " $(MIDICTRL_BASE_DIR)
@@ -104,8 +104,8 @@ $(PDENAME)whole.elf: $(PDENAME).cpp $(COBJS)
 $(PDENAME).elf: $(PDENAME).o $(MIDICTRL_OBJS)
 	$(CXX) $(CLDFLAGS) -g -o $@ $^ 
 
-clean:
+_clean:
 	- rm *.elf *.hex *.o .midictrl.flags
 
 libclean:
-	rm -rf $(MIDICTRL_HOST_OBJS) $(HOST_OBJS)
+	rm -rf $(MIDICTRL_OBJS) $(OBJS)
