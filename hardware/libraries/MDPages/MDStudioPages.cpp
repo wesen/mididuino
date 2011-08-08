@@ -1,3 +1,5 @@
+#include "Platform.h"
+
 #include <MDStudioSketch.h>
 #include <MDStudioPages.h>
 

@@ -1,3 +1,4 @@
+#include "Platform.h"
 #include "MDPatternEuclid.h"
 
 MDPatternEuclid::MDPatternEuclid() : MDPitchEuclid() {
