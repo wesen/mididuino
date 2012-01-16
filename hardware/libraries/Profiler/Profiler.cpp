@@ -1,4 +1,6 @@
 #include "Profiler.h"
+#include "GUI.h"
+#include "MidiUart.h" 
 #include <avr/interrupt.h>
 
 static volatile uint16_t profileIpBuf[256];
