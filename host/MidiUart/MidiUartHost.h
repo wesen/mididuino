@@ -1,11 +1,12 @@
 #ifndef MIDIUART_HOST_H__
 #define MIDIUART_HOST_H__
 
+#include "Platform.h"
 #include "Midi.h"
 #include "MidiSysex.hh"
 
-#include <MidiUartParent.hh>
 #include "RingBuffer.h"
+#include "MidiUartParent.hh"
 
 #define RX_BUF_SIZE 2048
 #if (RX_BUF_SIZE >= 256)

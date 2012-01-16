@@ -1,3 +1,12 @@
+/*
+ * MidiCtrl - midi send utility
+ *
+ * Uploads a firmware in sysex format to a RuinWesen device. This is really ugly and needs to be
+ * rewritten. XXX
+ *
+ * (c) January 2012 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +22,8 @@
 #include "midi.h"
 #include "midi-common.hh"
 #include "logging.h"
+
+#include "Platform.h"
 
 // 55: midi command 168
 // 56 : mididuino 1.0
@@ -39,6 +50,7 @@ int firmwareChecksumSent = 0;
 
 int waitingForBootloader = 0;
 
+/** Startup sysex message sent to switch the target device into bootloader mode. **/
 unsigned char bootmsg[] = { 0xF0, 0x00, 0x13, 0x37, CMD_START_BOOTLOADER, 0xF7 };
 
 #define MAX_KB_SIZE 256 /* should be enough for now */
@@ -65,7 +77,6 @@ int isHexFile(char *str) {
     return 0;
   }
 }
-
 
 void loadHexFile(void) {
   char buf[128];

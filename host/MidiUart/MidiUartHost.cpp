@@ -4,7 +4,6 @@
  * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
  */
 
-
 #include <unistd.h>
 
 #include "Platform.h"
@@ -12,6 +11,7 @@
 
 uint8_t sysexBuf[8192];
 uint8_t sysexBuf2[8192];
+
 MidiClass Midi(NULL, sysexBuf, sizeof(sysexBuf));
 MidiClass Midi2(NULL, sysexBuf2, sizeof(sysexBuf2));
 MidiUartHostClass MidiUart;
@@ -34,7 +34,7 @@ void handleIncomingMidi() {
 }
 
 void MidiUartHostParent::onOutputMessage(uint8_t *msg, uint8_t len) {
-  //	printf("output message %d bytes\n", len);
+  //    printf("output message %d bytes\n", len);
   if (len > 3) {
     midiSendLong(msg, len);
   } else {
@@ -61,8 +61,7 @@ void MidiUartHostParent::init(int _inputDevice, int _outputDevice) {
   outputDevice = _outputDevice;
     
   outputMidi.init();
-  outputMidi.addOnMessageCallback(this,
-                                  (midi_callback_ptr2_t)&MidiUartHostParent::onOutputMessage);
+  outputMidi.addOnMessageCallback(this, (midi_callback_ptr2_t)&MidiUartHostParent::onOutputMessage);
 
   outputMidi.midiSysex.addSysexListener(&sysexListener);
 }

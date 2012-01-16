@@ -44,9 +44,9 @@ void getMidiName(MIDIEndpointRef ep, char *buf, uint16_t len) {
  **/
 void MidiUartOSXClass::listInputMidiDevices() {
   unsigned long   iNumDevs, i;
-	
+
   iNumDevs = MIDIGetNumberOfSources();
-	
+
   for (i = 0; i < iNumDevs; i++) {
     char buf[128];
     MIDIEndpointRef ep = MIDIGetSource(i);
@@ -60,9 +60,9 @@ void MidiUartOSXClass::listInputMidiDevices() {
  **/
 void MidiUartOSXClass::listOutputMidiDevices() {
   unsigned long   iNumDevs, i;
-	
+
   iNumDevs = MIDIGetNumberOfDestinations();
-	
+
   for (i = 0; i < iNumDevs; i++) {
     char buf[128];
     MIDIEndpointRef ep = MIDIGetDestination(i);
@@ -77,9 +77,9 @@ void MidiUartOSXClass::listOutputMidiDevices() {
  **/
 int MidiUartOSXClass::getInputMidiDevice(const char *name) {
   unsigned long   iNumDevs, i;
-	
+
   iNumDevs = MIDIGetNumberOfSources();
-	
+
   for (i = 0; i < iNumDevs; i++) {
     char buf[128];
     MIDIEndpointRef ep = MIDIGetSource(i);
@@ -98,9 +98,9 @@ int MidiUartOSXClass::getInputMidiDevice(const char *name) {
  **/
 int MidiUartOSXClass::getOutputMidiDevice(const char *name) {
   unsigned long   iNumDevs, i;
-	
+
   iNumDevs = MIDIGetNumberOfDestinations();
-	
+
   for (i = 0; i < iNumDevs; i++) {
     char buf[128];
     MIDIEndpointRef ep = MIDIGetDestination(i);
@@ -136,8 +136,8 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *conn
         for (i = 0; i < packet->length; i++) {
           uart->rxRb.put(packet->data[i]);
         }
-	
-	packet = MIDIPacketNext(packet);
+
+    packet = MIDIPacketNext(packet);
       }
     }
   }
@@ -197,7 +197,7 @@ void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
   }
 
   MidiUartHostParent::init(_inputDevice, _outputDevice);
-	
+
   inputDevice = _inputDevice;
   outputDevice = _outputDevice;
   MIDIClientCreate(CFSTR("MIDI Send"), NULL, NULL, &client);
