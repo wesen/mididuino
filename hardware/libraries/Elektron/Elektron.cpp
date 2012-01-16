@@ -13,6 +13,7 @@
  * Elektron helper routines and data structures
  **/
 
+#include "Platform.h"
 #include "Elektron.hh"
 
 uint16_t ElektronHelper::ElektronDataToSysex(uint8_t *data, uint8_t *sysex, uint16_t len) {
@@ -53,29 +54,29 @@ uint16_t ElektronHelper::ElektronSysexToData(uint8_t *sysex, uint8_t *data, uint
 }
 
 uint16_t ElektronHelper::MNMDataToSysex(uint8_t *data, uint8_t *sysex,
-					uint16_t len, uint16_t sysexLen) {
+                                        uint16_t len, uint16_t sysexLen) {
   MNMDataToSysexEncoder encoder(DATA_ENCODER_INIT(sysex, sysexLen));
-	encoder.pack(data, len);
+  encoder.pack(data, len);
   return encoder.finish();
 }
 
 uint16_t ElektronHelper::MNMSysexToData(uint8_t *sysex, uint8_t *data,
-					uint16_t len, uint16_t maxLen) {
+                                        uint16_t len, uint16_t maxLen) {
   MNMSysexToDataEncoder encoder(DATA_ENCODER_INIT(data, maxLen));
-	encoder.pack(sysex, len);
+  encoder.pack(sysex, len);
   return encoder.finish();
 }
 
 uint16_t ElektronHelper::to16Bit7(uint8_t b1, uint8_t b2) {
-  return (b1 << 7) | b2; 
+  return (b1 << 7) | b2;
 }
 
 uint16_t ElektronHelper::to16Bit(uint8_t b1, uint8_t b2) {
-  return (b1 << 8) | b2; 
+  return (b1 << 8) | b2;
 }
 
 uint16_t ElektronHelper::to16Bit(uint8_t *b) {
-  return (b[0] << 8) | b[1]; 
+  return (b[0] << 8) | b[1];
 }
 
 
@@ -126,19 +127,19 @@ bool ElektronHelper::checkSysexChecksum(uint8_t *data, uint16_t len) {
     cksum += data[i];
   }
   cksum &= 0x3FFF;
-	uint16_t realcksum = ElektronHelper::to16Bit7(data[len - 4], data[len - 3]);
+  uint16_t realcksum = ElektronHelper::to16Bit7(data[len - 4], data[len - 3]);
   if (cksum != realcksum) {
 #ifdef HOST_MIDIDUINO
-		printf("wrong checksum, %x should have been %x\n", cksum, realcksum);
+    printf("wrong checksum, %x should have been %x\n", cksum, realcksum);
 #endif
     // wrong checksum
     return false;
   }
-	return true;
+  return true;
 }
 
 void ElektronHelper::calculateSysexChecksum(uint8_t *data, uint16_t len) {
-	data[0] = 0xF0;
+  data[0] = 0xF0;
   uint16_t checksum = 0;
   for (int i = 9; i < len; i++)
     checksum += data[i];
@@ -151,4 +152,3 @@ void ElektronHelper::calculateSysexChecksum(uint8_t *data, uint16_t len) {
 }
 
 /* Encoders */
-
