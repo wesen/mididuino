@@ -792,7 +792,7 @@
 PGM_P model_param_name(uint8_t model, uint8_t param);
 
 extern const char *MDLFONames[8];
-extern md_machine_name_t machine_names[134] PROGMEM;
+extern const md_machine_name_t machine_names[134] PROGMEM;
 
 /* @} @} */
 
