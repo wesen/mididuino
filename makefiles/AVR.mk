@@ -15,8 +15,12 @@ LDAVR_ARCH     ?= avrmega64
 FLASH_PROTOCOL = jtag2
 
 CFLAGS   += -Os -ffunction-sections -DAVR -I. -mmcu=$(AVR_ARCH) -mcall-prologues -fshort-enums -fpack-struct -Wall -Werror
-CFLAGS   += -Wall -DLITTLE_ENDIAN -g
-CLDFLAGS += -Wl,--gc-sections -ffunction-sections
+CFLAGS   += -Wall -DLITTLE_ENDIAN -g -flto
+
+CFLAGS += no-tree-loop-optimize -ffreestanding -morder1 -funsigned-char -funsigned-bitfields -fshort-enums -fpack-struct
+CFLAGS += -fdata-sections -fno-split-wide-types -fno-inline-small-functions -mcall-prologues
+
+CLDFLAGS += -Wl,--relax,--gc-sections -ffunction-sections
 CLDFLAGS += -mmcu=$(AVR_ARCH)
 LDFLAGS  = -m $(LDAVR_ARCH) -M
 
