@@ -1,7 +1,12 @@
 /*
- * MidiCtrl - Simple Sysex Dumper
+ * MidiCtrl - Prints out profiling data received over sysex
  *
  * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ *
+ * The profiler samples the code on the destination device. A timer interrupt checks the return
+ * address on the stack, encodes it as sysex and send it over MIDI. This receiving application
+ * decodes the address and prints it out on stdout. It can then be piped to a script such as
+ *   ./profiler | awk '{ system("avr-addr2line -e file.elf -f " $1); }'
  */
 
 #include <inttypes.h>
@@ -15,6 +20,9 @@
 
 #include "MidiUartOSX.h"
 
+/**
+ * Holds the path to the ELF file that is being profiled.
+ */
 char *file = NULL;
 
 class ProfilerSysexListener : public MidiSysexListenerClass {
@@ -69,13 +77,9 @@ int main(int argc, char *argv[]) {
   MidiSysex.addSysexListener(&profilerSysex);
 
   for (;;) {
-    //    printf("foo\n");
-    //    fflush(stdout);
     MidiUart.runLoop();
     while (MidiUart.avail()) {
       uint8_t c = MidiUart.getc();
-      //      printf("%x\n", c);
-      //      fflush(stdout);
       Midi.handleByte(c);
     }
     usleep(1000);

@@ -25,25 +25,25 @@ bool printFirst = false;
 bool printSecond = true;
 
 int main(int argc, char *argv[]) {
-  MidiUart.init(0, 0);
-  MidiUart2.init(1, 1);
+  MidiUart.init(1, 1);
+  MidiUart2.init(2, 2);
 
   for (;;) {
     MidiUart.runLoop();
     MidiUart2.runLoop();
     bool startPrint;
-    
+
     startPrint = false;
     while (MidiUart.avail()) {
       uint8_t c = MidiUart.getc();
       if (printFirst) {
-	if (!MIDI_IS_REALTIME_STATUS_BYTE(c)) {
-	  if (!startPrint) {
-	    startPrint = true;
-	    printf("1 -> 2: ");
-	  }
-	  printf("%.2x ", c);
-	}
+        if (!MIDI_IS_REALTIME_STATUS_BYTE(c)) {
+          if (!startPrint) {
+            startPrint = true;
+            printf("1 -> 2: ");
+          }
+          printf("%.2x ", c);
+        }
       }
       MidiUart2.putc(c);
     }
@@ -53,13 +53,13 @@ int main(int argc, char *argv[]) {
     while (MidiUart2.avail()) {
       uint8_t c = MidiUart2.getc();
       if (printSecond) {
-	if (!MIDI_IS_REALTIME_STATUS_BYTE(c)) {
-	  if (!startPrint) {
-	    startPrint = true;
-	    printf("2 -> 1: ");
-	  }
-	  printf("%.2x ", c);
-	}
+        if (!MIDI_IS_REALTIME_STATUS_BYTE(c)) {
+          if (!startPrint) {
+            startPrint = true;
+            printf("2 -> 1: ");
+          }
+          printf("%.2x ", c);
+        }
       }
 
       MidiUart.putc(c);
