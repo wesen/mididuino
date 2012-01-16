@@ -1,4 +1,4 @@
 #include <pstrs.h>
 
-const char *P_REQUESTING PROGMEM = "REQUESTING";
+const char * const P_REQUESTING PROGMEM = "REQUESTING";
 

@@ -3,6 +3,6 @@
 
 #include "PlatformConfig.h"
 
-extern const char *P_REQUESTING PROGMEM;
+extern const char * const P_REQUESTING;
 
 #endif /* PSTRS_H__ */
