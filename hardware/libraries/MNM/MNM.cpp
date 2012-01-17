@@ -1,7 +1,6 @@
 #include <Platform.h>
 #include <GUI.h>
 #include <MidiUartParent.hh>
-#include <MidiUart.h>
 #include "MNM.h"
 
 MNMClass::MNMClass() {
@@ -47,8 +46,8 @@ void MNMClass::sendAutoNoteOff(uint8_t note) {
 
 void MNMClass::triggerTrack(uint8_t track, bool amp, bool lfo, bool filter) {
   MidiUart.sendNRPN(global.baseChannel,
-		    (uint16_t)(0x7F << 7),
-		    (uint8_t)((track << 3) | (amp ? 4 : 0) | (lfo ? 2 : 0) | (filter ? 1 : 0)));
+      (uint16_t)(0x7F << 7),
+      (uint8_t)((track << 3) | (amp ? 4 : 0) | (lfo ? 2 : 0) | (filter ? 1 : 0)));
 }
 
 void MNMClass::setMultiEnvParam(uint8_t param, uint8_t value) {
@@ -290,6 +289,16 @@ uint8_t MNMClass::getCurrentTrack(uint16_t timeout) {
     return 255;
   } else {
     MNM.currentTrack = value;
+    return value;
+  }
+}
+
+uint8_t MNMClass::getCurrentPattern(uint16_t timeout) {
+  uint8_t value = getBlockingStatus(MNM_CURRENT_PATTERN_REQUEST, timeout);
+  if (value == 255) {
+    return 255;
+  } else {
+    MNM.currentPattern = value;
     return value;
   }
 }
