@@ -25,9 +25,9 @@
 #define EVENT_BUTTON_RELEASED _BV(1)
 
 /** Tests if button was pressed in the event structure. **/
-#define EVENT_PRESSED(event, button) ((event)->mask & EVENT_BUTTON_PRESSED && (event)->source == button)
+#define EVENT_PRESSED(event, button) (((event)->mask & EVENT_BUTTON_PRESSED) && ((event)->source == button))
 /** Tests if button was released in the event structure. **/
-#define EVENT_RELEASED(event, button) ((event)->mask & EVENT_BUTTON_RELEASED && (event)->source == button)
+#define EVENT_RELEASED(event, button) (((event)->mask & EVENT_BUTTON_RELEASED) && ((event)->source == button))
 
 /**
  * Stores a GUI event. The mask stores what event happened (button
