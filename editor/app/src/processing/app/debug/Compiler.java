@@ -79,8 +79,7 @@ public class Compiler implements MessageConsumer {
     String avrBasePath = Base.getAvrBasePath();
 
     List<File> objectFiles = new ArrayList<File>();
-
-    List<File> includePaths = new ArrayList<File>();
+    List<String> includePaths = new ArrayList<String>();
 
     try {
       Vector<Library> libraries = new Vector<Library>();
@@ -99,10 +98,10 @@ public class Compiler implements MessageConsumer {
 
       // 1. compile the target (core), outputting .o files to <buildPath> and
       // then collecting them into the core.a library file.
-      includePaths.add(new File(target.getPath()));
+      includePaths.add(target.getPath());
 
       for (Library library : libraries) {
-        includePaths.add(new File(library.getFolder().getAbsolutePath()));
+        includePaths.add(library.getFolder().getAbsolutePath());
       }
 
       List<File> targetObjectFiles =
@@ -118,12 +117,12 @@ public class Compiler implements MessageConsumer {
         libraryManager.addLibrary(libraries, libraryManager.get(item));
       }
 
-      includePaths = new ArrayList<File>();
-      includePaths.add(new File(target.getPath()));
+      includePaths = new ArrayList<String>();
+      includePaths.add(target.getPath());
 
       for (Library library : libraries) {
         String path = library.getFolder().getAbsolutePath();
-        includePaths.add(new File(library.getFolder().getAbsolutePath()));
+        includePaths.add(library.getFolder().getAbsolutePath());
         for (File f : library.getObjectFiles()) {
           objectFiles.add(f);
         }
@@ -183,7 +182,7 @@ public class Compiler implements MessageConsumer {
 
 
   private List<File> compileFiles(String avrBasePath,
-                                  String buildPath, List<File> includePaths,
+                                  String buildPath, List<String> includePaths,
                                   List<File> cSources, List<File> cppSources)
   throws RunnerException {
 
@@ -488,7 +487,7 @@ public class Compiler implements MessageConsumer {
   }
 
 
-  static public List<String> getCommandCompilerC(String avrBasePath, List includePaths,
+  static public List<String> getCommandCompilerC(String avrBasePath, List<String> includePaths,
                                                  String sourceName, String objectName) {
     List<String> baseCommandCompiler = new ArrayList<String>(Arrays.asList(new String[]{
                                                                                        avrBasePath + "avr-gcc",
@@ -497,7 +496,7 @@ public class Compiler implements MessageConsumer {
     baseCommandCompiler.addAll(Compiler.getCompilerFlags());
 
     for (int i = 0; i < includePaths.size(); i++) {
-      baseCommandCompiler.add("-I" + (String) includePaths.get(i));
+      baseCommandCompiler.add("-I" + includePaths.get(i));
     }
 
     baseCommandCompiler.add(sourceName);
@@ -509,7 +508,7 @@ public class Compiler implements MessageConsumer {
 
 
   static public List<String> getCommandCompilerCPP(String avrBasePath,
-                                                   List includePaths, String sourceName, String objectName) {
+                                                   List<String> includePaths, String sourceName, String objectName) {
     List<String> baseCommandCompilerCPP = new ArrayList<String>(Arrays.asList(new String[]{
                                                                                           avrBasePath + "avr-g++",
                                                                                           "-c", // compile, don't link
@@ -518,7 +517,7 @@ public class Compiler implements MessageConsumer {
     baseCommandCompilerCPP.addAll(Compiler.getCompilerFlags());
 
     for (Object includePath : includePaths) {
-      baseCommandCompilerCPP.add("-I" + (String) includePath);
+      baseCommandCompilerCPP.add("-I" + includePath);
     }
 
     baseCommandCompilerCPP.add(sourceName);
@@ -614,12 +613,12 @@ public class Compiler implements MessageConsumer {
     return (new File(path)).list(onlyHFiles);
   }
 
-  static public ArrayList<File> findFilesInPath(String path, String extension,
+  static public List<File> findFilesInPath(String path, String extension,
                                                 boolean recurse) {
     return findFilesInFolder(new File(path), extension, recurse);
   }
 
-  static public ArrayList<File> findFilesInFolder(File folder, String extension,
+  static public List<File> findFilesInFolder(File folder, String extension,
                                                   boolean recurse) {
     ArrayList<File> files = new ArrayList<File>();
 
