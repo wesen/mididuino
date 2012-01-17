@@ -10,8 +10,6 @@ include $(CURDIR)MidiCtrl.mk
 # set default compilers and flags
 CXX      = g++
 CC       = gcc
-CFLAGS   += -Os
-CXXFLAGS += -Os
 CLDCXX   = g++
 CLDC     = gcc
 
@@ -30,7 +28,7 @@ MIDICTRL_HOST_OBJS    += $(foreach dir,$(MIDICTRL_LIB_DIRS),$(foreach file,$(fil
 MIDICTRL_HOST_DEPS    = $(subst .host.o,.host.d,$(MIDICTRL_HOST_OBJS))
 
 CXXFLAGS += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
-CFLAGS   += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g	
+CFLAGS   += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
 #CLDFLAGS += -lreadline -L/opt/local/lib
 CLDFLAGS += --gc-sections
 
