@@ -1,7 +1,7 @@
 /* Copyright (c) 2009 - http://ruinwesen.com/ */
 
-#ifndef RINGBUFFER_H__
-#define RINGBUFFER_H__
+#ifndef CRINGBUFFER_H__
+#define CRINGBUFFER_H__
 
 #include "PlatformConfig.h"
 #include "helpers.h"
@@ -161,4 +161,4 @@ template <class C, int N, class T>
 
 /* @} @} */
 
-#endif /* RINGBUFFER_H__ */
+#endif /* CRINGBUFFER_H__ */
