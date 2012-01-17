@@ -147,7 +147,8 @@ static void midiReadProc(const MIDIPacketList *pktlist, void *refCon, void *conn
  * Callback when a sysex message has been sent, frees the request buffer.
  **/
 static void midiSysexSent(MIDISysexSendRequest *request) {
-  printf("refcon : %p\n", request->completionRefCon);
+  // XXX Debug
+  //  printf("refcon : %p\n", request->completionRefCon);
   free(request);
 }
 

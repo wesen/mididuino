@@ -17,7 +17,9 @@ MidiClass Midi2(NULL, sysexBuf2, sizeof(sysexBuf2));
 MidiUartHostClass MidiUart;
 
 void MidiUartHostSysexListener::end() {
-  printf("send sysex of %d bytes\n", sysex->len);
+  // XXX Debug
+  //  printf("send sysex of %d bytes\n", sysex->len);
+
   uint8_t buf[sysex->len +2];
   buf[0] = 0xF0;
   m_memcpy(buf + 1, sysex->data, sysex->len);
@@ -34,7 +36,9 @@ void handleIncomingMidi() {
 }
 
 void MidiUartHostParent::onOutputMessage(uint8_t *msg, uint8_t len) {
-  //    printf("output message %d bytes\n", len);
+  //  printf("output message %d bytes\n", len);
+  //  hexdump(msg, len);
+
   if (len > 3) {
     midiSendLong(msg, len);
   } else {
