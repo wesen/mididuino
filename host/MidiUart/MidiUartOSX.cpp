@@ -47,6 +47,11 @@ void MidiUartOSXClass::listInputMidiDevices() {
 
   iNumDevs = MIDIGetNumberOfSources();
 
+  if (iNumDevs == 0) {
+    printf("No input MIDI devices found\n");
+    return;
+  }
+
   for (i = 0; i < iNumDevs; i++) {
     char buf[128];
     MIDIEndpointRef ep = MIDIGetSource(i);
@@ -62,6 +67,11 @@ void MidiUartOSXClass::listOutputMidiDevices() {
   unsigned long   iNumDevs, i;
 
   iNumDevs = MIDIGetNumberOfDestinations();
+
+  if (iNumDevs == 0) {
+    printf("No output MIDI devices found\n");
+    return;
+  }
 
   for (i = 0; i < iNumDevs; i++) {
     char buf[128];

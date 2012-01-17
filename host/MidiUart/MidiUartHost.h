@@ -45,7 +45,7 @@ public:
   int inputDevice;
   int outputDevice;
   volatile RingBuffer<RX_BUF_SIZE, RX_BUF_TYPE> rxRb;
-  
+
   MidiUartHostParent(int _inputDevice = -1, int _outputDevice = -1) :
     outputMidi(NULL, _sysexBuf, sizeof(_sysexBuf)),
     sysexListener(this) {
