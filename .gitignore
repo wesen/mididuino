@@ -15,3 +15,5 @@ mididuino-dist
 cscope.files
 cscope.out
 .DS_Store
+workspace.xml
+.midictrl.flags2
