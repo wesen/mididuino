@@ -93,11 +93,17 @@
  **/
 
 /** Get the minimum of x and y. **/
+#ifndef MIN
 #define MIN(x, y) ((x) > (y) ? (y) : (x))
+#endif /* MIN */
 /** Get the maximum of x and y. **/
+#ifndef MAX
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
+#endif
 /** Get the absolute value of x. **/
+#ifndef ABS
 #define ABS(x) ((x) < 0 ? -(x) : (x))
+#endif
 
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 #ifndef HOST_MIDIDUINO
