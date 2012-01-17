@@ -5,6 +5,7 @@
  */
 
 #include "GUI.h"
+#include "RingBuffer.h"
 
 volatile CRingBuffer<gui_event_t, 8> EventRB;
 

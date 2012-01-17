@@ -43,23 +43,29 @@ void MidiSysexClass::stopRecord() {
 }
 
 bool MidiSysexClass::isListenerActive(MidiSysexListenerClass *listener) {
-  if (listener == NULL)
+  if (listener == NULL) {
     return false;
+  }
+
   /* catch all */
-  if (listener->ids[0] == 0xFF)
+  if (listener->ids[0] == 0xFF) {
     return true;
+  }
+
   if (sysexLongId) {
     if (recvIds[0] == listener->ids[0] &&
         recvIds[1] == listener->ids[1] &&
-        recvIds[2] == listener->ids[2])
+        recvIds[2] == listener->ids[2]) {
       return true;
-    else
+    } else {
       return false;
+    }
   } else {
-    if (recvIds[0] == listener->ids[0])
+    if (recvIds[0] == listener->ids[0]) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 }
 

@@ -197,6 +197,12 @@ char hex2c(uint8_t hex) {
   }
 }
 
+/**
+ * Display the value as decimal at position idx (0 - 3).
+ *
+ * @param value value to be displayed in decimal
+ * @param idx display index going from 0 to 3
+ */
 void GuiClass::put_value(uint8_t idx, uint8_t value) {
   put_value_at(idx << 2, value);
 }
