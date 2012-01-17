@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="windows">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/editor/mididuino-dist/windows/avr_tools.zip!/" />
+      <root url="jar://$PROJECT_DIR$/editor/mididuino-dist/windows/jre.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
