@@ -3,7 +3,7 @@
 
 #include <Platform.h>
 #include <MNM.h>
-#include "PitchEuclid.h"
+#include <PitchEuclid.h>
 
 class MNMPatternEuclid : public PitchEuclid {
  public:
