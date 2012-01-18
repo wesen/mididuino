@@ -28,6 +28,7 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
     } else {
       isMNMMessage = false;
     }
+
     return;
   }
   
@@ -94,12 +95,18 @@ void MNMSysexListenerClass::end() {
     uint16_t realCksum = ElektronHelper::to16Bit7(sysexCirc.get(3), sysexCirc.get(2));
     uint16_t realLen = ElektronHelper::to16Bit7(sysexCirc.get(1), sysexCirc.get(0));
     if ((msgLen + 4) != realLen) {
+#ifndef HOST_MIDIDUINO
+      GUI.flash_p_strings_fill(PSTR("WRONG MNM"), PSTR("MSG LENGTH"));
+#endif
 #ifdef HOST_MIDIDUINO
       fprintf(stderr, "wrong message len, %d should be %d\n", (msgLen + 4), realLen);
 #endif
       return;
     }
     if (msgCksum != realCksum) {
+#ifndef HOST_MIDIDUINO
+      GUI.flash_p_strings_fill(PSTR("WRONG MNM"), PSTR("CHECKSUM"));
+#endif
 #ifdef HOST_MIDIDUINO
       fprintf(stderr, "wrong message cksum, 0x%x should be 0x%x\n", msgCksum, realCksum);
 #endif
