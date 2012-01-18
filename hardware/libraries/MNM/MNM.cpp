@@ -279,6 +279,10 @@ uint8_t MNMClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
   } while ((clock_diff(start_clock, current_clock) < timeout) && !cb.received);
   MNMSysexListener.removeOnStatusResponseCallback(&cb);
 
+  if (!cb.received) {
+    GUI.flash_p_strings_fill(PSTR("TIMEOUT"), PSTR("MNM"));
+  }
+
   return cb.value;
 }
   
