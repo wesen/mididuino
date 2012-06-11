@@ -40,6 +40,9 @@ AVR_ARCH = atmega64
 F_CPU = 16000000L
 CORE = minicommand2
 
+MIDI_INPUT_PORT ?= 1
+MIDI_OUTPUT_PORT ?= 1
+
 # add the core directory to the include path
 MIDICTRL_LIB_DIRS += $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)
 
