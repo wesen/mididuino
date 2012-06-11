@@ -8,7 +8,7 @@ TAGS
 *.hex
 *.out
 *.swp
-build
+./build
 *.d
 doc/html
 mididuino-dist
