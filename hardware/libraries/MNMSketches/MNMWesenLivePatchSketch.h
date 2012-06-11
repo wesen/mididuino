@@ -4,6 +4,7 @@
 #include <MNM.h>
 #include <AutoEncoderPage.h>
 #include <MNMMagicPage.h>
+#include <PitchEuclid.h>
 
 class MNMWesenLivePatchSketch : 
 public Sketch, public MNMCallback, public ClockCallback {
@@ -49,7 +50,7 @@ public:
     } 
     else if (EVENT_RELEASED(event, Buttons.BUTTON1)) {
       popPage(&switchPage);
-    } 
+    }
     if (BUTTON_DOWN(Buttons.BUTTON1)) {
       if (EVENT_PRESSED(event, Buttons.BUTTON4)) {
         MNM.revertToCurrentKit(true);
