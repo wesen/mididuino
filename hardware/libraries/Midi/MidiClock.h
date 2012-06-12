@@ -42,6 +42,7 @@ class MidiClockClass {
  public:
   volatile uint32_t indiv96th_counter;
   volatile uint32_t outdiv96th_counter;
+  volatile bool inCallback;
 
   volatile uint32_t div96th_counter;
   volatile uint32_t div32th_counter;
