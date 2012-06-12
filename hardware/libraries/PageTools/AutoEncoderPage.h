@@ -49,7 +49,8 @@ template <typename EncoderType>
 class AutoEncoderPage : public EncoderPage, public ClockCallback {
  public:
   EncoderType realEncoders[4];
-  RecordingEncoder<64> recEncoders[4];
+  const static int RECORDING_LENGTH = 64; // recording length in 32th
+  RecordingEncoder<RECORDING_LENGTH> recEncoders[4];
 
   bool muted;
 
@@ -72,12 +73,44 @@ class AutoEncoderPage : public EncoderPage, public ClockCallback {
   virtual bool handleEvent(gui_event_t *event);
 };
 
+
+template <typename EncoderType>
+void AutoEncoderPage<EncoderType>::setup() {
+  learnButton = Buttons.BUTTON2;
+  recordButton = Buttons.BUTTON3;
+  clearButton = Buttons.BUTTON4;
+
+  muted = false;
+  for (uint8_t i = 0; i < 4; i++) {
+    realEncoders[i].setName("___");
+    recEncoders[i].initRecordingEncoder(&realEncoders[i]);
+    encoders[i] = &recEncoders[i];
+    ccHandler.addEncoder(&realEncoders[i]);
+  }
+  MidiClock.addOn32Callback(this, (midi_clock_callback_ptr_t)&AutoEncoderPage<EncoderType>::on32Callback);
+  EncoderPage::setup();
+}
+
 template <typename EncoderType>
 void AutoEncoderPage<EncoderType>::on32Callback(uint32_t counter) {
   if (muted)
     return;
+
+  /*
+   * The following code just copies the handling of recording encoders in order to save CPU time.
+   * This callback is called from the clock callback and thus needs to be quick.
+   */
+  uint8_t pos = counter & 0xFF;
+  uint8_t currentPos = pos % RECORDING_LENGTH;
   for (uint8_t i = 0; i < 4; i++) {
-    recEncoders[i].playback(counter & 0xFF);
+    RecordingEncoder<RECORDING_LENGTH> *encoder = recEncoders + i;
+    encoder->currentPos = currentPos;
+    if (encoder->value[currentPos] != -1) {
+      if (!(encoder->recording && encoder->recordChanged)) {
+        encoder->realEnc->setValue(encoder->value[currentPos], true);
+        encoder->redisplay = encoder->realEnc->redisplay;
+      }
+    }
   }
 }
 
@@ -105,23 +138,6 @@ void AutoEncoderPage<EncoderType>::clearRecording() {
 template <typename EncoderType>
 void AutoEncoderPage<EncoderType>::clearRecording(uint8_t i) {
   recEncoders[i].clearRecording();
-}
-
-template <typename EncoderType>
-void AutoEncoderPage<EncoderType>::setup() {
-  learnButton = Buttons.BUTTON2;
-  recordButton = Buttons.BUTTON3;
-  clearButton = Buttons.BUTTON4;
-  
-  muted = false;
-  for (uint8_t i = 0; i < 4; i++) {
-    realEncoders[i].setName("___");
-    recEncoders[i].initRecordingEncoder(&realEncoders[i]);
-    encoders[i] = &recEncoders[i];
-    ccHandler.addEncoder(&realEncoders[i]);
-  }
-  MidiClock.addOn32Callback(this, (midi_clock_callback_ptr_t)&AutoEncoderPage<EncoderType>::on32Callback);
-  EncoderPage::setup();
 }
 
 template <typename EncoderType>

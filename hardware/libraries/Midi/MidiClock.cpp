@@ -18,6 +18,7 @@ MidiClockClass::MidiClockClass() {
   setTempo(120);
   transmit = false;
   useImmediateClock = false;
+  inCallback = false;
 
 #ifdef HOST_MIDIDUINO
   useImmediateClock = true;
@@ -229,7 +230,6 @@ void MidiClockClass::callCallbacks() {
     clearLed();
   }
   
-  static bool inCallback = false;
   if (inCallback) {
     return;
   } else {

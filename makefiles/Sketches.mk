@@ -45,6 +45,7 @@ MIDI_OUTPUT_PORT ?= 1
 
 # add the core directory to the include path
 MIDICTRL_LIB_DIRS += $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)
+MIDICTRL_LIBS += Sequencer MidiTools
 
 all: $(PDENAME).hex
 
@@ -110,5 +111,8 @@ $(PDENAME).elf: $(PDENAME).o $(MIDICTRL_OBJS)
 _clean:
 	- rm *.elf *.hex *.o .midictrl.flags
 
+clean:
+	- rm *.elf *.hex *.o
+
 libclean:
-	rm -rf $(MIDICTRL_OBJS) $(OBJS)
+	- rm -rf $(MIDICTRL_OBJS) $(OBJS)
