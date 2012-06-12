@@ -126,7 +126,9 @@ void AutoEncoderPage<EncoderType>::setup() {
 
 template <typename EncoderType>
 void AutoEncoderPage<EncoderType>::autoLearnLast4() {
+  /* maps from received CC indexes to encoder indexes */
   int8_t ccAssigned[4] = { -1, -1, -1, -1 };
+  /* maps from encoder indexes to last received CCs */
   int8_t encoderAssigned[4] = { -1, -1, -1, -1 };
   incoming_cc_t ccs[4];
 
@@ -146,21 +148,23 @@ void AutoEncoderPage<EncoderType>::autoLearnLast4() {
 
   for (uint8_t i = 0; i < count; i++) {
     incoming_cc_t *cc = &ccs[i];
-    if (ccAssigned[i] != -1) {
-      if ((realEncoders[ccAssigned[i]].getChannel() != cc->channel) &&
-          (realEncoders[ccAssigned[i]].getCC() != cc->cc)) {
-        realEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-        realEncoders[ccAssigned[i]].setValue(cc->value);
-        clearRecording(ccAssigned[i]);
+    int8_t idx = ccAssigned[i];
+    if(idx != -1) {
+      /* this check is probably redundant XXX */
+      if ((realEncoders[idx].getChannel() != cc->channel) ||
+          (realEncoders[idx].getCC() != cc->cc)) {
+        realEncoders[idx].initCCEncoder(cc->channel, cc->cc);
+        realEncoders[idx].setValue(cc->value);
+        clearRecording(idx);
       }
     } else {
       for (uint8_t j = 0; j < 4; j++) {
         if (encoderAssigned[j] == -1) {
-          ccAssigned[i] = j;
+          idx = ccAssigned[i] = j;
           encoderAssigned[j] = i;
-          realEncoders[ccAssigned[i]].initCCEncoder(cc->channel, cc->cc);
-          realEncoders[ccAssigned[i]].setValue(cc->value);
-          clearRecording(ccAssigned[i]);
+          realEncoders[idx].initCCEncoder(cc->channel, cc->cc);
+          realEncoders[idx].setValue(cc->value);
+          clearRecording(idx);
           break;
         }
       }
