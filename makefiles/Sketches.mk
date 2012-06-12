@@ -45,6 +45,7 @@ MIDI_OUTPUT_PORT ?= 1
 
 # add the core directory to the include path
 MIDICTRL_LIB_DIRS += $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)
+MIDICTRL_LIBS += Sequencer
 
 all: $(PDENAME).hex
 
