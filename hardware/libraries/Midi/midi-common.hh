@@ -24,6 +24,7 @@ class MidiCallback {
 #endif
 
   typedef void(MidiCallback::*callback_ptr_t)(uint8_t *msg);
+  typedef void(MidiCallback::*callback2_ptr_t)(uint8_t *msg, uint8_t len);
 };
 #endif /* _cplusplus */
 

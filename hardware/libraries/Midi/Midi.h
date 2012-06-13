@@ -67,7 +67,7 @@ class MidiClass {
    * @{
    **/
 	
- private:
+ protected:
   midi_state_t in_state;
   uint8_t last_status;
   uint8_t running_status;
@@ -98,6 +98,16 @@ class MidiClass {
 
   void init();
   void handleByte(uint8_t c);
+
+  void removeAllCallbacks() {
+    for (int i = 0; i < countof(midiCallbacks); i++) {
+      midiCallbacks[i].removeAll();
+    }
+#ifdef HOST_MIDIDUINO
+    messageCallback.removeAll();
+#endif
+
+  }
 
 #ifdef HOST_MIDIDUINO
   void addOnMessageCallback(MidiCallback *obj,
@@ -187,9 +197,16 @@ class MidiClass {
   
 };
 
+#ifndef TEST_SUITE
 extern MidiClass Midi;
 extern MidiClass Midi2;
 extern MidiClass USBMidi;
+#else
+#include "VirtualMidi.h"
+class VirtualMidi;
+extern VirtualMidi Midi;
+extern VirtualMidi Midi2;
+#endif
 
 /* @} @} */
 
