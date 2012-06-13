@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <fcntl.h>
 
-#import <list>
+#include <list>
 
 class FDSelect {
 protected:

@@ -1,5 +1,4 @@
-#include <CppUnitLite2.h>
-#include <TestResultStdErr.h>
+#include "TestSuite.h"
 
 #include <Stack.h>
 

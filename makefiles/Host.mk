@@ -56,11 +56,18 @@ CFLAGS += $(HOST_INC_FLAGS)
 %.host.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+%.test.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.test.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 include $(MIDICTRL_HOST_DEPS)
 include $(HOST_DEPS)
 
-libclean:
-	rm -rf $(MIDICTRL_HOST_OBJS) $(HOST_OBJS) $(MIDICTRL_HOST_DEPS) $(HOST_DEPS)
-
 OBJS = $(MIDICTRL_HOST_OBJS) $(HOST_OBJS)
+TEST_OBJS = $(foreach file,$(OBJS),$(subst .host.o,.test.o,$(file)))
+
+libclean:
+	rm -rf $(MIDICTRL_HOST_OBJS) $(HOST_OBJS) $(MIDICTRL_HOST_DEPS) $(HOST_DEPS) $(TEST_OBJS)
 

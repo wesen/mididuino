@@ -12,9 +12,11 @@
 uint8_t sysexBuf[8192];
 uint8_t sysexBuf2[8192];
 
+#ifndef TEST_SUITE
 MidiClass Midi(NULL, sysexBuf, sizeof(sysexBuf));
 MidiClass Midi2(NULL, sysexBuf2, sizeof(sysexBuf2));
 MidiUartHostClass MidiUart;
+#endif TEST_SUITE
 
 void MidiUartHostSysexListener::end() {
   // XXX Debug

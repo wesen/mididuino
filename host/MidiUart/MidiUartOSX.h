@@ -44,6 +44,8 @@ class MidiUartOSXClass : public MidiUartHostParent {
   void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2);
 };
 
+#ifndef TEST_SUITE
 extern MidiUartOSXClass MidiUart;
+#endif
 
 #endif /* MIDIUARTOSX_H__ */

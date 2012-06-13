@@ -71,6 +71,8 @@ public:
 #endif
 
 class MidiUartHostClass;
+#ifndef TEST_SUITE
 extern MidiUartHostClass MidiUart;
+#endif
 
 #endif /* MIDIUART_HOST_H__ */

@@ -7,6 +7,7 @@
 #ifndef PLATFORM_CONFIG_H__
 #define PLATFORM_CONFIG_H__
 
+
 #include <inttypes.h>
 
 #ifndef HOST_MIDIDUINO
@@ -24,5 +25,9 @@
 #define MIDIDUINO_HANDLE_SYSEX
 
 #include "HelperMacros.h"
+
+#ifdef TEST_SUITE
+#define MidiUart Midi
+#endif
 
 #endif /* PLATFORM_CONFIG_H__ */

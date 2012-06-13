@@ -1,5 +1,4 @@
-#include <CppUnitLite2.h>
-#include <TestResultStdErr.h>
+#include "TestSuite.h"
 
 #include <MidiClock.h>
 #include <helpers.h>
@@ -25,7 +24,6 @@ class CallbackTester : public ClockCallback {
 public:
   uint32_t last16Counter;
   uint32_t last32Counter;
-  uint32_t last96Counter;
 
   CallbackTester() {
     reset();
@@ -34,7 +32,6 @@ public:
   void setup(MidiClockClass *clock) {
     clock->addOn16Callback(this, (midi_clock_callback_ptr_t)(&CallbackTester::on16Callback));
     clock->addOn32Callback(this, (midi_clock_callback_ptr_t)(&CallbackTester::on32Callback));
-    clock->addOn96Callback(this, (midi_clock_callback_ptr_t)(&CallbackTester::on96Callback));
   }
 
   void on16Callback(uint32_t cnt) {
@@ -45,14 +42,9 @@ public:
     last32Counter = cnt;
   }
 
-  void on96Callback(uint32_t cnt) {
-    last96Counter = cnt;
-  }
-
   void reset() {
     last16Counter = 0;
     last32Counter = 0;
-    last96Counter = 0;
   }
 };
 

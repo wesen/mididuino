@@ -1,6 +1,4 @@
-#include <CppUnitLite2.h>
-#include <TestResultStdErr.h>
-
+#include "TestSuite.h"
 #include <BitArray.hh>
 
 TEST (TestField1) {

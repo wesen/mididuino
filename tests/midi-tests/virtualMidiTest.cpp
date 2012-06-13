@@ -16,12 +16,12 @@ public:
   }
 };
 
-int main(uint8_t argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   VirtualMidi midi;
   MidiCallbacks callbacks;
 
-  midi.MidiClass::addOnNoteOnCallback(&callbacks, (midi_callback_ptr_t)&MidiCallbacks::onNoteOn);
-  midi.MidiClass::addOnNoteOffCallback(&callbacks, (midi_callback_ptr_t)&MidiCallbacks::onNoteOff);
+  ADD_CALLBACK(midi.MidiClass::addOnNoteOnCallback, callbacks, onNoteOn);
+  ADD_CALLBACK(midi.MidiClass::addOnNoteOffCallback, callbacks, onNoteOff);
 
   midi.sendNoteOn(MIDI_NOTE_A0, 100);
   midi.sendNoteOff(MIDI_NOTE_A0);

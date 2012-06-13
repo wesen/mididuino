@@ -4,7 +4,7 @@ include ../../makefiles/Host.mk
 
 CPPUNITDIR=$(MIDICTRL_BASE_DIR)/thirdparty/CppUnitLite2
 CXXFLAGS += -I$(CPPUNITDIR)/src
-CXXFLAGS += -g
+CXXFLAGS += -g -std=c++0x
 CLDFLAGS += $(CPPUNITDIR)/cppunitlite.a
 
 all: midiTest midiTest2 midiTest3 midiClockTest

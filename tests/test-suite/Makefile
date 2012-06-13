@@ -11,11 +11,14 @@ include ../../makefiles/Host.mk
 CPPUNITDIR=$(MIDICTRL_BASE_DIR)/thirdparty/CppUnitLite2
 CXXFLAGS += -I../../thirdparty/CppUnitLite2/src -std=c++0x
 CPPSOURCES := $(shell find . -name '*.cpp')
-HOSTOBJFILES = $(foreach file,$(CPPSOURCES),$(subst .cpp,.host.o,$(file)))
+HOSTOBJFILES = $(foreach file,$(CPPSOURCES),$(subst .cpp,.test.o,$(file)))
+
+CFLAGS += -DTEST_SUITE
+CXXFLAGS += -DTEST_SUITE
 
 all: test
 
-test: $(HOSTOBJFILES) $(OBJS)
+test: $(HOSTOBJFILES) $(TEST_OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 
 clean:

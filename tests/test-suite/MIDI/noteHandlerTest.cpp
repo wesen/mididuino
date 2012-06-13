@@ -1,8 +1,6 @@
-#include <CppUnitLite2.h>
-#include <TestResultStdErr.h>
+#include "TestSuite.h"
 
 #include "NoteHandler.h"
-#include "Platform.h"
 #include <helpers.h>
 
 struct NoteHandlerFixture {

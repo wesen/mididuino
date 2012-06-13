@@ -4,11 +4,7 @@
  * (c) 2010 - Manuel Odendahl - wesen@ruinwesen.com
  */
 
-#include <CppUnitLite2.h>
-#include <TestResultStdErr.h>
-#include <Test.h>
-
-#include "test_helpers.h"
+#include "TestSuite.h"
 
 #include <MD.h>
 
