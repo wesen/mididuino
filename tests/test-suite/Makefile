@@ -9,7 +9,7 @@ MIDICTRL_LIBS = Midi MidiTools GUI Elektron MD MNM Sequencer GUI
 include ../../makefiles/Host.mk
 
 CPPUNITDIR=$(MIDICTRL_BASE_DIR)/thirdparty/CppUnitLite2
-CXXFLAGS += -I../../thirdparty/CppUnitLite2/src
+CXXFLAGS += -I../../thirdparty/CppUnitLite2/src -std=c++0x
 CPPSOURCES := $(shell find . -name '*.cpp')
 HOSTOBJFILES = $(foreach file,$(CPPSOURCES),$(subst .cpp,.host.o,$(file)))
 

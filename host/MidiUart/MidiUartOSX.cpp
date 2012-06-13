@@ -171,11 +171,11 @@ static void midiSysexSent(MIDISysexSendRequest *request) {
 MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
   inputDevice = -1;
   outputDevice = -1;
-  outPort = NULL;
-  dest = NULL;
-  client = NULL;
-  inPort = NULL;
-  src = NULL;
+  outPort = 0;
+  dest = 0;
+  client = 0;
+  inPort = 0;
+  src = 0;
   
   if ((_inputDevice >= 0) && (_outputDevice >= 0)) {
     init(_inputDevice, _outputDevice);
@@ -183,11 +183,11 @@ MidiUartOSXClass::MidiUartOSXClass(int _inputDevice, int _outputDevice) {
 }
 
 MidiUartOSXClass::MidiUartOSXClass(const char *_inputDevice, const char *_outputDevice) {
-  outPort = NULL;
-  dest = NULL;
-  client = NULL;
-  inPort = NULL;
-  src = NULL;
+  outPort = 0;
+  dest = 0;
+  client = 0;
+  inPort = 0;
+  src = 0;
   
   if (_inputDevice && _outputDevice) {
     init(_inputDevice, _outputDevice);

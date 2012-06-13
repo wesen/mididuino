@@ -270,7 +270,7 @@ void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {
     return;
   }
 
-  uint8_t data[3] = { 0x62, track << 3 | param, value };
+  uint8_t data[3] = { 0x62, (uint8_t)(track << 3 | param), value };
   MDLFO *lfo = MD.kit.lfos + track;
   switch (param) {
   case MD_LFO_TRACK:
@@ -335,7 +335,7 @@ void MDClass::setTrackRouting(uint8_t track, uint8_t output) {
 }
 
 void MDClass::setTempo(uint16_t tempo) {
-  uint8_t data[3] = { 0x61, (tempo >> 7) & 0x7F, tempo & 0x7F };
+  uint8_t data[3] = { 0x61, (uint8_t)((tempo >> 7) & 0x7F), (uint8_t)(tempo & 0x7F) };
   MD.sendSysex(data, countof(data));
 }
 
@@ -350,7 +350,7 @@ void MDClass::setMuteGroup(uint8_t srcTrack, uint8_t muteTrack) {
 }
 
 void MDClass::saveCurrentKit(uint8_t pos) {
-  uint8_t data[2] = { 0x59, pos & 0x7F };
+  uint8_t data[2] = { 0x59, (uint8_t)(pos & 0x7F) };
   MD.sendSysex(data, countof(data));
 }
 
@@ -385,7 +385,7 @@ void MDClass::muteTrack(uint8_t track, bool mute) {
 }
 
 void MDClass::setStatus(uint8_t id, uint8_t value) {
-  uint8_t data[] = { 0x71, id & 0x7F, value & 0x7F };
+  uint8_t data[] = { 0x71, (uint8_t)(id & 0x7F), (uint8_t)(value & 0x7F) };
   MD.sendSysex(data, countof(data));
 }
 

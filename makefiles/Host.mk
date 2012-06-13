@@ -8,10 +8,10 @@ CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(CURDIR)MidiCtrl.mk
 
 # set default compilers and flags
-CXX      = g++
-CC       = gcc
-CLDCXX   = g++
-CLDC     = gcc
+CXX      ?= g++
+CC       ?= gcc
+CLDCXX   ?= $(CXX)
+CLDC     ?= $(CC)
 
 # ARCHFLAGS = -arch i386 -arch ppc  -mmacosx-version-min=10.4
 HOST_BASE_DIR  = $(abspath $(CURDIR)../host)
@@ -30,7 +30,7 @@ MIDICTRL_HOST_DEPS    = $(subst .host.o,.host.d,$(MIDICTRL_HOST_OBJS))
 CXXFLAGS += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
 CFLAGS   += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
 #CLDFLAGS += -lreadline -L/opt/local/lib
-CLDFLAGS += --gc-sections
+#CLDFLAGS += --gc-sections
 
 UNAME=$(shell uname)
 ISWIN=$(findstring CYGWIN,$(UNAME))
