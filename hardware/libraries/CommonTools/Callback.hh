@@ -3,6 +3,9 @@
 #ifndef CALLBACK_H__
 #define CALLBACK_H__
 
+#define ADD_CALLBACK(method, obj, function) { static decltype(obj)::callback_ptr_t p = (decltype(obj)::callback_ptr_t)&decltype(obj)::function; method(&obj, p); }
+#define ADD_CALLBACK2(method, obj, function) { static decltype(obj)::callback2_ptr_t p = (decltype(obj)::callback2_ptr_t)&decltype(obj)::function; method(&obj, p); }
+
 /**
  * \addtogroup CommonTools
  *
