@@ -9,7 +9,7 @@
 
 #include <inttypes.h>
 
-#include "PlatformConfig.h"
+#include "Platform.h"
 #include "MNMMessages.hh"
 #include "MNMPattern.hh"
 #include "MNMParams.hh"

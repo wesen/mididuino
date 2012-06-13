@@ -245,7 +245,7 @@ public:
       return;
 
     uint8_t msg[3] = {
-      MIDI_NOTE_ON | channel,
+      (uint8_t)(MIDI_NOTE_ON | channel),
       note,
       velocity
     };
@@ -261,7 +261,7 @@ public:
       return;
 
     uint8_t msg[3] = {
-      MIDI_NOTE_OFF | channel,
+      (uint8_t)(MIDI_NOTE_OFF | channel),
       note,
       velocity
     };
@@ -277,7 +277,7 @@ public:
       return;
 
     uint8_t msg[3] = {
-      MIDI_CONTROL_CHANGE | channel,
+      (uint8_t)(MIDI_CONTROL_CHANGE | channel),
       cc,
       value
     };
