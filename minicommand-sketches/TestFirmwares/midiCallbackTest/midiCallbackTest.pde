@@ -1,3 +1,6 @@
+#include "Callback.hh"
+#include "Midi.h"
+
 class MyCallback: public MidiCallback {
   public:
   void onMidiCallback(uint8_t *msg) {
@@ -7,11 +10,8 @@ class MyCallback: public MidiCallback {
 };
 
 
-
 MyCallback cb;
 
 void setup() {
-
     ADD_CALLBACK(Midi.addOnNoteOnCallback, cb, onMidiCallback);
-  //  Midi.addOnNoteOnCallback(&cb, (midi_callback_ptr_t)&MyCallback::onMidiCallback);
 }
