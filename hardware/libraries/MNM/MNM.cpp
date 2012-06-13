@@ -134,7 +134,7 @@ void MNMClass::sendSysex(uint8_t *bytes, uint8_t cnt) {
 }
 
 void MNMClass::setStatus(uint8_t id, uint8_t value) {
-  uint8_t data[] = { 0x71, id & 0x7F, value & 0x7F };
+  uint8_t data[] = { 0x71, (uint8_t)(id & 0x7F), (uint8_t)(value & 0x7F) };
   MNM.sendSysex(data, countof(data));
 }
 

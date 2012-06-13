@@ -25,6 +25,9 @@ midiClockTest: midiClockTest.host.o \
       $(OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 
+virtualMidiTest: virtualMidiTest.host.o $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
+
 clean:
-	- rm -f *.o midiTest midiTest2 midiTest3 midiClockTest
+	- rm -f *.o midiTest midiTest2 midiTest3 midiClockTest virtualMidiTest
 

@@ -1,3 +1,5 @@
+#include "Platform.h"
+
 #include <CppUnitLite2.h>
 #include <TestResultStdErr.h>
 
