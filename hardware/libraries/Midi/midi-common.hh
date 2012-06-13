@@ -22,6 +22,8 @@ class MidiCallback {
 #ifdef HOST_MIDIDUINO
   virtual ~MidiCallback() { }
 #endif
+
+  typedef void(MidiCallback::*callback_ptr_t)(uint8_t *msg);
 };
 #endif /* _cplusplus */
 
