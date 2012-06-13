@@ -3,8 +3,18 @@
 #ifndef CALLBACK_H__
 #define CALLBACK_H__
 
-#define ADD_CALLBACK(method, obj, function) { static decltype(obj)::callback_ptr_t p = (decltype(obj)::callback_ptr_t)&decltype(obj)::function; method(&obj, p); }
-#define ADD_CALLBACK2(method, obj, function) { static decltype(obj)::callback2_ptr_t p = (decltype(obj)::callback2_ptr_t)&decltype(obj)::function; method(&obj, p); }
+/* workaround for gcc 4.3.3 */
+template<typename T>
+  struct decltype_t
+{
+  typedef T type;
+};
+
+#define DECLTYPE(expr) decltype_t<decltype(expr)>::type
+
+#define ADD_CALLBACK(method, obj, function) { static DECLTYPE(obj)::callback_ptr_t p = (DECLTYPE(obj)::callback_ptr_t)&DECLTYPE(obj)::function; \
+      method(&obj, p); }
+#define ADD_CALLBACK2(method, obj, function) { static DECLTYPE(obj)::callback2_ptr_t p = (DECLTYPE(obj)::callback2_ptr_t)&DECLTYPE(obj)::function; method(&obj, p); }
 
 /**
  * \addtogroup CommonTools
