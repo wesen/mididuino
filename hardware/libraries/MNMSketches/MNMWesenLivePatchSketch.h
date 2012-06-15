@@ -7,7 +7,7 @@
 #include <PitchEuclid.h>
 
 class MNMWesenLivePatchSketch : 
-public Sketch, public MNMCallback, public ClockCallback {
+public Sketch, public MNMCallback {
 public:
   AutoEncoderPage<MNMEncoder> autoMNMPages[2];
   SwitchPage switchPage;
@@ -33,7 +33,6 @@ public:
     setupPages();
 
     MNMTask.addOnKitChangeCallback(this, (mnm_callback_ptr_t)&MNMWesenLivePatchSketch::onKitChanged);
-    MidiClock.addOn32Callback(this, (midi_clock_callback_ptr_t)&MNMWesenLivePatchSketch::on32Callback);
     
     ccHandler.setup();
     //    ccHandler.setCallback(onLearnCallback);
@@ -79,16 +78,6 @@ public:
     GUI.setLine(GUI.LINE2);
     GUI.flash_string_fill(MNM.kit.name);
   }  
-
-  void on32Callback(uint32_t counter) {
-    for (int i = 0; i < 2; i++) {
-      autoMNMPages[i].on32Callback(counter);
-      for (int j = 0; j < 4; j++) {
-        magicSwitchPages[i].magicPages[j].on32Callback(counter);
-      }
-    }
-  }
-  //  GUI.flash_put_value(0, MidiClock.div32th_counter);
 
   void clearAllRecording() {
     for (int i = 0; i < 2; i++) {
