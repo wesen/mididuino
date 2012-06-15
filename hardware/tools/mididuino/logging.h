@@ -1,9 +1,14 @@
 #ifndef LOGGING_H__
 #define LOGGING_H__
 
+#include "Platform.h"
+#include "helpers.h"
+
 #include <stdarg.h>
 
-#define MIN(a, b) ((a > b) ? b : a)
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 extern int debugLevel;
 
@@ -36,5 +41,9 @@ void debugPrintfContinue(int level, const char *fmt, ...);
 void debugvPrintfContinue(int level, const char *fmt, va_list lp);
 
 void debugHexdump(int level, unsigned char *buf, int len);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* LOGGING_H__ */

@@ -104,6 +104,8 @@ typedef enum {
 
 // typedef void (*midi_callback_t)(uint8_t *msg);
 
+#define MIDI_CTRL_MINICOMMAND2_ID 0x41
+
 /* @} */
 
 #endif /* MIDI_COMMON_H__ */

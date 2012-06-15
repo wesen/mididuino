@@ -1,12 +1,11 @@
+MIDICTRL_LIBS = GUI MidiTools
+
 include ../../../makefiles/Host.mk
 
-all: midi-send 
+all: midi-send
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-midi-send: midi-send.o midi-apple.o logging.o
-	$(CC) $(CFLAGS) -framework CoreAudio -framework CoreMIDI -framework Carbon -o $@ $+
+midi-send: MidiSend.host.o logging.host.o HexFile.host.o MidiFirmwareSender.host.o $(OBJS)
+	$(CXX) $(CLDFLAGS) -o $@ $+ $(LIBS)
 
 clean:
 	- rm -f *.o midi-send midi-merge midi-console
