@@ -6,7 +6,6 @@
 #include <inttypes.h>
 #include "helpers.h"
 #include "GUI_private.h"
-#include <functional>
 
 /**
  * \addtogroup GUI
@@ -30,6 +29,7 @@ class Encoder;
 #ifndef HOST_MIDIDUINO
 typedef void (*encoder_handle_t)(Encoder *enc);
 #else
+#include <functional>
 typedef std::function<void(Encoder *enc)> encoder_handle_t;
 #endif
 
