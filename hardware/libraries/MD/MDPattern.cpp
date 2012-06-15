@@ -80,7 +80,7 @@ bool MDPattern::fromSysex(uint8_t *data, uint16_t len) {
   init();
   
   if ((len != (0xACA - 6)) && (len != (0x1521 - 6)))  {
-#ifdef AVR
+#ifndef HOST_MIDIDUINO
     GUI.flash_string_fill("WRONG LENGTH");
 #else
     printf("WRONG LENGTH: %x\n", len);

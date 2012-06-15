@@ -123,7 +123,7 @@
  * @{
  **/
 	
-#ifdef AVR
+#ifdef __AVR__
 #include <avr/pgmspace.h>
 #else
 /** Host-side empty definitions for access to program space. **/
@@ -132,7 +132,7 @@
 #define pgm_read_byte(a) (uint8_t)((*a))
 #endif
 
-#ifdef AVR
+#ifdef __AVR__
 #include <avr/interrupt.h>
 
 /**
@@ -145,6 +145,8 @@
 #define SET_LOCK()   _irqlock_tmp = SREG; cli()
 /** Clear the "lock" by restoring the interrupt status. **/
 #define CLEAR_LOCK() SREG = _irqlock_tmp
+
+#define IN_IRQ()  !IS_BIT_SET(SREG, SREG_I)
 #else
 
 /** On the host, use empty routines to store interrupt status. **/
