@@ -27,7 +27,7 @@ struct MidiCallbackFixture {
 TEST_F (MidiCallbackFixture, TestNoteOn) {
   CHECK_EQUAL(false, cb.callbackCalled);
 
-  ADD_CALLBACK(Midi.MidiClass::addOnNoteOnCallback, cb, callback);
+  ADD_CALLBACK(Midi.addOnNoteOnCallback, cb, callback);
   CHECK_EQUAL(false, cb.callbackCalled);
 
   Midi.sendNoteOn(MIDI_NOTE_A0, 100);
@@ -67,7 +67,7 @@ TEST_F (MidiCallbackFixture, TestNoteOn) {
 TEST_F (MidiCallbackFixture, TestNoteOff) {
   CHECK_EQUAL(false, cb.callbackCalled);
 
-  ADD_CALLBACK(Midi.MidiClass::addOnNoteOffCallback, cb, callback);
+  ADD_CALLBACK(Midi.addOnNoteOffCallback, cb, callback);
   CHECK_EQUAL(false, cb.callbackCalled);
 
   Midi.sendNoteOn(MIDI_NOTE_A0, 100);

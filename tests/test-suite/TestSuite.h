@@ -1,6 +1,11 @@
 #ifndef TEST_SUITE_H__
 #define TEST_SUITE_H__
 
+/* help out the IDE */
+#ifndef TEST_SUITE
+#define TEST_SUITE
+#endif
+
 #include "Platform.h"
 #include <CppUnitLite2.h>
 #include <TestResultStdErr.h>
