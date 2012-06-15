@@ -21,6 +21,9 @@ public:
   virtual ~VirtualMidi() {
   }
 
+  virtual void initSerial() {
+  }
+
   virtual void putc(uint8_t c);
 
 #ifdef HOST_MIDIDUINO
