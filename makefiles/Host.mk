@@ -8,8 +8,8 @@ CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(CURDIR)MidiCtrl.mk
 
 # set default compilers and flags
-CXX      ?= g++
-CC       ?= gcc
+CXX      ?= g++-4.7
+CC       ?= gcc-4.7
 CLDCXX   ?= $(CXX)
 CLDC     ?= $(CC)
 
@@ -29,6 +29,7 @@ MIDICTRL_HOST_DEPS    = $(subst .host.o,.host.d,$(MIDICTRL_HOST_OBJS))
 
 CXXFLAGS += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
 CFLAGS   += -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
+CLDFLAGS += -g -O0
 #CLDFLAGS += -lreadline -L/opt/local/lib
 #CLDFLAGS += --gc-sections
 
