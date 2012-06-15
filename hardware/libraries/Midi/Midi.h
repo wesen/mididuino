@@ -111,11 +111,11 @@ class MidiClass {
 
 #ifdef HOST_MIDIDUINO
   void addOnMessageCallback(MidiCallback *obj,
-                            void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+                            MidiCallback::callback2_ptr_t func) {
     messageCallback.add(obj, func);
   }
   void removeOnMessageCallback(MidiCallback *obj,
-                               void (MidiCallback::*func)(uint8_t *msg, uint8_t len)) {
+                               MidiCallback::callback2_ptr_t func) {
     messageCallback.remove(obj, func);
   }
   void removeOnMessageCallback(MidiCallback *obj) {
@@ -123,70 +123,70 @@ class MidiClass {
   }
 #endif
 
-  void addOnControlChangeCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void addOnControlChangeCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_CC_CB].add(obj, func);
   }
-  void removeOnControlChangeCallback(MidiCallback *obj, void (MidiCallback::*func)(uint8_t *msg)) {
+  void removeOnControlChangeCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_CC_CB].remove(obj, func);
   }
   void removeOnControlChangeCallback(MidiCallback *obj) {
     midiCallbacks[MIDI_CC_CB].remove(obj);
   }
 
-  void addOnNoteOnCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void addOnNoteOnCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_NOTE_ON_CB].add(obj, func);
   }
-  void removeOnNoteOnCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void removeOnNoteOnCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_NOTE_ON_CB].remove(obj, func);
   }
   void removeOnNoteOnCallback(MidiCallback *obj) {
     midiCallbacks[MIDI_NOTE_ON_CB].remove(obj);
   }
   
-  void addOnNoteOffCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void addOnNoteOffCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_NOTE_OFF_CB].add(obj, func);
   }
-  void removeOnNoteOffCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void removeOnNoteOffCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_NOTE_OFF_CB].remove(obj, func);
   }
   void removeOnNoteOffCallback(MidiCallback *obj) {
     midiCallbacks[MIDI_NOTE_OFF_CB].remove(obj);
   }
   
-  void addOnAfterTouchCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void addOnAfterTouchCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_AT_CB].add(obj, func);
   }
-  void removeOnAfterTouchCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void removeOnAfterTouchCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_AT_CB].remove(obj, func);
   }
   void removeOnAfterTouchCallback(MidiCallback *obj) {
     midiCallbacks[MIDI_AT_CB].remove(obj);
   }
   
-  void addOnProgramChangeCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void addOnProgramChangeCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_PRG_CHG_CB].add(obj, func);
   }
-  void removeOnProgramChangeCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void removeOnProgramChangeCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_PRG_CHG_CB].remove(obj, func);
   }
   void removeOnProgramChangeCallback(MidiCallback *obj) {
     midiCallbacks[MIDI_PRG_CHG_CB].remove(obj);
   }
   
-  void addOnChannelPressureCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void addOnChannelPressureCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_CHAN_PRESS_CB].add(obj, func);
   }
-  void removeOnChannelPressureCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void removeOnChannelPressureCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_CHAN_PRESS_CB].remove(obj, func);
   }
   void removeOnChannelPressureCallback(MidiCallback *obj) {
     midiCallbacks[MIDI_CHAN_PRESS_CB].remove(obj);
   }
   
-  void addOnPitchWheelCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void addOnPitchWheelCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_PITCH_WHEEL_CB].add(obj, func);
   }
-  void removeOnPitchWheelCallback(MidiCallback *obj, void(MidiCallback::*func)(uint8_t *msg)) {
+  void removeOnPitchWheelCallback(MidiCallback *obj, MidiCallback::callback_ptr_t func) {
     midiCallbacks[MIDI_PITCH_WHEEL_CB].remove(obj, func);
   }
   void removeOnPitchWheelCallback(MidiCallback *obj) {
