@@ -19,6 +19,8 @@ MidiClockClass::MidiClockClass() {
   transmit = false;
   useImmediateClock = false;
   inCallback = false;
+  inIRQ = false;
+  inTimerIRQ = false;
 
 #ifdef HOST_MIDIDUINO
   useImmediateClock = true;
@@ -236,8 +238,9 @@ void MidiClockClass::callCallbacks() {
     inCallback = true;
   }
 
+
 #ifndef HOST_MIDIDUINO
-  sei();
+//  sei();
 #endif /* HOST_MIDIDUINO */
 
   //    on96Callbacks.call();
@@ -251,6 +254,7 @@ void MidiClockClass::callCallbacks() {
   }
   
   inCallback = false;
+
 }
 
 void MidiClockClass::handleImmediateClock() {
@@ -260,7 +264,20 @@ void MidiClockClass::handleImmediateClock() {
     MidiUart.putc_immediate(0xF8);
 
   incrementCounters();
-  callCallbacks();
+#ifndef HOST_MIDIDUINO
+    sei();
+#endif
+
+    if (inIRQ) {
+      //      setLed2();
+      return;
+    } else {
+      //      clearLed2();
+      inIRQ = true;
+    }
+
+    callCallbacks();
+    inIRQ = false;
 }
 
 /* in interrupt on receiving 0xF8 */
@@ -332,8 +349,6 @@ void MidiClockClass::handleTimerInt()  {
   
   //  setLed2();
 
-  static bool inIRQ = false;
-
   //  sei();
 #ifdef HOST_MIDIDUINO
   /* on the host, always trigger */
@@ -342,21 +357,20 @@ void MidiClockClass::handleTimerInt()  {
 	
   if (counter == 0) {
     counter = interval;
+    incrementCounters();
 
 #ifndef HOST_MIDIDUINO
     sei();
 #endif
 
-    if (inIRQ) {
+    if (inTimerIRQ) {
       //      setLed2();
       return;
     } else {
       //      clearLed2();
-      inIRQ = true;
+      inTimerIRQ = true;
     }
 
-    incrementCounters();
-		
     if (state == STARTED) {
       if (transmit) {
         int len = (div96th_counter - outdiv96th_counter);
@@ -378,7 +392,7 @@ void MidiClockClass::handleTimerInt()  {
 		
       callCallbacks();
 
-      inIRQ = false;
+      inTimerIRQ = false;
     }
   } else {
     counter--;
