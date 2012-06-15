@@ -28,6 +28,11 @@ void getMidiName(MIDIEndpointRef ep, char *buf, uint16_t len) {
   MIDIObjectGetStringProperty(ep, kMIDIPropertyName, &pname);
   MIDIObjectGetStringProperty(ep, kMIDIPropertyManufacturer, &pmanuf);
   MIDIObjectGetStringProperty(ep, kMIDIPropertyModel, &pmodel);
+
+  if (pname == NULL || pmanuf == NULL || pmodel == NULL) {
+    snprintf(buf, len, "No such device");
+    return;
+  }
     
   CFStringGetCString(pname, name, sizeof(name), 0);
   CFStringGetCString(pmanuf, manuf, sizeof(manuf), 0);
@@ -194,17 +199,22 @@ MidiUartOSXClass::MidiUartOSXClass(const char *_inputDevice, const char *_output
   }
 }
 
-void MidiUartOSXClass::init(const char *_inputDeviceName, const char *_outputDeviceName) {
+bool MidiUartOSXClass::init(const char *_inputDeviceName, const char *_outputDeviceName) {
   int _inputDevice = MidiUartOSXClass::getInputMidiDevice(_inputDeviceName);
   int _outputDevice = MidiUartOSXClass::getOutputMidiDevice(_outputDeviceName);
 
-  init(_inputDevice, _outputDevice);
+  if (_inputDevice == -1 || _outputDevice == -1) {
+    fprintf(stderr, "No such MIDI device: %s, %s\n", _inputDeviceName, _outputDeviceName);
+    return false;
+  }
+
+  return init(_inputDevice, _outputDevice);
 }
 
-void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
+bool MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
   if ((inputDevice >= 0) || (outputDevice >= 0)) {
     fprintf(stderr, "MIDI ports already open\n");
-    return;
+    return false;
   }
 
   MidiUartHostParent::init(_inputDevice, _outputDevice);
@@ -222,6 +232,8 @@ void MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
   getMidiName(src, buf, countof(buf));
   printf("opening input device:  \"%s\"\n", buf);
   MIDIPortConnectSource(inPort, src, NULL);
+
+  return true;
 }
 
 /**
