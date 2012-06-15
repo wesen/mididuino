@@ -75,6 +75,8 @@ TEST_F (MidiClockInternalFixture, MidiClockCallbackTest) {
     clock.handleTimerInt();
     CHECK_EQUAL(clock.div16th_counter, tester.last16Counter);
     CHECK_EQUAL(clock.div32th_counter, tester.last32Counter);
+    CHECK_EQUAL((i + 1) / 6, tester.last16Counter);
+    CHECK_EQUAL((i + 1) / 3, tester.last32Counter);
   }
 
 }
@@ -85,7 +87,28 @@ TEST_F (MidiClockInternalFixture, MidiClockCallbackTestImmediate) {
   for (uint8_t i = 0; i < 126; i++) {
     clock.handleClock();
     CHECK_EQUAL(clock.div16th_counter, tester.last16Counter);
+    CHECK_EQUAL((i + 1) / 6, tester.last16Counter);
     CHECK_EQUAL(clock.div32th_counter, tester.last32Counter);
+    CHECK_EQUAL((i + 1) / 3, tester.last32Counter);
   }
+}
 
+TEST_F (MidiClockInternalFixture, MidiClockOverflowTest) {
+  clock.useImmediateClock = true;
+  clock.outdiv96th_counter = clock.div96th_counter = clock.indiv16th_counter = 4294967295;
+  clock.div16th_counter = uint64_t(clock.div96th_counter) / (uint64_t)6;
+  clock.div32th_counter = (clock.div96th_counter) / 3;
+  clock.mod6_counter = clock.outdiv96th_counter % 6;
+
+  // make sure that we reach the next 16th and 32th
+  clock.handleClock();
+  clock.handleClock();
+  clock.handleClock();
+  clock.handleClock();
+
+  CHECK_EQUAL(3, clock.div96th_counter);
+  CHECK_EQUAL(((4294967296) / 6) + 1, clock.div16th_counter);
+  CHECK_EQUAL(((4294967296) / 3) + 1, clock.div32th_counter);
+  CHECK_EQUAL(((4294967296) / 6) + 1, tester.last16Counter);
+  CHECK_EQUAL(((4294967296) / 3) + 1, tester.last32Counter);
 }
