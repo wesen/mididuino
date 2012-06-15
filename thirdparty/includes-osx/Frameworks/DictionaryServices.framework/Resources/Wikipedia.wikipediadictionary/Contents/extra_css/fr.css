@@ -1,0 +1,78 @@
+
+/*========================================================================================
+ Extra styles for fr
+*/
+.infobox_v2 {
+	background: #f9f9f9;
+	color: #000;
+	font-size: 90%;
+	line-height: 1.1em; 
+	float:right;
+	clear:right;
+	margin: 0 0 .5em 1em;
+	width: 300px;
+	border: 1px solid #aaa;
+	padding: 0.1em;
+}
+.infobox_v2 th {
+	vertical-align: top;
+	text-align: left;
+}
+.infobox_v2 .entete {
+	height: 45px;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 150%; 
+	font-weight: bolder;
+	line-height: 1.2em;
+	color: #000;
+}
+.infobox_v2 .media {
+	height: 35px;
+	vertical-align: middle;
+	text-align: center;
+	font-weight: bolder;
+	color: #000;
+}
+
+.bandeau {
+	text-align: left;
+	margin: 8px 10% 12px;
+	border-style: solid;
+	border-width: 1px 1px 1px 10px;
+	padding: 2px 10px;
+}
+.bandeau table {
+	background-color: transparent;
+}
+.bandeau-niveau-grave {
+	border-color: #aa0044;
+	background-color: #ffcccc;
+}
+.bandeau-niveau-modere {
+	border-color: #ff8822;
+	background-color: #ffeedd;
+}
+.bandeau-niveau-ebauche {
+	border-color: #77ccff;
+	background-color: #fbfbfb;
+}
+.bandeau-niveau-information {
+	border-color: #77ccff;
+	background-color: #fbfbfb;
+}
+.bandeau-icone {
+	vertical-align: middle;
+	text-align: center;
+	min-width: 45px;
+	padding-right: 10px;
+}
+.bandeau-titre {
+	font-size: 1em;
+	line-height: 1.4em;
+	margin-bottom: 0.5em;
+}
+.bandeau-texte {
+	font-size: 0.9em;
+	line-height: 1.2em;
+}

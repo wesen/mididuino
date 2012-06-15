@@ -1,0 +1,48 @@
+
+body {
+	line-height: 1.3em;
+	margin: 0 1em 0 1em;
+	padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+	font-size: 1em;
+	padding: 0;
+	margin: 0.3em 0 0.3em 0;
+}
+#firstHeading {
+    color:#777777;
+	margin-bottom: 0;
+}
+
+p {
+	margin: 0;
+    padding-bottom:2px;
+}
+
+ul, ol {
+	padding-left: 1.5em;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	background: none;
+	color: black;
+}
+a:hover {
+	text-decoration: none;
+	cursor:default;
+}
+
+b { font-weight: normal; }
+
+img { display: none; }
+
+.IPA { font-family: 'Times New Roman'; }
+
+.editsection, .printonly, .noprint, .hiddenStructure, .metadata,
+#coordinates, #donate, sup {
+	display: none;
+}

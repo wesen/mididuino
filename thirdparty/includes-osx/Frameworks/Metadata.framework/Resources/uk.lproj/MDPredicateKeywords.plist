@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>тип:програма</string>
+		<string>тип:програми</string>
+		<string>тип:прога</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>тип:закладка</string>
+		<string>тип:закладки</string>
+		<string>тип:веб-сторінка</string>
+		<string>тип:веб-сторінки</string>
+		<string>тип:вебсторінка</string>
+		<string>тип:вебсторінки</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>тип:контакт</string>
+		<string>тип:контакти</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>тип:папка</string>
+		<string>тип:папки</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>тип:документ</string>
+		<string>тип:документи</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>тип:лист</string>
+		<string>тип:листи</string>
+		<string>тип:електронний лист</string>
+		<string>тип:електронні листи</string>
+		<string>тип:електронна пошта</string>
+		<string>тип:електронне повідомлення</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>тип:подія</string>
+		<string>тип:події</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>тип:події та завдання</string>
+		<string>тип:події &amp; завдання</string>
+		<string>тип:подія OR тип:завдання</string>
+		<string>тип:подія або тип:завдання</string>
+		<string>тип:подія АБО тип:завдання</string>
+		<string>тип:завдання або тип:подія</string>
+		<string>тип:завдання OR тип:подія</string>
+		<string>тип:завдання АБО тип:подія</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>тип:шрифт</string>
+		<string>тип:шрифти</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>тип:зображення</string>
+		<string>тип:картинки</string>
+		<string>тип:картинка</string>
+		<string>тип:малюнок</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>тип:повідомлення</string>
+		<string>тип:повідомлень</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>тип:фільм</string>
+		<string>тип:фільми</string>
+		<string>тип:кіно</string>
+		<string>тип:відео</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>тип:музика</string>
+		<string>тип:звук</string>
+		<string>тип:аудіо</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>дата:наступного місяця</string>
+		<string>дата:наступний місяць</string>
+		<string>дата:наступногомісяця</string>
+		<string>дата:наступниймісяць</string>
+		<string>дата:в наступному місяці</string>
+		<string>дата:внаступномумісяці</string>
+		<string>дата:у наступному місяці</string>
+		<string>дата:унаступномумісяці</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>дата:наступного тижня</string>
+		<string>дата:наступний тиждень</string>
+		<string>дата:наступноготижня</string>
+		<string>дата:наступнийтиждень</string>
+		<string>дата:на наступному тижні</string>
+		<string>дата:нанаступномутижні</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>дата:наступного року</string>
+		<string>дата:наступний рік</string>
+		<string>дата:наступногороку</string>
+		<string>дата:наступнийрік</string>
+		<string>дата:в наступному році</string>
+		<string>дата:внаступномуроці</string>
+		<string>дата:у наступному році</string>
+		<string>дата:унаступномуроці</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>тип:pdf</string>
+		<string>тип:pdfs</string>
+		<string>тип:документ pdf</string>
+		<string>тип:файл pdf</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>тип:презентація</string>
+		<string>тип:презентації</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>тип:джерело</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>тип:таблиця</string>
+		<string>тип:таблиці</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>тип:системні параметри</string>
+		<string>тип:параметри</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>тип:текст</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>дата:цього місяця</string>
+		<string>дата:цей місяць</string>
+		<string>дата:цьогомісяця</string>
+		<string>дата:цеймісяць</string>
+		<string>дата:в цьому місяці</string>
+		<string>дата:вцьомумісяці</string>
+		<string>дата:у цьому місяці</string>
+		<string>дата:уцьомумісяці</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>дата:цього тижня</string>
+		<string>дата:цей тиждень</string>
+		<string>дата:цьоготижня</string>
+		<string>дата:цейтиждень</string>
+		<string>дата:на цьому тижні</string>
+		<string>дата:нацьомутижні</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>дата:цього року</string>
+		<string>дата:цей рік</string>
+		<string>дата:цьогороку</string>
+		<string>дата:цейрік</string>
+		<string>дата:в цьому році</string>
+		<string>дата:вцьомуроці</string>
+		<string>дата:у цьому році</string>
+		<string>дата:уцьомуроці</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>дата:сьогодні</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>тип:завдання</string>
+		<string>тип:завдань</string>
+			</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>дата:завтра</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>дата:вчора</string>
+		<string>дата:учора</string>
+	</array>
+</dict>
+</plist>

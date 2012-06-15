@@ -1,0 +1,246 @@
+
+/*========================================================================================
+ Extra styles for ja
+*/
+dl#infoboxCountry {
+	clear: right;
+	float: right;
+	width: 300px;
+	margin-left: 0.5em;
+	background: #f9f9f9;
+}
+
+dl#infoboxCountry table {
+	background-color: #f9f9f9 !important;
+}
+
+dl#infoboxCountry dt.infoboxCountryNameJa {
+	text-align: center;
+	border-color: #aaa;
+	border-width: 1px;
+	border-style: solid solid none solid;
+	padding-top: 0.3em;
+}
+
+dl#infoboxCountry dt.infoboxCountryName {
+	font-weight: normal;
+	text-align: center;
+	border-color: #aaa;
+	border-width: 1px;
+	border-style: none solid none solid;
+}
+
+dl#infoboxCountry dd.infoboxCountryDataA {
+	margin: 0;
+	padding: 0;
+	border-color: #aaa;
+	border-width: 1px;
+	border-style: solid solid none solid;
+}
+
+dl#infoboxCountry table.infoboxCountryPrevSucc {
+	width: 298px;
+	border-collapse: collapse;
+	font-size: 0.95em;
+}
+
+dl#infoboxCountry table.infoboxCountryPrevSucc td {
+	margin: 0;
+	padding: 4px;
+	text-align: center;
+}
+
+dl#infoboxCountry td.infoboxCountryPrev {
+	text-align: left;
+	width: 60px
+}
+
+dl#infoboxCountry td.infoboxCountrySucc {
+	text-align: right;
+	width: 60px;
+}
+
+dl#infoboxCountry table.infoboxCountryInsignia {
+	width: 298px;
+	border-collapse: collapse;
+	font-size: 0.95em;
+	text-align: center;
+	border-top: 1px solid #aaa;
+}
+
+dl#infoboxCountry table.infoboxCountryInsignia th {
+	padding: 4px;
+	width: 50%;
+	border: none;
+}
+
+dl#infoboxCountry table.infoboxCountryInsignia td {
+	padding: 4px;
+	font-size: 0.85em;
+}
+
+dl#infoboxCountry dd.infoboxCountryAdd,
+dl#infoboxCountry dd.infoboxCountryMotto,
+dl#infoboxCountry dd.infoboxCountryAnthem,
+dl#infoboxCountry dd.infoboxCountryMap {
+	text-align: center;
+	width: 290px;
+	margin: 0;
+	padding: 4px;
+	border-color: #aaa;
+	border-width: 1px;
+	border-style: solid solid none solid;
+}
+
+dl#infoboxCountry dd.infoboxCountryAdd,
+dl#infoboxCountry dd.infoboxCountryMotto,
+dl#infoboxCountry dd.infoboxCountryAnthem {
+	font-size: 0.8em;
+}
+
+dl#infoboxCountry dd.infoboxCountryMotto {
+	line-height: 1.3em;
+}
+
+dl#infoboxCountry dd.infoboxCountryDataB {
+	margin: 0;
+	padding: 0;
+	border: 1px solid #aaa;
+}
+
+dl#infoboxCountry dd.infoboxCountryDataB table {
+	width: 298px;
+	border-collapse: collapse;
+	border-color: #aaa;
+	font-size: 0.9em;
+	line-height: 1.3em;
+}
+
+dl#infoboxCountry dd.infoboxCountryDataB tr {
+	vertical-align: top;
+	border-color: #aaa;
+	border-width: 1px;
+	border-style: solid none none none;
+}
+
+dl#infoboxCountry dd.infoboxCountryDataB tr tr {
+	border-style: none;
+}
+
+dl#infoboxCountry dd.infoboxCountryDataB th {
+	padding: 4px;
+	border-style: none;
+	text-align: left;
+	font-weight: normal;
+	width: 50%;
+}
+
+dl#infoboxCountry dd.infoboxCountryDataB td {
+	padding: 4px;
+	border-style: none;
+	width: 50%;
+}
+
+dl#infoboxCountry td.infoboxCountrySome {
+	padding: 0;
+}
+
+dl#infoboxCountry td.infoboxCountrySome dl,
+dl#infoboxCountry td.infoboxCountrySome dl dd {
+	margin: 0;
+	padding: 0;
+}
+
+dl#infoboxCountry td.infoboxCountrySome dl dt {
+	margin: 0;
+	padding: 4px;
+	font-weight: normal;
+	border-top: 1px solid #aaa;
+}
+
+dl#infoboxCountry td.infoboxCountrySome dl dt.infoboxCountryLeader {
+	border-top: none;
+}
+
+dl#infoboxCountry td.infoboxCountrySome dl table {
+	width: 100%;
+	font-size: 100%;
+	border-collapse: collapse;
+}
+
+dl#infoboxCountry td.infoboxCountrySome dl th {
+	width: 50%;
+	padding: 4px;
+	text-indent: 0.75em;
+}
+
+dl#infoboxCountry td.infoboxCountrySome dl td {
+	width: 50%;
+	padding: 4px;
+}
+
+dd#Infobox_before-after {
+	width: 298px;
+	margin: 0;
+	padding: 0;
+	border-color: #aaa;
+	border-width: 1px;
+	border-style: none solid solid solid;
+}
+
+dd#Infobox_before-after table {
+	border-collapse: collapse;
+	width: 100%;
+	background: transparent;
+}
+
+dd#Infobox_before-after th {
+	width: 50%;
+	padding: 0 4px;
+}
+
+dd#Infobox_before-after th.infoboxCountryPrev {
+	border-right: 1px solid #ccc;
+}
+
+dd#Infobox_before-after th.infoboxCountrySucc {
+	border-left: #ccc 1px solid;
+}
+
+dd#Infobox_before-after td.infoboxCountryPrev {
+	width: 50%;
+	padding: 2px 4px;
+	font-size: 80%;
+	text-align: left;
+	vertical-align: top;
+	border-color: #ccc;
+	border-width: 1px;
+	border-style: solid solid none none;
+}
+
+dd#Infobox_before-after td.infoboxCountrySucc {
+	width: 50%;
+	padding: 2px 4px;
+	font-size: 80%;
+	text-align: right;
+	vertical-align: top;
+	border-color: #ccc;
+	border-width: 1px;
+	border-style: solid none none solid;
+}
+
+dl#infoboxCountry dd.infoboxCountryNote {
+	font-size: 0.75em;
+	width: 290px;
+	margin: 0;
+	padding: 2px 4px;
+	border-color: #aaa;
+	border-width: 1px;
+	border-style: none solid solid;
+	line-height: 1.3em;
+}
+
+dl#infoboxCountry dd.infoboxCountryNote ol {
+	margin: 0 0 0 1.5em;
+}
+

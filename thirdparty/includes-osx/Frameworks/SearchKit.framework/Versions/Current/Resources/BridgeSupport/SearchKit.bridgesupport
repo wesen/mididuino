@@ -1,0 +1,393 @@
+<?xml version='1.0'?>
+<!DOCTYPE signatures SYSTEM "file://localhost/System/Library/DTDs/BridgeSupport.dtd">
+<signatures version='1.0'>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreFoundation.framework'/>
+<cftype name='SKIndexDocumentIteratorRef' gettypeid_func='SKIndexDocumentIteratorGetTypeID' type='^{__SKIndexDocumentIterator=}'/>
+<cftype name='SKIndexRef' gettypeid_func='SKIndexGetTypeID' type='^{__SKIndex=}'/>
+<cftype name='SKSearchGroupRef' gettypeid_func='SKSearchGroupGetTypeID' type='^{__SKSearchGroup=}'/>
+<cftype name='SKSearchRef' gettypeid_func='SKSearchGetTypeID' type='^{__SKSearch=}'/>
+<cftype name='SKSearchResultsRef' gettypeid_func='SKSearchResultsGetTypeID' type='^{__SKSearchResults=}'/>
+<cftype name='SKSummaryRef' gettypeid_func='SKSummaryGetTypeID' type='^{__SKSummary=}'/>
+<constant name='kSKEndTermChars' type='^{__CFString=}'/>
+<constant name='kSKLanguageTypes' type='^{__CFString=}'/>
+<constant name='kSKMaximumTerms' type='^{__CFString=}'/>
+<constant name='kSKMinTermLength' type='^{__CFString=}'/>
+<constant name='kSKProximityIndexing' type='^{__CFString=}'/>
+<constant name='kSKStartTermChars' type='^{__CFString=}'/>
+<constant name='kSKStopWords' type='^{__CFString=}'/>
+<constant name='kSKSubstitutions' type='^{__CFString=}'/>
+<constant name='kSKTermChars' type='^{__CFString=}'/>
+<enum name='kSKDocumentStateAddPending' value='2'/>
+<enum name='kSKDocumentStateDeletePending' value='3'/>
+<enum name='kSKDocumentStateIndexed' value='1'/>
+<enum name='kSKDocumentStateNotIndexed' value='0'/>
+<enum name='kSKIndexInverted' value='1'/>
+<enum name='kSKIndexInvertedVector' value='3'/>
+<enum name='kSKIndexUnknown' value='0'/>
+<enum name='kSKIndexVector' value='2'/>
+<enum name='kSKSearchBooleanRanked' value='1'/>
+<enum name='kSKSearchOptionDefault' value='0'/>
+<enum name='kSKSearchOptionFindSimilar' value='4'/>
+<enum name='kSKSearchOptionNoRelevanceScores' value='1'/>
+<enum name='kSKSearchOptionSpaceMeansOR' value='2'/>
+<enum name='kSKSearchPrefixRanked' value='3'/>
+<enum name='kSKSearchRanked' value='0'/>
+<enum name='kSKSearchRequiredRanked' value='2'/>
+<function name='SKDocumentCopyURL'>
+<arg type='@'/>
+<retval already_retained='true' type='^{__CFURL=}'/>
+</function>
+<function name='SKDocumentCreate'>
+<arg type='^{__CFString=}'/>
+<arg type='@'/>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='@'/>
+</function>
+<function name='SKDocumentCreateWithURL'>
+<arg type='^{__CFURL=}'/>
+<retval already_retained='true' type='@'/>
+</function>
+<function name='SKDocumentGetName'>
+<arg type='@'/>
+<retval type='^{__CFString=}'/>
+</function>
+<function name='SKDocumentGetParent'>
+<arg type='@'/>
+<retval type='@'/>
+</function>
+<function name='SKDocumentGetSchemeName'>
+<arg type='@'/>
+<retval type='^{__CFString=}'/>
+</function>
+<function name='SKDocumentGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='SKIndexAddDocument'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<arg type='^{__CFString=}'/>
+<arg type='B'/>
+<retval type='B'/>
+</function>
+<function name='SKIndexAddDocumentWithText'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<arg type='^{__CFString=}'/>
+<arg type='B'/>
+<retval type='B'/>
+</function>
+<function name='SKIndexClose'>
+<arg type='^{__SKIndex=}'/>
+</function>
+<function name='SKIndexCompact'>
+<arg type='^{__SKIndex=}'/>
+<retval type='B'/>
+</function>
+<function name='SKIndexCopyDocumentForDocumentID'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='@'/>
+</function>
+<function name='SKIndexCopyDocumentIDArrayForTermID'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='SKIndexCopyDocumentProperties'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<retval already_retained='true' type='^{__CFDictionary=}'/>
+</function>
+<function name='SKIndexCopyDocumentRefsForDocumentIDs'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<arg type='^^v'/>
+</function>
+<function name='SKIndexCopyDocumentURLsForDocumentIDs'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<arg type='^^{__CFURL}'/>
+</function>
+<function name='SKIndexCopyInfoForDocumentIDs'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<arg type='^^{__CFString}'/>
+<arg type64='^q' type='^i'/>
+</function>
+<function name='SKIndexCopyTermIDArrayForDocumentID'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='SKIndexCopyTermStringForTermID'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='SKIndexCreateWithMutableData'>
+<arg type='^{__CFData=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='i'/>
+<arg type='^{__CFDictionary=}'/>
+<retval already_retained='true' type='^{__SKIndex=}'/>
+</function>
+<function name='SKIndexCreateWithURL'>
+<arg type='^{__CFURL=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='i'/>
+<arg type='^{__CFDictionary=}'/>
+<retval already_retained='true' type='^{__SKIndex=}'/>
+</function>
+<function name='SKIndexDocumentIteratorCopyNext'>
+<arg type='^{__SKIndexDocumentIterator=}'/>
+<retval already_retained='true' type='@'/>
+</function>
+<function name='SKIndexDocumentIteratorCreate'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<retval already_retained='true' type='^{__SKIndexDocumentIterator=}'/>
+</function>
+<function name='SKIndexDocumentIteratorGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='SKIndexFlush'>
+<arg type='^{__SKIndex=}'/>
+<retval type='B'/>
+</function>
+<function name='SKIndexGetAnalysisProperties'>
+<arg type='^{__SKIndex=}'/>
+<retval type='^{__CFDictionary=}'/>
+</function>
+<function name='SKIndexGetDocumentCount'>
+<arg type='^{__SKIndex=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetDocumentID'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetDocumentState'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<retval type='i'/>
+</function>
+<function name='SKIndexGetDocumentTermCount'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetDocumentTermFrequency'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetIndexType'>
+<arg type='^{__SKIndex=}'/>
+<retval type='i'/>
+</function>
+<function name='SKIndexGetMaximumBytesBeforeFlush'>
+<arg type='^{__SKIndex=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetMaximumDocumentID'>
+<arg type='^{__SKIndex=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetMaximumTermID'>
+<arg type='^{__SKIndex=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetTermDocumentCount'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetTermIDForTermString'>
+<arg type='^{__SKIndex=}'/>
+<arg type='^{__CFString=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKIndexGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='SKIndexMoveDocument'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<arg type='@'/>
+<retval type='B'/>
+</function>
+<function name='SKIndexOpenWithData'>
+<arg type='^{__CFData=}'/>
+<arg type='^{__CFString=}'/>
+<retval type='^{__SKIndex=}'/>
+</function>
+<function name='SKIndexOpenWithMutableData'>
+<arg type='^{__CFData=}'/>
+<arg type='^{__CFString=}'/>
+<retval type='^{__SKIndex=}'/>
+</function>
+<function name='SKIndexOpenWithURL'>
+<arg type='^{__CFURL=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='B'/>
+<retval type='^{__SKIndex=}'/>
+</function>
+<function name='SKIndexRemoveDocument'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<retval type='B'/>
+</function>
+<function name='SKIndexRenameDocument'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<arg type='^{__CFString=}'/>
+<retval type='B'/>
+</function>
+<function name='SKIndexSetDocumentProperties'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<arg type='^{__CFDictionary=}'/>
+</function>
+<function name='SKIndexSetMaximumBytesBeforeFlush'>
+<arg type='^{__SKIndex=}'/>
+<arg type64='q' type='l'/>
+</function>
+<function name='SKLoadDefaultExtractorPlugIns'/>
+<function name='SKSearchCancel'>
+<arg type='^{__SKSearch=}'/>
+</function>
+<function name='SKSearchCreate'>
+<arg type='^{__SKIndex=}'/>
+<arg type='^{__CFString=}'/>
+<arg type64='I' type='L'/>
+<retval already_retained='true' type='^{__SKSearch=}'/>
+</function>
+<function name='SKSearchFindMatches'>
+<arg type='^{__SKSearch=}'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<arg type='^f'/>
+<arg type='d'/>
+<arg type64='^q' type='^i'/>
+<retval type='B'/>
+</function>
+<function name='SKSearchGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='SKSearchGroupCopyIndexes'>
+<arg type='^{__SKSearchGroup=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='SKSearchGroupCreate'>
+<arg type='^{__CFArray=}'/>
+<retval already_retained='true' type='^{__SKSearchGroup=}'/>
+</function>
+<function name='SKSearchGroupGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='SKSearchResultsCopyMatchingTerms'>
+<arg type='^{__SKSearchResults=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='SKSearchResultsCreateWithDocuments'>
+<arg type='^{__SKSearchGroup=}'/>
+<arg type='^{__CFArray=}'/>
+<arg type64='q' type='l'/>
+<arg type='^v'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<arg type='^v'/>
+<retval type='B'/>
+</arg>
+<retval already_retained='true' type='^{__SKSearchResults=}'/>
+</function>
+<function name='SKSearchResultsCreateWithQuery'>
+<arg type='^{__SKSearchGroup=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='i'/>
+<arg type64='q' type='l'/>
+<arg type='^v'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{__SKIndex=}'/>
+<arg type='@'/>
+<arg type='^v'/>
+<retval type='B'/>
+</arg>
+<retval already_retained='true' type='^{__SKSearchResults=}'/>
+</function>
+<function name='SKSearchResultsGetCount'>
+<arg type='^{__SKSearchResults=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKSearchResultsGetInfoInRange'>
+<arg type='^{__SKSearchResults=}'/>
+<arg type64='{_CFRange=qq}' type='{_CFRange=ii}'/>
+<arg type='^^v'/>
+<arg type='^^{__SKIndex}'/>
+<arg type='^f'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKSearchResultsGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='SKSummaryCopyParagraphAtIndex'>
+<arg type='^{__SKSummary=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='SKSummaryCopyParagraphSummaryString'>
+<arg type='^{__SKSummary=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='SKSummaryCopySentenceAtIndex'>
+<arg type='^{__SKSummary=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='SKSummaryCopySentenceSummaryString'>
+<arg type='^{__SKSummary=}'/>
+<arg type64='q' type='l'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='SKSummaryCreateWithString'>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__SKSummary=}'/>
+</function>
+<function name='SKSummaryGetParagraphCount'>
+<arg type='^{__SKSummary=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKSummaryGetParagraphSummaryInfo'>
+<arg type='^{__SKSummary=}'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<arg type64='^q' type='^i'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKSummaryGetSentenceCount'>
+<arg type='^{__SKSummary=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKSummaryGetSentenceSummaryInfo'>
+<arg type='^{__SKSummary=}'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<arg type64='^q' type='^i'/>
+<arg type64='^q' type='^i'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='SKSummaryGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+</signatures>

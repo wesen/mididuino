@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ **
+ *  filename: MetadataSchema.xsd
+ *  created : Tue Mar  2 15:20:59 2004
+ *  LastEditDate Was "Mon Sep 20 08:56:14 2004"
+ *
+ *
+-->
+
+<xsd:schema targetNamespace="http://www.apple.com/metadata"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns="http://www.apple.com/metadata"
+        elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+            Metadata xml schema description file.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <!-- The root element -->
+     <xsd:element name="schema">
+         <xsd:complexType>
+             <xsd:sequence>
+                 <xsd:element name="note" type="xsd:string" minOccurs="0"/>
+                 <xsd:element name="attributes" type="Attributes" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:unique name="myId">
+                        <xsd:selector xpath="./attribute"/>
+                    <xsd:field xpath="@name"/>
+                    </xsd:unique>
+                 </xsd:element>
+
+                 <xsd:element name="types" minOccurs="0" maxOccurs="unbounded">
+                     <xsd:complexType>
+                         <xsd:sequence>
+                             <xsd:element name="type" type="UTIType" minOccurs="0" maxOccurs="unbounded"/>
+                         </xsd:sequence>
+                     </xsd:complexType>
+                 </xsd:element>
+             </xsd:sequence>
+             <xsd:attribute name="version" type="xsd:decimal" use="required" />
+         </xsd:complexType>
+    </xsd:element>
+
+     <xsd:complexType name="Attributes">
+         <xsd:sequence>
+             <xsd:element name="attribute" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>
+         <xsd:attribute name="name" type="AttributeName"/>
+         <xsd:attribute name="type" type="AttributeType"/>
+         <xsd:attribute name="default" type="xsd:string"/>
+         <xsd:attribute name="multivalued" type="xsd:boolean" default="false"/>
+         <xsd:attribute name="nosearch" type="xsd:boolean" default="false"/>
+     </xsd:complexType>
+
+    <xsd:simpleType name="AttributeName">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:pattern value="[A-Z,a-z,_]*[A-Z,a-z,0-9,_]*"/>
+        </xsd:restriction>
+     </xsd:simpleType>
+
+    <xsd:simpleType name="AttributeType">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="CFString"/>
+            <xsd:enumeration value="CFData"/>
+            <xsd:enumeration value="CFBoolean"/>
+            <xsd:enumeration value="CFNumber"/>
+            <xsd:enumeration value="CFDate"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="MDFileSystemAttributes" final="restriction">
+        <xsd:sequence>
+            <xsd:element name="kMDItemFSName" type="xsd:string"/>
+            <xsd:element name="kMDItemPath" type="xsd:string"/>
+            <xsd:element name="kMDItemFSSize" type="xsd:integer"/>
+            <xsd:element name="kMDItemFSCreationDate" type="xsd:date"/>
+            <xsd:element name="kMDItemFSOwnerUserID" type="xsd:integer"/>
+            <xsd:element name="kMDItemFSOwnerGroupID" type="xsd:integer"/>
+            <xsd:element name="kMDItemFSExists" type="xsd:boolean"/>
+            <xsd:element name="kMDItemFSIsReadable" type="xsd:boolean"/>
+            <xsd:element name="kMDItemFSIsWriteable" type="xsd:boolean"/>
+            <xsd:element name="kMDItemFSNodeCount" type="xsd:integer"/>
+            <xsd:element name="kMDItemFSHasCustomIcon" type="xsd:boolean"/>
+            <xsd:element name="kMDItemFSIsExtensionHidden" type="xsd:boolean"/>
+            <xsd:element name="kMDItemFSIsStationery" type="xsd:boolean"/>
+        </xsd:sequence>
+     </xsd:complexType>
+
+    <xsd:complexType name="UTIType">
+         <xsd:sequence>
+            <xsd:element name="note" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="allattrs" minOccurs="0" maxOccurs="unbounded">
+                <xsd:simpleType>
+                    <xsd:list itemType="xsd:NCName"/>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="displayattrs" minOccurs="0" maxOccurs="unbounded">
+                <xsd:simpleType>
+                    <xsd:list itemType="xsd:NCName"/>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="previewattrs" minOccurs="0" maxOccurs="unbounded">
+                <xsd:simpleType>
+                    <xsd:list itemType="xsd:NCName"/>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="UTITypeName"/>
+        <xsd:attribute name="exporterAvailable" type="xsd:boolean" default="false"/>
+     </xsd:complexType>
+
+    <xsd:simpleType name="UTITypeName" final="restriction">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:pattern value="[A-Z,a-z][A-Z,a-z,0-9,-]*.[A-Z,a-z][A-Z,a-z,0-9,-]*(.[A-Z,a-z][A-Z,a-z,0-9,-])*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+</xsd:schema>

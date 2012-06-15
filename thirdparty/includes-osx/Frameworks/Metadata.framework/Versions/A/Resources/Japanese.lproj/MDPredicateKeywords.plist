@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>kind:application</string>
+		<string>kind:applications</string>
+		<string>kind:app</string>
+
+
+		<string>種類:application</string>
+		<string>種類:applications</string>
+		<string>種類:app</string>
+
+		<string>種類：application</string>
+		<string>種類：applications</string>
+		<string>種類：app</string>
+
+		<string>種類:アプリケーション</string>
+		<string>種類:アプリケイション</string>
+		<string>種類:アプリ</string>
+		<string>種類:ソフトウェア</string>
+		<string>種類:ソフトウエア</string>
+		<string>種類:ソフト</string>
+		<string>種類:プログラム</string>
+		<string>種類:応用ソフト</string>
+		<string>種類:応用プログラム</string>
+
+		<string>種類：アプリケーション</string>
+		<string>種類：アプリケイション</string>
+		<string>種類：アプリ</string>
+		<string>種類：ソフトウェア</string>
+		<string>種類：ソフトウエア</string>
+		<string>種類：ソフト</string>
+		<string>種類：プログラム</string>
+		<string>種類：応用ソフト</string>
+		<string>種類：応用プログラム</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>kind:bookmark</string>
+		<string>kind:bookmarks</string>		
+		
+		<string>種類:bookmark</string>
+		<string>種類:bookmarks</string>
+
+		<string>種類：bookmark</string>
+		<string>種類：bookmarks</string>
+
+		<string>種類:ブックマーク</string>
+		<string>種類:しおり</string>
+		<string>種類:お気に入り</string>
+		
+		<string>種類：ブックマーク</string>
+		<string>種類：しおり</string>
+		<string>種類：お気に入り</string>
+		
+		<string>kind:webpage</string>
+		<string>kind:webpages</string>
+
+		<string>種類:webpage</string>
+		<string>種類:webpages</string>
+
+		<string>種類：webpage</string>
+		<string>種類：webpages</string>
+
+		<string>種類:Web ページ</string>
+		<string>種類:ウェブページ</string>
+		<string>種類:Web ペエジ</string>
+		<string>種類:ウェブペエジ</string>
+		<string>種類:Web ペイジ</string>
+		<string>種類:ウェブペイジ</string>
+		<string>種類:Web サイト</string>
+		<string>種類:ウェブサイト</string>
+
+		<string>種類：Web ページ</string>
+		<string>種類：ウェブページ</string>
+		<string>種類：Web ペエジ</string>
+		<string>種類：ウェブペエジ</string>
+		<string>種類：Web ペイジ</string>
+		<string>種類：ウェブペイジ</string>
+		<string>種類：Web サイト</string>
+		<string>種類：ウェブサイト</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>kind:contact</string>
+		<string>kind:contacts</string>
+
+		<string>種類:contact</string>
+		<string>種類:contacts</string>
+
+		<string>種類：contact</string>
+		<string>種類：contacts</string>
+
+		<string>種類:コンタクト</string>
+		<string>種類:連絡先</string>
+		<string>種類:連絡</string>
+		<string>種類:アドレス情報</string>
+		<string>種類:接触</string>
+		<string>種類:やりとり</string>
+
+		<string>種類：コンタクト</string>
+		<string>種類：連絡先</string>
+		<string>種類：連絡</string>
+		<string>種類：アドレス情報</string>
+		<string>種類：接触</string>
+		<string>種類：やりとり</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>kind:folder</string>
+		<string>kind:folders</string>
+
+		<string>種類:folder</string>
+		<string>種類:folders</string>
+
+		<string>種類：folder</string>
+		<string>種類：folders</string>
+
+		<string>種類:フォルダ</string>
+		<string>種類:フォルダー</string>
+		<string>種類:ディレクトリ</string>
+		<string>種類:ディレクトリー</string>
+		<string>種類:ホルダ</string>
+		<string>種類:フォルダー</string>
+
+		<string>種類：フォルダ</string>
+		<string>種類：フォルダー</string>
+		<string>種類：ディレクトリ</string>
+		<string>種類：ディレクトリー</string>
+		<string>種類：ホルダ</string>
+		<string>種類：フォルダー</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>kind:document</string>
+		<string>kind:documents</string>
+
+		<string>種類:document</string>
+		<string>種類:documents</string>
+
+		<string>種類：document</string>
+		<string>種類：documents</string>
+
+		<string>種類:書類</string>
+		<string>種類:文書</string>
+		<string>種類:ファイル</string>
+		<string>種類:ドキュメント</string>
+		<string>種類:データ</string>
+		<string>種類:デエタ</string>
+		<string>種類:デイタ</string>
+		<string>種類:説明書</string>
+		<string>種類:取扱説明書</string>
+		<string>種類:取説</string>
+		<string>種類:マニュアル</string>
+
+		<string>種類：書類</string>
+		<string>種類：文書</string>
+		<string>種類：ファイル</string>
+		<string>種類：ドキュメント</string>
+		<string>種類：データ</string>
+		<string>種類：デエタ</string>
+		<string>種類：デイタ</string>
+		<string>種類：説明書</string>
+		<string>種類：取扱説明書</string>
+		<string>種類：取説</string>
+		<string>種類：マニュアル</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>kind:email</string>
+		<string>kind:emails</string>
+
+		<string>kind:email</string>
+		<string>kind:emails</string>
+
+		<string>種類:email</string>
+		<string>種類:emails</string>
+
+		<string>種類：email</string>
+		<string>種類：emails</string>
+
+		<string>種類:メール</string>
+		<string>種類:電子メール</string>
+		<string>種類:E メール</string>
+		<string>種類:E-メール</string>
+		<string>種類:イーメール</string>
+		<string>種類:メイル</string>
+		<string>種類:電子メイル</string>
+		<string>種類:E メイル</string>
+		<string>種類:E-メイル</string>
+		<string>種類:イーメイル</string>
+
+		<string>種類：メール</string>
+		<string>種類：電子メール</string>
+		<string>種類：E メール</string>
+		<string>種類：E-メール</string>
+		<string>種類：イーメール</string>
+		<string>種類：メイル</string>
+		<string>種類：電子メイル</string>
+		<string>種類：E メイル</string>
+		<string>種類：E-メイル</string>
+		<string>種類：イーメイル</string>
+
+		<string>kind:mail message</string>
+		<string>kind:mail messages</string>
+
+		<string>種類:mail message</string>
+		<string>種類:mail messages</string>
+
+		<string>種類：mail message</string>
+		<string>種類：mail messages</string>
+
+		<string>種類:メールメッセージ</string>
+		<string>種類:メイルメッセージ</string>
+		<string>種類:メイルメッセイジ</string>
+		<string>種類:メイルメッセエジ</string>
+		<string>種類:メールメッセイジ</string>
+		<string>種類:メールメッセイジ</string>
+		<string>種類:手紙</string>
+		<string>種類:レター</string>
+
+		<string>種類：メールメッセージ</string>
+		<string>種類：メイルメッセージ</string>
+		<string>種類：メイルメッセイジ</string>
+		<string>種類：メイルメッセエジ</string>
+		<string>種類：メールメッセイジ</string>
+		<string>種類：メールメッセイジ</string>
+		<string>種類：手紙</string>
+		<string>種類：レター</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>kind:event</string>
+		<string>kind:events</string>
+
+		<string>種類:event</string>
+		<string>種類:events</string>
+
+		<string>種類：event</string>
+		<string>種類：events</string>
+
+		<string>種類:イベント</string>
+		<string>種類:事件</string>
+		<string>種類:エベント</string>
+		<string>種類:できごと</string>
+		<string>種類:出来事</string>
+		<string>種類:動作</string>
+		<string>種類:アクション</string>
+		<string>種類:行事</string>
+		<string>種類:場合</string>
+
+		<string>種類：イベント</string>
+		<string>種類：事件</string>
+		<string>種類：エベント</string>
+		<string>種類：できごと</string>
+		<string>種類：出来事</string>
+		<string>種類：動作</string>
+		<string>種類：アクション</string>
+		<string>種類：行事</string>
+		<string>種類：場合</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>kind:events &amp; to dos</string>
+
+		<string>種類:event &amp; to do</string>
+
+		<string>種類：event &amp; to do</string>
+
+		<string>種類:イベント &amp; 予定</string>
+		<string>種類:事件 &amp; すること</string>
+		<string>種類:エベント &amp; やること</string>
+		<string>種類:できごと &amp; スケジュール</string>
+		<string>種類:出来事</string>
+		<string>種類:動作</string>
+		<string>種類:アクション</string>
+		<string>種類:行事</string>
+		<string>種類:場合</string>
+		
+		<string>種類：イベント &amp; 予定</string>
+		<string>種類：事件 &amp; すること</string>
+		<string>種類：エベント &amp; やること</string>
+		<string>種類：できごと &amp; スケジュール</string>
+		<string>種類：出来事</string>
+		<string>種類：動作</string>
+		<string>種類：アクション</string>
+		<string>種類：行事</string>
+		<string>種類：場合</string>
+		
+		<string>kind:event OR kind:todo</string>
+		
+		<string>種類:event OR 種類:todo</string>
+	
+		<string>種類：event OR 種類：todo</string>
+	
+		<string>種類:イベント OR 種類:予定</string>
+		<string>種類:事件 OR 種類:すること</string>
+		<string>種類:エベント OR 種類:やること</string>
+		<string>種類:できごと OR 種類:スケジュール</string>
+
+		<string>種類：イベント OR 種類：予定</string>
+		<string>種類：事件 OR 種類：すること</string>
+		<string>種類：エベント OR 種類：やること</string>
+		<string>種類：できごと OR 種類：スケジュール</string>		
+		
+		<string>kind:todo OR kind:event</string>
+
+		<string>種類:todo OR 種類:event</string>
+
+		<string>種類：todo OR 種類：event</string>
+
+		<string>種類:予定 OR 種類:イベント</string>
+		<string>種類:すること OR 種類:事件</string>
+		<string>種類:やること OR 種類:エベント</string>
+		<string>種類:スケジュール OR 種類:できごと</string>
+
+		<string>種類：予定 OR 種類：イベント</string>
+		<string>種類：すること OR 種類：事件</string>
+		<string>種類：やること OR 種類：エベント</string>
+		<string>種類：スケジュール OR 種類：できごと</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>kind:font</string>
+		<string>kind:fonts</string>
+
+		<string>種類:font</string>
+		<string>種類:fonts</string>
+
+		<string>種類：font</string>
+		<string>種類：fonts</string>
+		
+		<string>種類:フォント</string>
+		<string>種類:字体</string>
+		<string>種類:字形</string>
+		<string>種類:書体</string>
+		<string>種類:タイプフェース</string>
+		
+		<string>種類：フォント</string>
+		<string>種類：字体</string>
+		<string>種類：字形</string>
+		<string>種類：書体</string>
+		<string>種類：タイプフェース</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>kind:image</string>
+		<string>kind:images</string>
+
+		<string>種類:image</string>
+		<string>種類:images</string>
+
+		<string>種類：image</string>
+		<string>種類：images</string>
+
+		<string>種類:イメージ</string>
+		<string>種類:画像</string>
+		<string>種類:映像</string>
+		<string>種類:像</string>
+		<string>種類:絵</string>
+
+		<string>種類：イメージ</string>
+		<string>種類：画像</string>
+		<string>種類：映像</string>
+		<string>種類：像</string>
+		<string>種類：絵</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>kind:message</string>
+		<string>kind:messages</string>
+
+		<string>種類:message</string>
+		<string>種類:messages</string>
+
+		<string>種類：message</string>
+		<string>種類：messages</string>
+
+		<string>種類:メッセージ</string>
+		<string>種類:メッセイジ</string>
+		<string>種類:メッセエジ</string>		
+		<string>種類:伝言</string>
+		<string>種類:連絡</string>
+
+		<string>種類：メッセージ</string>
+		<string>種類：メッセイジ</string>
+		<string>種類：メッセエジ</string>		
+		<string>種類：伝言</string>
+		<string>種類：連絡</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>kind:movie</string>
+		<string>kind:movies</string>
+
+		<string>種類:movie</string>
+		<string>種類:movies</string>
+
+		<string>種類：movie</string>
+		<string>種類：movies</string>
+
+		<string>種類:ムービー</string>
+		<string>種類:ムービ</string>
+		<string>種類:映画</string>
+		<string>種類:動画</string>
+
+		<string>種類：ムービー</string>
+		<string>種類：ムービ</string>
+		<string>種類：映画</string>
+		<string>種類：動画</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>kind:music</string>
+		<string>kind:audio</string>
+
+		<string>種類:music</string>
+
+		<string>種類：music</string>
+
+		<string>種類:音楽</string>
+		<string>種類:ミュージック</string>
+
+		<string>種類：音楽</string>
+		<string>種類：ミュージック</string>
+
+		<string>種類:audio</string>
+
+		<string>種類：audio</string>
+
+		<string>種類:オーディオ</string>
+		<string>種類:オーデオ</string>
+		<string>種類:オウディオ</string>
+		<string>種類:オウデオ</string>
+		<string>種類:音声</string>
+		<string>種類:音響</string>
+		<string>種類:音</string>
+
+		<string>種類：オーディオ</string>
+		<string>種類：オーデオ</string>
+		<string>種類：オウディオ</string>
+		<string>種類：オウデオ</string>
+		<string>種類：音声</string>
+		<string>種類：音響</string>
+		<string>種類：音</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>date:next month</string>
+
+		<string>日付:next month</string>
+
+		<string>日付：next month</string>
+
+		<string>日付:来月</string>
+		<string>日付:翌月</string>
+		<string>日付:次月</string>
+		<string>日付:次の月</string>
+		<string>日付:明くる月</string>
+
+		<string>日付：来月</string>
+		<string>日付：翌月</string>
+		<string>日付：次月</string>
+		<string>日付：次の月</string>
+		<string>日付：明くる月</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>date:next week</string>
+
+		<string>日付:next week</string>
+
+		<string>日付：next week</string>
+
+		<string>日付:来週</string>
+		<string>日付:翌週</string>
+		<string>日付:次週</string>
+		<string>日付:次の週</string>
+		<string>日付:明くる週</string>
+
+		<string>日付：来週</string>
+		<string>日付：翌週</string>
+		<string>日付：次週</string>
+		<string>日付：次の週</string>
+		<string>日付：明くる週</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>date:next year</string>
+
+		<string>日付:next year</string>
+
+		<string>日付：next year</string>
+
+		<string>日付:来年</string>
+		<string>日付:翌年</string>
+		<string>日付:次年</string>
+		<string>日付:次の年</string>
+		<string>日付:明くる年</string>
+		<string>日付:後年</string>
+
+		<string>日付：来年</string>
+		<string>日付：翌年</string>
+		<string>日付：次年</string>
+		<string>日付：次の年</string>
+		<string>日付：明くる年</string>
+		<string>日付：後年</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>kind:pdf</string>
+		<string>kind:pdfs</string>
+
+		<string>種類:pdf</string>
+		<string>種類:pdfs</string>
+
+		<string>種類：pdf</string>
+		<string>種類：pdfs</string>
+
+		<string>種類:ピーディーエフ</string>
+		<string>種類:ピーデーエフ</string>
+		<string>種類:ポータブルドキュメントフォーマット</string>
+
+		<string>種類：ピーディーエフ</string>
+		<string>種類：ピーデーエフ</string>
+		<string>種類：ポータブルドキュメントフォーマット</string>
+
+		<string>kind:pdf document</string>
+		<string>kind:pdf documents</string>
+
+		<string>種類:pdf document</string>
+		<string>種類:pdf documents</string>
+
+		<string>種類：pdf document</string>
+		<string>種類：pdf documents</string>
+
+		<string>種類:pdf ドキュメント</string>
+		<string>種類:pdf 書類</string>
+		<string>種類:pdf 資料</string>
+		<string>種類:ピーディーエフドキュメント</string>
+		<string>種類:ピーデーエフドキュメント</string>
+		<string>種類:ポータブルドキュメントフォーマットドキュメント</string>
+		<string>種類:ピーディーエフ書類</string>
+		<string>種類:ピーデーエフド書類</string>
+		<string>種類:ポータブルドキュメントフォーマット書類</string>
+		<string>種類:ピーディーエフ資料</string>
+		<string>種類:ピーデーエフド資料</string>
+		<string>種類:ポータブルドキュメントフォーマット資料</string>
+
+		<string>種類：pdf ドキュメント</string>
+		<string>種類：pdf 書類</string>
+		<string>種類：pdf 資料</string>
+		<string>種類：ピーディーエフドキュメント</string>
+		<string>種類：ピーデーエフドキュメント</string>
+		<string>種類：ポータブルドキュメントフォーマットドキュメント</string>
+		<string>種類：ピーディーエフ書類</string>
+		<string>種類：ピーデーエフド書類</string>
+		<string>種類：ポータブルドキュメントフォーマット書類</string>
+		<string>種類：ピーディーエフ資料</string>
+		<string>種類：ピーデーエフド資料</string>
+		<string>種類：ポータブルドキュメントフォーマット資料</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>kind:presentations</string>
+		<string>kind:presentation</string>
+
+		<string>種類:presentations</string>
+		<string>種類:presentation</string>
+
+		<string>種類：presentations</string>
+		<string>種類：presentation</string>
+
+		<string>種類:プレゼンテーション</string>
+		<string>種類:プレゼン</string>
+		<string>種類:発表</string>
+		<string>種類:提示</string>
+
+		<string>種類：プレゼンテーション</string>
+		<string>種類：プレゼン</string>
+		<string>種類：発表</string>
+		<string>種類：提示</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>kind:source</string>
+		
+		<string>種類:source</string>
+
+		<string>種類：source</string>
+		
+		<string>種類:ソース</string>
+		<string>種類:情報源</string>
+		<string>種類:出典</string>
+		<string>種類:資料</string>
+		<string>種類:もと</string>
+		
+		<string>種類：ソース</string>
+		<string>種類：情報源</string>
+		<string>種類：出典</string>
+		<string>種類：資料</string>
+		<string>種類：もと</string>		
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>kind:spreadsheets</string>
+		<string>kind:spreadsheet</string>
+
+		<string>種類:spreadsheets</string>
+		<string>種類:spreadsheet</string>
+		
+		<string>種類：spreadsheets</string>
+		<string>種類：spreadsheet</string>
+		
+	<string>種類:スプレッドシート</string>
+	<string>種類:表計算ソフト</string>
+	<string>種類:表計算</string>
+	<string>種類:エクセル</string>
+	<string>種類:Excel</string>
+						
+	<string>種類：スプレッドシート</string>
+	<string>種類：表計算ソフト</string>
+	<string>種類：表計算</string>
+	<string>種類：エクセル</string>
+	<string>種類：Excel</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>kind:system preferences</string>
+		<string>kind:preferences</string>
+
+		<string>種類:system preferences</string>
+		<string>種類:preferences</string>
+
+		<string>種類：system preferences</string>
+		<string>種類：preferences</string>
+
+		<string>種類:システム環境設定</string>
+		<string>種類:システムの設定</string>
+		<string>種類:コンフィグ</string>
+		<string>種類:セッティング</string>
+
+		<string>種類：システム環境設定</string>
+		<string>種類：システムの設定</string>
+		<string>種類：コンフィグ</string>
+		<string>種類：セッティング</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>kind:text</string>
+
+		<string>種類:text</string>
+
+		<string>種類：text</string>
+		
+		<string>種類:テキスト</string>
+		<string>種類:テクスト</string>
+		<string>種類:文字列</string>
+		<string>種類:文章</string>
+		<string>種類:本文</string>
+		<string>種類:原文</string>
+		
+		<string>種類：テキスト</string>
+		<string>種類：テクスト</string>
+		<string>種類：文字列</string>
+		<string>種類：文章</string>
+		<string>種類：本文</string>
+		<string>種類：原文</string>		
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>date:this month</string>
+
+		<string>日付:this month</string>
+
+		<string>日付：this month</string>
+
+		<string>日付:この月</string>
+		<string>日付:今月</string>
+		<string>日付:当月</string>
+		<string>日付:本月</string>
+
+		<string>日付：この月</string>
+		<string>日付：今月</string>
+		<string>日付：当月</string>
+		<string>日付：本月</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>date:this week</string>
+
+		<string>日付:this week</string>
+
+		<string>日付：this week</string>
+
+		<string>日付:この週</string>
+		<string>日付:今週</string>
+		<string>日付:本週</string>
+
+		<string>日付：この週</string>
+		<string>日付：今週</string>
+		<string>日付：本週</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>date:this year</string>
+
+		<string>日付:this year</string>
+
+		<string>日付：this year</string>
+
+		<string>日付:この年</string>
+		<string>日付:今年</string>
+		<string>日付:当年</string>
+		<string>日付:本年</string>
+		<string>日付:今の年</string>
+
+		<string>日付：この年</string>
+		<string>日付：今年</string>
+		<string>日付：当年</string>
+		<string>日付：本年</string>
+		<string>日付：今の年</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>date:today</string>
+
+		<string>日付:today</string>
+
+		<string>日付：today</string>
+
+		<string>日付:きょう</string>
+		<string>日付:今日</string>
+		<string>日付:本日</string>
+		<string>日付:この日</string>
+		<string>日付:現在</string>
+		<string>日付:現代</string>
+		<string>日付:当世</string>
+		<string>日付:いま</string>
+		<string>日付:こんにち</string>
+		<string>日付:当節</string>
+
+		<string>日付：きょう</string>
+		<string>日付：今日</string>
+		<string>日付：本日</string>
+		<string>日付：この日</string>
+		<string>日付：現在</string>
+		<string>日付：現代</string>
+		<string>日付：当世</string>
+		<string>日付：いま</string>
+		<string>日付：こんにち</string>
+		<string>日付：当節</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>kind:todo</string>
+		<string>kind:todos</string>
+		<string>kind:to do</string>
+
+		<string>種類:todo</string>
+		<string>種類:todos</string>
+		<string>種類:to do</string>
+
+		<string>種類：todo</string>
+		<string>種類：todos</string>
+		<string>種類：to do</string>
+
+		<string>種類:予定</string>
+		<string>種類:すること</string>
+		<string>種類:やること</string>
+		<string>種類:スケジュール</string>
+
+		<string>種類：予定</string>
+		<string>種類：すること</string>
+		<string>種類：やること</string>
+		<string>種類：スケジュール</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>date:tomorrow</string>
+
+		<string>日付:tomorrow</string>
+
+		<string>日付：tomorrow</string>
+
+		<string>日付:明日</string>
+		<string>日付:あした</string>
+		<string>日付:あす</string>
+		<string>日付:明くる日</string>
+		<string>日付:翌日</string>
+
+		<string>日付：明日</string>
+		<string>日付：あした</string>
+		<string>日付：あす</string>
+		<string>日付：明くる日</string>
+		<string>日付：翌日</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>date:yesterday</string>
+
+		<string>日付:yesterday</string>
+
+		<string>日付：yesterday</string>
+
+		<string>日付:昨日</string>
+		<string>日付:きのう</string>
+		<string>日付:前日</string>
+
+		<string>日付：昨日</string>
+		<string>日付：きのう</string>
+		<string>日付：前日</string>
+	</array>
+</dict>
+</plist>

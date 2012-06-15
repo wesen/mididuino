@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SOURCE</key>
+	<array>
+		<string>type:kilde</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>type:regneark</string>
+ 		<string>type:regnearker</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>type:tekst</string>
+	</array>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>type:program</string>
+		<string>type:programmer</string>
+		<string>type:prg.</string>
+		<string>type:prog.</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>type:bogmærke</string>
+		<string>type:bogmærker</string>
+		<string>type:webside</string>
+		<string>type:websider</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>type:kontakt</string>
+		<string>type:kontakter</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>type:mappe</string>
+		<string>type:mapper</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>type:dokument</string>
+		<string>type:dokumenter</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>type:e-post</string>
+		<string>type:e-post</string>
+		<string>type:e-postbesked</string>
+		<string>type:e-postbeskeder</string>
+		<string>type:e-post-besked</string>
+		<string>type:e-post-beskeder</string>
+		<string>type:e-mail</string>
+		<string>type:email</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>type:begivenhed</string>
+		<string>type:begivenheder</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>type:begivenheder &amp; huskelister</string>
+		<string>type:begivenhed ELLER type:huskeliste</string>
+		<string>type:huskeliste ELLER type:begivenhed</string>
+		<string>type:begivenheder &amp; huskesedler</string>
+		<string>type:begivenhed ELLER type:huskesedel</string>
+		<string>type:huskesedel ELLER type:begivenhed</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>type:skrift</string>
+		<string>type:skrifter</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>type:billede</string>
+		<string>type:billeder</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>type:besked</string>
+		<string>type:beskeder</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>type:film</string>
+		<string>type:film</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>type:musik</string>
+		<string>type:lyd</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>dato:næste måned</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>dato:næste uge</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>dato:næste år</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>type:pdf</string>
+		<string>type:pdf'er</string>
+		<string>type:pdf-dokument</string>
+		<string>type:pdf-dokumenter</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>type:præsentationer</string>
+		<string>type:præsentation</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>type:systemindstillinger</string>
+		<string>type:indstillinger</string>
+
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>dato:denne måned</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>dato:denne uge</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>dato:dette år</string>
+		<string>dato:i år</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>dato:i dag</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>type:huskeliste</string>
+		<string>type:huskelister</string>
+		<string>type:huske liste</string>
+		<string>type:huskesedel</string>
+		<string>type:huskesedler</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>dato:i morgen</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>dato:i går</string>
+	</array>
+</dict>
+</plist>
