@@ -44,7 +44,7 @@ public:
   virtual ~MidiFirmwareSender() {
   }
 
-  bool upload(HexFile *file);
+  bool upload(HexFile *file, bool startBootloader = false);
   void sendSysexBootloadCommand();
   void sendSysexRebootCommand();
   bool sendNextSysexPart();

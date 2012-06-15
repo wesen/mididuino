@@ -135,11 +135,9 @@ int main(int argc, char *argv[]) {
     if (statusMessage) {
       logPrintf(LOG_STATUS, "starting bootloader");
     }
-
-    sender.sendSysexBootloadCommand();
   }
 
-  sender.upload(&hexFile);
+  sender.upload(&hexFile, startBootloader);
 
   for (;!sender.isTransferComplete();) {
     MidiUart.runLoop();
@@ -147,7 +145,7 @@ int main(int argc, char *argv[]) {
       uint8_t c = MidiUart.getc();
       Midi.handleByte(c);
     }
-    //    read_clock();
+
     usleep(1000);
   }
 

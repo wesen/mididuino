@@ -23,21 +23,27 @@ void MidiFirmwareSender::sendSysexBootloadCommand() {
   unsigned char bootmsg[] = { 0xF0, MIDIDUINO_SYSEX_VENDOR_1, MIDIDUINO_SYSEX_VENDOR_2, deviceId, CMD_START_BOOTLOADER, 0xF7 };
   canSendSysex = false;
   waitingForBootloader = true;
+  logPrintf(LOG_INFO, "Start bootloader\n");
   MidiUart.sendRaw(bootmsg, sizeof(bootmsg));
 }
 
 
 void MidiFirmwareSender::sendSysexRebootCommand() {
   static unsigned char buf[] =
-  {0xf0, 0x00, MIDIDUINO_SYSEX_VENDOR_1, MIDIDUINO_SYSEX_VENDOR_2, deviceId, CMD_MAIN_PROGRAM, 0xf7 };
+  {0xf0, MIDIDUINO_SYSEX_VENDOR_1, MIDIDUINO_SYSEX_VENDOR_2, deviceId, CMD_MAIN_PROGRAM, 0xf7 };
   canSendSysex = false;
+  logPrintf(LOG_INFO, "Reboot device\n");
   MidiUart.sendRaw(buf, sizeof(buf));
 }
 
-bool MidiFirmwareSender::upload(HexFile *file) {
+bool MidiFirmwareSender::upload(HexFile *file, bool startBootloader) {
   this->file = file;
   this->transferIsComplete = false;
-  sendNextSysexPart();
+  if (startBootloader) {
+    sendSysexBootloadCommand();
+  } else {
+    sendNextSysexPart();
+  }
 }
 
 bool MidiFirmwareSender::sendNextSysexPart() {
@@ -112,12 +118,14 @@ void MidiFirmwareSender::handleByte(uint8_t b) {
 #ifdef WINDOWS
         Sleep(1500);
 #else
+        logPrintf(LOG_INFO, "Wait for bootloader\n");
         usleep(1500000);
 #endif
         waitingForBootloader = false;
       }
 
       if (file->hasNextSysexPart()) {
+        logPrintf(LOG_INFO, "Send next sysex part\n");
         sendNextSysexPart();
       } else {
         if (verbose >= 1) {
@@ -136,10 +144,6 @@ void MidiFirmwareSender::handleByte(uint8_t b) {
 #endif
         transferIsComplete = true;
       }
-
-      // send sysex part
-
-      sendSysexRebootCommand();
 
       break;
 
