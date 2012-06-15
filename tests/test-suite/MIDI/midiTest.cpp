@@ -27,6 +27,11 @@ struct MidiCallbackFixture {
 TEST_F (MidiCallbackFixture, TestNoteOn) {
   CHECK_EQUAL(false, cb.callbackCalled);
 
+  static CB::callback_ptr_t p =
+      (decltype(cb)::callback_ptr_t)
+      &CB::callback;
+  Midi.addOnNoteOnCallback(&cb, p);
+
   ADD_CALLBACK(Midi.addOnNoteOnCallback, cb, callback);
   CHECK_EQUAL(false, cb.callbackCalled);
 

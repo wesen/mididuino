@@ -26,7 +26,12 @@ class Encoder;
  * called when the value of an encoder has changed. Examples for
  * encoder_handle_t functions are CCEncoderHandler or TempoEncoderHandle.
  **/
+#ifndef HOST_MIDIDUINO
 typedef void (*encoder_handle_t)(Encoder *enc);
+#else
+#include <functional>
+typedef std::function<void(Encoder *enc)> encoder_handle_t;
+#endif
 
 /** Encoder handling function to send a CC value (enc has to be of class CCEncoder). **/
 void CCEncoderHandle(Encoder *enc);
