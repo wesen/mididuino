@@ -62,7 +62,7 @@ void MidiUartHostParent::onOutputMessage(uint8_t *msg, uint8_t len) {
   }
 }
 
-void MidiUartHostParent::init(int _inputDevice, int _outputDevice) {
+bool MidiUartHostParent::init(int _inputDevice, int _outputDevice) {
   inputDevice = _inputDevice;
   outputDevice = _outputDevice;
     
@@ -70,5 +70,7 @@ void MidiUartHostParent::init(int _inputDevice, int _outputDevice) {
   outputMidi.addOnMessageCallback(this, (midi_callback_ptr2_t)&MidiUartHostParent::onOutputMessage);
 
   outputMidi.midiSysex.addSysexListener(&sysexListener);
+
+  return true;
 }
 
