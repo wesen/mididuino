@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MESSAGES</key>
+	<array>
+		<string>النوع:رسائل</string>
+		<string>kind:messages</string>
+		<string>kind:message</string>
+
+		<string>النوع:messages</string>
+		<string>النوع:message</string>
+
+		<string>النوع:رسالة</string>
+		<string>النوع:الرسائل</string>
+		<string>النوع:الرسالة</string>
+	</array>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>النوع:تطبيقات</string>
+		<string>kind:application</string>
+		<string>kind:applications</string>
+		<string>kind:app</string>
+
+		<string>النوع:application</string>
+		<string>النوع:applications</string>
+		<string>النوع:app</string>
+
+		<string>النوع:تطبيق</string>
+		<string>النوع:التطبيقات</string>
+		<string>النوع:التطبيق</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>النوع:جهات اتصال</string>
+
+		<string>kind:contact</string>
+		<string>kind:contacts</string>
+
+		<string>النوع:contact</string>
+		<string>النوع:contacts</string>
+
+		<string>النوع:جهة اتصال</string>
+		<string>النوع:جهة الاتصال</string>
+		<string>النوع:جهات الاتصال</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>النوع:مستندات</string>
+
+		<string>kind:document</string>
+		<string>kind:documents</string>
+		<string>kind:doc</string>
+		<string>kind:docs</string>
+
+		<string>النوع:document</string>
+		<string>النوع:documents</string>
+		<string>النوع:doc</string>
+		<string>النوع:docs</string>
+
+		<string>النوع:مستند</string>
+		<string>النوع:المستند</string>
+		<string>النوع:المستندات</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>النوع:مجلدات</string>
+
+		<string>kind:directories</string>
+		<string>kind:directory</string>	
+
+		<string>النوع:directories</string>
+		<string>النوع:directory</string>
+
+		<string>النوع:مجلد</string>
+		<string>النوع:المجلد</string>
+		<string>النوع:المجلدات</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>النوع:رسالة بريد إلكتروني</string>
+
+		<string>kind:email</string>
+		<string>kind:emails</string>
+
+		<string>النوع:email</string>
+		<string>النوع:emails</string>
+
+		<string>النوع:بريد إلكتروني</string>
+		<string>النوع:البريد الإلكتروني</string>
+		<string>النوع:رسالة بريد</string>
+		<string>النوع:رسائل بريد</string>
+		<string>النوع:رسائل البريد</string>
+ 		<string>النوع:رسالة البريد</string>
+ 		<string>النوع:رسالة البريد الإلكتروني</string>
+ 		<string>النوع:رسالة إلكترونية</string>
+ 		<string>النوع:رسالة بريد إلكترونية</string>
+ 		<string>النوع:رسالة البريد الإلكترونية</string>
+ 		<string>النوع:الرسائل البريدية</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+
+		<string>النوع:حدث</string>
+		
+		<string>kind:event</string>
+		<string>kind:events</string>
+		
+		<string>النوع:event</string>
+		<string>النوع:events</string>
+
+		<string>النوع:أحداث</string>
+ 		<string>النوع:الحدث</string>
+ 		<string>النوع:الأحداث</string>
+	</array>
+	<key>TODO</key>
+	<array>
+ 		<string>النوع:مهام مراد تنفيذها</string>	
+
+		<string>kind:todo</string>
+		<string>kind:to do</string>
+		
+		<string>النوع:to do</string>
+		<string>النوع:todo</string>
+
+		<string>النوع:المهام المراد تنفيذها</string>
+		<string>النوع:المهام المراد تنفيذها</string>
+		<string>النوع:المهام المراد تنفيذها</string>
+ 		<string>النوع:مهمة مراد تنفيذها</string>		
+ 		<string>النوع:المهمة المراد تنفيذها</string>		
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>النوع:حدث أو  النوع:مهمة مراد تنفيذها</string>
+
+		<string>kind:events to do</string>
+		<string>kind:event to do</string>
+
+		<string>النوع:events to do</string>
+		<string>النوع:event to do</string>
+
+		<string>النوع:حدث أو  النوع:المهام المراد تنفيذها</string>
+		<string>النوع:حدث أو  النوع:مهام مراد تنفيذها</string>
+		<string>النوع:المهام المراد تنفيذها أو  النوع:حدث</string>
+		<string>النوع:مهام المراد تنفيذها أو  النوع:حدث</string>
+		<string>النوع:الحدث أو  النوع:المهام المراد تنفيذها</string>
+		<string>النوع:الحدث أو  النوع:مهام مراد تنفيذها</string>
+		<string>النوع:المهام المراد تنفيذها أو  النوع:الحدث</string>
+		<string>النوع:مهام المراد تنفيذها أو  النوع:الحدث</string>
+		<string>النوع:أحداث أو  النوع:المهام المراد تنفيذها</string>
+		<string>النوع:أحداث أو  النوع:مهام مراد تنفيذها</string>
+		<string>النوع:المهام المراد تنفيذها أو  النوع:أحداث</string>
+		<string>النوع:مهام المراد تنفيذها أو  النوع:أحداث</string>
+		<string>النوع:الأحداث أو  النوع:المهام المراد تنفيذها</string>
+		<string>النوع:الأحداث أو  النوع:مهام مراد تنفيذها</string>
+		<string>النوع:المهام المراد تنفيذها أو  النوع:الأحداث</string>
+		<string>النوع:مهام المراد تنفيذها أو  النوع:الأحداث</string>	
+		<string>النوع:حدث أو  النوع:المهمة المراد تنفيذها</string>
+		<string>النوع:المهمة المراد تنفيذها أو  النوع:حدث</string>
+		<string>النوع:مهمة مراد تنفيذها أو  النوع:حدث</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>النوع:صور</string>
+
+		<string>kind:image</string>
+		<string>kind:images</string>
+
+		<string>النوع:image</string>
+		<string>النوع:images</string>
+
+		<string>النوع:صورة</string>
+		<string>النوع:الصور</string>
+		<string>النوع:الصورة</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>النوع:أفلام</string>
+
+		<string>kind:movie</string>
+		<string>kind:movies</string>
+
+		<string>النوع:movie</string>
+		<string>النوع:movies</string>
+
+		<string>النوع:فيلم</string>
+		<string>النوع:الأفلام</string>
+		<string>النوع:الفيلم</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>النوع:موسيقى</string>
+		<string>النوع:صوت</string>
+
+		<string>kind:music</string>
+		<string>kind:audio</string>
+
+		<string>النوع:music</string>
+		<string>النوع:audio</string>
+
+		<string>النوع:الصوت</string>
+		<string>النوع:الموسيقى</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>التاريخ:الشهر التالي</string>
+
+
+		<string>date:next month</string>
+
+		<string>التاريخ:next month</string>
+
+		<string>التاريخ:شهر تالي</string>
+		<string>التاريخ:الأشهر التالية</string>
+		<string>التاريخ:الشهرور التالية</string>
+		<string>التاريخ:أشهر تالية</string>
+		<string>التاريخ:شهرور تالية</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>التاريخ:الأسبوع التالي</string>
+
+		<string>date:next week</string>
+
+		<string>التاريخ:next week</string>
+
+		<string>التاريخ:أسبوع تالي</string>
+		<string>التاريخ:الأسابيع التالية</string>
+		<string>التاريخ:أسابيع تالية</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>التاريخ:العام التالي</string>
+
+		<string>date:next year</string>
+
+		<string>التاريخ:next year</string>
+
+		<string>التاريخ:عام تالي</string>
+		<string>التاريخ:الأعوام التالية</string>
+		<string>التاريخ:اعوام تالية</string>
+		<string>التاريخ:السنة التالية</string>
+		<string>التاريخ:سنة تالية</string>
+		<string>التاريخ:السنين التالية</string>
+		<string>التاريخ:سنين تالية</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>النوع:مستندات pdf</string>
+
+		<string>kind:pdf</string>
+		<string>kind:pdfs</string>
+
+		<string>النوع:pdf</string>
+		<string>النوع:pdfs</string>
+
+		<string>النوع:pdf</string>
+		<string>النوع:pdf</string>
+		<string>النوع:مستند pdf</string>
+		<string>النوع‫:‬الـ PDF</string>
+		<string>النوع:مستند الـ pdf</string>
+		<string>النوع:مستندات الـ pdf</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>النوع:تفضيلات النظام</string>
+
+		<string>kind:system preferences</string>
+		<string>kind:preferences</string>
+
+		<string>النوع:system preferences</string>
+		<string>النوع:preferences</string>
+
+		<string>النوع:تفضيلات </string>
+		<string>النوع:التفضيلات </string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>التاريخ:هذا الشهر</string>
+
+		<string>date:this month</string>
+
+		<string>التاريخ:this month</string>
+
+		<string>التاريخ:الشهر الحالي</string>
+		<string>التاريخ:الشهر الجاري</string>
+		<string>التاريخ:ذلك الشهر </string>
+		<string>التاريخ:الشهر هذا </string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>التاريخ:هذا الأسبوع</string>
+
+		<string>date:this week</string>
+
+		<string>التاريخ:this week</string>
+
+		<string>التاريخ:الأسبوع الحالي</string>
+		<string>التاريخ:الأسبوع الجاري</string>
+		<string>التاريخ:ذلك الأسبوع</string>
+		<string>التاريخ:الأسبوع هذا</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>التاريخ:هذا العام</string>
+
+		<string>date:this year</string>
+
+		<string>التاريخ:this year</string>
+
+		<string>التاريخ:العام هذا</string>
+		<string>التاريخ:العام الحالي</string>
+		<string>التاريخ:العام الجاري</string>
+		<string>التاريخ:ذلك العام</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>التاريخ:اليوم</string>
+
+		<string>date:today</string>
+
+		<string>التاريخ:today</string>
+
+		<string>التاريخ:هذا اليوم</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>التاريخ:غدًا</string>
+
+		<string>date:tomorrow</string>
+
+		<string>التاريخ:tomorrow</string>
+
+		<string>التاريخ:الغد</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>التاريخ:الأمس</string>
+
+		<string>date:yesterday</string>
+
+		<string>التاريخ:yesterday</string>
+
+		<string>التاريخ:أمس</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>النوع:إشارات مرجعية</string>
+
+		<string>kind:bookmark</string>
+		<string>kind:bookmarks</string>		
+
+		<string>النوع:bookmark</string>
+		<string>النوع:bookmarks</string>		
+
+		<string>النوع:إشارة مرجعية</string>
+		<string>النوع:صفحة ويب</string>
+		<string>النوع:صفحات ويب</string>
+		<string>النوع:الإشارة المرجعية</string>
+		<string>النوع:الإشارات المرجعية</string>
+		<string>النوع:صفحة الويب</string>
+		<string>النوع:صفحات الويب</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>النوع:خطوط</string>
+
+		<string>kind:font</string>
+		<string>kind:fonts</string>
+
+		<string>النوع:font</string>
+		<string>النوع:fonts</string>
+
+		<string>النوع:خط</string>
+		<string>النوع:الخط</string>
+		<string>النوع:الخطوط</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>النوع:عروض تقديمية</string>
+
+		<string>kind:presentations</string>
+		<string>kind:presentation</string>
+
+		<string>النوع:presentations</string>
+		<string>النوع:presentation</string>
+
+		<string>النوع:عرض تقديمي</string>
+		<string>النوع:العروض التقديمية</string>
+		<string>النوع:العرض التقديمي</string>
+	</array>
+     <key>SPREADSHEETS</key>
+	<array>
+		<string>النوع:جداول بيانات</string>
+
+		<string>kind:spreadsheets</string>
+		<string>kind:spreadsheet</string>
+
+		<string>النوع:spreadsheets</string>
+		<string>النوع:spreadsheet</string>
+
+		<string>النوع:جداول البيانات</string>
+		<string>النوع:جدول بيانات</string>
+		<string>النوع:جدول البيانات</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>النوع:مصدر</string>
+
+		<string>kind:source</string>
+		<string>kind:sources</string>
+
+		<string>النوع:source</string>
+		<string>النوع:sources</string>
+
+		<string>النوع:المصدر</string>
+		<string>النوع:مصادر</string>
+		<string>النوع:المصادر</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>النوع:نص</string>
+
+		<string>kind:text</string>
+		<string>kind:texts</string>
+
+		<string>النوع:text</string>
+		<string>النوع:texts</string>
+
+		<string>النوع:النص</string>
+		<string>النوع:نصوص</string>
+		<string>النوع:النصوص</string>
+     </array>
+</dict>
+</plist>

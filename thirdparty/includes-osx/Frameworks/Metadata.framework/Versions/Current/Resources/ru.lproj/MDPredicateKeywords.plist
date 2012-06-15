@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>Тип:Программа</string>
+		<string>Тип:Програма</string>
+		<string>Тип:программа</string>
+		<string>Тип:Программы</string>
+		<string>Тип:Программ</string>
+		<string>Тип:Програм</string>
+		<string>Тип:Праграмма</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>Тип:Закладка</string>
+		<string>Тип:закладка</string>
+		<string>Тип:закладки</string>
+		<string>Тип:Закладки</string>
+		<string>Тип:веб-страница</string>
+		<string>Тип:вебстраница</string>
+		<string>Тип:веб-страницы</string>
+		<string>Тип:вебстраницы</string>
+		<string>Тип:Веб-страница</string>
+		<string>Тип:Вебстраница</string>
+		<string>Тип:Веб-страницы</string>
+		<string>Тип:Вебстраницы</string>
+		<string>Тип:Веб страница</string>
+		<string>Тип:Веб страницы</string>
+		<string>Тип:веб страница</string>
+		<string>Тип:веб страницы</string>
+		<string>Тип:веб</string>
+		<string>Тип:Веб</string>
+		<string>Тип:страница</string>
+		<string>Тип:Страница</string>
+		<string>Тип:страницы</string>
+		<string>Тип:Страницы</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>Тип:Контакт</string>
+		<string>Тип:Контакты</string>
+		<string>Тип:контакт</string>
+		<string>Тип:контакты</string>
+		<string>Тип:Контактов</string>
+		<string>Тип:Кантакт</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>Тип:Папка</string>
+		<string>Тип:папка</string>
+		<string>Тип:Папки</string>
+		<string>Тип:Папками</string>
+		<string>Тип:Папок</string>
+		<string>Тип:Папкой</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>Тип:Документ</string>
+		<string>Тип:Документы</string>
+		<string>Тип:Документов</string>
+		<string>Тип:документ</string>
+		<string>Тип:документы</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>Тип:Mail</string>
+		<string>Тип:Mails</string>
+		<string>Тип:E-Mail</string>
+		<string>Тип:E-Mails</string>
+		<string>Тип:Мэйл</string>
+		<string>Тип:Имэйл</string>
+		<string>Тип:электронная почта</string>
+		<string>Тип:почта</string>
+		<string>Тип:Почта</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>Тип:Событие</string>
+		<string>Тип:События</string>
+		<string>Тип:событие</string>
+		<string>Тип:события</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>Тип:События или Тип:Задания</string>
+		<string>Тип:Событие или Тип:Задание</string>
+		<string>Тип:Задание или Тип:Событие</string>
+		<string>Тип:события или Тип:задания</string>
+		<string>Тип:событие или Тип:задание</string>
+		<string>Тип:задание или Тип:событие</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>Тип:Шрифт</string>
+		<string>Тип:шрифт</string>
+		<string>Тип:Шрифты</string>
+		<string>Тип:шрифты</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>Тип:изображение</string>
+		<string>Тип:изображения</string>
+		<string>Тип:изображенния</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>Тип:Сообщение</string>
+		<string>Тип:сообщение</string>
+		<string>Тип:Сообщения</string>
+		<string>Тип:сообщения</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>Тип:фильм</string>
+		<string>Тип:Фильмы</string>
+		<string>Тип:Фильм</string>
+		<string>Тип:фильмы</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>Тип:Музыка</string>
+		<string>Тип:музыка</string>
+		<string>Тип:Аудио</string>
+		<string>Тип:Ауди</string>
+		<string>Тип:аудио</string>
+		<string>Тип:Аудио</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>Дата:следующиймесяц</string>
+		<string>Дата:Следующиймесяц</string>
+		<string>Дата:следующий месяц</string>
+		<string>Дата:Следующий месяц</string>
+		<string>Дата:в следующем месяце</string>
+		<string>Дата:следующего месяца</string>
+		<string>Дата:Следующего месяца</string>
+		<string>Дата:следущиймесяц</string>
+		<string>Дата:Следущиймесяц</string>
+		<string>Дата:следущиймесяц</string>
+		<string>Дата:Следущиймесяц</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>Дата:следующаянеделя</string>
+		<string>Дата:Следующаянеделя</string>
+		<string>Дата:следующая неделя</string>
+		<string>Дата:Следующая неделя</string>
+		<string>Дата:наследующейнеделе</string>
+		<string>Дата:на следующей неделе</string>
+		<string>Дата:следующей недели</string>
+		<string>Дата:Следующей недели</string>
+		<string>Дата:следущаянеделя</string>
+		<string>Дата:Следущиаянеделя</string>
+		<string>Дата:следущая неделя</string>
+		<string>Дата:Следущая неделя</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>Дата:следующийгод</string>
+		<string>Дата:Следующийгод</string>
+		<string>Дата:следующий год</string>
+		<string>Дата:Следующий год</string>
+		<string>Дата:в следующем году</string>
+		<string>Дата:наследующийгод</string>
+		<string>Дата:на следующий год</string>
+		<string>Дата:следующего года</string>
+		<string>Дата:Следующего года</string>
+		<string>Дата:следущийгод</string>
+		<string>Дата:Следущийгод</string>
+		<string>Дата:следущий год</string>
+		<string>Дата:Следущий год</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>Тип:PDF</string>
+		<string>Тип:pdf</string>
+		<string>Тип:PDFы</string>
+		<string>Тип:ПДФ</string>
+		<string>Тип:документPDF</string>
+		<string>Тип:документыPDF</string>
+		<string>Тип:документpdf</string>
+		<string>Тип:документыpdf</string>
+		<string>Тип:ДокументPDF</string>
+		<string>Тип:ДокументыPDF</string>
+		<string>Тип:документ PDF</string>
+		<string>Тип:документы PDF</string>
+		<string>Тип:документ pdf</string>
+		<string>Тип:документы pdf</string>
+		<string>Тип:Документ PDF</string>
+		<string>Тип:Документы PDF</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>Тип:Презентация</string>
+		<string>Тип:презентация</string>
+		<string>Тип:Презентаци</string>
+		<string>Тип:презентаци</string>
+		<string>Тип:Презентации</string>
+		<string>Тип:презентации</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>Тип:источник</string>
+		<string>Тип:исходный</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>kind:таблица</string>
+		<string>kind:таблицы</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>Тип:Системныенастройки</string>
+		<string>Тип:системныенастройки</string>
+		<string>Тип:системныенастройки</string>
+		<string>Тип:системныенастройки</string>
+		<string>Тип:системнаянастройка</string> 
+		<string>Тип:сестемныенастройки</string>
+		<string>Тип:системные</string>
+  		<string>Тип:настройки</string>
+		<string>Тип:системные настройки</string>
+  		<string>Тип:системная настройка</string> 
+		<string>Тип:системная</string> 
+  		<string>Тип:настройка</string> 
+  		<string>Тип:сестемная настройка</string> 
+  		<string>Тип:сестемные настройки</string>
+  		<string>Тип:сестемные</string>
+  		<string>Тип:сестемная</string>
+  		<string>Тип:Системные</string>
+  		<string>Тип:Настройки</string>
+  		<string>Тип:Системная</string> 
+  		<string>Тип:Настройка</string>
+  		<string>Тип:Системные настройки</string>
+  		<string>Тип:Системная настройка</string> 
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>Тип:текст</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>Дата:этотмесяц</string>
+		<string>Дата:Этотмесяц</string>
+		<string>Дата:этот месяц</string>
+		<string>Дата:Этот месяц</string>
+		<string>Дата:вэтоммесяце</string>
+		<string>Дата:В этоммесяце</string>
+		<string>Дата:в этом месяце</string>
+		<string>Дата:вэтом месяце</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>Дата:этанеделя</string>
+		<string>Дата:Этанеделя</string>
+		<string>Дата:эта неделя</string>
+		<string>Дата:Эта неделя</string>
+		<string>Дата:наэтойнеделе</string>
+		<string>Дата:на этойнеделе</string>
+		<string>Дата:на этой неделе</string>
+		<string>Дата:наэтой неделе</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>Дата:этотгод</string>
+		<string>Дата:Этотгод</string>
+		<string>Дата:этот год</string>
+		<string>Дата:Этот год</string>
+		<string>Дата:вэтомгоду</string>
+		<string>Дата:в этомгоду</string>
+		<string>Дата:в этом году</string>
+		<string>Дата:вэтом году</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>Дата:Сегодня</string>
+		<string>Дата:сегодня</string>
+		<string>Дата:севодня</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>Тип:Задание</string>
+		<string>Тип:Задние</string>
+		<string>Тип:Задания</string>
+		<string>Тип:задание</string>
+		<string>Тип:задания</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>Дата:Завтра</string>
+		<string>Дата:завтра</string>
+		<string>Дата:Зафтра</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>Дата:Вчера</string>
+		<string>Дата:вчера</string>
+	</array>
+</dict>
+</plist>

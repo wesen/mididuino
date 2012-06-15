@@ -1,0 +1,503 @@
+<?xml version='1.0'?>
+<!DOCTYPE signatures SYSTEM "file://localhost/System/Library/DTDs/BridgeSupport.dtd">
+<signatures version='1.0'>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreFoundation.framework'/>
+<struct name='MDQueryBatchingParams' type64='{_MDQueryBatchingParams=&quot;first_max_num&quot;Q&quot;first_max_ms&quot;Q&quot;progress_max_num&quot;Q&quot;progress_max_ms&quot;Q&quot;update_max_num&quot;Q&quot;update_max_ms&quot;Q}' type='{_MDQueryBatchingParams=&quot;first_max_num&quot;I&quot;first_max_ms&quot;I&quot;progress_max_num&quot;I&quot;progress_max_ms&quot;I&quot;update_max_num&quot;I&quot;update_max_ms&quot;I}'/>
+<cftype name='MDItemRef' gettypeid_func='MDItemGetTypeID' type='^{__MDItem=}' tollfree='__NSCFType'/>
+<cftype name='MDLabelRef' gettypeid_func='MDLabelGetTypeID' type='^{__MDLabel=}' tollfree='__NSCFType'/>
+<cftype name='MDQueryRef' gettypeid_func='MDQueryGetTypeID' type='^{__MDQuery=}' tollfree='__NSCFType'/>
+<constant name='kMDAttributeAllValues' type='^{__CFString=}'/>
+<constant name='kMDAttributeDisplayValues' type='^{__CFString=}'/>
+<constant name='kMDAttributeMultiValued' type='^{__CFString=}'/>
+<constant name='kMDAttributeName' type='^{__CFString=}'/>
+<constant name='kMDAttributeReadOnlyValues' type='^{__CFString=}'/>
+<constant name='kMDAttributeType' type='^{__CFString=}'/>
+<constant name='kMDExporterAvaliable' type='^{__CFString=}'/>
+<constant name='kMDItemAcquisitionMake' type='^{__CFString=}'/>
+<constant name='kMDItemAcquisitionModel' type='^{__CFString=}'/>
+<constant name='kMDItemAlbum' type='^{__CFString=}'/>
+<constant name='kMDItemAltitude' type='^{__CFString=}'/>
+<constant name='kMDItemAperture' type='^{__CFString=}'/>
+<constant name='kMDItemAppleLoopDescriptors' type='^{__CFString=}'/>
+<constant name='kMDItemAppleLoopsKeyFilterType' type='^{__CFString=}'/>
+<constant name='kMDItemAppleLoopsLoopMode' type='^{__CFString=}'/>
+<constant name='kMDItemAppleLoopsRootKey' type='^{__CFString=}'/>
+<constant name='kMDItemApplicationCategories' type='^{__CFString=}'/>
+<constant name='kMDItemAttributeChangeDate' type='^{__CFString=}'/>
+<constant name='kMDItemAudiences' type='^{__CFString=}'/>
+<constant name='kMDItemAudioBitRate' type='^{__CFString=}'/>
+<constant name='kMDItemAudioChannelCount' type='^{__CFString=}'/>
+<constant name='kMDItemAudioEncodingApplication' type='^{__CFString=}'/>
+<constant name='kMDItemAudioSampleRate' type='^{__CFString=}'/>
+<constant name='kMDItemAudioTrackNumber' type='^{__CFString=}'/>
+<constant name='kMDItemAuthorAddresses' type='^{__CFString=}'/>
+<constant name='kMDItemAuthorEmailAddresses' type='^{__CFString=}'/>
+<constant name='kMDItemAuthors' type='^{__CFString=}'/>
+<constant name='kMDItemBitsPerSample' type='^{__CFString=}'/>
+<constant name='kMDItemCFBundleIdentifier' type='^{__CFString=}'/>
+<constant name='kMDItemCameraOwner' type='^{__CFString=}'/>
+<constant name='kMDItemCity' type='^{__CFString=}'/>
+<constant name='kMDItemCodecs' type='^{__CFString=}'/>
+<constant name='kMDItemColorSpace' type='^{__CFString=}'/>
+<constant name='kMDItemComment' type='^{__CFString=}'/>
+<constant name='kMDItemComposer' type='^{__CFString=}'/>
+<constant name='kMDItemContactKeywords' type='^{__CFString=}'/>
+<constant name='kMDItemContentCreationDate' type='^{__CFString=}'/>
+<constant name='kMDItemContentModificationDate' type='^{__CFString=}'/>
+<constant name='kMDItemContentType' type='^{__CFString=}'/>
+<constant name='kMDItemContentTypeTree' type='^{__CFString=}'/>
+<constant name='kMDItemContributors' type='^{__CFString=}'/>
+<constant name='kMDItemCopyright' type='^{__CFString=}'/>
+<constant name='kMDItemCountry' type='^{__CFString=}'/>
+<constant name='kMDItemCoverage' type='^{__CFString=}'/>
+<constant name='kMDItemCreator' type='^{__CFString=}'/>
+<constant name='kMDItemDateAdded' type='^{__CFString=}'/>
+<constant name='kMDItemDeliveryType' type='^{__CFString=}'/>
+<constant name='kMDItemDescription' type='^{__CFString=}'/>
+<constant name='kMDItemDirector' type='^{__CFString=}'/>
+<constant name='kMDItemDisplayName' type='^{__CFString=}'/>
+<constant name='kMDItemDownloadedDate' type='^{__CFString=}'/>
+<constant name='kMDItemDueDate' type='^{__CFString=}'/>
+<constant name='kMDItemDurationSeconds' type='^{__CFString=}'/>
+<constant name='kMDItemEXIFGPSVersion' type='^{__CFString=}'/>
+<constant name='kMDItemEXIFVersion' type='^{__CFString=}'/>
+<constant name='kMDItemEditors' type='^{__CFString=}'/>
+<constant name='kMDItemEmailAddresses' type='^{__CFString=}'/>
+<constant name='kMDItemEncodingApplications' type='^{__CFString=}'/>
+<constant name='kMDItemExecutableArchitectures' type='^{__CFString=}'/>
+<constant name='kMDItemExposureMode' type='^{__CFString=}'/>
+<constant name='kMDItemExposureProgram' type='^{__CFString=}'/>
+<constant name='kMDItemExposureTimeSeconds' type='^{__CFString=}'/>
+<constant name='kMDItemExposureTimeString' type='^{__CFString=}'/>
+<constant name='kMDItemFNumber' type='^{__CFString=}'/>
+<constant name='kMDItemFSContentChangeDate' type='^{__CFString=}'/>
+<constant name='kMDItemFSCreationDate' type='^{__CFString=}'/>
+<constant name='kMDItemFSExists' type='^{__CFString=}'/>
+<constant name='kMDItemFSHasCustomIcon' type='^{__CFString=}'/>
+<constant name='kMDItemFSInvisible' type='^{__CFString=}'/>
+<constant name='kMDItemFSIsExtensionHidden' type='^{__CFString=}'/>
+<constant name='kMDItemFSIsReadable' type='^{__CFString=}'/>
+<constant name='kMDItemFSIsStationery' type='^{__CFString=}'/>
+<constant name='kMDItemFSIsWriteable' type='^{__CFString=}'/>
+<constant name='kMDItemFSLabel' type='^{__CFString=}'/>
+<constant name='kMDItemFSName' type='^{__CFString=}'/>
+<constant name='kMDItemFSNodeCount' type='^{__CFString=}'/>
+<constant name='kMDItemFSOwnerGroupID' type='^{__CFString=}'/>
+<constant name='kMDItemFSOwnerUserID' type='^{__CFString=}'/>
+<constant name='kMDItemFSSize' type='^{__CFString=}'/>
+<constant name='kMDItemFinderComment' type='^{__CFString=}'/>
+<constant name='kMDItemFlashOnOff' type='^{__CFString=}'/>
+<constant name='kMDItemFocalLength' type='^{__CFString=}'/>
+<constant name='kMDItemFocalLength35mm' type='^{__CFString=}'/>
+<constant name='kMDItemFonts' type='^{__CFString=}'/>
+<constant name='kMDItemGPSAreaInformation' type='^{__CFString=}'/>
+<constant name='kMDItemGPSDOP' type='^{__CFString=}'/>
+<constant name='kMDItemGPSDateStamp' type='^{__CFString=}'/>
+<constant name='kMDItemGPSDestBearing' type='^{__CFString=}'/>
+<constant name='kMDItemGPSDestDistance' type='^{__CFString=}'/>
+<constant name='kMDItemGPSDestLatitude' type='^{__CFString=}'/>
+<constant name='kMDItemGPSDestLongitude' type='^{__CFString=}'/>
+<constant name='kMDItemGPSDifferental' type='^{__CFString=}'/>
+<constant name='kMDItemGPSMapDatum' type='^{__CFString=}'/>
+<constant name='kMDItemGPSMeasureMode' type='^{__CFString=}'/>
+<constant name='kMDItemGPSProcessingMethod' type='^{__CFString=}'/>
+<constant name='kMDItemGPSStatus' type='^{__CFString=}'/>
+<constant name='kMDItemGPSTrack' type='^{__CFString=}'/>
+<constant name='kMDItemGenre' type='^{__CFString=}'/>
+<constant name='kMDItemHasAlphaChannel' type='^{__CFString=}'/>
+<constant name='kMDItemHeadline' type='^{__CFString=}'/>
+<constant name='kMDItemISOSpeed' type='^{__CFString=}'/>
+<constant name='kMDItemIdentifier' type='^{__CFString=}'/>
+<constant name='kMDItemImageDirection' type='^{__CFString=}'/>
+<constant name='kMDItemInformation' type='^{__CFString=}'/>
+<constant name='kMDItemInstantMessageAddresses' type='^{__CFString=}'/>
+<constant name='kMDItemInstructions' type='^{__CFString=}'/>
+<constant name='kMDItemIsApplicationManaged' type='^{__CFString=}'/>
+<constant name='kMDItemIsGeneralMIDISequence' type='^{__CFString=}'/>
+<constant name='kMDItemIsLikelyJunk' type='^{__CFString=}'/>
+<constant name='kMDItemKeySignature' type='^{__CFString=}'/>
+<constant name='kMDItemKeywords' type='^{__CFString=}'/>
+<constant name='kMDItemKind' type='^{__CFString=}'/>
+<constant name='kMDItemLabelID' type='^{__CFString=}'/>
+<constant name='kMDItemLabelIcon' type='^{__CFString=}'/>
+<constant name='kMDItemLabelKind' type='^{__CFString=}'/>
+<constant name='kMDItemLabelUUID' type='^{__CFString=}'/>
+<constant name='kMDItemLanguages' type='^{__CFString=}'/>
+<constant name='kMDItemLastUsedDate' type='^{__CFString=}'/>
+<constant name='kMDItemLatitude' type='^{__CFString=}'/>
+<constant name='kMDItemLayerNames' type='^{__CFString=}'/>
+<constant name='kMDItemLensModel' type='^{__CFString=}'/>
+<constant name='kMDItemLongitude' type='^{__CFString=}'/>
+<constant name='kMDItemLyricist' type='^{__CFString=}'/>
+<constant name='kMDItemMaxAperture' type='^{__CFString=}'/>
+<constant name='kMDItemMediaTypes' type='^{__CFString=}'/>
+<constant name='kMDItemMeteringMode' type='^{__CFString=}'/>
+<constant name='kMDItemMusicalGenre' type='^{__CFString=}'/>
+<constant name='kMDItemMusicalInstrumentCategory' type='^{__CFString=}'/>
+<constant name='kMDItemMusicalInstrumentName' type='^{__CFString=}'/>
+<constant name='kMDItemNamedLocation' type='^{__CFString=}'/>
+<constant name='kMDItemNumberOfPages' type='^{__CFString=}'/>
+<constant name='kMDItemOrganizations' type='^{__CFString=}'/>
+<constant name='kMDItemOrientation' type='^{__CFString=}'/>
+<constant name='kMDItemOriginalFormat' type='^{__CFString=}'/>
+<constant name='kMDItemOriginalSource' type='^{__CFString=}'/>
+<constant name='kMDItemPageHeight' type='^{__CFString=}'/>
+<constant name='kMDItemPageWidth' type='^{__CFString=}'/>
+<constant name='kMDItemParticipants' type='^{__CFString=}'/>
+<constant name='kMDItemPath' type='^{__CFString=}'/>
+<constant name='kMDItemPerformers' type='^{__CFString=}'/>
+<constant name='kMDItemPhoneNumbers' type='^{__CFString=}'/>
+<constant name='kMDItemPixelCount' type='^{__CFString=}'/>
+<constant name='kMDItemPixelHeight' type='^{__CFString=}'/>
+<constant name='kMDItemPixelWidth' type='^{__CFString=}'/>
+<constant name='kMDItemProducer' type='^{__CFString=}'/>
+<constant name='kMDItemProfileName' type='^{__CFString=}'/>
+<constant name='kMDItemProjects' type='^{__CFString=}'/>
+<constant name='kMDItemPublishers' type='^{__CFString=}'/>
+<constant name='kMDItemRecipientAddresses' type='^{__CFString=}'/>
+<constant name='kMDItemRecipientEmailAddresses' type='^{__CFString=}'/>
+<constant name='kMDItemRecipients' type='^{__CFString=}'/>
+<constant name='kMDItemRecordingDate' type='^{__CFString=}'/>
+<constant name='kMDItemRecordingYear' type='^{__CFString=}'/>
+<constant name='kMDItemRedEyeOnOff' type='^{__CFString=}'/>
+<constant name='kMDItemResolutionHeightDPI' type='^{__CFString=}'/>
+<constant name='kMDItemResolutionWidthDPI' type='^{__CFString=}'/>
+<constant name='kMDItemRights' type='^{__CFString=}'/>
+<constant name='kMDItemSecurityMethod' type='^{__CFString=}'/>
+<constant name='kMDItemSpeed' type='^{__CFString=}'/>
+<constant name='kMDItemStarRating' type='^{__CFString=}'/>
+<constant name='kMDItemStateOrProvince' type='^{__CFString=}'/>
+<constant name='kMDItemStreamable' type='^{__CFString=}'/>
+<constant name='kMDItemSubject' type='^{__CFString=}'/>
+<constant name='kMDItemSupportFileType' type='^{__CFString=}'/>
+<constant name='kMDItemTempo' type='^{__CFString=}'/>
+<constant name='kMDItemTextContent' type='^{__CFString=}'/>
+<constant name='kMDItemTheme' type='^{__CFString=}'/>
+<constant name='kMDItemTimeSignature' type='^{__CFString=}'/>
+<constant name='kMDItemTimestamp' type='^{__CFString=}'/>
+<constant name='kMDItemTitle' type='^{__CFString=}'/>
+<constant name='kMDItemTotalBitRate' type='^{__CFString=}'/>
+<constant name='kMDItemURL' type='^{__CFString=}'/>
+<constant name='kMDItemVersion' type='^{__CFString=}'/>
+<constant name='kMDItemVideoBitRate' type='^{__CFString=}'/>
+<constant name='kMDItemWhereFroms' type='^{__CFString=}'/>
+<constant name='kMDItemWhiteBalance' type='^{__CFString=}'/>
+<constant name='kMDLabelAddedNotification' type='^{__CFString=}'/>
+<constant name='kMDLabelBundleURL' type='^{__CFString=}'/>
+<constant name='kMDLabelChangedNotification' type='^{__CFString=}'/>
+<constant name='kMDLabelContentChangeDate' type='^{__CFString=}'/>
+<constant name='kMDLabelDisplayName' type='^{__CFString=}'/>
+<constant name='kMDLabelIconData' type='^{__CFString=}'/>
+<constant name='kMDLabelIconUUID' type='^{__CFString=}'/>
+<constant name='kMDLabelIsMutuallyExclusiveSetMember' type='^{__CFString=}'/>
+<constant name='kMDLabelKind' type='^{__CFString=}'/>
+<constant name='kMDLabelKindIsMutuallyExclusiveSetKey' type='^{__CFString=}'/>
+<constant name='kMDLabelKindVisibilityKey' type='^{__CFString=}'/>
+<constant name='kMDLabelRemovedNotification' type='^{__CFString=}'/>
+<constant name='kMDLabelSetsFinderColor' type='^{__CFString=}'/>
+<constant name='kMDLabelUUID' type='^{__CFString=}'/>
+<constant name='kMDLabelVisibility' type='^{__CFString=}'/>
+<constant name='kMDPrivateVisibility' type='^{__CFString=}'/>
+<constant name='kMDPublicVisibility' type='^{__CFString=}'/>
+<constant name='kMDQueryDidFinishNotification' type='^{__CFString=}'/>
+<constant name='kMDQueryDidUpdateNotification' type='^{__CFString=}'/>
+<constant name='kMDQueryProgressNotification' type='^{__CFString=}'/>
+<constant name='kMDQueryResultContentRelevance' type='^{__CFString=}'/>
+<constant name='kMDQueryScopeAllIndexed' type='^{__CFString=}'/>
+<constant name='kMDQueryScopeComputer' type='^{__CFString=}'/>
+<constant name='kMDQueryScopeComputerIndexed' type='^{__CFString=}'/>
+<constant name='kMDQueryScopeHome' type='^{__CFString=}'/>
+<constant name='kMDQueryScopeNetwork' type='^{__CFString=}'/>
+<constant name='kMDQueryScopeNetworkIndexed' type='^{__CFString=}'/>
+<constant name='kMDQueryUpdateAddedItems' type='^{__CFString=}'/>
+<constant name='kMDQueryUpdateChangedItems' type='^{__CFString=}'/>
+<constant name='kMDQueryUpdateRemovedItems' type='^{__CFString=}'/>
+<enum name='kMDLabelLocalDomain' value='1'/>
+<enum name='kMDLabelUserDomain' value='0'/>
+<enum name='kMDQueryReverseSortOrderFlag' value='1'/>
+<enum name='kMDQuerySynchronous' value='1'/>
+<enum name='kMDQueryWantsUpdates' value='4'/>
+<function name='MDCopyLabelKinds'>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDCopyLabelWithUUID'>
+<arg type='^{__CFUUID=}'/>
+<retval already_retained='true' type='^{__MDLabel=}'/>
+</function>
+<function name='MDCopyLabelsMatchingExpression'>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDCopyLabelsWithKind'>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDItemCopyAttribute'>
+<arg type='^{__MDItem=}'/>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='@'/>
+</function>
+<function name='MDItemCopyAttributeList' variadic='true'>
+<arg type='^{__MDItem=}'/>
+<retval already_retained='true' type='^{__CFDictionary=}'/>
+</function>
+<function name='MDItemCopyAttributeNames'>
+<arg type='^{__MDItem=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDItemCopyAttributes'>
+<arg type='^{__MDItem=}'/>
+<arg type='^{__CFArray=}'/>
+<retval already_retained='true' type='^{__CFDictionary=}'/>
+</function>
+<function name='MDItemCopyLabels'>
+<arg type='^{__MDItem=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDItemCreate'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__MDItem=}'/>
+</function>
+<function name='MDItemCreateWithURL'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__CFURL=}'/>
+<retval already_retained='true' type='^{__MDItem=}'/>
+</function>
+<function name='MDItemGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='MDItemRemoveLabel'>
+<arg type='^{__MDItem=}'/>
+<arg type='^{__MDLabel=}'/>
+<retval type='B'/>
+</function>
+<function name='MDItemSetLabel'>
+<arg type='^{__MDItem=}'/>
+<arg type='^{__MDLabel=}'/>
+<retval type='B'/>
+</function>
+<function name='MDItemsCopyAttributes'>
+<arg type='^{__CFArray=}'/>
+<arg type='^{__CFArray=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDItemsCreateWithURLs'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__CFArray=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDLabelCopyAttribute'>
+<arg type='^{__MDLabel=}'/>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='@'/>
+</function>
+<function name='MDLabelCopyAttributeName'>
+<arg type='^{__MDLabel=}'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='MDLabelCreate'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='i'/>
+<retval already_retained='true' type='^{__MDLabel=}'/>
+</function>
+<function name='MDLabelDelete'>
+<arg type='^{__MDLabel=}'/>
+<retval type='B'/>
+</function>
+<function name='MDLabelGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='MDLabelSetAttributes'>
+<arg type='^{__MDLabel=}'/>
+<arg type='^{__CFDictionary=}'/>
+<retval type='B'/>
+</function>
+<function name='MDQueryCopyQueryString'>
+<arg type='^{__MDQuery=}'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='MDQueryCopySortingAttributes'>
+<arg type='^{__MDQuery=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDQueryCopyValueListAttributes'>
+<arg type='^{__MDQuery=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDQueryCopyValuesOfAttribute'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDQueryCreate'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='^{__CFArray=}'/>
+<arg type='^{__CFArray=}'/>
+<retval already_retained='true' type='^{__MDQuery=}'/>
+</function>
+<function name='MDQueryCreateForItems'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='^{__CFArray=}'/>
+<arg type='^{__CFArray=}'/>
+<arg type='^{__CFArray=}'/>
+<retval already_retained='true' type='^{__MDQuery=}'/>
+</function>
+<function name='MDQueryCreateSubset'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='^{__CFArray=}'/>
+<arg type='^{__CFArray=}'/>
+<retval already_retained='true' type='^{__MDQuery=}'/>
+</function>
+<function name='MDQueryDisableUpdates'>
+<arg type='^{__MDQuery=}'/>
+</function>
+<function name='MDQueryEnableUpdates'>
+<arg type='^{__MDQuery=}'/>
+</function>
+<function name='MDQueryExecute'>
+<arg type='^{__MDQuery=}'/>
+<arg type64='Q' type='L'/>
+<retval type='B'/>
+</function>
+<function name='MDQueryGetAttributeValueOfResultAtIndex'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFString=}'/>
+<arg type64='q' type='l'/>
+<retval type='^v'/>
+</function>
+<function name='MDQueryGetBatchingParameters'>
+<arg type='^{__MDQuery=}'/>
+<retval type64='{_MDQueryBatchingParams=QQQQQQ}' type='{_MDQueryBatchingParams=IIIIII}'/>
+</function>
+<function name='MDQueryGetCountOfResultsWithAttributeValue'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='@'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='MDQueryGetIndexOfResult'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^v'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='MDQueryGetResultAtIndex'>
+<arg type='^{__MDQuery=}'/>
+<arg type64='q' type='l'/>
+<retval type='^v'/>
+</function>
+<function name='MDQueryGetResultCount'>
+<arg type='^{__MDQuery=}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='MDQueryGetSortOptionFlagsForAttribute'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFString=}'/>
+<retval type='I'/>
+</function>
+<function name='MDQueryGetTypeID'>
+<retval type64='Q' type='L'/>
+</function>
+<function name='MDQueryIsGatheringComplete'>
+<arg type='^{__MDQuery=}'/>
+<retval type='B'/>
+</function>
+<function name='MDQuerySetBatchingParameters'>
+<arg type='^{__MDQuery=}'/>
+<arg type64='{_MDQueryBatchingParams=QQQQQQ}' type='{_MDQueryBatchingParams=IIIIII}'/>
+</function>
+<function name='MDQuerySetCreateResultFunction'>
+<arg type='^{__MDQuery=}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__MDItem=}'/>
+<arg type='^v'/>
+<retval type='^v'/>
+</arg>
+<arg type='^v'/>
+<arg type64='^{_CFArrayCallBacks=q^?^?^?^?}' type='^{_CFArrayCallBacks=i^?^?^?^?}'/>
+</function>
+<function name='MDQuerySetCreateValueFunction'>
+<arg type='^{__MDQuery=}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='@'/>
+<arg type='^v'/>
+<retval type='^v'/>
+</arg>
+<arg type='^v'/>
+<arg type64='^{_CFArrayCallBacks=q^?^?^?^?}' type='^{_CFArrayCallBacks=i^?^?^?^?}'/>
+</function>
+<function name='MDQuerySetDispatchQueue'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{dispatch_queue_s=}'/>
+</function>
+<function name='MDQuerySetMaxCount'>
+<arg type='^{__MDQuery=}'/>
+<arg type64='q' type='l'/>
+</function>
+<function name='MDQuerySetSearchScope'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFArray=}'/>
+<arg type64='I' type='L'/>
+</function>
+<function name='MDQuerySetSortComparator'>
+<arg type='^{__MDQuery=}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^^v'/>
+<arg type='^^v'/>
+<arg type='^v'/>
+<retval type64='q' type='l'/>
+</arg>
+<arg type='^v'/>
+</function>
+<function name='MDQuerySetSortComparatorBlock'>
+<arg type='^{__MDQuery=}'/>
+<arg function_pointer='true' type='@?'>
+<arg type='^^v'/>
+<arg type='^^v'/>
+<retval type64='q' type='l'/>
+</arg>
+</function>
+<function name='MDQuerySetSortOptionFlagsForAttribute'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFString=}'/>
+<arg type='I'/>
+<retval type='B'/>
+</function>
+<function name='MDQuerySetSortOrder'>
+<arg type='^{__MDQuery=}'/>
+<arg type='^{__CFArray=}'/>
+<retval type='B'/>
+</function>
+<function name='MDQueryStop'>
+<arg type='^{__MDQuery=}'/>
+</function>
+<function name='MDSchemaCopyAllAttributes'>
+<retval already_retained='true' type='^{__CFArray=}'/>
+</function>
+<function name='MDSchemaCopyAttributesForContentType'>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__CFDictionary=}'/>
+</function>
+<function name='MDSchemaCopyDisplayDescriptionForAttribute'>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='MDSchemaCopyDisplayNameForAttribute'>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='MDSchemaCopyMetaAttributesForAttribute'>
+<arg type='^{__CFString=}'/>
+<retval already_retained='true' type='^{__CFDictionary=}'/>
+</function>
+</signatures>

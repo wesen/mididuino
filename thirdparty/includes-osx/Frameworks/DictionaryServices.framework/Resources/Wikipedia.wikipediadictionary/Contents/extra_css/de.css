@@ -1,0 +1,168 @@
+
+/*========================================================================================
+ Extra styles for de
+*/
+.Person {
+	font-variant: small-caps;
+	font-style: normal;
+}
+
+div.NavFrame,
+div.NavPic {
+	position: relative;
+	display: block;
+}
+
+div.BoxenVerschmelzen {
+	clear: both;
+	margin: 1.5em 0 0;
+	border: 1px solid #aaa;
+	padding: 2px 0 0;
+	font-size: 95%;
+}
+div.BoxenVerschmelzen div.NavFrame {
+	margin-top: 0;
+	border-style: none;
+	padding-top: 0;
+	font-size: 100%;
+}
+
+.prettytable {
+	margin: 1em 1em 1em 0;
+	background: #f9f9f9;
+	border: 1px #aaa solid;
+	border-collapse: collapse;
+}
+.prettytable th,
+.prettytable td {
+	border: 1px #aaa solid;
+	padding: 0.2em;
+}
+.prettytable th {
+	text-align: center;
+}
+.prettytable caption {
+	font-weight: bold;
+}
+
+table.wikitable.zebra tr:nth-child(even) {
+	background: white;
+}
+
+ol.references li div.sisterproject {
+	display: inline;
+}
+
+.nogrid th,
+.nogrid td {
+	border: none;
+}
+div.float-left,
+table.float-left,
+.float-left {
+	float: left;
+	clear: left;
+}
+div.float-right,
+table.float-right,
+.float-right {
+	float: right;
+	clear: right;
+	margin: 1em 0 1em 1em;
+}
+div.centered,
+table.centered,
+.centered {
+	margin-left: auto;
+	margin-right: auto;
+}
+.toptextcells td {
+	vertical-align: top;
+}
+
+.rahmenfarbe1 {
+	border-color: #aaaaaa;
+	border-width: 1px;
+}
+.rahmenfarbe2 {
+	border-color: #e9e9e9;
+	border-width: 1px;
+}
+.rahmenfarbe3 {
+	border-color: #c00000;
+	border-width: 1px;
+}
+.rahmenfarbe4 {
+	border-color: #8888aa;
+	border-width: 1px;
+}
+.rahmenfarbe5 {
+	border-color: #000000;
+	border-width: 1px;
+}
+
+tr.hintergrundfarbe1 th,
+tr th.hintergrundfarbe1,
+table.hintergrundfarbe1,
+.hintergrundfarbe1 {
+	background-color: #f9f9f9;
+}
+tr.hintergrundfarbe2 th,
+tr th.hintergrundfarbe2,
+table.hintergrundfarbe2,
+.hintergrundfarbe2 {
+	background-color: #ffffff;
+}
+tr.hintergrundfarbe3 th,
+tr th.hintergrundfarbe3,
+table.hintergrundfarbe3,
+.hintergrundfarbe3 {
+	background-color: #ffff40;
+}
+tr.hintergrundfarbe4 th,
+tr th.hintergrundfarbe4,
+table.hintergrundfarbe4,
+.hintergrundfarbe4 {
+	background-color: #ffaa00;
+}
+tr.hintergrundfarbe5 th,
+tr th.hintergrundfarbe5,
+table.hintergrundfarbe5,
+.hintergrundfarbe5 {
+	background-color: #e0e0e0;
+}
+tr.hintergrundfarbe6 th,
+tr th.hintergrundfarbe6,
+table.hintergrundfarbe6,
+.hintergrundfarbe6 {
+	background-color: #b3b7ff;
+}
+tr.hintergrundfarbe7 th,
+tr th.hintergrundfarbe7,
+table.hintergrundfarbe7,
+.hintergrundfarbe7 {
+	background-color: #ffcbcb;
+}
+tr.hintergrundfarbe8 th,
+tr th.hintergrundfarbe8,
+table.hintergrundfarbe8,
+.hintergrundfarbe8 {
+	background-color: #ffebad;
+}
+tr.hintergrundfarbe9 th,
+tr th.hintergrundfarbe9,
+table.hintergrundfarbe9,
+.hintergrundfarbe9 {
+	background-color: #b9ffc5;
+}
+
+.mw-hierotable,
+.mw-hierotable th,
+.mw-hierotable td {
+	border: 0;
+	padding: 0;
+}
+
+.geo {
+	display: none;
+}

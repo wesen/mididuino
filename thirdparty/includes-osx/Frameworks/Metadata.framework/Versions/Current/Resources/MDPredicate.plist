@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DATES</key>
+	<dict>
+		<key>NEXT_MONTH</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.this_month(+1),$time.this_month(+2)) || (InRange(kMDItemDueDate,$time.this_month(+1),$time.this_month(+2))))</string>
+		<key>NEXT_WEEK</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.this_week(+1),$time.this_week(+2)) || (InRange(kMDItemDueDate,$time.this_week(+1),$time.this_week(+2))))</string>
+		<key>NEXT_YEAR</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.this_year(+1),$time.this_year(+2)) || (InRange(kMDItemDueDate,$time.this_year(+1),$time.this_year(+2))))</string>
+		<key>THIS_MONTH</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.this_month,$time.this_month(+1)) || (InRange(kMDItemDueDate,$time.this_month,$time.this_month(+1))))</string>
+		<key>THIS_WEEK</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.this_week,$time.this_week(+1)) || (InRange(kMDItemDueDate,$time.this_week,$time.this_week(+1))))</string>
+		<key>THIS_YEAR</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.this_year,$time.this_year(+1)) || (InRange(kMDItemDueDate,$time.this_year,$time.this_year(+1))))</string>
+		<key>TODAY</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.today,$time.today(+1)) || (InRange(kMDItemDueDate,$time.today,$time.today(+1))))</string>
+		<key>TOMORROW</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.today(+1),$time.today(+2)) || (InRange(kMDItemDueDate,$time.today(+1),$time.today(+2))))</string>
+		<key>YESTERDAY</key>
+		<string>(InRange(kMDItemLastUsedDate,$time.today(-1),$time.today) || (InRange(kMDItemDueDate,$time.today(-1),$time.today)))</string>
+	</dict>
+	<key>KINDS</key>
+	<dict>
+		<key>APPLICATIONS</key>
+		<string>kMDItemContentTypeTree = com.apple.application || kMDItemContentTypeTree = com.apple.dashboard-widget || kMDItemContentTypeTree = com.sun.java-archive</string>
+		<key>BOOKMARKS</key>
+		<string>kMDItemContentTypeTree = com.apple.safari.bookmark || kMDItemContentTypeTree = public.bookmark</string>
+		<key>CONTACT</key>
+		<string>kMDItemContentTypeTree = public.contact || kMDItemContentTypeTree = com.apple.addressbook.group || kMDItemContentTypeTree = com.microsoft.entourage.virtual.group</string>
+		<key>DIRECTORIES</key>
+		<string>kMDItemContentTypeTree = public.folder || kMDItemContentTypeTree = com.apple.mount-point</string>
+		<key>DOCUMENTS</key>
+		<string>kMDItemContentTypeTree != com.apple.application &amp;&amp; kMDItemContentTypeTree != com.apple.dashboard-widget &amp;&amp; kMDItemContentTypeTree != com.sun.java-archive &amp;&amp; kMDItemContentTypeTree != public.contact &amp;&amp; kMDItemContentTypeTree != com.apple.addressbook.group &amp;&amp; kMDItemContentTypeTree != com.microsoft.entourage.virtual.group &amp;&amp; kMDItemContentTypeTree != public.folder &amp;&amp; kMDItemContentTypeTree != com.apple.mount-point &amp;&amp; kMDItemContentTypeTree != public.email-message &amp;&amp; kMDItemContentTypeTree != com.apple.mail.emlx &amp;&amp; kMDItemContentTypeTree != public.calendar-event &amp;&amp; kMDItemContentTypeTree != public.image &amp;&amp; kMDItemContentTypeTree != public.movie &amp;&amp; kMDItemContentTypeTree != public.audio &amp;&amp; kMDItemContentTypeTree != com.adobe.pdf &amp;&amp; kMDItemContentTypeTree != com.apple.systempreference.prefpane &amp;&amp; kMDItemContentTypeTree != public.to-do-item &amp;&amp; kMDItemContentTypeTree != com.apple.ical.bookmark &amp;&amp; kMDItemContentTypeTree != com.apple.safari.bookmark &amp;&amp; kMDItemContentTypeTree != public.bookmark &amp;&amp; kMDItemContentTypeTree != public.font &amp;&amp; kMDItemContentTypeTree != public.presentation</string>
+		<key>EMAIL</key>
+		<string>kMDItemContentTypeTree = public.email-message || kMDItemContentTypeTree = com.apple.mail.emlx</string>
+		<key>EVENT</key>
+		<string>kMDItemContentTypeTree = public.calendar-event</string>
+		<key>FONTS</key>
+		<string>kMDItemContentTypeTree = public.font</string>
+		<key>IMAGES</key>
+		<string>kMDItemContentTypeTree = public.image</string>
+		<key>MESSAGES</key>
+		<string>kMDItemContentTypeTree = public.message || kMDItemContentTypeTree = com.apple.mail.emlx</string>
+		<key>MOVIES</key>
+		<string>kMDItemContentTypeTree = public.movie</string>
+		<key>MUSIC</key>
+		<string>kMDItemContentTypeTree = public.audio</string>
+		<key>PDF</key>
+		<string>kMDItemContentTypeTree = com.adobe.pdf</string>
+		<key>PRESENTATIONS</key>
+		<string>kMDItemContentTypeTree = public.presentation</string>
+		<key>SYSTEM_PREFS</key>
+		<string>kMDItemContentTypeTree = com.apple.systempreference.prefpane</string>
+		<key>TODO</key>
+		<string>kMDItemContentTypeTree = public.to-do-item || kMDItemContentTypeTree = com.apple.ical.bookmark</string>
+		<key>EVENT_TODO</key>
+		<string>kMDItemContentTypeTree = public.calendar-event || kMDItemContentTypeTree = public.to-do-item || kMDItemContentTypeTree = com.apple.ical.bookmark</string>
+		<key>SOURCE</key>
+		<string>kMDItemContentTypeTree = public.source-code || kMDItemContentTypeTree = public.html</string>
+		<key>TEXT</key>
+		<string>kMDItemContentTypeTree = com.apple.iwork.pages.page || kMDItemContentTypeTree = com.apple.iwork.pages.sffpage || kMDItemContentTypeTree=com.apple.iwork.pages.template ||  kMDItemContentTypeTree=com.apple.iwork.pages.sfftemplate ||  kMDItemContentTypeTree=public.rtf ||  kMDItemContentTypeTree=com.apple.rtfd ||  kMDItemContentTypeTree=com.microsoft.word.doc ||  kMDItemContentTypeTree=public.plain-text</string>
+		<key>SPREADSHEETS</key>
+		<string> kMDItemContentTypeTree=com.apple.iwork.numbers.sffnumbers ||  kMDItemContentTypeTree=com.apple.iwork.numbers.numbers  || kMDItemContentTypeTree=com.apple.iwork.numbers.template || kMDItemContentTypeTree =com.microsoft.excel.xls</string>
+	</dict>
+</dict>
+</plist>

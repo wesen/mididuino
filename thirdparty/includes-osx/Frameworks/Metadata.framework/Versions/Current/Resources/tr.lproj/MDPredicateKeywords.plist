@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MESSAGES</key>
+	<array>
+		<string>kind:message</string>
+		<string>kind:messages</string>
+		
+		<string>tür:message</string>
+		<string>tür:messages</string>
+		
+		<string>kind:mesaj</string>
+		<string>kind:mesajlar</string>
+
+		<string>tür:mesaj</string>
+		<string>tür:mesajlar</string>
+		
+	</array>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>kind:application</string>
+		<string>kind:applications</string>
+		<string>kind:app</string>
+
+		<string>kind:uygulama</string>
+		<string>kind:uygulamalar</string>
+
+		<string>tür:application</string>
+		<string>tür:applications</string>
+		<string>tür:app</string>
+
+		<string>tür:uygulama</string>
+		<string>tür:uygulamalar</string>
+		<string>tür:aplikasyon</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>kind:contact</string>
+		<string>kind:contacts</string>
+
+		<string>kind:kişi</string>
+		<string>kind:kişiler</string>
+
+		<string>tür:contact</string>
+		<string>tür:contacts</string>
+
+		<string>tür:kişi</string>
+		<string>tür:kişiler</string>
+		<string>tür:kontakt</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>kind:document</string>
+		<string>kind:documents</string>
+
+		<string>kind:belge</string>
+		<string>kind:belgeler</string>
+
+		<string>tür:document</string>
+		<string>tür:documents</string>
+
+		<string>tür:belge</string>
+		<string>tür:belgeler</string>
+		<string>tür:doküman</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>kind:folder</string>
+		<string>kind:folders</string>
+
+		<string>kind:klasör</string>
+		<string>kind:klasörler</string>
+
+		<string>tür:folder</string>
+		<string>tür:folders</string>
+
+		<string>tür:klasör</string>
+		<string>tür:klasörler</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>kind:email</string>
+		<string>kind:emails</string>
+		<string>kind:mail message</string>
+		<string>kind:mail messages</string>
+
+		<string>tür:email</string>
+		<string>tür:emails</string>
+		<string>tür:mail message</string>
+		<string>tür:mail messages</string>
+
+		<string>kind:e-posta</string>
+		<string>kind:e-postalar</string>
+		<string>kind:posta iletisi</string>
+		<string>kind:posta iletileri</string>
+
+		<string>tür:e-posta</string>
+		<string>tür:e-postalar</string>
+		<string>tür:eposta</string>
+		<string>tür:epostalar</string>
+		<string>tür:posta iletisi</string>
+		<string>tür:posta iletileri</string>
+		<string>tür:posta mesajı</string>
+		<string>tür:posta mesajları</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>kind:event</string>
+		<string>kind:events</string>
+
+		<string>kind:etkinlik</string>
+		<string>kind:etkinlikler</string>
+
+		<string>tür:event</string>
+		<string>tür:events</string>
+
+		<string>tür:etkinlik</string>
+		<string>tür:etkinlikler</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>kind:todo</string>
+		<string>kind:todos</string>
+		<string>kind:to do</string>
+
+		<string>kind:yapılacak</string>
+		<string>kind:yapılacaklar</string>
+
+		<string>tür:todo</string>
+		<string>tür:todos</string>
+		<string>tür:to do</string>
+
+		<string>tür:yapılacak</string>
+		<string>tür:yapılacaklar</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>kind:events &amp; to dos</string>
+		<string>kind:event OR kind:todo</string>
+		<string>kind:todo OR kind:event</string>
+
+		<string>kind:etkinlikler &amp; yapılacaklar</string>
+		<string>kind:etkinlik OR kind:yapılacak</string>
+		<string>kind:yapılacak OR kind:etkinlik</string>
+
+		<string>tür:etkinlikler &amp; yapılacaklar</string>
+		<string>tür:etkinlik OR tür:yapılacak</string>
+		<string>tür:yapılacak OR tür:etkinlik</string>
+
+		<string>tür:events &amp; to dos</string>
+		<string>tür:event OR tür:todo</string>
+		<string>tür:todo OR tür:event</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>kind:image</string>
+		<string>kind:images</string>
+
+		<string>kind:görüntü</string>
+		<string>kind:görüntüler</string>
+		<string>kind:imaj</string>
+
+		<string>tür:image</string>
+		<string>tür:images</string>
+
+		<string>tür:görüntü</string>
+		<string>tür:görüntüler</string>
+		<string>tür:imaj</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>kind:movie</string>
+		<string>kind:movies</string>
+
+		<string>kind:film</string>
+		<string>kind:filmler</string>
+
+		<string>tür:movie</string>
+		<string>tür:movies</string>
+
+		<string>tür:film</string>
+		<string>tür:filmler</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>kind:music</string>
+		<string>kind:audio</string>
+
+		<string>kind:müzik</string>
+		<string>kind:müzikler</string>
+		<string>kind:ses</string>
+		<string>kind:sesler</string>
+
+		<string>tür:music</string>
+		<string>tür:audio</string>
+
+		<string>tür:müzik</string>
+		<string>tür:müzikler</string>
+		<string>tür:ses</string>
+		<string>tür:sesler</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>date:next month</string>
+
+		<string>date:gelecek ay</string>
+
+		<string>tarih:next month</string>
+
+		<string>tarih:gelecek ay</string>
+		<string>tarih:sonraki ay</string>
+		<string>tarih:önümüzdeki ay</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>date:next week</string>
+
+		<string>date:gelecek hafta</string>
+
+		<string>tarih:next week</string>
+
+		<string>tarih:gelecek hafta</string>
+		<string>tarih:sonraki hafta</string>
+		<string>tarih:önümüzdeki hafta</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>date:next year</string>
+
+		<string>date:gelecek yıl</string>
+
+		<string>tarih:next year</string>
+
+		<string>tarih:gelecek yıl</string>
+		<string>tarih:sonraki yıl</string>
+		<string>tarih:önümüzdeki yıl</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>kind:pdf</string>
+		<string>kind:pdfs</string>
+		<string>kind:pdf document</string>
+		<string>kind:pdf documents</string>
+
+		<string>tür:pdf</string>
+		<string>tür:pdfs</string>
+		<string>tür:pdf document</string>
+		<string>tür:pdf documents</string>
+
+		<string>kind:pdf</string>
+		<string>kind:pdf'ler</string>
+		<string>kind:pdfler</string>
+		<string>kind:pdf belge</string>
+		<string>kind:pdf belgesi</string>
+		<string>kind:pdf belgeleri</string>
+
+		<string>tür:pdf</string>
+		<string>tür:pdf'ler</string>
+		<string>tür:pdfler</string>
+		<string>tür:pdf belge</string>
+		<string>tür:pdf belgesi</string>
+		<string>tür:pdf belgeleri</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>kind:system preferences</string>
+		<string>kind:preferences</string>
+
+		<string>tür:system preferences</string>
+		<string>tür:preferences</string>
+
+		<string>kind:sistem tercihleri</string>
+		<string>kind:tercihler</string>
+
+		<string>tür:sistem tercihleri</string>
+		<string>tür:tercihler</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>date:this month</string>
+
+		<string>tarih:this month</string>
+
+		<string>date:bu ay</string>
+
+		<string>tarih:bu ay</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>date:this week</string>
+
+		<string>tarih:this week</string>
+
+		<string>date:bu hafta</string>
+
+		<string>tarih:bu hafta</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>date:this year</string>
+
+		<string>tarih:this year</string>
+
+		<string>date:bu yıl</string>
+
+		<string>tarih:bu yıl</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>date:today</string>
+
+		<string>date:bugün</string>
+
+		<string>tarih:today</string>
+
+		<string>tarih:bugün</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>date:tomorrow</string>
+
+		<string>tarih:tomorrow</string>
+
+		<string>date:yarın</string>
+
+		<string>tarih:yarın</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>date:yesterday</string>
+
+		<string>tarih:yesterday</string>
+
+		<string>date:dün</string>
+
+		<string>tarih:dün</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>kind:bookmark</string>
+		<string>kind:bookmarks</string>
+		<string>kind:webpage</string>
+		<string>kind:webpages</string>
+
+		<string>tür:bookmark</string>
+		<string>tür:bookmarks</string>
+		<string>tür:webpage</string>
+		<string>tür:webpages</string>
+
+		<string>kind:yer işareti</string>
+		<string>kind:yer işaretleri</string>
+		<string>kind:yer imi</string>
+		<string>kind:yer imleri</string>
+		<string>kind:web sayfası</string>
+		<string>kind:web sayfaları</string>
+
+		<string>tür:yer işareti</string>
+		<string>tür:yer işaretleri</string>
+		<string>tür:yer imi</string>
+		<string>tür:yer imleri</string>
+		<string>tür:web sayfası</string>
+		<string>tür:web sayfaları</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>kind:font</string>
+		<string>kind:fonts</string>
+
+		<string>tür:font</string>
+		<string>tür:fonts</string>
+
+		<string>kind:fontlar</string>
+
+		<string>tür:yazıtipi</string>
+		<string>tür:fontlar</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>kind:presentations</string>
+		<string>kind:presentation</string>
+
+		<string>kind:sunular</string>
+		<string>kind:sunu</string>
+		<string>kind:sunumlar</string>
+		<string>kind:sunum</string>
+		<string>kind:prezantasyon</string>
+
+		<string>tür:presentations</string>
+		<string>tür:presentation</string>
+
+		<string>tür:sunular</string>
+		<string>tür:sunu</string>
+		<string>tür:sunumlar</string>
+		<string>tür:sunum</string>
+		<string>tür:prezantasyon</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>kind:spreadsheets</string>
+		<string>kind:spreadsheet</string>
+
+		<string>tür:spreadsheets</string>
+		<string>tür:spreadsheet</string>
+
+		<string>kind:hesap tabloları</string>
+		<string>kind:hesap tablosu</string>
+
+		<string>tür:hesap tabloları</string>
+		<string>tür:hesap tablosu</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>kind:source</string>
+
+		<string>tür:source</string>
+
+		<string>kind:source</string>
+
+		<string>tür:kaynak</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>kind:text</string>
+
+		<string>kind:metin</string>
+		<string>kind:tekst</string>
+
+		<string>tür:metin</string>
+		<string>tür:tekst</string>
+		<string>tür:text</string>
+	</array>
+</dict>
+</plist>

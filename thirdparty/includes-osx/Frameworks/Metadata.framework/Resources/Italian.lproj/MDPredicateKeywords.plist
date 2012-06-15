@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>classe:applicazione</string>
+		<string>classe:applicazioni</string>
+		<string>classe:app</string>
+		<string>classe:programma</string>
+		<string>classe:programmi</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>classe:preferito</string>
+		<string>classe:preferiti</string>
+		<string>classe:segnalibro</string>
+		<string>classe:segnalibri</string>
+		<string>classe:pagina web</string>
+		<string>classe:pagine web</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>classe:contatto</string>
+		<string>classe:contatti</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>classe:cartella</string>
+		<string>classi:cartelle</string>
+		<string>classe:directory</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>classe:documento</string>
+		<string>classe:documenti</string>
+		<string>classe:file</string>
+		<string>classe:archivio</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>classe:e-mail</string>
+		<string>classe:messaggio di posta</string>
+		<string>classe:messaggi di posta</string>
+		<string>classe:email</string>
+		<string>classe:email</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>classe:evento</string>
+		<string>classe:eventi</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>classe:eventi e attività</string>
+		<string>classe:evento O classe:attività</string>
+		<string>classe:attività O classe:evento</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>classe:font</string>
+		<string>classe:carattere</string>
+		<string>classe:caratteri</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>classe:immagine</string>
+		<string>classe:immagini</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>classe:messaggio</string>
+		<string>classe:messaggi</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>classe:filmato</string>
+		<string>classe:filmati</string>
+		<string>classe:film</string>
+		<string>classe:video</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>classe:musica</string>
+		<string>classe:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>data:il mese successivo</string>
+		<string>data:il mese prossimo</string>
+		<string>data:mese successivo</string>
+		<string>data:mese prossimo</string>
+		<string>data:prossimo mese</string>
+		</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>data:la prossima settimana</string>
+		<string>data:la settimana successiva</string>
+		<string>data:prossima settimana</string>
+		<string>data:settimana prossima</string>
+		<string>data:settimana successiva</string>
+		</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>data:l&apos;anno prossimo</string>
+		<string>data:anno prossimo</string>
+		<string>data:anno successivo</string>
+		<string>data:l&apos;anno successivo</string>
+		<string>data:prossimo anno</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>classe:pdf</string>
+		<string>classe:pdf</string>
+		<string>classe:documento pdf</string>
+		<string>classe:documenti pdf</string>
+		<string>classe:file pdf</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>classe:presentazioni</string>
+		<string>classe:presentazione</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>classe:sorgente</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>classe:fogli di calcolo</string>
+		<string>classe:foglio di calcolo</string>
+		<string>classe:fogli di lavoro</string>
+		<string>classe:foglio di lavoro</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>classe:preferenze di sistema</string>
+		<string>classe:preferenze</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>classe:testo</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>data:questo mese</string>
+		<string>data:mese corrente</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>data:questa settimana</string>
+		<string>data:settimana corrente</string>
+		</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>data:quest&apos;anno</string>
+		<string>data:anno corrente</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>data:oggi</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>classe:attività</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>data:domani</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>data:ieri</string>
+	</array>
+</dict>
+</plist>

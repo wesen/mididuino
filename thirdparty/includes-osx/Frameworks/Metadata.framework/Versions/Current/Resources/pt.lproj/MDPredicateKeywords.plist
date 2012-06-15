@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>tipo:aplicativo</string>
+		<string>tipo:aplicativos</string>
+		<string>tipo:aplic.</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>tipo:favorito</string>
+		<string>tipo:favoritos</string>
+		<string>tipo:página web</string>
+		<string>tipo:páginas web</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>tipo:contato</string>
+		<string>tipo:contatos</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>tipo:pasta</string>
+		<string>tipo:pastas</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>tipo:documento</string>
+		<string>tipo:documentos</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>tipo:e-mail</string>
+		<string>tipo:e-mails</string>
+		<string>tipo:mensagem de correio</string>
+		<string>tipo:mensagens de correio</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>tipo:evento</string>
+		<string>tipo:eventos</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>tipo:eventos e tarefas</string>
+		<string>tipo:evento OU tipo:tarefa</string>
+		<string>tipo:tarefa OU tipo:evento</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>tipo:fonte</string>
+		<string>tipo:fontes</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>tipo:imagem</string>
+		<string>tipo:imagens</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>tipo:mensagem</string>
+		<string>tipo:mensagens</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>tipo:filme</string>
+		<string>tipo:filmes</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>tipo:música</string>
+		<string>tipo:áudio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>data:próximo mês</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>data:próxima semana</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>data:próximo ano</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>tipo:pdf</string>
+		<string>tipo:pdfs</string>
+		<string>tipo:documento pdf</string>
+		<string>tipo:documentos pdf</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>tipo:apresentações</string>
+		<string>tipo:apresentação</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>tipo:origem</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>tipo:planilhas eletrônicas</string>
+		<string>tipo:planilha eletrônica</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>tipo:preferências do sistema</string>
+		<string>tipo:preferências</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>tipo:texto</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>data:este mês</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>data:esta semana</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>data:este ano</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>data:hoje</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>tipo:tarefa</string>
+		<string>tipo:tarefas</string>
+		<string>tipo:tarefa</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>data:amanhã</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>data:ontem</string>
+	</array>
+</dict>
+</plist>

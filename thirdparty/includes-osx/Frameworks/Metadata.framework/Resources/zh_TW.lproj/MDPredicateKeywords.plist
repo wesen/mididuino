@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>kind:應用程式</string>
+		<string>種類:application</string>
+		<string>種類:應用程式</string>
+		<string>kind:應用程式</string>
+		<string>種類:applications</string>
+		<string>種類:應用程式</string>
+		<string>kind:應用程式</string>
+		<string>種類:app</string>
+		<string>種類:應用程式</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>kind:書籤</string>
+		<string>種類:bookmarks</string>
+		<string>種類:書籤</string>
+		<string>kind:網頁</string>
+		<string>種類:webpages</string>
+		<string>種類:網頁</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>kind:聯絡資訊</string>
+		<string>種類:contact</string>
+		<string>種類:聯絡資訊</string>
+		<string>kind:聯絡資訊</string>
+		<string>種類:contacts</string>
+		<string>種類:聯絡資訊</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>kind:檔案夾</string>
+		<string>種類:folder</string>
+		<string>種類:檔案夾</string>
+		<string>kind:檔案夾</string>
+		<string>種類:folders</string>
+		<string>種類:檔案夾</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>kind:文件</string>
+		<string>種類:document</string>
+		<string>種類:文件</string>
+		<string>kind:文件</string>
+		<string>種類:documents</string>
+		<string>種類:文件</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>kind:電子郵件</string>
+		<string>種類:email</string>
+		<string>種類:電子郵件</string>
+		<string>kind:電子郵件</string>
+		<string>種類:emails</string>
+		<string>種類:電子郵件</string>
+		<string>kind:郵件</string>
+		<string>種類:mail message</string>
+		<string>種類:郵件</string>
+		<string>kind:郵件</string>
+		<string>種類:mail messages</string>
+		<string>種類:郵件</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>kind:事件</string>
+		<string>種類:event</string>
+		<string>種類:事件</string>
+		<string>kind:事件</string>
+		<string>種類:events</string>
+		<string>種類:事件</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>kind:事件 &amp; 待辦事項</string>
+		<string>種類:events &amp; to dos</string>
+		<string>種類:事件 &amp; 待辦事項</string>
+		<string>kind:事件 OR 種類:待辦事項</string>
+		<string>種類:event OR kind:todo</string>
+		<string>種類:event OR 種類:todo</string>
+		<string>種類:事件 OR 種類:待辦事項</string>
+		<string>kind:待辦事項 OR 種類:事件</string>
+		<string>種類:todo OR kind:event</string>
+		<string>種類:todo OR 種類:event</string>
+		<string>種類:待辦事項 OR 種類:事件</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>kind:字體</string>
+		<string>種類:font</string>
+		<string>種類:字體</string>
+		<string>kind:字體</string>
+		<string>種類:fonts</string>
+		<string>種類:字體</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>kind:影像</string>
+		<string>種類:image</string>
+		<string>種類:影像</string>
+		<string>kind:影像</string>
+		<string>種類:images</string>
+		<string>種類:影像</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>kind:郵件</string>
+		<string>種類:message</string>
+		<string>種類:郵件</string>
+		<string>kind:郵件</string>
+		<string>種類:messages</string>
+		<string>種類:郵件</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>kind:影片</string>
+		<string>種類:movie</string>
+		<string>種類:影片</string>
+		<string>kind:影片</string>
+		<string>種類:movies</string>
+		<string>種類:影片</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>kind:音樂</string>
+		<string>種類:music</string>
+		<string>種類:音樂</string>
+		<string>kind:音訊</string>
+		<string>種類:audio</string>
+		<string>種類:音訊</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>date:下個月</string>
+		<string>日期:next month</string>
+		<string>日期:下個月</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>date:下一週</string>
+		<string>日期:next week</string>
+		<string>日期:下一週</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>date:明年</string>
+		<string>日期:next year</string>
+		<string>日期:明年</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>kind:pdf</string>
+		<string>種類:pdf</string>
+		<string>種類:pdf</string>
+		<string>kind:pdfs</string>
+		<string>種類:pdfs</string>
+		<string>種類:pdfs</string>
+		<string>kind:pdf 文件</string>
+		<string>種類:pdf document</string>
+		<string>種類:pdf 文件</string>
+		<string>kind:pdf 文件</string>
+		<string>種類:pdf documents</string>
+		<string>種類:pdf 文件</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>kind:簡報</string>
+		<string>種類:presentations</string>
+		<string>種類:簡報</string>
+		<string>kind:簡報</string>
+		<string>種類:presentation</string>
+		<string>種類:簡報</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>kind:來源</string>
+		<string>種類:source</string>
+		<string>種類:來源</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>kind:試算表</string>
+		<string>種類:spreadsheet</string>
+		<string>種類:試算表</string>
+		<string>kind:試算表</string>
+		<string>種類:spreadsheets</string>
+		<string>種類:試算表</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>kind:系統偏好設定</string>
+		<string>種類:system preferences</string>
+		<string>種類:系統偏好設定</string>
+		<string>kind:偏好設定</string>
+		<string>種類:preferences</string>
+		<string>種類:偏好設定</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>kind:文字</string>
+		<string>種類:text</string>
+		<string>種類:文字</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>date:這個月</string>
+		<string>日期:this month</string>
+		<string>日期:這個月</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>date:本週</string>
+		<string>日期:this week</string>
+		<string>日期:本週</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>date:今年</string>
+		<string>日期:this year</string>
+		<string>日期:今年</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>date:今天</string>
+		<string>日期:today</string>
+		<string>日期:今天</string>
+
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>kind:待辦事項</string>
+		<string>種類:todo</string>
+		<string>種類:待辦事項</string>
+		<string>kind:待辦事項</string>
+		<string>種類:todos</string>
+		<string>種類:待辦事項</string>
+		<string>kind:待辦事項</string>
+		<string>種類:to do</string>
+		<string>種類:待辦事項</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>date:明天</string>
+		<string>日期:tomorrow</string>
+		<string>日期:明天</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>date:昨天</string>
+		<string>日期:yesterday</string>
+		<string>日期:昨天</string>
+	</array>
+</dict>
+</plist>

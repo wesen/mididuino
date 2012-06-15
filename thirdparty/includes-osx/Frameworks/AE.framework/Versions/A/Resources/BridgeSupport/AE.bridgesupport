@@ -1,0 +1,2235 @@
+<?xml version='1.0'?>
+<!DOCTYPE signatures SYSTEM "file://localhost/System/Library/DTDs/BridgeSupport.dtd">
+<signatures version='1.0'>
+<depends_on path='/System/Library/Frameworks/CoreFoundation.framework'/>
+<depends_on path='/System/Library/Frameworks/Security.framework'/>
+<depends_on path='/System/Library/Frameworks/SystemConfiguration.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/OSServices.framework'/>
+<struct name='AEAddressDesc' type='{AEDesc=&quot;descriptorType&quot;I&quot;dataHandle&quot;^^{OpaqueAEDataStorageType}}'/>
+<struct name='AEBuildError' type='{AEBuildError=&quot;fError&quot;I&quot;fErrorPos&quot;I}'/>
+<struct name='AEDesc' type='{AEDesc=&quot;descriptorType&quot;I&quot;dataHandle&quot;^^{OpaqueAEDataStorageType}}'/>
+<struct name='AEDescList' type='{AEDesc=&quot;descriptorType&quot;I&quot;dataHandle&quot;^^{OpaqueAEDataStorageType}}'/>
+<struct name='AEKeyDesc' type='{AEKeyDesc=&quot;descKey&quot;I&quot;descContent&quot;{AEDesc=&quot;descriptorType&quot;I&quot;dataHandle&quot;^^{OpaqueAEDataStorageType}}}'/>
+<struct name='AERecord' type='{AEDesc=&quot;descriptorType&quot;I&quot;dataHandle&quot;^^{OpaqueAEDataStorageType}}'/>
+<struct name='AERemoteProcessResolverContext' type64='{AERemoteProcessResolverContext=&quot;version&quot;q&quot;info&quot;^v&quot;retain&quot;^?&quot;release&quot;^?&quot;copyDescription&quot;^?}' type='{AERemoteProcessResolverContext=&quot;version&quot;i&quot;info&quot;^v&quot;retain&quot;^?&quot;release&quot;^?&quot;copyDescription&quot;^?}'/>
+<struct name='AppleEvent' type='{AEDesc=&quot;descriptorType&quot;I&quot;dataHandle&quot;^^{OpaqueAEDataStorageType}}'/>
+<struct name='IntlText' type='{IntlText=&quot;theScriptCode&quot;s&quot;theLangCode&quot;s&quot;theText&quot;[1c]}'/>
+<struct name='OffsetArray' type64='{OffsetArray=&quot;fNumOfOffsets&quot;s&quot;fOffset&quot;[1i]}' type='{OffsetArray=&quot;fNumOfOffsets&quot;s&quot;fOffset&quot;[1l]}'/>
+<struct name='TScriptingSizeResource' type='{TScriptingSizeResource=&quot;scriptingSizeFlags&quot;s&quot;minStackSize&quot;I&quot;preferredStackSize&quot;I&quot;maxStackSize&quot;I&quot;minHeapSize&quot;I&quot;preferredHeapSize&quot;I&quot;maxHeapSize&quot;I}'/>
+<struct name='TextRange' type='{TextRange=&quot;fStart&quot;i&quot;fEnd&quot;i&quot;fHiliteStyle&quot;s}'/>
+<struct name='TextRangeArray' type='{TextRangeArray=&quot;fNumOfRanges&quot;s&quot;fRange&quot;[1{TextRange=&quot;fStart&quot;i&quot;fEnd&quot;i&quot;fHiliteStyle&quot;s}]}'/>
+<struct name='WritingCode' type='{WritingCode=&quot;theScriptCode&quot;s&quot;theLangCode&quot;s}'/>
+<struct name='ccntTokenRecord' type='{ccntTokenRecord=&quot;tokenClass&quot;I&quot;token&quot;{AEDesc=&quot;descriptorType&quot;I&quot;dataHandle&quot;^^{OpaqueAEDataStorageType}}}'/>
+<cftype name='AERemoteProcessResolverRef' type='^{AERemoteProcessResolver=}'/>
+<cftype name='AEStreamRef' type='^{OpaqueAEStreamRef=}'/>
+<opaque name='AEDataStorageType' type='^{OpaqueAEDataStorageType=}'/>
+<constant name='kAERemoteProcessNameKey' type='^{__CFString=}'/>
+<constant name='kAERemoteProcessProcessIDKey' type='^{__CFString=}'/>
+<constant name='kAERemoteProcessURLKey' type='^{__CFString=}'/>
+<constant name='kAERemoteProcessUserIDKey' type='^{__CFString=}'/>
+<enum name='KAEISHandleCGI' value='1935961955'/>
+<enum name='aeBuildSyntaxBadData' value='12'/>
+<enum name='aeBuildSyntaxBadDesc' value='11'/>
+<enum name='aeBuildSyntaxBadEOF' value='2'/>
+<enum name='aeBuildSyntaxBadHex' value='6'/>
+<enum name='aeBuildSyntaxBadNegative' value='4'/>
+<enum name='aeBuildSyntaxBadToken' value='1'/>
+<enum name='aeBuildSyntaxCoercedList' value='18'/>
+<enum name='aeBuildSyntaxMissingQuote' value='5'/>
+<enum name='aeBuildSyntaxNoCloseBrace' value='15'/>
+<enum name='aeBuildSyntaxNoCloseBracket' value='14'/>
+<enum name='aeBuildSyntaxNoCloseHex' value='8'/>
+<enum name='aeBuildSyntaxNoCloseParen' value='13'/>
+<enum name='aeBuildSyntaxNoCloseString' value='10'/>
+<enum name='aeBuildSyntaxNoColon' value='17'/>
+<enum name='aeBuildSyntaxNoEOF' value='3'/>
+<enum name='aeBuildSyntaxNoErr' value='0'/>
+<enum name='aeBuildSyntaxNoKey' value='16'/>
+<enum name='aeBuildSyntaxOddHex' value='7'/>
+<enum name='aeBuildSyntaxUncoercedDoubleAt' value='19'/>
+<enum name='aeBuildSyntaxUncoercedHex' value='9'/>
+<enum name='cADBAddress' value='1667327074'/>
+<enum name='cAEList' value='1818850164'/>
+<enum name='cAddressSpec' value='1667327090'/>
+<enum name='cAppleTalkAddress' value='1667331104'/>
+<enum name='cApplication' value='1667330160'/>
+<enum name='cArc' value='1667330659'/>
+<enum name='cBoolean' value='1651470188'/>
+<enum name='cBusAddress' value='1667396979'/>
+<enum name='cCell' value='1667458412'/>
+<enum name='cChar' value='1667784992'/>
+<enum name='cColorTable' value='1668051572'/>
+<enum name='cColumn' value='1667460972'/>
+<enum name='cDevSpec' value='1667523958'/>
+<enum name='cDocument' value='1685021557'/>
+<enum name='cDrawingArea' value='1667527287'/>
+<enum name='cEnumeration' value='1701737837'/>
+<enum name='cEthernetAddress' value='1667591712'/>
+<enum name='cFTPItem' value='1718906912'/>
+<enum name='cFile' value='1718185061'/>
+<enum name='cFireWireAddress' value='1667659552'/>
+<enum name='cFixed' value='1718188132'/>
+<enum name='cFixedPoint' value='1718644340'/>
+<enum name='cFixedRectangle' value='1718772596'/>
+<enum name='cGraphicLine' value='1735158126'/>
+<enum name='cGraphicObject' value='1667723106'/>
+<enum name='cGraphicShape' value='1667724136'/>
+<enum name='cGraphicText' value='1667724408'/>
+<enum name='cGroupedGraphic' value='1668311395'/>
+<enum name='cHTML' value='1752460652'/>
+<enum name='cIPAddress' value='1667854368'/>
+<enum name='cInsertionLoc' value='1768846188'/>
+<enum name='cInsertionPoint' value='1667853939'/>
+<enum name='cInternetAddress' value='1229996356'/>
+<enum name='cIntlText' value='1769240692'/>
+<enum name='cIntlWritingCode' value='1768846444'/>
+<enum name='cItem' value='1667855469'/>
+<enum name='cKeystroke' value='1802531443'/>
+<enum name='cLine' value='1668049262'/>
+<enum name='cLocalTalkAddress' value='1668052000'/>
+<enum name='cLongDateTime' value='1818522656'/>
+<enum name='cLongFixed' value='1818654820'/>
+<enum name='cLongFixedPoint' value='1818652788'/>
+<enum name='cLongFixedRectangle' value='1818653283'/>
+<enum name='cLongInteger' value='1819242087'/>
+<enum name='cLongPoint' value='1819307636'/>
+<enum name='cLongRectangle' value='1819435892'/>
+<enum name='cMachineLoc' value='1833725795'/>
+<enum name='cMenu' value='1668116085'/>
+<enum name='cMenuItem' value='1668113774'/>
+<enum name='cObject' value='1668244074'/>
+<enum name='cObjectSpecifier' value='1868720672'/>
+<enum name='cOpenableObject' value='1668247394'/>
+<enum name='cOval' value='1668249196'/>
+<enum name='cPICT' value='1346978644'/>
+<enum name='cParagraph' value='1668309362'/>
+<enum name='cPixel' value='1668315244'/>
+<enum name='cPixelMap' value='1668311416'/>
+<enum name='cPolygon' value='1668310894'/>
+<enum name='cProperty' value='1886547824'/>
+<enum name='cQDPoint' value='1363439732'/>
+<enum name='cQDRectangle' value='1902408308'/>
+<enum name='cRGBColor' value='1666336578'/>
+<enum name='cRectangle' value='1668441443'/>
+<enum name='cRotation' value='1953656692'/>
+<enum name='cRoundedRectangle' value='1668444771'/>
+<enum name='cRow' value='1668444023'/>
+<enum name='cSCSIAddress' value='1668506483'/>
+<enum name='cSelection' value='1668506988'/>
+<enum name='cShortInteger' value='1936224114'/>
+<enum name='cTable' value='1668571756'/>
+<enum name='cText' value='1668577396'/>
+<enum name='cTextFlow' value='1667656815'/>
+<enum name='cTextStyles' value='1953723513'/>
+<enum name='cTokenRingAddress' value='1668575083'/>
+<enum name='cType' value='1954115685'/>
+<enum name='cURL' value='1970433056'/>
+<enum name='cUSBAddress' value='1668641634'/>
+<enum name='cVersion' value='1986359923'/>
+<enum name='cWindow' value='1668770158'/>
+<enum name='cWord' value='1668771698'/>
+<enum name='eADB' value='1700881506'/>
+<enum name='eAddressSpec' value='1700881523'/>
+<enum name='eAnalogAudio' value='1701863797'/>
+<enum name='eAppleTalk' value='1701863796'/>
+<enum name='eAudioLineIn' value='1701011817'/>
+<enum name='eAudioLineOut' value='1701011820'/>
+<enum name='eAudioOut' value='1701011823'/>
+<enum name='eBus' value='1700951411'/>
+<enum name='eCDROM' value='1701012512'/>
+<enum name='eCapsLockDown' value='1264807019'/>
+<enum name='eClearKey' value='1802716928'/>
+<enum name='eCommSlot' value='1701012333'/>
+<enum name='eCommandDown' value='1264807268'/>
+<enum name='eConduit' value='1701015406'/>
+<enum name='eControlDown' value='1264809068'/>
+<enum name='eDVD' value='1701082724'/>
+<enum name='eDeleteKey' value='1802711808'/>
+<enum name='eDeviceType' value='1701082740'/>
+<enum name='eDigitalAudio' value='1701864545'/>
+<enum name='eDisplay' value='1701078131'/>
+<enum name='eDownArrowKey' value='1802730752'/>
+<enum name='eEndKey' value='1802729216'/>
+<enum name='eEnterKey' value='1802718208'/>
+<enum name='eEscapeKey' value='1802712320'/>
+<enum name='eEthernet' value='1701012846'/>
+<enum name='eF10Key' value='1802726656'/>
+<enum name='eF11Key' value='1802725120'/>
+<enum name='eF12Key' value='1802727168'/>
+<enum name='eF13Key' value='1802725632'/>
+<enum name='eF14Key' value='1802726144'/>
+<enum name='eF15Key' value='1802727680'/>
+<enum name='eF1Key' value='1802729984'/>
+<enum name='eF2Key' value='1802729472'/>
+<enum name='eF3Key' value='1802724096'/>
+<enum name='eF4Key' value='1802728960'/>
+<enum name='eF5Key' value='1802723328'/>
+<enum name='eF6Key' value='1802723584'/>
+<enum name='eF7Key' value='1802723840'/>
+<enum name='eF8Key' value='1802724352'/>
+<enum name='eF9Key' value='1802724608'/>
+<enum name='eFireWire' value='1701013111'/>
+<enum name='eFloppy' value='1701209120'/>
+<enum name='eForwardDelKey' value='1802728704'/>
+<enum name='eHD' value='1701340192'/>
+<enum name='eHelpKey' value='1802727936'/>
+<enum name='eHomeKey' value='1802728192'/>
+<enum name='eIP' value='1701865840'/>
+<enum name='eIRTalk' value='1701865844'/>
+<enum name='eInfrared' value='1701013874'/>
+<enum name='eIrDA' value='1701865842'/>
+<enum name='eKeyKind' value='1701540724'/>
+<enum name='eKeyboard' value='1701536356'/>
+<enum name='eLCD' value='1701080163'/>
+<enum name='eLeftArrowKey' value='1802730240'/>
+<enum name='eLocalTalk' value='1701014644'/>
+<enum name='eMacIP' value='1701866857'/>
+<enum name='eMacVideo' value='1701866870'/>
+<enum name='eMicrophone' value='1701014889'/>
+<enum name='eModem' value='1701080429'/>
+<enum name='eModemPort' value='1701014896'/>
+<enum name='eModemPrinterPort' value='1701671024'/>
+<enum name='eModifiers' value='1699570803'/>
+<enum name='eMonitorOut' value='1701014894'/>
+<enum name='eMouse' value='1701670773'/>
+<enum name='eNuBus' value='1701737826'/>
+<enum name='eNuBusCard' value='1701080674'/>
+<enum name='eOptionDown' value='1265594484'/>
+<enum name='ePCIbus' value='1701015657'/>
+<enum name='ePCIcard' value='1701081193'/>
+<enum name='ePCcard' value='1701015651'/>
+<enum name='ePDScard' value='1701864563'/>
+<enum name='ePDSslot' value='1701015652'/>
+<enum name='ePPP' value='1701867632'/>
+<enum name='ePageDownKey' value='1802729728'/>
+<enum name='ePageUpKey' value='1802728448'/>
+<enum name='ePointingDevice' value='1701081188'/>
+<enum name='ePostScript' value='1701867635'/>
+<enum name='ePrinter' value='1701081202'/>
+<enum name='ePrinterPort' value='1701015664'/>
+<enum name='eProtocol' value='1701868143'/>
+<enum name='eReturnKey' value='1802707968'/>
+<enum name='eRightArrowKey' value='1802730496'/>
+<enum name='eSCSI' value='1701016419'/>
+<enum name='eSVGA' value='1701868391'/>
+<enum name='eScheme' value='1702060904'/>
+<enum name='eSerial' value='1701868402'/>
+<enum name='eShiftDown' value='1265854068'/>
+<enum name='eSpeakers' value='1701081968'/>
+<enum name='eStorageDevice' value='1701081972'/>
+<enum name='eSvideo' value='1701868406'/>
+<enum name='eTabKey' value='1802711040'/>
+<enum name='eTokenRing' value='1702129515'/>
+<enum name='eTrackball' value='1702130283'/>
+<enum name='eTrackpad' value='1701082224'/>
+<enum name='eUSB' value='1701016947'/>
+<enum name='eUpArrowKey' value='1802731008'/>
+<enum name='eVideoIn' value='1701017193'/>
+<enum name='eVideoMonitor' value='1701082733'/>
+<enum name='eVideoOut' value='1701017199'/>
+<enum name='enumArrows' value='1634890351'/>
+<enum name='enumJustification' value='1786082164'/>
+<enum name='enumKeyForm' value='1801876077'/>
+<enum name='enumPosition' value='1886352233'/>
+<enum name='enumProtection' value='1886549102'/>
+<enum name='enumQuality' value='1903518060'/>
+<enum name='enumSaveOptions' value='1935767151'/>
+<enum name='enumStyle' value='1937013100'/>
+<enum name='enumTransferMode' value='1953653102'/>
+<enum name='eurlAFP' value='1634103328'/>
+<enum name='eurlAT' value='1635000352'/>
+<enum name='eurlEPPC' value='1701867619'/>
+<enum name='eurlFTP' value='1718906912'/>
+<enum name='eurlFile' value='1718185061'/>
+<enum name='eurlGopher' value='1735420018'/>
+<enum name='eurlHTTP' value='1752462448'/>
+<enum name='eurlHTTPS' value='1752461427'/>
+<enum name='eurlIMAP' value='1768776048'/>
+<enum name='eurlLDAP' value='1970037872'/>
+<enum name='eurlLaunch' value='1818326382'/>
+<enum name='eurlMail' value='1835100524'/>
+<enum name='eurlMailbox' value='1835167608'/>
+<enum name='eurlMessage' value='1835365235'/>
+<enum name='eurlMulti' value='1836412020'/>
+<enum name='eurlNFS' value='1970169459'/>
+<enum name='eurlNNTP' value='1852732528'/>
+<enum name='eurlNews' value='1852143475'/>
+<enum name='eurlPOP' value='1970302832'/>
+<enum name='eurlRTSP' value='1920234352'/>
+<enum name='eurlSNews' value='1936619379'/>
+<enum name='eurlTelnet' value='1953263220'/>
+<enum name='eurlUnknown' value='1970433087'/>
+<enum name='formAbsolutePosition' value='1768842360'/>
+<enum name='formName' value='1851878757'/>
+<enum name='formPropertyID' value='1886547824'/>
+<enum name='formRange' value='1918987879'/>
+<enum name='formRelativePosition' value='1919249509'/>
+<enum name='formTest' value='1952805748'/>
+<enum name='formUniqueID' value='1229201440'/>
+<enum name='formWhose' value='2003332979'/>
+<enum name='kAEAND' value='1095648288'/>
+<enum name='kAEAbout' value='1633841013'/>
+<enum name='kAEActivate' value='1633907830'/>
+<enum name='kAEAfter' value='1634104421'/>
+<enum name='kAEAliasSelection' value='1935764585'/>
+<enum name='kAEAll' value='1634495520'/>
+<enum name='kAEAllCaps' value='1634493296'/>
+<enum name='kAEAlwaysInteract' value='48'/>
+<enum name='kAEAnswer' value='1634628466'/>
+<enum name='kAEAny' value='1634629920'/>
+<enum name='kAEApplicationClass' value='1634758764'/>
+<enum name='kAEApplicationDied' value='1868720500'/>
+<enum name='kAEArrowAtEnd' value='1634887022'/>
+<enum name='kAEArrowAtStart' value='1634890612'/>
+<enum name='kAEArrowBothEnds' value='1634886255'/>
+<enum name='kAEAsk' value='1634954016'/>
+<enum name='kAEAutoDown' value='1635087471'/>
+<enum name='kAEBefore' value='1650812527'/>
+<enum name='kAEBeginTransaction' value='1650812777'/>
+<enum name='kAEBeginning' value='1650945639'/>
+<enum name='kAEBeginsWith' value='1650947956'/>
+<enum name='kAEBold' value='1651469412'/>
+<enum name='kAECanInteract' value='32'/>
+<enum name='kAECanSwitchLayer' value='64'/>
+<enum name='kAECaseSensEquals' value='1668506993'/>
+<enum name='kAECentered' value='1667591796'/>
+<enum name='kAEChangeView' value='1986618743'/>
+<enum name='kAEClone' value='1668050798'/>
+<enum name='kAEClose' value='1668050803'/>
+<enum name='kAECommandClass' value='1668116068'/>
+<enum name='kAECondensed' value='1668247140'/>
+<enum name='kAEContains' value='1668247156'/>
+<enum name='kAECopy' value='1668247673'/>
+<enum name='kAECoreSuite' value='1668248165'/>
+<enum name='kAECountElements' value='1668183141'/>
+<enum name='kAECreateElement' value='1668441452'/>
+<enum name='kAECreatePublisher' value='1668314466'/>
+<enum name='kAECut' value='1668641824'/>
+<enum name='kAEDataArray' value='0'/>
+<enum name='kAEDeactivate' value='1684104052'/>
+<enum name='kAEDebugPOSTHeader' value='1'/>
+<enum name='kAEDebugReplyHeader' value='2'/>
+<enum name='kAEDebugXMLDebugAll' value='-1'/>
+<enum name='kAEDebugXMLRequest' value='4'/>
+<enum name='kAEDebugXMLResponse' value='8'/>
+<enum name='kAEDefaultTimeout' value='-1'/>
+<enum name='kAEDelete' value='1684368495'/>
+<enum name='kAEDescArray' value='3'/>
+<enum name='kAEDescListFactorNone' value='0'/>
+<enum name='kAEDescListFactorType' value='4'/>
+<enum name='kAEDescListFactorTypeAndSize' value='8'/>
+<enum name='kAEDirectCall' value='1'/>
+<enum name='kAEDiskEvent' value='1684632427'/>
+<enum name='kAEDoNotAutomaticallyAddAnnotationsToEvent' value='65536'/>
+<enum name='kAEDoObjectsExist' value='1685022072'/>
+<enum name='kAEDoScript' value='1685025635'/>
+<enum name='kAEDontExecute' value='8192'/>
+<enum name='kAEDontReconnect' value='128'/>
+<enum name='kAEDontRecord' value='4096'/>
+<enum name='kAEDown' value='1685026670'/>
+<enum name='kAEDrag' value='1685217639'/>
+<enum name='kAEDuplicateSelection' value='1935963504'/>
+<enum name='kAEEditGraphic' value='1701079412'/>
+<enum name='kAEEmptyTrash' value='1701671028'/>
+<enum name='kAEEnd' value='1701733408'/>
+<enum name='kAEEndTransaction' value='1701733492'/>
+<enum name='kAEEndsWith' value='1701733491'/>
+<enum name='kAEEquals' value='1025515552'/>
+<enum name='kAEExpanded' value='1885698160'/>
+<enum name='kAEFast' value='1717662580'/>
+<enum name='kAEFinderEvents' value='1179534418'/>
+<enum name='kAEFirst' value='1718186611'/>
+<enum name='kAEFormulaProtect' value='1718645359'/>
+<enum name='kAEFullyJustified' value='1718971500'/>
+<enum name='kAEGetClassInfo' value='1903125098'/>
+<enum name='kAEGetData' value='1734702180'/>
+<enum name='kAEGetDataSize' value='1685285242'/>
+<enum name='kAEGetEventInfo' value='1735681385'/>
+<enum name='kAEGetInfoSelection' value='1936289382'/>
+<enum name='kAEGetPrivilegeSelection' value='1936749174'/>
+<enum name='kAEGetSuiteInfo' value='1735684969'/>
+<enum name='kAEGreaterThan' value='1042292768'/>
+<enum name='kAEGreaterThanEquals' value='1044193312'/>
+<enum name='kAEGrow' value='1735552887'/>
+<enum name='kAEHTTPProxyHostAttr' value='2020111464'/>
+<enum name='kAEHTTPProxyPortAttr' value='2020111472'/>
+<enum name='kAEHandleArray' value='2'/>
+<enum name='kAEHandleSimpleRanges' value='32'/>
+<enum name='kAEHiQuality' value='1751740789'/>
+<enum name='kAEHidden' value='1751737454'/>
+<enum name='kAEHighLevel' value='1751738216'/>
+<enum name='kAEHighPriority' value='1'/>
+<enum name='kAEIDoMarking' value='4'/>
+<enum name='kAEIDoMinimum' value='0'/>
+<enum name='kAEIDoWhose' value='1'/>
+<enum name='kAEISAction' value='1264673652'/>
+<enum name='kAEISActionPath' value='1264676980'/>
+<enum name='kAEISClientAddress' value='1633969266'/>
+<enum name='kAEISClientIP' value='1264806256'/>
+<enum name='kAEISContentType' value='1668577648'/>
+<enum name='kAEISFromUser' value='1718775157'/>
+<enum name='kAEISFullRequest' value='1265005169'/>
+<enum name='kAEISGetURL' value='1735750252'/>
+<enum name='kAEISHTTPSearchArgs' value='1801875314'/>
+<enum name='kAEISMethod' value='1835365480'/>
+<enum name='kAEISPassword' value='1885434739'/>
+<enum name='kAEISPostArgs' value='1886352244'/>
+<enum name='kAEISReferrer' value='1919247986'/>
+<enum name='kAEISScriptName' value='1935896173'/>
+<enum name='kAEISServerName' value='1937141357'/>
+<enum name='kAEISServerPort' value='1937141876'/>
+<enum name='kAEISUserAgent' value='1097297524'/>
+<enum name='kAEISUserName' value='1970496882'/>
+<enum name='kAEISWebStarSuite' value='1465341885'/>
+<enum name='kAEImageGraphic' value='1768777586'/>
+<enum name='kAEInfo' value='11'/>
+<enum name='kAEInternetSuite' value='1735750252'/>
+<enum name='kAEIsUniform' value='1769174382'/>
+<enum name='kAEItalic' value='1769234796'/>
+<enum name='kAEKeyClass' value='1801812323'/>
+<enum name='kAEKeyDescArray' value='4'/>
+<enum name='kAEKeyDown' value='1801746286'/>
+<enum name='kAELast' value='1818325876'/>
+<enum name='kAELeftJustified' value='1818584692'/>
+<enum name='kAELessThan' value='1008738336'/>
+<enum name='kAELessThanEquals' value='1010638880'/>
+<enum name='kAELocalProcess' value='3'/>
+<enum name='kAELogOut' value='1819240303'/>
+<enum name='kAELowercase' value='1819244387'/>
+<enum name='kAEMain' value='0'/>
+<enum name='kAEMakeObjectsVisible' value='1836476787'/>
+<enum name='kAEMenuClass' value='1835363957'/>
+<enum name='kAEMenuSelect' value='1835559284'/>
+<enum name='kAEMiddle' value='1835623524'/>
+<enum name='kAEMiscStandards' value='1835627363'/>
+<enum name='kAEModifiable' value='1836016742'/>
+<enum name='kAEMouseClass' value='1836021107'/>
+<enum name='kAEMouseDown' value='1835300718'/>
+<enum name='kAEMouseDownInBack' value='1835295339'/>
+<enum name='kAEMove' value='1836021349'/>
+<enum name='kAEMoved' value='1836021349'/>
+<enum name='kAENOT' value='1313821728'/>
+<enum name='kAENavigationKey' value='1851881061'/>
+<enum name='kAENeverInteract' value='16'/>
+<enum name='kAENext' value='1852143732'/>
+<enum name='kAENo' value='1852776480'/>
+<enum name='kAENoArrow' value='1634889327'/>
+<enum name='kAENoReply' value='1'/>
+<enum name='kAENonmodifiable' value='1852665700'/>
+<enum name='kAENormalPriority' value='0'/>
+<enum name='kAENotifyRecording' value='1919247218'/>
+<enum name='kAENotifyStartRecording' value='1919247153'/>
+<enum name='kAENotifyStopRecording' value='1919247152'/>
+<enum name='kAENullEvent' value='1853189228'/>
+<enum name='kAEOR' value='1330782240'/>
+<enum name='kAEOSAXSizeResource' value='1869834618'/>
+<enum name='kAEOpen' value='1868853091'/>
+<enum name='kAEOpenApplication' value='1868656752'/>
+<enum name='kAEOpenContents' value='1868787566'/>
+<enum name='kAEOpenDocuments' value='1868853091'/>
+<enum name='kAEOpenSelection' value='1936683109'/>
+<enum name='kAEOutline' value='1869968492'/>
+<enum name='kAEPackedArray' value='1'/>
+<enum name='kAEPageSetup' value='1885827957'/>
+<enum name='kAEPassSubDescs' value='8'/>
+<enum name='kAEPaste' value='1885434740'/>
+<enum name='kAEPlain' value='1886151022'/>
+<enum name='kAEPrevious' value='1886545270'/>
+<enum name='kAEPrint' value='1885630307'/>
+<enum name='kAEPrintDocuments' value='1885630307'/>
+<enum name='kAEPrintSelection' value='1936749161'/>
+<enum name='kAEPrintWindow' value='1886873966'/>
+<enum name='kAEProcessNonReplyEvents' value='32768'/>
+<enum name='kAEPromise' value='1886547821'/>
+<enum name='kAEPutAwaySelection' value='1936749940'/>
+<enum name='kAEQDAdMax' value='1633971576'/>
+<enum name='kAEQDAdMin' value='1633971566'/>
+<enum name='kAEQDAddOver' value='1633969263'/>
+<enum name='kAEQDAddPin' value='1633969264'/>
+<enum name='kAEQDBic' value='1651073824'/>
+<enum name='kAEQDBlend' value='1651273316'/>
+<enum name='kAEQDCopy' value='1668315424'/>
+<enum name='kAEQDNotBic' value='1851943267'/>
+<enum name='kAEQDNotCopy' value='1852010617'/>
+<enum name='kAEQDNotOr' value='1853124466'/>
+<enum name='kAEQDNotXor' value='1853386610'/>
+<enum name='kAEQDOr' value='1869750304'/>
+<enum name='kAEQDSubOver' value='1937072751'/>
+<enum name='kAEQDSubPin' value='1937072752'/>
+<enum name='kAEQDSupplementalSuite' value='1902408560'/>
+<enum name='kAEQDXor' value='2020569632'/>
+<enum name='kAEQueueReply' value='2'/>
+<enum name='kAEQuickdrawSuite' value='1902408311'/>
+<enum name='kAEQuitAll' value='1903520097'/>
+<enum name='kAEQuitApplication' value='1903520116'/>
+<enum name='kAEQuitPreserveState' value='1937006964'/>
+<enum name='kAEQuitReason' value='2003335487'/>
+<enum name='kAERPCClass' value='1919968032'/>
+<enum name='kAERawKey' value='1919640953'/>
+<enum name='kAEReallyLogOut' value='1919706991'/>
+<enum name='kAERedo' value='1919247471'/>
+<enum name='kAERegular' value='1919248236'/>
+<enum name='kAERemoteProcess' value='4'/>
+<enum name='kAEReopenApplication' value='1918988400'/>
+<enum name='kAEReplace' value='1919970403'/>
+<enum name='kAERequiredSuite' value='1919250788'/>
+<enum name='kAEResized' value='1920166266'/>
+<enum name='kAEResolveNestedLists' value='16'/>
+<enum name='kAERestart' value='1919251316'/>
+<enum name='kAEResume' value='1920167269'/>
+<enum name='kAERevealSelection' value='1936876918'/>
+<enum name='kAERevert' value='1920365172'/>
+<enum name='kAERightJustified' value='1919379572'/>
+<enum name='kAESOAPScheme' value='1397702992'/>
+<enum name='kAESameProcess' value='2'/>
+<enum name='kAESave' value='1935767141'/>
+<enum name='kAEScrapEvent' value='1935897200'/>
+<enum name='kAEScriptingSizeResource' value='1935897466'/>
+<enum name='kAESelect' value='1936483188'/>
+<enum name='kAESetData' value='1936028772'/>
+<enum name='kAESetPosition' value='1886352238'/>
+<enum name='kAEShadow' value='1936220516'/>
+<enum name='kAESharedScriptHandler' value='2004050800'/>
+<enum name='kAESharing' value='13'/>
+<enum name='kAEShowClipboard' value='1936221036'/>
+<enum name='kAEShowPreferences' value='1886545254'/>
+<enum name='kAEShowRestartDialog' value='1920103284'/>
+<enum name='kAEShowShutdownDialog' value='1920164974'/>
+<enum name='kAEShutDown' value='1936225652'/>
+<enum name='kAESleep' value='1936483696'/>
+<enum name='kAESmallCaps' value='1936548720'/>
+<enum name='kAESocks4Protocol' value='4'/>
+<enum name='kAESocks5Protocol' value='5'/>
+<enum name='kAESocksHostAttr' value='2020829299'/>
+<enum name='kAESocksPasswordAttr' value='2020829303'/>
+<enum name='kAESocksPortAttr' value='2020829296'/>
+<enum name='kAESocksProxyAttr' value='2020831083'/>
+<enum name='kAESocksUserAttr' value='2020829301'/>
+<enum name='kAESpecialClassProperties' value='1665147681'/>
+<enum name='kAEStartRecording' value='1919247201'/>
+<enum name='kAEStopRecording' value='1919247203'/>
+<enum name='kAEStoppedMoving' value='1937010544'/>
+<enum name='kAEStrikethrough' value='1937011307'/>
+<enum name='kAESubscript' value='1935831907'/>
+<enum name='kAESuperscript' value='1936749411'/>
+<enum name='kAESuspend' value='1937077104'/>
+<enum name='kAETableSuite' value='1952607347'/>
+<enum name='kAETerminologyExtension' value='1634038885'/>
+<enum name='kAETextSuite' value='1413830740'/>
+<enum name='kAETransactionTerminated' value='1953788525'/>
+<enum name='kAEUTApostrophe' value='3'/>
+<enum name='kAEUTChangesState' value='12'/>
+<enum name='kAEUTDirectParamIsReference' value='9'/>
+<enum name='kAEUTEnumListIsExclusive' value='10'/>
+<enum name='kAEUTEnumerated' value='13'/>
+<enum name='kAEUTEnumsAreTypes' value='11'/>
+<enum name='kAEUTFeminine' value='2'/>
+<enum name='kAEUTHasReturningParam' value='31'/>
+<enum name='kAEUTMasculine' value='1'/>
+<enum name='kAEUTNotDirectParamIsTarget' value='8'/>
+<enum name='kAEUTOptional' value='15'/>
+<enum name='kAEUTParamIsReference' value='9'/>
+<enum name='kAEUTParamIsTarget' value='8'/>
+<enum name='kAEUTPlural' value='0'/>
+<enum name='kAEUTPropertyIsReference' value='9'/>
+<enum name='kAEUTReadWrite' value='12'/>
+<enum name='kAEUTReplyIsReference' value='9'/>
+<enum name='kAEUTTightBindingFunction' value='12'/>
+<enum name='kAEUTlistOfItems' value='14'/>
+<enum name='kAEUnderline' value='1970168940'/>
+<enum name='kAEUndo' value='1970168943'/>
+<enum name='kAEUnknownSource' value='0'/>
+<enum name='kAEUp' value='1970282528'/>
+<enum name='kAEUpdate' value='1970300020'/>
+<enum name='kAEUseHTTPProxyAttr' value='2020962418'/>
+<enum name='kAEUseRelativeIterators' value='64'/>
+<enum name='kAEUseSocksAttr' value='2020828019'/>
+<enum name='kAEUserTerminology' value='1634039156'/>
+<enum name='kAEVirtualKey' value='1801812323'/>
+<enum name='kAEWaitReply' value='3'/>
+<enum name='kAEWakeUpEvent' value='2002873189'/>
+<enum name='kAEWantReceipt' value='512'/>
+<enum name='kAEWholeWordEquals' value='2004313457'/>
+<enum name='kAEWindowClass' value='2003398244'/>
+<enum name='kAEXMLRPCScheme' value='1380991794'/>
+<enum name='kAEYes' value='2036691744'/>
+<enum name='kAEZoom' value='2054123373'/>
+<enum name='kAEZoomIn' value='7'/>
+<enum name='kAEZoomOut' value='8'/>
+<enum name='kAlwaysSendSubject' value='8192'/>
+<enum name='kAnyTransactionID' value='0'/>
+<enum name='kAutoGenerateReturnID' value='-1'/>
+<enum name='kByCommentView' value='6'/>
+<enum name='kByDateView' value='3'/>
+<enum name='kByIconView' value='1'/>
+<enum name='kByKindView' value='5'/>
+<enum name='kByLabelView' value='7'/>
+<enum name='kByNameView' value='2'/>
+<enum name='kBySizeView' value='4'/>
+<enum name='kBySmallIcon' value='0'/>
+<enum name='kByVersionView' value='8'/>
+<enum name='kConnSuite' value='1835098979'/>
+<enum name='kCoreEventClass' value='1634039412'/>
+<enum name='kDoFolderActionEvent' value='1718578273'/>
+<enum name='kDontFindAppBySignature' value='16384'/>
+<enum name='kFAAttachCommand' value='1635018337'/>
+<enum name='kFAEditCommand' value='1701078625'/>
+<enum name='kFAFileParam' value='1717657964'/>
+<enum name='kFAIndexParam' value='1768842360'/>
+<enum name='kFARemoveCommand' value='1919772257'/>
+<enum name='kFAServerApp' value='1936945782'/>
+<enum name='kFASuiteCode' value='1717658479'/>
+<enum name='kFolderActionCode' value='1633907822'/>
+<enum name='kFolderClosedEvent' value='1717791855'/>
+<enum name='kFolderItemsAddedEvent' value='1718052212'/>
+<enum name='kFolderItemsRemovedEvent' value='1718382451'/>
+<enum name='kFolderOpenedEvent' value='1718579310'/>
+<enum name='kFolderWindowMovedEvent' value='1718839674'/>
+<enum name='kGetSelectedText' value='1735686260'/>
+<enum name='kItemList' value='1718383476'/>
+<enum name='kLaunchToGetTerminology' value='32768'/>
+<enum name='kNewSizeParameter' value='1718514554'/>
+<enum name='kNextBody' value='1'/>
+<enum name='kNoTimeOut' value='-2'/>
+<enum name='kOSIZCodeInSharedLibraries' value='11'/>
+<enum name='kOSIZDontOpenResourceFile' value='15'/>
+<enum name='kOSIZOpenWithReadPermission' value='13'/>
+<enum name='kOSIZdontAcceptRemoteEvents' value='14'/>
+<enum name='kOffset2Pos' value='1936994928'/>
+<enum name='kPos2Offset' value='1882354548'/>
+<enum name='kPreviousBody' value='2'/>
+<enum name='kReadExtensionTermsMask' value='32768'/>
+<enum name='kSOAP1999Schema' value='1936931129'/>
+<enum name='kSOAP2001Schema' value='1936928817'/>
+<enum name='kShowHideInputWindow' value='1936222583'/>
+<enum name='kTSMHiliteBlockFillText' value='6'/>
+<enum name='kTSMHiliteCaretPosition' value='1'/>
+<enum name='kTSMHiliteConvertedText' value='4'/>
+<enum name='kTSMHiliteNoHilite' value='9'/>
+<enum name='kTSMHiliteOutlineText' value='7'/>
+<enum name='kTSMHiliteRawText' value='2'/>
+<enum name='kTSMHiliteSelectedConvertedText' value='5'/>
+<enum name='kTSMHiliteSelectedRawText' value='3'/>
+<enum name='kTSMHiliteSelectedText' value='8'/>
+<enum name='kTSMInsideOfActiveInputArea' value='3'/>
+<enum name='kTSMInsideOfBody' value='2'/>
+<enum name='kTSMOutsideOfBody' value='1'/>
+<enum name='kTextServiceClass' value='1953724003'/>
+<enum name='kUnicodeNotFromInputMethod' value='1970170221'/>
+<enum name='kUpdateActiveInputArea' value='1970300020'/>
+<enum name='keyAEAdjustMarksProc' value='1633970797'/>
+<enum name='keyAEAngle' value='1801547367'/>
+<enum name='keyAEArcAngle' value='1885434467'/>
+<enum name='keyAEBaseAddr' value='1650549860'/>
+<enum name='keyAEBestType' value='1885500276'/>
+<enum name='keyAEBgndColor' value='1801610092'/>
+<enum name='keyAEBgndPattern' value='1801613428'/>
+<enum name='keyAEBounds' value='1885498980'/>
+<enum name='keyAEBufferSize' value='1651861094'/>
+<enum name='keyAECellList' value='1801677940'/>
+<enum name='keyAEClassID' value='1668041028'/>
+<enum name='keyAEClauseOffsets' value='1668047221'/>
+<enum name='keyAEColor' value='1668246642'/>
+<enum name='keyAEColorTable' value='1668052066'/>
+<enum name='keyAECompOperator' value='1919249519'/>
+<enum name='keyAECompareProc' value='1668116594'/>
+<enum name='keyAEContainer' value='1718775661'/>
+<enum name='keyAECountProc' value='1668247156'/>
+<enum name='keyAECurrentPoint' value='1668312947'/>
+<enum name='keyAECurveHeight' value='1801676900'/>
+<enum name='keyAECurveWidth' value='1801680740'/>
+<enum name='keyAEDashStyle' value='1885631348'/>
+<enum name='keyAEData' value='1684108385'/>
+<enum name='keyAEDefaultType' value='1684366964'/>
+<enum name='keyAEDefinitionRect' value='1885631092'/>
+<enum name='keyAEDescType' value='1685288048'/>
+<enum name='keyAEDesiredClass' value='2002873972'/>
+<enum name='keyAEDestination' value='1684370292'/>
+<enum name='keyAEDoAntiAlias' value='1634628705'/>
+<enum name='keyAEDoDithered' value='1734633844'/>
+<enum name='keyAEDoRotate' value='1801745012'/>
+<enum name='keyAEDoScale' value='1802724193'/>
+<enum name='keyAEDoTranslate' value='1802793569'/>
+<enum name='keyAEDragging' value='1651470188'/>
+<enum name='keyAEEditionFileLoc' value='1701605219'/>
+<enum name='keyAEElements' value='1701604723'/>
+<enum name='keyAEEndPoint' value='1885695588'/>
+<enum name='keyAEEventClass' value='1702257516'/>
+<enum name='keyAEEventID' value='1702261865'/>
+<enum name='keyAEFile' value='1801873772'/>
+<enum name='keyAEFileType' value='1718383728'/>
+<enum name='keyAEFillColor' value='1718379372'/>
+<enum name='keyAEFillPattern' value='1718382708'/>
+<enum name='keyAEFixLength' value='1718188140'/>
+<enum name='keyAEFlipHorizontal' value='1801873519'/>
+<enum name='keyAEFlipVertical' value='1801877108'/>
+<enum name='keyAEFont' value='1718578804'/>
+<enum name='keyAEFormula' value='1885761394'/>
+<enum name='keyAEGetErrDescProc' value='1768842339'/>
+<enum name='keyAEGraphicObjects' value='1735352947'/>
+<enum name='keyAEHiliteRange' value='1752329831'/>
+<enum name='keyAEID' value='1229201440'/>
+<enum name='keyAEImageQuality' value='1735488865'/>
+<enum name='keyAEIndex' value='1802069112'/>
+<enum name='keyAEInsertHere' value='1768846184'/>
+<enum name='keyAEKeyData' value='1936026724'/>
+<enum name='keyAEKeyForm' value='1718579821'/>
+<enum name='keyAEKeyForms' value='1801812326'/>
+<enum name='keyAEKeyword' value='1803122532'/>
+<enum name='keyAELaunchedAsLogInItem' value='1818716532'/>
+<enum name='keyAELaunchedAsServiceItem' value='1937140084'/>
+<enum name='keyAELeftSide' value='1802265958'/>
+<enum name='keyAELevel' value='1818588780'/>
+<enum name='keyAELineArrow' value='1634890351'/>
+<enum name='keyAELogicalOperator' value='1819240291'/>
+<enum name='keyAELogicalTerms' value='1952805485'/>
+<enum name='keyAEMarkProc' value='1835102827'/>
+<enum name='keyAEMarkTokenProc' value='1835755876'/>
+<enum name='keyAEMoveView' value='1836480119'/>
+<enum name='keyAEName' value='1886282093'/>
+<enum name='keyAENewElementLoc' value='1886283116'/>
+<enum name='keyAENextBody' value='1853383268'/>
+<enum name='keyAEObject' value='1802461802'/>
+<enum name='keyAEObject1' value='1868720689'/>
+<enum name='keyAEObject2' value='1868720690'/>
+<enum name='keyAEObjectClass' value='1802462060'/>
+<enum name='keyAEOffStyles' value='1868985204'/>
+<enum name='keyAEOffset' value='1868985204'/>
+<enum name='keyAEOnStyles' value='1869509492'/>
+<enum name='keyAEPMTable' value='1802530164'/>
+<enum name='keyAEPOSTHeaderData' value='1885889892'/>
+<enum name='keyAEParamFlags' value='1886217831'/>
+<enum name='keyAEParameters' value='1886547315'/>
+<enum name='keyAEPenColor' value='1886413676'/>
+<enum name='keyAEPenPattern' value='1886416993'/>
+<enum name='keyAEPenWidth' value='1886418788'/>
+<enum name='keyAEPinRange' value='1886286439'/>
+<enum name='keyAEPixMapMinus' value='1802530157'/>
+<enum name='keyAEPixelDepth' value='1885630580'/>
+<enum name='keyAEPoint' value='1735421811'/>
+<enum name='keyAEPointList' value='1886678132'/>
+<enum name='keyAEPointSize' value='1886679930'/>
+<enum name='keyAEPosition' value='1802530675'/>
+<enum name='keyAEPropData' value='1886545012'/>
+<enum name='keyAEPropFlags' value='1886545511'/>
+<enum name='keyAEPropID' value='1886547824'/>
+<enum name='keyAEProperties' value='1903194735'/>
+<enum name='keyAEProperty' value='1802531440'/>
+<enum name='keyAEProtection' value='1886417519'/>
+<enum name='keyAERangeStart' value='1937006962'/>
+<enum name='keyAERangeStop' value='1937010544'/>
+<enum name='keyAERecorderCount' value='1919247218'/>
+<enum name='keyAERegionClass' value='1919381091'/>
+<enum name='keyAERenderAs' value='1802659182'/>
+<enum name='keyAEReplyHeaderData' value='1919444324'/>
+<enum name='keyAERequestedType' value='1920235888'/>
+<enum name='keyAEResult' value='757935405'/>
+<enum name='keyAEResultInfo' value='1920166254'/>
+<enum name='keyAERotPoint' value='1802663024'/>
+<enum name='keyAERotation' value='1886547828'/>
+<enum name='keyAERowList' value='1802660979'/>
+<enum name='keyAESaveOptions' value='1935767151'/>
+<enum name='keyAEScale' value='1886610284'/>
+<enum name='keyAEScriptTag' value='1886610292'/>
+<enum name='keyAESearchText' value='1937012852'/>
+<enum name='keyAEServerInstance' value='1936881257'/>
+<enum name='keyAEShowWhere' value='1936224119'/>
+<enum name='keyAEStartAngle' value='1885433447'/>
+<enum name='keyAEStartPoint' value='1886614640'/>
+<enum name='keyAEStyles' value='1802728569'/>
+<enum name='keyAESuiteID' value='1937074548'/>
+<enum name='keyAETSMDocumentRefcon' value='1919247971'/>
+<enum name='keyAETSMEventRecord' value='1952806516'/>
+<enum name='keyAETSMEventRef' value='1952806514'/>
+<enum name='keyAETSMGlyphInfoArray' value='1952934241'/>
+<enum name='keyAETSMScriptTag' value='1935895655'/>
+<enum name='keyAETSMTextFMFont' value='1802795117'/>
+<enum name='keyAETSMTextFont' value='1802795110'/>
+<enum name='keyAETSMTextPointSize' value='1802793075'/>
+<enum name='keyAETest' value='1802793844'/>
+<enum name='keyAEText' value='1802795124'/>
+<enum name='keyAETextColor' value='1886681187'/>
+<enum name='keyAETextFont' value='1886681190'/>
+<enum name='keyAETextLineAscent' value='1802789235'/>
+<enum name='keyAETextLineHeight' value='1802792040'/>
+<enum name='keyAETextPointSize' value='1886679155'/>
+<enum name='keyAETextServiceEncoding' value='1953719662'/>
+<enum name='keyAETextServiceMacEncoding' value='1953326446'/>
+<enum name='keyAETextStyles' value='1954050932'/>
+<enum name='keyAETheData' value='1801740660'/>
+<enum name='keyAETheText' value='1953002616'/>
+<enum name='keyAETransferMode' value='1886418029'/>
+<enum name='keyAETranslation' value='1886679667'/>
+<enum name='keyAETryAsStructGraf' value='1953460071'/>
+<enum name='keyAEUniformStyles' value='1970500716'/>
+<enum name='keyAEUpdateOn' value='1886744676'/>
+<enum name='keyAEUpdateRange' value='1969516135'/>
+<enum name='keyAEUserTerm' value='1970565741'/>
+<enum name='keyAEVersion' value='1986359923'/>
+<enum name='keyAEWhoseRangeStart' value='2004055154'/>
+<enum name='keyAEWhoseRangeStop' value='2004055152'/>
+<enum name='keyAEWindow' value='2003723383'/>
+<enum name='keyAEWritingCode' value='2003985252'/>
+<enum name='keyAEXMLReplyData' value='2020762992'/>
+<enum name='keyAEXMLRequestData' value='2020762993'/>
+<enum name='keyAcceptTimeoutAttr' value='1633907821'/>
+<enum name='keyAdditionalHTTPHeaders' value='1634231652'/>
+<enum name='keyAddressAttr' value='1633969266'/>
+<enum name='keyCloseAllWindows' value='1667331872'/>
+<enum name='keyDirectObject' value='757935405'/>
+<enum name='keyDisableAuthenticationAttr' value='1635087464'/>
+<enum name='keyDisposeTokenProc' value='2020896619'/>
+<enum name='keyDriveNumber' value='1685222947'/>
+<enum name='keyErrorCode' value='1701999139'/>
+<enum name='keyErrorNumber' value='1701999214'/>
+<enum name='keyErrorString' value='1701999219'/>
+<enum name='keyEventClassAttr' value='1702257516'/>
+<enum name='keyEventIDAttr' value='1702259044'/>
+<enum name='keyEventSourceAttr' value='1702064739'/>
+<enum name='keyHighLevelClass' value='1751346291'/>
+<enum name='keyHighLevelID' value='1751737376'/>
+<enum name='keyInteractLevelAttr' value='1768846437'/>
+<enum name='keyKey' value='1801812256'/>
+<enum name='keyKeyCode' value='1668244581'/>
+<enum name='keyKeyboard' value='1801812322'/>
+<enum name='keyLocalWhere' value='1819764850'/>
+<enum name='keyMenuID' value='1835623456'/>
+<enum name='keyMenuItem' value='1835627629'/>
+<enum name='keyMiscellaneous' value='1718448995'/>
+<enum name='keyMissedKeywordAttr' value='1835627379'/>
+<enum name='keyModifiers' value='1836016755'/>
+<enum name='keyNewBounds' value='1851944548'/>
+<enum name='keyOptionalKeywordAttr' value='1869640811'/>
+<enum name='keyOriginalAddressAttr' value='1718775661'/>
+<enum name='keyOriginalBounds' value='1868721764'/>
+<enum name='keyPreDispatch' value='1885888867'/>
+<enum name='keyProcessSerialNumber' value='1886613024'/>
+<enum name='keyRPCMethodName' value='1835365480'/>
+<enum name='keyRPCMethodParam' value='1885434477'/>
+<enum name='keyRPCMethodParamOrder' value='795832932'/>
+<enum name='keyReplyPortAttr' value='1919250544'/>
+<enum name='keyReplyRequestedAttr' value='1919250545'/>
+<enum name='keyReturnIDAttr' value='1920231780'/>
+<enum name='keySOAPAction' value='1935762292'/>
+<enum name='keySOAPMethodNameSpace' value='1836281955'/>
+<enum name='keySOAPMethodNameSpaceURI' value='1836281973'/>
+<enum name='keySOAPSMDNamespace' value='1936944755'/>
+<enum name='keySOAPSMDNamespaceURI' value='1936944757'/>
+<enum name='keySOAPSMDType' value='1936946288'/>
+<enum name='keySOAPSchemaVersion' value='1936941928'/>
+<enum name='keySOAPStructureMetaData' value='796093796'/>
+<enum name='keySelectProc' value='1936026728'/>
+<enum name='keySelection' value='1718838636'/>
+<enum name='keySenderEGIDAttr' value='1936157028'/>
+<enum name='keySenderEUIDAttr' value='1936025956'/>
+<enum name='keySenderGIDAttr' value='1734960243'/>
+<enum name='keySenderPIDAttr' value='1936746852'/>
+<enum name='keySenderUIDAttr' value='1969841267'/>
+<enum name='keyTimeoutAttr' value='1953066351'/>
+<enum name='keyTransactionIDAttr' value='1953653102'/>
+<enum name='keyUserNameAttr' value='1970168173'/>
+<enum name='keyUserPasswordAttr' value='1885434739'/>
+<enum name='keyWhen' value='2003330414'/>
+<enum name='keyWhere' value='2003330418'/>
+<enum name='keyWindow' value='1802989156'/>
+<enum name='keyXMLDebuggingAttr' value='2019844711'/>
+<enum name='pATMachine' value='1885434989'/>
+<enum name='pATType' value='1885434996'/>
+<enum name='pATZone' value='1885435002'/>
+<enum name='pArcAngle' value='1885434467'/>
+<enum name='pBackgroundColor' value='1885496172'/>
+<enum name='pBackgroundPattern' value='1885499508'/>
+<enum name='pBestType' value='1885500276'/>
+<enum name='pBounds' value='1885498980'/>
+<enum name='pClass' value='1885564019'/>
+<enum name='pClipboard' value='1885564009'/>
+<enum name='pColor' value='1668246642'/>
+<enum name='pColorTable' value='1668052066'/>
+<enum name='pConduit' value='1885564782'/>
+<enum name='pContents' value='1885564532'/>
+<enum name='pCornerCurveHeight' value='1885562980'/>
+<enum name='pCornerCurveWidth' value='1885566820'/>
+<enum name='pDNS' value='1885630067'/>
+<enum name='pDNSForm' value='1883524691'/>
+<enum name='pDashStyle' value='1885631348'/>
+<enum name='pDefaultType' value='1684366964'/>
+<enum name='pDefinitionRect' value='1885631092'/>
+<enum name='pDeviceAddress' value='1885632097'/>
+<enum name='pDeviceType' value='1885632116'/>
+<enum name='pDottedDecimal' value='1885958244'/>
+<enum name='pEnabled' value='1701732972'/>
+<enum name='pEndPoint' value='1885695588'/>
+<enum name='pFTPKind' value='1802071652'/>
+<enum name='pFillColor' value='1718379372'/>
+<enum name='pFillPattern' value='1718382708'/>
+<enum name='pFont' value='1718578804'/>
+<enum name='pFormula' value='1885761394'/>
+<enum name='pGraphicObjects' value='1735352947'/>
+<enum name='pHasCloseBox' value='1751346274'/>
+<enum name='pHasTitleBar' value='1886677364'/>
+<enum name='pHost' value='1213158228'/>
+<enum name='pID' value='1229201440'/>
+<enum name='pIndex' value='1885955192'/>
+<enum name='pInsertionLoc' value='1885957747'/>
+<enum name='pIsFloating' value='1769170540'/>
+<enum name='pIsFrontProcess' value='1885959014'/>
+<enum name='pIsModal' value='1886220132'/>
+<enum name='pIsModified' value='1768779620'/>
+<enum name='pIsResizable' value='1886548858'/>
+<enum name='pIsStationeryPad' value='1886613604'/>
+<enum name='pIsZoomable' value='1769175661'/>
+<enum name='pIsZoomed' value='1887073645'/>
+<enum name='pItemNumber' value='1769237870'/>
+<enum name='pJustification' value='1886024564'/>
+<enum name='pKeyKind' value='1802202724'/>
+<enum name='pKeystrokeKey' value='1800237927'/>
+<enum name='pLineArrow' value='1634890351'/>
+<enum name='pMenuID' value='1835952484'/>
+<enum name='pModifiers' value='1800236900'/>
+<enum name='pName' value='1886282093'/>
+<enum name='pNetwork' value='1886283124'/>
+<enum name='pNewElementLoc' value='1886283116'/>
+<enum name='pNode' value='1886285668'/>
+<enum name='pPath' value='1179930723'/>
+<enum name='pPenColor' value='1886413676'/>
+<enum name='pPenPattern' value='1886416993'/>
+<enum name='pPenWidth' value='1886418788'/>
+<enum name='pPixelDepth' value='1885630580'/>
+<enum name='pPointList' value='1886678132'/>
+<enum name='pPointSize' value='1886679930'/>
+<enum name='pPort' value='1886416754'/>
+<enum name='pProtection' value='1886417519'/>
+<enum name='pProtocol' value='1886417524'/>
+<enum name='pRotation' value='1886547828'/>
+<enum name='pSCSIBus' value='1886610274'/>
+<enum name='pSCSILUN' value='1886612597'/>
+<enum name='pScale' value='1886610284'/>
+<enum name='pScheme' value='1886745443'/>
+<enum name='pScript' value='1935896692'/>
+<enum name='pScriptTag' value='1886610292'/>
+<enum name='pSelected' value='1936026723'/>
+<enum name='pSelection' value='1936026725'/>
+<enum name='pSocket' value='1886613347'/>
+<enum name='pStartAngle' value='1885433447'/>
+<enum name='pStartPoint' value='1886614640'/>
+<enum name='pTextColor' value='1886681187'/>
+<enum name='pTextEncoding' value='1886681189'/>
+<enum name='pTextFont' value='1886681190'/>
+<enum name='pTextItemDelimiters' value='1954047084'/>
+<enum name='pTextPointSize' value='1886679155'/>
+<enum name='pTextStyles' value='1954050932'/>
+<enum name='pTransferMode' value='1886418029'/>
+<enum name='pTranslation' value='1886679667'/>
+<enum name='pURL' value='1884639820'/>
+<enum name='pUniformStyles' value='1970500716'/>
+<enum name='pUpdateOn' value='1886744676'/>
+<enum name='pUserName' value='1380021614'/>
+<enum name='pUserPassword' value='1380020343'/>
+<enum name='pUserSelection' value='1886745452'/>
+<enum name='pVersion' value='1986359923'/>
+<enum name='pVisible' value='1886808435'/>
+<enum name='type128BitFloatingPoint' value='1818518124'/>
+<enum name='typeAEList' value='1818850164'/>
+<enum name='typeAERecord' value='1919247215'/>
+<enum name='typeAEText' value='1951684692'/>
+<enum name='typeAbsoluteOrdinal' value='1633842031'/>
+<enum name='typeAlias' value='1634494835'/>
+<enum name='typeAppParameters' value='1634758753'/>
+<enum name='typeApplSignature' value='1936287598'/>
+<enum name='typeAppleEvent' value='1634039412'/>
+<enum name='typeApplicationBundleID' value='1651863140'/>
+<enum name='typeApplicationURL' value='1634759276'/>
+<enum name='typeArc' value='1667330659'/>
+<enum name='typeBest' value='1650815860'/>
+<enum name='typeBookmarkData' value='1651339883'/>
+<enum name='typeBoolean' value='1651470188'/>
+<enum name='typeCFAbsoluteTime' value='1667654004'/>
+<enum name='typeCFArrayRef' value='1667654002'/>
+<enum name='typeCFAttributedStringRef' value='1667654003'/>
+<enum name='typeCFBooleanRef' value='1667658854'/>
+<enum name='typeCFDictionaryRef' value='1667654755'/>
+<enum name='typeCFMutableArrayRef' value='1667657057'/>
+<enum name='typeCFMutableAttributedStringRef' value='1667653985'/>
+<enum name='typeCFMutableDictionaryRef' value='1667657060'/>
+<enum name='typeCFMutableStringRef' value='1667657075'/>
+<enum name='typeCFNumberRef' value='1667657314'/>
+<enum name='typeCFStringRef' value='1667658612'/>
+<enum name='typeCFTypeRef' value='1667658873'/>
+<enum name='typeCString' value='1668510834'/>
+<enum name='typeCell' value='1667458412'/>
+<enum name='typeCentimeters' value='1668117618'/>
+<enum name='typeChar' value='1413830740'/>
+<enum name='typeClassInfo' value='1734569065'/>
+<enum name='typeColorTable' value='1668051572'/>
+<enum name='typeColumn' value='1667460972'/>
+<enum name='typeCompDescriptor' value='1668116580'/>
+<enum name='typeComponentInstance' value='1668116585'/>
+<enum name='typeCubicCentimeter' value='1667460468'/>
+<enum name='typeCubicFeet' value='1667655028'/>
+<enum name='typeCubicInches' value='1668639086'/>
+<enum name='typeCubicMeters' value='1668113780'/>
+<enum name='typeCubicYards' value='1668903524'/>
+<enum name='typeCurrentContainer' value='1667460724'/>
+<enum name='typeDashStyle' value='1952735603'/>
+<enum name='typeData' value='1952740449'/>
+<enum name='typeDecimalStruct' value='1684366189'/>
+<enum name='typeDegreesC' value='1684367203'/>
+<enum name='typeDegreesF' value='1684367206'/>
+<enum name='typeDegreesK' value='1684367211'/>
+<enum name='typeDrawingArea' value='1667527287'/>
+<enum name='typeEPS' value='1162892064'/>
+<enum name='typeElemInfo' value='1701603694'/>
+<enum name='typeEncodedString' value='1701733235'/>
+<enum name='typeEnumerated' value='1701737837'/>
+<enum name='typeEnumeration' value='1701737837'/>
+<enum name='typeEventInfo' value='1702259054'/>
+<enum name='typeEventRecord' value='1702261347'/>
+<enum name='typeEventRef' value='1702261350'/>
+<enum name='typeFSRef' value='1718841958'/>
+<enum name='typeFalse' value='1717660787'/>
+<enum name='typeFeet' value='1717921140'/>
+<enum name='typeFileURL' value='1718973036'/>
+<enum name='typeFinderWindow' value='1719101806'/>
+<enum name='typeFixed' value='1718188132'/>
+<enum name='typeFixedPoint' value='1718644340'/>
+<enum name='typeFixedRectangle' value='1718772596'/>
+<enum name='typeGIF' value='1195984486'/>
+<enum name='typeGallons' value='1734437998'/>
+<enum name='typeGlyphInfoArray' value='1735158113'/>
+<enum name='typeGrams' value='1735549293'/>
+<enum name='typeGraphicLine' value='1735158126'/>
+<enum name='typeGraphicText' value='1667724408'/>
+<enum name='typeGroupedGraphic' value='1668311395'/>
+<enum name='typeHIMenu' value='1836016234'/>
+<enum name='typeHIWindow' value='2003788394'/>
+<enum name='typeIEEE32BitFloatingPoint' value='1936289383'/>
+<enum name='typeIEEE64BitFloatingPoint' value='1685026146'/>
+<enum name='typeISO8601DateTime' value='1769172852'/>
+<enum name='typeInches' value='1768842088'/>
+<enum name='typeIndexDescriptor' value='1768842341'/>
+<enum name='typeInsertionLoc' value='1768846188'/>
+<enum name='typeIntlText' value='1769240692'/>
+<enum name='typeIntlWritingCode' value='1768846444'/>
+<enum name='typeJPEG' value='1246774599'/>
+<enum name='typeKernelProcessID' value='1802529124'/>
+<enum name='typeKeyword' value='1801812343'/>
+<enum name='typeKilograms' value='1801941613'/>
+<enum name='typeKilometers' value='1802335346'/>
+<enum name='typeLiters' value='1818850418'/>
+<enum name='typeLogicalDescriptor' value='1819240297'/>
+<enum name='typeLongDateTime' value='1818522656'/>
+<enum name='typeLongFixed' value='1818654820'/>
+<enum name='typeLongFixedPoint' value='1818652788'/>
+<enum name='typeLongFixedRectangle' value='1818653283'/>
+<enum name='typeLongPoint' value='1819307636'/>
+<enum name='typeLongRectangle' value='1819435892'/>
+<enum name='typeLowLevelEventRecord' value='1702261874'/>
+<enum name='typeMachPort' value='1886351988'/>
+<enum name='typeMachineLoc' value='1833725795'/>
+<enum name='typeMeters' value='1835365490'/>
+<enum name='typeMiles' value='1835625573'/>
+<enum name='typeNull' value='1853189228'/>
+<enum name='typeOSLTokenList' value='1869837420'/>
+<enum name='typeObjectBeingExamined' value='1702391150'/>
+<enum name='typeObjectSpecifier' value='1868720672'/>
+<enum name='typeOffsetArray' value='1868980601'/>
+<enum name='typeOunces' value='1870295840'/>
+<enum name='typeOval' value='1668249196'/>
+<enum name='typePString' value='1886614642'/>
+<enum name='typeParamInfo' value='1886218606'/>
+<enum name='typePict' value='1346978644'/>
+<enum name='typePixMapMinus' value='1953525101'/>
+<enum name='typePixelMap' value='1668311416'/>
+<enum name='typePolygon' value='1668310894'/>
+<enum name='typePounds' value='1818391328'/>
+<enum name='typeProcessSerialNumber' value='1886613024'/>
+<enum name='typePropInfo' value='1885957734'/>
+<enum name='typeProperty' value='1886547824'/>
+<enum name='typePtr' value='1886679584'/>
+<enum name='typeQDPoint' value='1363439732'/>
+<enum name='typeQDRectangle' value='1902408308'/>
+<enum name='typeQDRegion' value='1366452078'/>
+<enum name='typeQuarts' value='1903326323'/>
+<enum name='typeRGB16' value='1953640758'/>
+<enum name='typeRGB96' value='1953642806'/>
+<enum name='typeRGBColor' value='1666336578'/>
+<enum name='typeRangeDescriptor' value='1918987879'/>
+<enum name='typeRectangle' value='1668441443'/>
+<enum name='typeRelativeDescriptor' value='1919249440'/>
+<enum name='typeReplyPortAttr' value='1919250544'/>
+<enum name='typeRotation' value='1953656692'/>
+<enum name='typeRoundedRectangle' value='1668444771'/>
+<enum name='typeRow' value='1668444023'/>
+<enum name='typeSInt16' value='1936224114'/>
+<enum name='typeSInt32' value='1819242087'/>
+<enum name='typeSInt64' value='1668246896'/>
+<enum name='typeScrapStyles' value='1937013100'/>
+<enum name='typeScript' value='1935896692'/>
+<enum name='typeSectionH' value='1936024436'/>
+<enum name='typeSquareFeet' value='1936811636'/>
+<enum name='typeSquareKilometers' value='1936812909'/>
+<enum name='typeSquareMeters' value='1936814701'/>
+<enum name='typeSquareMiles' value='1936813417'/>
+<enum name='typeSquareYards' value='1936816484'/>
+<enum name='typeStyledText' value='1398036564'/>
+<enum name='typeStyledUnicodeText' value='1937077368'/>
+<enum name='typeSuiteInfo' value='1937074542'/>
+<enum name='typeTIFF' value='1414088262'/>
+<enum name='typeTable' value='1668571756'/>
+<enum name='typeText' value='1413830740'/>
+<enum name='typeTextRange' value='1954050670'/>
+<enum name='typeTextRangeArray' value='1953653113'/>
+<enum name='typeTextStyles' value='1953723513'/>
+<enum name='typeToken' value='1953459045'/>
+<enum name='typeTrue' value='1953658213'/>
+<enum name='typeType' value='1954115685'/>
+<enum name='typeUInt16' value='1970497650'/>
+<enum name='typeUInt32' value='1835100014'/>
+<enum name='typeUInt64' value='1969450861'/>
+<enum name='typeUTF16ExternalRepresentation' value='1970549046'/>
+<enum name='typeUTF8Text' value='1970562616'/>
+<enum name='typeUnicodeText' value='1970567284'/>
+<enum name='typeVersion' value='1986359923'/>
+<enum name='typeWhoseDescriptor' value='2003332979'/>
+<enum name='typeWhoseRange' value='2003988071'/>
+<enum name='typeWildCard' value='707406378'/>
+<enum name='typeYards' value='2036429412'/>
+<function name='AEBuildAppleEvent' variadic='true'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type='s'/>
+<arg type64='i' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEBuildError=II}'/>
+<arg type='*'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEBuildDesc' variadic='true'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEBuildError=II}'/>
+<arg type='*'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEBuildParameters' variadic='true'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEBuildError=II}'/>
+<arg type='*'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AECallObjectAccessor'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AECheckIsRecord'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='B'/>
+</function>
+<function name='AECoerceDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AECoercePtr'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AECountItems'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</function>
+<function name='AECreateAppleEvent'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='s'/>
+<arg type64='i' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AECreateDesc'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AECreateDescFromExternalPtr'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^v' type='l'/>
+<retval type='v'/>
+</arg>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AECreateList'>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type='B'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AECreateRemoteProcessResolver'>
+<arg type='^{__CFAllocator=}'/>
+<arg type='^{__CFURL=}'/>
+<retval already_retained='true' type='^{AERemoteProcessResolver=}'/>
+</function>
+<function name='AEDecodeMessage'>
+<arg type='^{_mach_msg_header_t=IIIIIi}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEDeleteItem'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</function>
+<function name='AEDeleteParam'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<retval type='s'/>
+</function>
+<function name='AEDisposeDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEDisposeRemoteProcessResolver'>
+<arg type='^{AERemoteProcessResolver=}'/>
+</function>
+<function name='AEDisposeToken'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEDuplicateDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEFlattenDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='*'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEGetArray'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='c'/>
+<arg type='^(AEArrayData=[1s][1c][1^*][1{AEDesc=I^^{OpaqueAEDataStorageType}}][1{AEKeyDesc=I{AEDesc=I^^{OpaqueAEDataStorageType}}}])'/>
+<arg type64='q' type='l'/>
+<arg type='^I'/>
+<arg type64='^q' type='^i'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</function>
+<function name='AEGetAttributeDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEGetAttributePtr'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^I'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<retval type='s'/>
+</function>
+<function name='AEGetCoercionHandler'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^^?'/>
+<arg type64='^^v' type='^i'/>
+<arg type='^B'/>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEGetDescData'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</function>
+<function name='AEGetDescDataRange'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEGetDescDataSize'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='AEGetEventHandler'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^^?'/>
+<arg type64='^^v' type='^i'/>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEGetNthDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type='^I'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEGetNthPtr'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type='^I'/>
+<arg type='^I'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<retval type='s'/>
+</function>
+<function name='AEGetObjectAccessor'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^^?'/>
+<arg type64='^^v' type='^i'/>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEGetParamDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEGetParamPtr'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^I'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^q' type='^i'/>
+<retval type='s'/>
+</function>
+<function name='AEGetRegisteredMachPort'>
+<retval type='I'/>
+</function>
+<function name='AEGetSpecialHandler'>
+<arg type64='I' type='L'/>
+<arg type='^^?'/>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEInitializeDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+</function>
+<function name='AEInstallCoercionHandler'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<arg type64='^v' type='l'/>
+<arg type='B'/>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEInstallEventHandler'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<arg type64='^v' type='l'/>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEInstallObjectAccessor'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<arg type64='^v' type='l'/>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEInstallSpecialHandler'>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEManagerInfo'>
+<arg type64='I' type='L'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</function>
+<function name='AEObjectInit'>
+<retval type='s'/>
+</function>
+<function name='AEPrintDescToHandle'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^^*'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEProcessMessage'>
+<arg type='^{_mach_msg_header_t=IIIIIi}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEPutArray'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='c'/>
+<arg type='^(AEArrayData=[1s][1c][1^*][1{AEDesc=I^^{OpaqueAEDataStorageType}}][1{AEKeyDesc=I{AEDesc=I^^{OpaqueAEDataStorageType}}}])'/>
+<arg type64='I' type='L'/>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</function>
+<function name='AEPutAttributeDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEPutAttributePtr'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</function>
+<function name='AEPutDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEPutParamDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEPutParamPtr'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</function>
+<function name='AEPutPtr'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</function>
+<function name='AERemoteProcessResolverGetProcesses'>
+<arg type='^{AERemoteProcessResolver=}'/>
+<arg type64='^{_CFStreamError=qi}' type='^{_CFStreamError=ii}'/>
+<retval type='^{__CFArray=}'/>
+</function>
+<function name='AERemoteProcessResolverScheduleWithRunLoop'>
+<arg type='^{AERemoteProcessResolver=}'/>
+<arg type='^{__CFRunLoop=}'/>
+<arg type='^{__CFString=}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AERemoteProcessResolver=}'/>
+<arg type='^v'/>
+<retval type='v'/>
+</arg>
+<arg type64='^{AERemoteProcessResolverContext=q^v^?^?^?}' type='^{AERemoteProcessResolverContext=i^v^?^?^?}'/>
+</function>
+<function name='AERemoveCoercionHandler'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AERemoveEventHandler'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AERemoveObjectAccessor'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AERemoveSpecialHandler'>
+<arg type64='I' type='L'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<arg type='B'/>
+<retval type='s'/>
+</function>
+<function name='AEReplaceDescData'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AEResolve'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='s'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='AESendMessage'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='i' type='l'/>
+<arg type64='q' type='l'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AESetObjectCallbacks'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^B'/>
+<retval type='s'/>
+</arg>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</arg>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</arg>
+<arg function_pointer='true' type='^?'>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<arg function_pointer='true' type='^?'>
+<arg type='^^{AEDesc}'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='AESizeOfAttribute'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^I'/>
+<arg type64='^q' type='^i'/>
+<retval type='s'/>
+</function>
+<function name='AESizeOfFlattenedDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type64='q' type='l'/>
+</function>
+<function name='AESizeOfNthItem'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<arg type='^I'/>
+<arg type64='^q' type='^i'/>
+<retval type='s'/>
+</function>
+<function name='AESizeOfParam'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^I'/>
+<arg type64='^q' type='^i'/>
+<retval type='s'/>
+</function>
+<function name='AEStreamClose'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamCloseDesc'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamCloseList'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamCloseRecord'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamCreateEvent'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type='s'/>
+<arg type64='i' type='l'/>
+<retval already_retained='true' type='^{OpaqueAEStreamRef=}'/>
+</function>
+<function name='AEStreamOpen'>
+<retval type='^{OpaqueAEStreamRef=}'/>
+</function>
+<function name='AEStreamOpenDesc'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamOpenEvent'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='^{OpaqueAEStreamRef=}'/>
+</function>
+<function name='AEStreamOpenKeyDesc'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamOpenList'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamOpenRecord'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamOptionalParam'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamSetRecordType'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamWriteAEDesc'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamWriteData'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamWriteDesc'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamWriteKey'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEStreamWriteKeyDesc'>
+<arg type='^{OpaqueAEStreamRef=}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='AEUnflattenDesc'>
+<arg type='^v'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='CreateCompDescriptor'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='B'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='CreateLogicalDescriptor'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='B'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='CreateObjSpecifier'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='B'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='CreateOffsetDescriptor'>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='CreateRangeDescriptor'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='B'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</function>
+<function name='DisposeAECoerceDescUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeAECoercePtrUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeAEDisposeExternalUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^v' type='l'/>
+<retval type='v'/>
+</arg>
+</function>
+<function name='DisposeAEEventHandlerUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLAccessorUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLAdjustMarksUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLCompareUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^B'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLCountUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLDisposeTokenUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLGetErrDescUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^^{AEDesc}'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLGetMarkTokenUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='DisposeOSLMarkUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</arg>
+</function>
+<function name='InvokeAECoerceDescUPP'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeAECoercePtrUPP'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeAEDisposeExternalUPP'>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^v' type='l'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^v' type='l'/>
+<retval type='v'/>
+</arg>
+</function>
+<function name='InvokeAEEventHandlerUPP'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLAccessorUPP'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLAdjustMarksUPP'>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg function_pointer='true' type='^?'>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLCompareUPP'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^B'/>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^B'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLCountUPP'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^q' type='^l'/>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLDisposeTokenUPP'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLGetErrDescUPP'>
+<arg type='^^{AEDesc}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^^{AEDesc}'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLGetMarkTokenUPP'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='InvokeOSLMarkUPP'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</arg>
+<retval type='s'/>
+</function>
+<function name='NewAECoerceDescUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewAECoercePtrUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='I' type='L'/>
+<arg type64='^v' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewAEDisposeExternalUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^v' type='l'/>
+<retval type='v'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type64='^v' type='l'/>
+<retval type='v'/>
+</retval>
+</function>
+<function name='NewAEEventHandlerUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLAccessorUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^v' type='l'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLAdjustMarksUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type64='q' type='l'/>
+<arg type64='q' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLCompareUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^B'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^B'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLCountUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='^q' type='^l'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLDisposeTokenUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLGetErrDescUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^^{AEDesc}'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type='^^{AEDesc}'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLGetMarkTokenUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='I' type='L'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='NewOSLMarkUPP'>
+<arg function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</arg>
+<retval function_pointer='true' type='^?'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type64='q' type='l'/>
+<retval type='s'/>
+</retval>
+</function>
+<function name='vAEBuildAppleEvent'>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type64='I' type='L'/>
+<arg type='^v'/>
+<arg type64='q' type='l'/>
+<arg type='s'/>
+<arg type64='i' type='l'/>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEBuildError=II}'/>
+<arg type='*'/>
+<arg type64='^{__va_list_tag=II^v^v}' type='*'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='vAEBuildDesc'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEBuildError=II}'/>
+<arg type='*'/>
+<arg type64='^{__va_list_tag=II^v^v}' type='*'/>
+<retval type64='i' type='l'/>
+</function>
+<function name='vAEBuildParameters'>
+<arg type='^{AEDesc=I^^{OpaqueAEDataStorageType}}'/>
+<arg type='^{AEBuildError=II}'/>
+<arg type='*'/>
+<arg type64='^{__va_list_tag=II^v^v}' type='*'/>
+<retval type64='i' type='l'/>
+</function>
+</signatures>

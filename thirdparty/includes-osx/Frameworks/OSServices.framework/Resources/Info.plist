@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildMachineOSBuild</key>
+	<string>11D17a</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>OSServices</string>
+	<key>CFBundleGetInfoString</key>
+	<string>OS Services Framework</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.CoreServices.OSServices</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>OS Services</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string>478.37</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>478.37</string>
+	<key>CarbonLazyValues</key>
+	<dict>
+		<key>CodeFragmentManager</key>
+		<dict>
+			<key>OSServices</key>
+			<string>CFMPriv_OSServices</string>
+		</dict>
+		<key>Gestalt</key>
+		<dict>
+			<key>mnam</key>
+			<string>_OSS_InstallGestaltSelectors</string>
+			<key>otan</key>
+			<string>OTInitializeGestaltValues</string>
+			<key>otra</key>
+			<integer>82</integer>
+			<key>otrv</key>
+			<integer>271613952</integer>
+			<key>otvr</key>
+			<integer>271613952</integer>
+			<key>powr</key>
+			<integer>1</integer>
+			<key>pwrv</key>
+			<integer>544</integer>
+			<key>scsi</key>
+			<string>15</string>
+		</dict>
+	</dict>
+	<key>DTCompiler</key>
+	<string></string>
+	<key>DTPlatformBuild</key>
+	<string>11D17a</string>
+	<key>DTPlatformVersion</key>
+	<string>GM</string>
+	<key>DTSDKBuild</key>
+	<string>11D17a</string>
+	<key>DTSDKName</key>
+	<string></string>
+	<key>DTXcode</key>
+	<string>0410</string>
+	<key>DTXcodeBuild</key>
+	<string>11D17a</string>
+</dict>
+</plist>
