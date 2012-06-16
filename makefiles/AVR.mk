@@ -24,6 +24,8 @@ CLDFLAGS += -Wl,--relax,--gc-sections -ffunction-sections
 CLDFLAGS += -mmcu=$(AVR_ARCH)
 LDFLAGS  = -m $(LDAVR_ARCH) -M
 
+CXXFLAGS += -std=c++0x
+
 # generate list
 # CFLAGS += -Wa,-adhlns=$@.lst
 
