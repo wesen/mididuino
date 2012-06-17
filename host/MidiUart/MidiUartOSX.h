@@ -29,8 +29,7 @@ class MidiUartOSXClass : public MidiUartHostParent {
  public:
   MidiUartOSXClass(int _inputDevice = -1, int _outputDevice = -1);
   MidiUartOSXClass(const char *inputDevice, const char *outputDevice);
-  ~MidiUartOSXClass() {
-  }
+  ~MidiUartOSXClass();
 
   static void listInputMidiDevices();
   static void listOutputMidiDevices();
@@ -41,6 +40,7 @@ class MidiUartOSXClass : public MidiUartHostParent {
   bool init(const char *_inputDeviceName, const char *_outputDeviceName);
   void runLoop();
   void midiSendLong(unsigned char *buf, unsigned long len);
+  void midiSendShort(unsigned char status, unsigned char byte1);
   void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2);
 };
 

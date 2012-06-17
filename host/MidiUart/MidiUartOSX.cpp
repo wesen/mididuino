@@ -236,6 +236,25 @@ bool MidiUartOSXClass::init(int _inputDevice, int _outputDevice) {
   return true;
 }
 
+MidiUartOSXClass::~MidiUartOSXClass() {
+  if (outPort != 0) {
+    MIDIPortDispose(outPort);
+    outPort = 0;
+  }
+
+  if (inPort != 0) {
+    MIDIPortDispose(inPort);
+    inPort = 0;
+  }
+
+  if (client != 0) {
+    MIDIClientDispose(client);
+    client = 0;
+  }
+
+
+}
+
 /**
  * Send a long midi message.
  *
@@ -254,12 +273,25 @@ void MidiUartOSXClass::midiSendLong(unsigned char *buf, unsigned long len) {
   MIDISendSysex(sysexReq);
 }
 
+void MidiUartOSXClass::midiSendShort(unsigned char status, unsigned char byte1) {
+  /* XXX is the static here correct at all !? */
+  static struct MIDIPacketList pktlist;
+
+  pktlist.numPackets = 1;
+  pktlist.packet[0].timeStamp = 0;
+  pktlist.packet[0].length = 2;
+  pktlist.packet[0].data[0] = status;
+  pktlist.packet[0].data[1] = byte1;
+  MIDISend(outPort, dest, &pktlist);
+}
+
 /**
  * Send a short midi message.
  **/
 void MidiUartOSXClass::midiSendShort(unsigned char status,
                                      unsigned char byte1,
                                      unsigned char byte2) {
+  /* XXX is the static here correct at all !? */
   static struct MIDIPacketList pktlist;
   
   pktlist.numPackets = 1;
