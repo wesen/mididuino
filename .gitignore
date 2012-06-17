@@ -17,3 +17,7 @@ cscope.out
 .DS_Store
 workspace.xml
 .midictrl.flags2
+SendProgramChange
+editor/mididuino-dist-4.3.2.tar.gz
+editor/mididuino-dist-0018.tar.gz
+virtualMidiTest
