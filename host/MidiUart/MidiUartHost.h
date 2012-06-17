@@ -59,6 +59,7 @@ public:
   virtual bool init(int _inputDevice, int _outputDevice);
   virtual void runLoop() = 0;
   virtual void midiSendLong(unsigned char *buf, unsigned long len) = 0;
+  virtual void midiSendShort(unsigned char status, unsigned char byte1) = 0;
   virtual void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2) = 0;
 };
 
