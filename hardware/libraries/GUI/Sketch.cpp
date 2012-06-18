@@ -89,7 +89,14 @@ bool SketchSwitchPage::handleGlobalEvent(gui_event_t *event) {
   
   bool allButtonsDown = true;
   bool aButtonPressed = false;
-  for (uint8_t i = Buttons.BUTTON1; i < Buttons.BUTTON4; i++) {
+  //Mods TT 06/09/2011 - include button4 in the check 
+  for (uint8_t i = Buttons.BUTTON1; i <= Buttons.BUTTON4; i++) {
+  
+    //Mods TT 06/09/2011 - skip buttons 2 & 3  
+  	if ((i == Buttons.BUTTON2) || (i == Buttons.BUTTON3)){
+  		continue;
+  	}
+  
     if (EVENT_PRESSED(event, i)) {
       aButtonPressed = true;
     }
