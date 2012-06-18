@@ -23,13 +23,6 @@
 
 package processing.app.debug;
 
-import processing.app.Base;
-import processing.app.Preferences;
-import processing.app.Sketch;
-import processing.app.library.Library;
-import processing.app.library.LibraryManager;
-import processing.core.PApplet;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -41,6 +34,13 @@ import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import processing.app.Base;
+import processing.app.Preferences;
+import processing.app.Sketch;
+import processing.app.library.Library;
+import processing.app.library.LibraryManager;
+import processing.core.PApplet;
 
 
 public class Compiler implements MessageConsumer {
@@ -189,13 +189,13 @@ public class Compiler implements MessageConsumer {
     List<File> objectPaths = new ArrayList<File>();
 
     for (File file : cSources) {
-      String objectPath = buildPath + File.separator + file.getName() + ".o";
+      String objectPath = buildPath + File.separator + file.getName() + ".avr.o";
       objectPaths.add(new File(objectPath));
       execAsynchronously(getCommandCompilerC(avrBasePath, includePaths, file.getAbsolutePath(), objectPath));
     }
 
     for (File file : cppSources) {
-      String objectPath = buildPath + File.separator + file.getName() + ".o";
+      String objectPath = buildPath + File.separator + file.getName() + ".avr.o";
       objectPaths.add(new File(objectPath));
       execAsynchronously(getCommandCompilerCPP(avrBasePath, includePaths, file.getAbsolutePath(), objectPath));
     }

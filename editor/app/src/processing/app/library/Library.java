@@ -43,9 +43,9 @@ import processing.app.debug.RunnerException;
  */
 public class Library implements MessageConsumer{
 
-  private File libFolder;
+  private final File libFolder;
   private File utilityFolder;
-  private LibraryManager libManager;
+  private final LibraryManager libManager;
   RunnerException exception;
 
   static final String BUGS_URL = "https://developer.berlios.de/bugs/?group_id=3590";
@@ -116,7 +116,7 @@ public class Library implements MessageConsumer{
 
   public boolean isFresh(File sourceFile, String ending) {
     String name = sourceFile.getPath();
-    String objName = name.replaceAll(ending, ".o");
+    String objName = name.replaceAll(ending, ".avr.o");
     File objFile = new File(objName);
 
     if (objFile.exists() && (objFile.lastModified() < sourceFile.lastModified())) {
@@ -251,7 +251,7 @@ public class Library implements MessageConsumer{
   {
     FileFilter onlyObjectFiles = new FileFilter() {
       public boolean accept(File file) {
-        return (file.getName()).endsWith(".o") && !(file.getName()).endsWith(".host.o");
+        return (file.getName()).endsWith(".avr.o"); 
       }
     };
     File res[] = folder.listFiles(onlyObjectFiles);
@@ -412,10 +412,10 @@ public class Library implements MessageConsumer{
         pathSansExtension = sourcesC[i].getPath();
         pathSansExtension = pathSansExtension.substring(0, pathSansExtension.length() - 2); // -2 because ".c"
 
-        File objFile = new File(pathSansExtension + ".o");
+        File objFile = new File(pathSansExtension + ".avr.o");
         objFile.delete();
 
-        java.util.List commandList = Compiler.getCommandCompilerC(avrBasePath, includePaths, sourcesC[i].getPath(), pathSansExtension + ".o");
+        java.util.List commandList = Compiler.getCommandCompilerC(avrBasePath, includePaths, sourcesC[i].getPath(), pathSansExtension + ".avr.o");
         if (execAsynchronously(commandList) != 0) {
           return false;
         }
@@ -429,7 +429,7 @@ public class Library implements MessageConsumer{
         pathSansExtension = sourcesCPP[i].getPath();
         pathSansExtension = pathSansExtension.substring(0, pathSansExtension.length() - 4); // -4 because ".cpp"
 
-        java.util.List commandList = Compiler.getCommandCompilerCPP(avrBasePath, includePaths, sourcesCPP[i].getPath(), pathSansExtension + ".o");
+        java.util.List commandList = Compiler.getCommandCompilerCPP(avrBasePath, includePaths, sourcesCPP[i].getPath(), pathSansExtension + ".avr.o");
         if (execAsynchronously(commandList) != 0) {
           return false;
         }

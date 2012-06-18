@@ -23,6 +23,20 @@
 
 package processing.app;
 
+import java.awt.FileDialog;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import javax.swing.JOptionPane;
+
 import processing.app.debug.AvrdudeUploader;
 import processing.app.debug.Compiler;
 import processing.app.debug.MidiUploader;
@@ -32,19 +46,8 @@ import processing.app.debug.Target;
 import processing.app.debug.Uploader;
 import processing.app.library.Library;
 import processing.app.library.LibraryManager;
-import processing.app.preproc.*;
-import processing.core.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
+import processing.app.preproc.PdePreprocessor;
+import processing.core.PApplet;
 
 
 /**
@@ -53,22 +56,22 @@ import javax.swing.border.TitledBorder;
 public class Sketch {
   static private File tempBuildFolder;
 
-  private Editor editor;
+  private final Editor editor;
 
   /** main pde file for this sketch. */
-  private File primaryFile;
+  private final File primaryFile;
 
   /**
    * Name of sketch, which is the name of main file
    * (without .pde or .java extension)
    */
-  private String name;
+  private final String name;
 
   /** true if any of the files have been modified. */
   private boolean modified;
 
   /** folder that contains this sketch */
-  private File folder;
+  private final File folder;
 
   /** data folder location for this sketch (may not exist yet) */
   private File dataFolder;
@@ -920,7 +923,7 @@ public class Sketch {
 
     // if the file appears to be code related, drop it
     // into the code folder, instead of the data folder
-    if (filename.toLowerCase().endsWith(".o") ||
+    if (filename.toLowerCase().endsWith(".avr.o") ||
         filename.toLowerCase().endsWith(".a") ||
         filename.toLowerCase().endsWith(".so")) {
 
