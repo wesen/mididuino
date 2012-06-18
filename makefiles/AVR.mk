@@ -29,19 +29,19 @@ CXXFLAGS += -std=c++0x
 # generate list
 # CFLAGS += -Wa,-adhlns=$@.lst
 
-%.o: %.cpp
+%.avr.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-%.o: %.c 
+%.avr.o: %.c 
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.s 
+%.avr.o: %.s 
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -fverbose-asm $< -o $@
 
-%.o: %.S
+%.avr.o: %.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.syx: %.hex

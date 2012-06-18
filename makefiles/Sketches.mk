@@ -66,19 +66,19 @@ printinfo:
 	@echo "CLDFLAGS: " $(CLDFLAGS)
 	@echo "Libraries: " $(MIDICTRL_LIBS)
 
-%.o: %.cpp
+%.avr.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-%.o: %.c 
+%.avr.o: %.c 
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.s 
+%.avr.o: %.s 
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -fverbose-asm $< -o $@
 
-%.o: %.S
+%.avr.o: %.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.syx: %.hex
@@ -94,7 +94,7 @@ printinfo:
 	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O srec $< $@
 
 # build the PDE by calling the preprocessor
-$(PDENAME).o: $(PDEFILES) $(wildcard $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
+$(PDENAME).avr.o: $(PDEFILES) $(wildcard $(MIDICTRL_BASE_DIR)/hardware/cores/$(CORE)/*.cxx)
 	@java $(JAVA_FLAGS) processing.app.preproc.PdePreprocessor ./$(PDENAME) $(PDEFILES) > /dev/null
 	$(CXX) $(CXXFLAGS) -c $(PDENAME).cpp -o $@
 	rm $(PDENAME).cpp
@@ -105,7 +105,7 @@ upload: $(PDENAME).hex
 $(PDENAME)whole.elf: $(PDENAME).cpp $(COBJS)
 	$(CXX) $(CLDFLAGS) $(CFLAGS) -o $@ -fwhole-program --combine $^ $(SRCS)
 
-$(PDENAME).elf: $(PDENAME).o $(MIDICTRL_OBJS)
+$(PDENAME).elf: $(PDENAME).avr.o $(MIDICTRL_OBJS)
 	$(CXX) $(CLDFLAGS) -g -o $@ $^ 
 
 _clean:
