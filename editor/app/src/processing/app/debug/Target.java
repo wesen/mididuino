@@ -54,7 +54,7 @@ public class Target {
     for (int i = 0; i < files.length; i++) {
       if (files[i].endsWith(".c") || files[i].endsWith(".cpp"))
         sources.add(files[i]);
-      if (files[i].endsWith(".o"))
+      if (files[i].endsWith(".avr.o"))
         objects.add(files[i]);
     }
   }
