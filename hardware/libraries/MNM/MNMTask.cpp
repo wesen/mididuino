@@ -90,7 +90,7 @@ void MNMTaskClass::onKitMessageCallback() {
     kitChangeCallbacks.call();
     if (verbose) {
       GUI.setLine(GUI.LINE1);
-      GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+      GUI.flash_p_string_fill(PSTR("LOADED MNM KIT:"));
       GUI.setLine(GUI.LINE2);
       GUI.flash_string_fill(MNM.kit.name);
     }
