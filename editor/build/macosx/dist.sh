@@ -36,6 +36,10 @@ fi
 
 echo Cleaning file boogers...
 
+# Remove object files
+find work -name "*.avr.o" -exec rm -f {} ';'
+find work -name "*.test.o" -exec rm -f {} ';'
+find work -name "*.host.o" -exec rm -f {} ';'
 # remove boogers
 find work -name "*~" -exec rm -f {} ';'
 # need to leave ds store stuff cuz one of those is important
