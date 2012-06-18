@@ -125,7 +125,6 @@ void MidiFirmwareSender::handleByte(uint8_t b) {
       }
 
       if (file->hasNextSysexPart()) {
-        logPrintf(LOG_INFO, "Send next sysex part\n");
         sendNextSysexPart();
       } else {
         if (verbose >= 1) {

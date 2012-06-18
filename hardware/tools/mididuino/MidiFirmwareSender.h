@@ -21,7 +21,7 @@ protected:
 
   bool waitingForBootloader;
 
-  int deviceId;
+  uint8_t deviceId;
   int verbose;
   bool statusMessage;
   HexFile *file;
