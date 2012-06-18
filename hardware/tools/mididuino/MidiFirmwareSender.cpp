@@ -7,6 +7,7 @@
 
 #include "MidiSend.h"
 #include "MidiFirmwareSender.h"
+#include <unistd.h>
 
 static uint16_t make_word(uint8_t *data, uint8_t cnt) {
   int8_t idx = 0;
