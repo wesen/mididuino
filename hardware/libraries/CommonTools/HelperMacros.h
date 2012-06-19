@@ -107,7 +107,9 @@
 
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 #ifndef HOST_MIDIDUINO
+#if __GNUC_MINOR__ < 5
 #define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
+#endif
 #endif
 
 /** @} **/
