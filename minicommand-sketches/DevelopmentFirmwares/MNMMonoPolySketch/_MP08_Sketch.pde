@@ -276,7 +276,7 @@ public:
               MNM.parseCC(channel, cc, &track, &param);
                       
               // If params edited via MNM UI, then keep other poly Track params synced
-              if ((track >= polyStartTrack) || (track <= polyEndTrack)){            
+              if ((track >= polyStartTrack) && (track <= polyEndTrack)){            
                  for (uint8_t i = polyStartTrack; i <= polyEndTrack; ++i) {
                      
                      // Apply spread
