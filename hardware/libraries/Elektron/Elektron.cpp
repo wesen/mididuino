@@ -151,4 +151,20 @@ void ElektronHelper::calculateSysexChecksum(uint8_t *data, uint16_t len) {
   data[len + 4] = 0xF7;
 }
 
+PGM_P get_param_name(const model_param_name_t *names, uint8_t param) {
+  uint8_t i = 0;
+  uint8_t id;
+  if (names == NULL)
+    return NULL;
+
+  while ((id = pgm_read_byte(&names[i].id)) != 127) {
+    if (id == param) {
+      return names[i].name ;
+    }
+    i++;
+  }
+  return NULL;
+}
+
+
 /* Encoders */
