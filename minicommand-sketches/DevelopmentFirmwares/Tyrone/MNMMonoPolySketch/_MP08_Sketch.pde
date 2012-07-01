@@ -17,16 +17,6 @@ public:
     uint8_t polyStartTrack, polyEndTrack, polyTotalNumberVoices, parameterSpread;    
     mnm_voice_t mnmVoicePool[6];    
     uint8_t lastUsedMnMVoice[6];
-    
-    void setupPages(){
-       sketchEnabledEncoder.initBoolEncoder("O-|", sketchEnabled);
-       polyStartTrackEncoder.initRangeEncoder(6, 1, "ST ", (polyStartTrack + 1));
-       polyEndTrackEncoder.initRangeEncoder(6, 1, "END", (polyEndTrack + 1));
-       parameterSyncEnabledEncoder.initBoolEncoder("SYN", parameterSyncEnabled);
-       parameterSpreadEncoder.initRangeEncoder(64, 0, "SPR", parameterSpread);
-       page1.setEncoders(&sketchEnabledEncoder, &polyStartTrackEncoder, &polyEndTrackEncoder, &parameterSyncEnabledEncoder);
-       page1.setShortName("PG1");
-    }
           
     void getName(char *n1, char *n2) {
         m_strncpy_p(n1, PSTR("MNO "), 5);
@@ -35,7 +25,7 @@ public:
    
     void setup() {
        muted = false;
-       sketchEnabled = false;
+       sketchEnabled = true;
        parameterSyncEnabled = true;
        parameterSyncDisplay = true;
        parameterSpread = 0;
@@ -50,6 +40,16 @@ public:
        Midi.addOnProgramChangeCallback(this, (midi_callback_ptr_t)&MNMMonoPolySketch::onProgramChange);
 
     }   
+
+    void setupPages(){
+       sketchEnabledEncoder.initBoolEncoder("O-|", sketchEnabled);
+       polyStartTrackEncoder.initRangeEncoder(6, 1, "ST ", (polyStartTrack + 1));
+       polyEndTrackEncoder.initRangeEncoder(6, 1, "END", (polyEndTrack + 1));
+       parameterSyncEnabledEncoder.initBoolEncoder("SYN", parameterSyncEnabled);
+       parameterSpreadEncoder.initRangeEncoder(64, 0, "SPR", parameterSpread);
+       page1.setEncoders(&sketchEnabledEncoder, &polyStartTrackEncoder, &polyEndTrackEncoder, &parameterSyncEnabledEncoder);
+       page1.setShortName("PG1");
+    }
     
       void onProgramChange(uint8_t *msg) {
 
@@ -274,7 +274,7 @@ public:
               uint8_t track, param;
               int8_t spread;
               MNM.parseCC(channel, cc, &track, &param);
-                      
+                                            
               // If params edited via MNM UI, then keep other poly Track params synced
               if ((track >= polyStartTrack) && (track <= polyEndTrack)){            
                  for (uint8_t i = polyStartTrack; i <= polyEndTrack; ++i) {
