@@ -4,14 +4,14 @@
 # (c)  July 2011 - Manuel Odendahl - wesen@ruinwesen.com
 #
 
-CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
-include $(CURDIR)MidiCtrl.mk
-
 # set default compilers and flags
 CXX      ?= g++-4.7
 CC       ?= gcc-4.7
 CLDCXX   ?= $(CXX)
 CLDC     ?= $(CC)
+
+CURDIR := $(dir $(lastword $(MAKEFILE_LIST)))
+include $(CURDIR)MidiCtrl.mk
 
 # ARCHFLAGS = -arch i386 -arch ppc  -mmacosx-version-min=10.4
 HOST_BASE_DIR  = $(abspath $(CURDIR)../host)
