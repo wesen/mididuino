@@ -48,6 +48,8 @@ typedef struct model_to_param_names_s {
   const model_param_name_t *names;
 } model_to_param_names_t;
 
+PGM_P get_param_name(const model_param_name_t *names, uint8_t param);
+
 /**
  * Class grouping various helper functions to convert elektron sysex
  * data. These are deprecated and should be replaced by the elektron

@@ -28,3 +28,6 @@ AVR/makefile
 Debug/objects.mk
 Debug/sources.mk
 Debug/makefile
+*.mk
+tools-universal-fixed.zip
+new-flags.txt

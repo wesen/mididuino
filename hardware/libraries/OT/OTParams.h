@@ -1,0 +1,255 @@
+/*
+ * MidiCtrl - Octatrack parameter
+ *
+ * (c) June 2012 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#ifndef OT_PARAMS_H__
+#define OT_PARAMS_H__
+
+PGM_P ot_track_param_name(OTTrack *track, uint8_t param);
+PGM_P ot_model_param_name(uint8_t model, uint8_t param);
+PGM_P ot_model_fx_name(uint8_t fx, uint8_t param);
+
+// extern const ot_machine_name_t ot_machine_names[] PROGMEM;
+
+/** Sampler params **/
+
+#define OT_MODEL_STATIC 0
+#define OT_MODEL_FLEX 1
+#define OT_MODEL_THRU 2
+#define OT_MODEL_NEIGHBOR 3
+#define OT_MODEL_PICKUP 4
+
+#define OT_FX_NONE 0
+#define OT_FX_FILTER 1
+#define OT_FX_EQ 3
+#define OT_FX_DJEQ 2
+#define OT_FX_PHASER 3
+#define OT_FX_FLANGER 4
+#define OT_FX_CHORUS 5
+#define OT_FX_COMPRESSOR 6
+#define OT_FX_LOFI 7
+#define OT_FX_COMB_FILTER 8
+#define OT_FX_DELAY 9
+#define OT_FX_REVERB 10
+
+#define OT_TRACK_LEVEL 7
+#define OT_TRACK_BALANCE 8
+
+#define OT_PLAYBACK_PARAM1 16
+#define OT_PLAYBACK_PARAM2 17
+#define OT_PLAYBACK_PARAM3 18
+#define OT_PLAYBACK_PARAM4 19
+#define OT_PLAYBACK_PARAM5 20
+#define OT_PLAYBACK_PARAM6 21
+
+#define OT_THRU_IN_AB 16
+#define OT_THRU_VOL_AB 17
+#define OT_THRU_IN_CD 19
+#define OT_THRU_VOL_CD 20
+
+#define OT_FLEX_PTCH 16
+#define OT_FLEX_START 17
+#define OT_FLEX_LEN 18
+#define OT_FLEX_RATE 19
+#define OT_FLEX_RTRG 20
+#define OT_FLEX_RTIM 21
+
+#define OT_FLEX_SETUP_LOOP 0
+#define OT_FLEX_SETUP_SLICE 1
+#define OT_FLEX_SETUP_LEN 2
+#define OT_FLEX_SETUP_RATE 3
+#define OT_FLEX_SETUP_TSTR 4
+#define OT_FLEX_SETUP_TSNS 5
+
+#define OT_STATIC_PTCH 16
+#define OT_STATIC_STRT 17
+#define OT_STATIC_LEN 18
+#define OT_STATIC_RATE 19
+#define OT_STATIC_RTRG 20
+#define OT_STATIC_RTIM 21
+
+#define OT_STATIC_SETUP_LOOP 0
+#define OT_STATIC_SETUP_SLICE 1
+#define OT_STATIC_SETUP_LEN 2
+#define OT_STATIC_SETUP_RATE 3
+#define OT_STATIC_SETUP_TSTR 4
+#define OT_STATIC_SETUP_TSNS 5
+
+#define OT_AMP_ATTACK 22
+#define OT_AMP_HOLD 23
+#define OT_AMP_RELEASE 24
+#define OT_AMP_VOLUME 25
+#define OT_AMP_BALANCE 26
+
+#define OT_LFO_PARAM1 28
+#define OT_LFO_PARAM2 29
+#define OT_LFO_PARAM3 30
+#define OT_LFO_PARAM4 31
+#define OT_LFO_PARAM5 32
+#define OT_LFO_PARAM6 33
+
+#define OT_FX_FILTER_BASE 0
+#define OT_FX_FILTER_WIDTH 1
+#define OT_FX_FILTER_Q 2
+#define OT_FX_FILTER_DEPTH 3
+#define OT_FX_FILTER_ATK 4
+#define OT_FX_FILTER_DEC 5
+
+#define OT_FX_FILTER_SETUP_HP 0
+#define OT_FX_FILTER_SETUP_LP 1
+#define OT_FX_FILTER_SETUP_ENV 2
+#define OT_FX_FILTER_SETUP_HOLD 3
+#define OT_FX_FILTER_SETUP_Q 4
+#define OT_FX_FILTER_SETUP_DIST 5
+
+#define OT_FX_EQ_FRQ1 0
+#define OT_FX_EQ_GN1 1
+#define OT_FX_EQ_Q1 2
+#define OT_FX_EQ_FRQ2 3
+#define OT_FX_EQ_GN2 4
+#define OT_FX_EQ_Q2 5
+
+#define OT_FX_EQ_SETUP_TYP1 0
+#define OT_FX_EQ_SETUP_TYP2 3
+
+#define OT_FX_DJEQ_LSF 0
+#define OT_FX_DJEQ_HSF 2
+#define OT_FX_DJEQ_LOWG 3
+#define OT_FX_DJEQ_MIDG 4
+#define OT_FX_DJEQ_HIG 5
+
+#define OT_FX_PHASER_CNTR 0
+#define OT_FX_PHASER_DEP 1
+#define OT_FX_PHASER_SPD 2
+#define OT_FX_PHASER_FB 3
+#define OT_FX_PHASER_WID 4
+#define OT_FX_PHASER_MIX 5
+
+#define OT_FX_PHASER_SETUP_NUM 1
+
+#define OT_FX_FLANGER_DEL 0
+#define OT_FX_FLANGER_DEP 1
+#define OT_FX_FLANGER_SPD 2
+#define OT_FX_FLANGER_FB 3
+#define OT_FX_FLANGER_WID 4
+#define OT_FX_FLANGER_MIX 5
+
+#define OT_FX_CHORUS_DEL 0
+#define OT_FX_CHORUS_DEP 1
+#define OT_FX_CHORUS_SPD 2
+#define OT_FX_CHORUS_FB 3
+#define OT_FX_CHORUS_WID 4
+#define OT_FX_CHORUS_MIX 5
+
+#define OT_FX_CHORUS_SETUP_TAPS 0
+#define OT_FX_CHORUS_SETUP_FBLP 3
+
+#define OT_FX_COMPRESSOR_ATK 0
+#define OT_FX_COMPRESSOR_REL 1
+#define OT_FX_COMPRESSOR_THRS 2
+#define OT_FX_COMPRESSOR_RAT 3
+#define OT_FX_COMPRESSOR_GAIN 4
+#define OT_FX_COMPRESSOR_MIX 5
+
+#define OT_FX_COMPRESSOR_SETUP_RMS 0
+
+#define OT_FX_LOFI_DIST 0
+#define OT_FX_LOFI_AMF 2
+#define OT_FX_LOFI_SRR 3
+#define OT_FX_LOFI_BRR 4
+#define OT_FX_LOFI_AMD 5
+
+#define OT_FX_LOFI_SETUP_AMPH 2
+
+#define OT_FX_DELAY_TIME 0
+#define OT_FX_DELAY_FB 1
+#define OT_FX_DELAY_VOL 2
+#define OT_FX_DELAY_BASE 3
+#define OT_FX_DELAY_WDTH 4
+#define OT_FX_DELAY_SEND 5
+
+#define OT_FX_DELAY_SETUP_X 0
+#define OT_FX_DELAY_SETUP_TAPE 1
+#define OT_FX_DELAY_SETUP_DIR 2
+#define OT_FX_DELAY_SETUP_SYNC 3
+#define OT_FX_DELAY_SETUP_LOCK 4
+#define OT_FX_DELAY_SETUP_PASS 5
+
+#define OT_FX_REVERB_TIME 0
+#define OT_FX_REVERB_DAMP 1
+#define OT_FX_REVERB_GATE 2
+#define OT_FX_REVERB_HP 3
+#define OT_FX_REVERB_LP 4
+#define OT_FX_REVERB_MIX 5
+
+#define OT_FX_REVERB_SETUP_GVOL 0
+
+#define OT_FX1_PARAM1 34
+#define OT_FX1_PARAM2 35
+#define OT_FX1_PARAM3 36
+#define OT_FX1_DEPTH1 37
+#define OT_FX1_DEPTH2 38
+#define OT_FX1_DEPTH3 39
+
+#define OT_FX2_PARAM1 40
+#define OT_FX2_PARAM2 41
+#define OT_FX2_PARAM3 42
+#define OT_FX2_PARAM4 43
+#define OT_FX2_PARAM5 44
+#define OT_FX2_PARAM6 45
+
+#define OT_TRACK_LEVEL 46
+#define OT_CUE_LEVEL 47
+
+#define OT_CROSSFADER 48
+
+#define OT_TRACK_MUTE 49
+#define OT_TRACK_SOLO 50
+#define OT_TRACK_CUE 51
+
+/** MIDI Params **/
+
+#define OT_MIDI_PLAYBACK_PARAM1 16
+#define OT_MIDI_PLAYBACK_PARAM2 17
+#define OT_MIDI_PLAYBACK_PARAM3 18
+#define OT_MIDI_PLAYBACK_PARAM4 19
+#define OT_MIDI_PLAYBACK_PARAM5 20
+#define OT_MIDI_PLAYBACK_PARAM6 21
+
+#define OT_MIDI_ARP_TRANSPOSE 22
+#define OT_MIDI_ARP_LEGATO 23
+#define OT_MIDI_ARP_MODE 24
+#define OT_MIDI_ARP_SPEED 25
+#define OT_MIDI_ARP_OCTAVE_RANGE 26
+#define OT_MIDI_ARP_NOTE_LENGTH 27
+
+#define OT_MIDI_LFO_SPEED1 28
+#define OT_MIDI_LFO_SPEED2 29
+#define OT_MIDI_LFO_SPEED3 30
+#define OT_MIDI_LFO_DEPTH1 31
+#define OT_MIDI_LFO_DEPTH2 32
+#define OT_MIDI_LFO_DEPTH3 33
+
+#define OT_MIDI_PITCH_BEND 34
+#define OT_MIDI_AFTERTOUCH 35
+
+#define OT_MIDI_CC1 36
+#define OT_MIDI_CC2 37
+#define OT_MIDI_CC3 38
+#define OT_MIDI_CC4 39
+#define OT_MIDI_CC5 40
+#define OT_MIDI_CC6 41
+#define OT_MIDI_CC7 42
+#define OT_MIDI_CC8 43
+#define OT_MIDI_CC9 44
+#define OT_MIDI_CC10 45
+#define OT_MIDI_CC11 46
+#define OT_MIDI_CC12 47
+#define OT_MIDI_CC13 48
+
+#define OT_MIDI_MUTE 49
+#define OT_MIDI_SOLO 50
+
+#endif /* OT_PARAMS */

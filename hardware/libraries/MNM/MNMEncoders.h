@@ -1,3 +1,9 @@
+/*
+ * MidiCtrl - Monomachine Encoders
+ *
+ * (c) June 2012 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef MNM_ENCODERS_H__
 #define MNM_ENCODERS_H__
 
