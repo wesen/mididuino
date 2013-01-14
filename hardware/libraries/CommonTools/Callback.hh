@@ -154,6 +154,18 @@ public:
   }
 };
 
+template<class C, int N = 4, typename Arg1 = void, typename Arg2 = void, typename Arg3 = void,
+    typename M = void(C::*)(Arg1, Arg2, Arg3)>
+class CallbackVector3 :
+  public CallbackVector<C, N, M> {
+public:
+  void call(Arg1 a1, Arg2 a2, Arg3 a3) {
+    for (uint8_t i = 0; i < CallbackVector<C,N,M>::size; i++) {
+      ((CallbackVector<C, N, M>::callbacks[i].obj)->*(CallbackVector<C,N,M>::callbacks[i].ptr))(a1, a2, a3);
+    }
+  }
+};
+
 /**
  * Templated callback vector class with callback method taking one
  * argument of type Arg1 and returning a boolean.
