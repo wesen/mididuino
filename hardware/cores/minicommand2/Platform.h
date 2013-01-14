@@ -16,6 +16,7 @@ extern "C" {
 #include <util/delay.h>
 #include <inttypes.h>
 #include <avr/interrupt.h>
+#include <avr/iom64.h>
 
 #ifdef __cplusplus
   void __mainInnerLoop(bool callLoop = true);
