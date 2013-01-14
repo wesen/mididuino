@@ -51,10 +51,13 @@ all: $(PDENAME).hex
 
 # Read out the libraries from the midi ctrl environment
 .midictrl.flags: $(PDEFILES)
-	@java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --make $(CURRENT_DIR)/$(PDENAME).pde > $@
+	java $(JAVA_FLAGS) processing.app.debug.Compiler --board $(CORE) --make $(CURRENT_DIR)/$(PDENAME).pde > $@
 
 include .midictrl.flags
 include $(CURDIR)MidiCtrl.mk
+
+CFLAGS += -I.
+CXXFLAGS += -I.
 
 printinfo:
 	@echo "MidiCtrl base dir: " $(MIDICTRL_BASE_DIR)
