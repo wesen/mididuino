@@ -4,6 +4,8 @@ FIRMWARES = $(foreach dir,$(DIRS),$(dir)/$(dir).hex)
 $(info $(DIRS))
 $(info $(FIRMWARES))
 
+include ../../makefiles/Sketches.mk 
+
 all: $(FIRMWARES)
 
 %.hex: $(wildcard $(`dirname \"$@\"`)/*.pde)
