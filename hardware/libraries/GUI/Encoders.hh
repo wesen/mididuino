@@ -88,7 +88,6 @@ public:
 
   /** Create a new encoder with short name and handling function. **/
   Encoder(const char *_name = NULL, encoder_handle_t _handler = NULL);
-  virtual ~Encoder() { };
   void clear();
 
   /** Returns the encoder name. **/

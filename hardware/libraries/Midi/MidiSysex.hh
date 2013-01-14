@@ -54,8 +54,11 @@ public:
   virtual void handleByte(uint8_t byte) {
   }
 
+#ifdef HOST_MIDIDUINO
   virtual ~MidiSysexListenerClass() {
   }
+#endif
+
   /* @} */
 };
 

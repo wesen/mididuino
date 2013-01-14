@@ -44,10 +44,6 @@ public:
     sendActiveSenseTimer = 0;
   }
 
-  virtual ~MidiUartParent() {
-
-  }
-
   /**
    * Sets the timeout (in 1.024 ms increments) value for the active
    * sense byte. If the timeout is 0, disable the active sense
@@ -384,6 +380,11 @@ public:
     va_end(lp);
     sendString(buf, len);
   }
+
+#ifdef HOST_MIDIDUINO
+  virtual ~MidiUartParent() {
+  }
+#endif
 
   /* @} */
 };

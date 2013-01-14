@@ -3,8 +3,6 @@
 #ifndef DATA_ENCODER_CHECKING_H__
 #define DATA_ENCODER_CHECKING_H__
 
-#include "PlatformConfig.h"
-
 /**
  * \addtogroup CommonTools
  *
@@ -43,9 +41,6 @@ public:
   uint8_t *data;
   uint8_t *ptr;
   uint16_t maxLen;
-
-  virtual ~DatEncoder() {
-  }
 
   virtual void init(uint8_t *_data, uint16_t _maxLen) {
     data = _data;
@@ -313,6 +308,9 @@ public:
 		return a1 | a2;
 	}
 	
+#ifdef HOST_MIDIDUINO
+  virtual ~DataDecoder() { };
+#endif
 	/* @} */
 };
 
