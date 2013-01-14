@@ -27,6 +27,9 @@ class MidiUartClass : public MidiUartParent {
   
  public:
   MidiUartClass();
+  virtual ~MidiUartClass() {
+  }
+
   virtual void putc(uint8_t c);
   virtual void putc_immediate(uint8_t c);
   virtual bool avail();
@@ -49,6 +52,9 @@ class MidiUartClass2 : public MidiUartParent {
   
  public:
   MidiUartClass2();
+  virtual ~MidiUartClass2() {
+  }
+
   virtual bool avail();
   virtual uint8_t getc();
 
