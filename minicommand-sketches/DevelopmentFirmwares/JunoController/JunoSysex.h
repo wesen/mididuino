@@ -26,9 +26,9 @@ public:
     ids[0] = 0x41;
   }
 
-  virtual ~JunoSysexListenerClass() {
-  }
-
+  virtual void start();
+  virtual void handleByte(uint8_t byte);
+  virtual void end();
   /**
    * Add the juno sysex listener to the MIDI sysex subsystem. This needs to be called if you
    * want to use the JunoSysexListener.

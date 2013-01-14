@@ -4,6 +4,8 @@
  * (c) January 2013 - Manuel Odendahl - wesen@ruinwesen.com
  */
 
+#include "JunoEncoders.h"
+
 void JunoEncoderHandle(Encoder *enc) {
   JunoEncoder *junoEnc = (JunoEncoder *)enc;
   Juno.sendParameter(junoEnc->channel, junoEnc->param, junoEnc->getValue());

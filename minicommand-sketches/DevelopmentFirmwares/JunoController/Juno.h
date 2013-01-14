@@ -66,26 +66,6 @@
 #define JUNO_SYSEX_USER_MANUAL_MODE 0x31
 
 /**
- * \addtogroup juno_callbacks
- *
- * @{
- * Juno Callback class, inherit form this class if you want to use callbacks on Juno events
- */
-class JunoCallback {
-};
-
-typedef void(JunoCallback::*juno_callback_control_change_ptr_t)(uint8_t channel, uint8_t type, uint8_t param);
-typedef void(JunoCallback::*juno_callback_bank_change_ptr_t)(uint8_t channel, uint8_t bank, JunoPatch *patch);
-typedef void(JunoCallback::*juno_callback_manual_mode_ptr_t)(uint8_t channel, uint8_t bank, JunoPatch *patch);
-
-/**
- * @}
- */
-
-#include "JunoSysex.h"
-#include "JunoEncoders.h"
-
-/**
  * Stores the juno parameters for a channel
  */
 class JunoPatch {
@@ -115,6 +95,29 @@ public:
   JunoPatch patches[16];
   JunoPatch manual;
 };
+
+
+/**
+ * \addtogroup juno_callbacks
+ *
+ * @{
+ * Juno Callback class, inherit form this class if you want to use callbacks on Juno events
+ */
+class JunoCallback {
+};
+
+typedef void(JunoCallback::*juno_callback_control_change_ptr_t)(uint8_t channel, uint8_t type, uint8_t param);
+typedef void(JunoCallback::*juno_callback_bank_change_ptr_t)(uint8_t channel, uint8_t bank, JunoPatch *patch);
+typedef void(JunoCallback::*juno_callback_manual_mode_ptr_t)(uint8_t channel, uint8_t bank, JunoPatch *patch);
+
+#include "JunoSysex.h"
+#include "JunoEncoders.h"
+
+
+/**
+ * @}
+ */
+
 
 class JunoClass {
 public:

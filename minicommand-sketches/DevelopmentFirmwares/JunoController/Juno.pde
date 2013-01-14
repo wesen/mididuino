@@ -10,6 +10,8 @@
 
 #include "MidiUartParent.hh"
 
+JunoClass Juno;
+
 void JunoClass::sendParameter(uint8_t channel, uint8_t idx, uint8_t value) {
   kit.patches[channel].parameters[idx] = value;
   uint8_t msg[] = {
