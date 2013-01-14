@@ -31,7 +31,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildLocation</key>
-					<value>${workspace_loc:/mididuino2/Debug}</value>
+					<value>${workspace_loc:/mididuino2/AVR Debug}</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
@@ -82,7 +82,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1339767076731</id>
+			<id>1358186972092</id>
 			<name></name>
 			<type>22</type>
 			<matcher>
@@ -91,7 +91,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1339767076735</id>
+			<id>1358186972097</id>
 			<name></name>
 			<type>22</type>
 			<matcher>
