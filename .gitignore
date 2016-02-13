@@ -34,3 +34,4 @@ new-flags.txt
 OctatrackLiveSketch.cpp
 build
 *.class
+**/#*#
