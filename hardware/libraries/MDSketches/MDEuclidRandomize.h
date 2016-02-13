@@ -3,9 +3,10 @@
 #ifndef MDEUCLIDRANDOMIZE_H__
 #define MDEUCLIDRANDOMIZE_H__
 
-#include <MD.h>
-#include <MDRandomizer.h>
-#include <Sequencer.h>
+#include "Platform.h"
+#include "MD.h"
+#include "MDRandomizer.h"
+#include "Sequencer.h"
 
 /**
  * \addtogroup MD Elektron MachineDrum

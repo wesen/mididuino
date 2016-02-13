@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="macosx">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/editor/mididuino-dist/macosx/tools-universal.zip!/" />
+      <root url="jar://$PROJECT_DIR$/editor/mididuino-dist/macosx/quaqua.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

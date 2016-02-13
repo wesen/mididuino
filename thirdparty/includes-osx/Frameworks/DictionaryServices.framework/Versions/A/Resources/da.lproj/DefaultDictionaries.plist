@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DCSDefaultActiveDictionaries</key>
+	<array>
+		<string>/Library/Dictionaries/New Oxford American Dictionary.dictionary</string>
+		<string>/Library/Dictionaries/Oxford American Writer's Thesaurus.dictionary</string>
+		<string>/Library/Dictionaries/Apple Dictionary.dictionary</string>
+		<string>/System/Library/Frameworks/CoreServices.framework/Frameworks/DictionaryServices.framework/Resources/Wikipedia.wikipediadictionary</string>
+	</array>
+	<key>DCSDefaultDictionaryPath</key>
+	<string>/Library/Dictionaries/New Oxford American Dictionary.dictionary</string>
+	<key>DCSDefaultThesaurusPath</key>
+	<string>/Library/Dictionaries/Oxford American Writer's Thesaurus.dictionary</string>
+</dict>
+</plist>

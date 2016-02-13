@@ -1,4 +1,5 @@
 #include <MidiClockPage.h>
+#include <PitchEuclid.h>
 #include <MNMWesenLivePatchSketch.h>
 
 MNMWesenLivePatchSketch sketch;

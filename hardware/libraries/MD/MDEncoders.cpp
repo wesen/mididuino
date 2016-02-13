@@ -65,6 +65,12 @@ void MDFXEncoderHandle(Encoder *enc) {
   MD.sendFXParam(mdEnc->param, mdEnc->getValue(), mdEnc->effect);
 }
 
+void MDTempoEncoderHandle(Encoder *enc) {
+  RangeEncoder *rEnc = (RangeEncoder *)enc;
+
+  MD.setTempo(rEnc->getValue() * 24);
+}
+
 MDFXEncoder::MDFXEncoder(uint8_t _param, uint8_t _effect, char *_name, uint8_t init) :
   RangeEncoder(127, 0, _name, init) {
   initMDFXEncoder(_effect, _param);
@@ -93,7 +99,15 @@ void MDFXEncoder::loadFromKit() {
 
 void MDLFOEncoderHandle(Encoder *enc) {
   MDLFOEncoder *mdEnc = (MDLFOEncoder *)enc;
-  MD.setLFOParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
+  if (mdEnc->track == MD_NO_TRACK) {
+    return;
+  } else if (mdEnc->track == MD_ALL_TRACKS) {
+    for (uint8_t i = 0; i < 16; i++) {
+      MD.setLFOParam(i, mdEnc->param, mdEnc->getValue());
+    }
+  } else {
+    MD.setLFOParam(mdEnc->track, mdEnc->param, mdEnc->getValue());
+  }
 }
 
 MDLFOEncoder::MDLFOEncoder(uint8_t _param, uint8_t _track, char *_name, uint8_t init) :
@@ -149,6 +163,9 @@ void MDLFOEncoder::setParam(uint8_t _param) {
 }
 
 void MDLFOEncoder::loadFromKit() {
+  if (track >= MD_NO_TRACK)
+    return;
+  
   if (MD.loadedKit) {
     switch (param) {
     case MD_LFO_TRACK:
@@ -189,7 +206,7 @@ void MDLFOEncoder::loadFromKit() {
 static const char *lfoUpdateStrings[] = { "FRE", "TRG", "HLD" };
 static const char *lfoShapeStrings[] = { "TRI", "SAW", "SQR", "RMP", "EXP", "RND" };
 
-static void MDTrackDisplayAt(Encoder *enc, int i, uint8_t track);
+static void MDTrackDisplayAt(Encoder *enc, int i, uint8_t track, bool isMelodic = false);
 static void MDParamDisplayAt(Encoder *enc, int i, uint8_t track, uint8_t param);
 
 void MDLFOEncoder::displayAt(int i) {
@@ -201,7 +218,23 @@ void MDLFOEncoder::displayAt(int i) {
   case MD_LFO_PARAM: {
     GUI.setLine(GUI.LINE2);
     PGM_P name = NULL;
-    name = model_param_name(0xFF, getValue());
+    uint8_t dstModel = 0xFF;
+#if 0
+    /* Let this be for now, as we need to have the correct
+       denstinatIonTrack in place in order to show accurate
+       measurement.
+     */
+    if (track <= 15 && MD.loadedKit) {
+      dstModel = MD.kit.models[MD.kit.lfos[track].destinationTrack];
+      MidiUart.sendCC(0x3, dstModel);
+      MidiUart.sendCC(0x4, track);
+      MidiUart.sendCC(0x5, MD.kit.lfos[track].destinationTrack);
+    }
+#endif
+    name = model_param_name(dstModel, getValue());
+    if (name == NULL) {
+      name = model_param_name(0xFF, getValue());
+    }
     GUI.put_p_string(i, name);
     redisplay = false;
   }
@@ -261,12 +294,30 @@ static const uint8_t flashOffset[4] = {
   4, 8, 0, 0
 };
 
-static void MDTrackDisplayAt(Encoder *enc, int i, uint8_t track) {
+static void MDTrackDisplayAt(Encoder *enc, int i, uint8_t track, bool isMelodic) {
   GUI.setLine(GUI.LINE2);
+  if (track == MD_NO_TRACK) {
+    GUI.put_string(i, "NO ");
+    GUI.flash_string_at(i * 4, "NO ");
+    return;
+  } else if (track == MD_ALL_TRACKS) {
+    GUI.put_string(i, "ALL");
+    GUI.flash_string_at(i * 4, "ALL");
+    return;
+  }
+  
   GUI.put_value(i, track + 1);
   enc->redisplay = false;
   if (MD.loadedKit && enc->hasChanged()) {
-    GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.models[track]));
+    if (isMelodic) {
+      if (MD.isMelodicTrack(track)) {
+	GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.models[track]));
+      } else {
+	GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
+      }
+    } else {
+      GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.models[track]));
+    }
     GUI.flash_put_value(i, track + 1);
   }
 }
@@ -276,20 +327,7 @@ void MDTrackFlashEncoder::displayAt(int i) {
 }
 
 void MDMelodicTrackFlashEncoder::displayAt(int i) {
-  uint8_t track = getValue();
-  GUI.setLine(GUI.LINE2);
-  GUI.put_value(i, track + 1);
-  redisplay = false;
-  if (hasChanged()) {
-    if (MD.loadedKit) {
-      if (MD.isMelodicTrack(track)) {
-	GUI.flash_p_string_at_fill(flashOffset[i], MD.getMachineName(MD.kit.models[track]));
-      } else {
-	GUI.flash_p_string_at_fill(flashOffset[i], PSTR("XXX"));
-      }
-    }
-    GUI.flash_put_value(i, track + 1);
-  }
+  MDTrackDisplayAt(this, i, getValue(), true);
 }
 
 void MDAssignMachineEncoderHandle(Encoder *enc) {

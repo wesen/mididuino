@@ -1,4 +1,13 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Midi Uart implementation for the minicommand2
+ * use interrupt driven UART receive and sending
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
+
+#include "helpers.h"
 
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -29,62 +38,69 @@ MidiUartClass::MidiUartClass() : MidiUartParent() {
 
 void MidiUartClass::initSerial() {
   running_status = 0;
-	setSpeed(31250);
-	
-	//  UBRR0H = (UART_BAUDRATE_REG >> 8);
-	//  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
+  setSpeed(31250);
+
+  //  UBRR0H = (UART_BAUDRATE_REG >> 8);
+  //  UBRR0L = (UART_BAUDRATE_REG & 0xFF);
 
   UCSR0C = (3<<UCSZ00); 
-  
+
   /** enable receive, transmit and receive and transmit interrupts. **/
   //  UCSRB = _BV(RXEN) | _BV(TXEN) | _BV(RXCIE);
   UCSR0B = _BV(RXEN) | _BV(TXEN) | _BV(RXCIE);
 #ifdef TX_IRQ
-  UCSR0B |= _BV(TXCIE);
 #endif
 }
 
 void MidiUartClass::setSpeed(uint32_t speed) {
 #ifdef TX_IRQ
-	// empty TX buffer before switching speed
-	while (!txRb.isEmpty())
-		;
+  // empty TX buffer before switching speed
+  while (!txRb.isEmpty())
+    ;
 #endif
-	
-	uint32_t cpu = (F_CPU / 16);
-	cpu /= speed;
-	cpu--;
-	UBRR0H = ((cpu >> 8) & 0xFF);
-	UBRR0L = (cpu & 0xFF);
+
+  uint32_t cpu = (F_CPU / 16);
+  cpu /= speed;
+  cpu--;
+  UBRR0H = ((cpu >> 8) & 0xFF);
+  UBRR0L = (cpu & 0xFF);
 }
 
 void MidiUartClass::putc_immediate(uint8_t c) {
-#ifdef TX_IRQ
+  USE_LOCK();
+  SET_LOCK();
+  // block interrupts
   while (!UART_CHECK_EMPTY_BUFFER())
     ;
   UART_WRITE_CHAR(c);
-#else
-  putc(c);
-#endif
+  CLEAR_LOCK();
 }
 
 void MidiUartClass::putc(uint8_t c) {
 #ifdef TX_IRQ
- again:
-  if (txRb.isEmpty() && UART_CHECK_EMPTY_BUFFER()) {
-    UART_WRITE_CHAR(c);
-  } else {
-    if (txRb.isFull()) {
-      while (txRb.isFull()) {
-				uint8_t tmp = SREG;
-				sei();
-				delayMicroseconds(10);
-				SREG = tmp;
+  again:
+  bool isEmpty = txRb.isEmpty();
+
+  if (txRb.isFull()) {
+    while (txRb.isFull()) {
+      if (IN_IRQ()) {
+        // if we are in an irq, we need to do the sending ourselves as the TX irq is blocked
+        setLed2();
+        while (!UART_CHECK_EMPTY_BUFFER())
+          ;
+        if (!MidiUart.txRb.isEmpty()) {
+          UART_WRITE_CHAR(MidiUart.txRb.get());
+        }
+      } else {
+        SET_BIT(UCSR0B, UDRIE);
       }
-      goto again;
-    } else {
-      txRb.put(c);
     }
+    goto again;
+  } else {
+    clearLed2();
+    txRb.put(c);
+    // enable interrupt on empty data register to start transfer
+    SET_BIT(UCSR0B, UDRIE);
   }
 #else
   while (!UART_CHECK_EMPTY_BUFFER())
@@ -119,9 +135,9 @@ SIGNAL(USART0_RX_vect) {
       MidiClock.handleMidiStop();
       break;
 
-		case MIDI_CONTINUE:
-			MidiClock.handleMidiContinue();
-			break;
+    case MIDI_CONTINUE:
+      MidiClock.handleMidiContinue();
+      break;
 
     default:
       MidiUart.rxRb.put(c);
@@ -133,20 +149,24 @@ SIGNAL(USART0_RX_vect) {
 #if 1
     // show overflow debug
     if (MidiUart.rxRb.overflow) {
-      setLed2();
+//      setLed2();
     }
 #endif
-    
+
   }
   //  clearLed();
 }
 
 #ifdef TX_IRQ
-SIGNAL(USART0_TX_vect) {
+SIGNAL(USART0_UDRE_vect) {
   if (!MidiUart.txRb.isEmpty()) {
-    UART_WRITE_CHAR(MidiUart.txRb.peek());
-    MidiUart.txRb.get();
+    UART_WRITE_CHAR(MidiUart.txRb.get());
   }
+
+  if (MidiUart.txRb.isEmpty()) {
+    CLEAR_BIT(UCSR0B, UDRIE);
+  }
+  clearLed2();
 }
 #endif
 
@@ -162,7 +182,7 @@ void MidiUartClass2::initSerial() {
   //  UBRRL = 15;
 
   UCSR1C = (3<<UCSZ00); 
-  
+
   /** enable receive, transmit and receive and transmit interrupts. **/
   //  UCSRB = _BV(RXEN) | _BV(TXEN) | _BV(RXCIE);
   UCSR1B = _BV(RXEN) | _BV(RXCIE);
@@ -190,6 +210,10 @@ SIGNAL(USART1_RX_vect) {
       MidiClock.handleMidiStart();
       break;
 
+    case MIDI_CONTINUE:
+      MidiClock.handleMidiContinue();
+      break;
+
     case MIDI_STOP:
       MidiClock.handleMidiStop();
       break;
@@ -204,10 +228,10 @@ SIGNAL(USART1_RX_vect) {
   }
 
 #if 0
-    // show overflow debug
-    if (MidiUart.rxRb.overflow) {
-      setLed();
-    }
+  // show overflow debug
+  if (MidiUart.rxRb.overflow) {
+    setLed();
+  }
 #endif
 }
 

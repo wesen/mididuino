@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>kind:application</string>
+		<string>kind:applications</string>
+		<string>kind:app</string>
+		<string>type:program</string>
+		<string>type:programmer</string>
+		<string>type:applikasjon</string>
+		<string>type:applikasjoner</string>
+
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>kind:bookmark</string>
+		<string>kind:bookmarks</string>
+		<string>kind:webpage</string>
+		<string>kind:webpages</string>
+		<string>type:bokmerke</string>
+		<string>type:bokmerker</string>
+		<string>type:nettside</string>
+		<string>type:nettsider</string>
+		<string>type:webside</string>
+		<string>type:websider</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>kind:contact</string>
+		<string>kind:contacts</string>
+		<string>type:kontakt</string>
+		<string>type:kontakter</string>
+		<string>type:person</string>
+		<string>type:personer</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>kind:folder</string>
+		<string>kind:folders</string>
+		<string>type:mappe</string>
+		<string>type:mapper</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>kind:document</string>
+		<string>kind:documents</string>
+		<string>type:dokument</string>
+		<string>type:dokumenter</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>kind:email</string>
+		<string>kind:emails</string>
+		<string>kind:mail message</string>
+		<string>kind:mail messages</string>
+		<string>type:email</string>
+		<string>type:mail</string>
+		<string>type:e-post</string>
+		<string>type:epost</string>
+		<string>type:e-postmelding</string>
+		<string>type:e-postmeldinger</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>kind:event</string>
+		<string>kind:events</string>
+		<string>type:hendelse</string>
+		<string>type:hendelser</string>
+
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>kind:events &amp; to dos</string>
+		<string>kind:event OR kind:todo</string>
+		<string>kind:todo OR kind:event</string>
+		<string>type:hendelser og oppgaver</string>
+		<string>type:hendelse OR type:oppgave</string>
+		<string>type:oppgave OR type:hendelse</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>kind:font</string>
+		<string>kind:fonts</string>
+		<string>type:font</string>
+		<string>type:fonter</string>
+		<string>type:skrifttype</string>
+		<string>type:skrifttyper</string>
+
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>kind:image</string>
+		<string>kind:images</string>
+		<string>type:bilde</string>
+		<string>type:bilder</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>kind:message</string>
+		<string>kind:messages</string>
+		<string>type:melding</string>
+		<string>type:meldinger</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>kind:movie</string>
+		<string>kind:movies</string>
+		<string>type:film</string>
+		<string>type:filmer</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>kind:music</string>
+		<string>kind:audio</string>
+		<string>type:musikk</string>
+		<string>type:lyd</string>
+		<string>type:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>date:next month</string>
+		<string>dato:neste måned</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>date:next week</string>
+		<string>dato:neste uke</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>date:next year</string>
+		<string>dato:neste år</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>kind:pdf</string>
+		<string>kind:pdfs</string>
+		<string>kind:pdf document</string>
+		<string>kind:pdf documents</string>
+		<string>type:pdf</string>
+		<string>type:pdfer</string>
+		<string>type:pdf-er</string>
+		<string>type:pdf-dokument</string>
+		<string>type:pdf-dokumenter</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>kind:presentations</string>
+		<string>kind:presentation</string>
+		<string>type:presentasjoner</string>
+		<string>type:presentasjon</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>type:systemvalg</string>
+		<string>type:valg</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>date:this month</string>
+		<string>dato:denne måneden</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>date:this week</string>
+		<string>dato:denne uken</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>date:this year</string>
+		<string>dato:dette året</string>
+		<string>dato:i år</string>
+		<string>dato:inneværende år</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>date:today</string>
+		<string>dato:i dag</string>
+		<string>dato:idag</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>kind:todo</string>
+		<string>kind:todos</string>
+		<string>kind:to do</string>
+		<string>type:oppgave</string>
+		<string>type:oppgaver</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>date:tomorrow</string>
+		<string>dato:i morgen</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>date:yesterday</string>
+		<string>dato:i går</string>
+		<string>dato:igår</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+	<string>type:kilde</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+	<string>type:regneark</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>type:tekst</string>
+	</array>
+</dict>
+</plist>

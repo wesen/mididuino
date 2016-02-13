@@ -1,5 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - MIDI sysex listener implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
+#include "Platform.h"
 #include "Midi.h"
 #include "MidiSysex.hh"
 
@@ -38,23 +43,29 @@ void MidiSysexClass::stopRecord() {
 }
 
 bool MidiSysexClass::isListenerActive(MidiSysexListenerClass *listener) {
-  if (listener == NULL)
+  if (listener == NULL) {
     return false;
+  }
+
   /* catch all */
-  if (listener->ids[0] == 0xFF)
+  if (listener->ids[0] == 0xFF) {
     return true;
+  }
+
   if (sysexLongId) {
     if (recvIds[0] == listener->ids[0] &&
-				recvIds[1] == listener->ids[1] &&
-				recvIds[2] == listener->ids[2])
+        recvIds[1] == listener->ids[1] &&
+        recvIds[2] == listener->ids[2]) {
       return true;
-    else
+    } else {
       return false;
+    }
   } else {
-    if (recvIds[0] == listener->ids[0])
+    if (recvIds[0] == listener->ids[0]) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 }
 
@@ -130,7 +141,7 @@ bool MidiSysexClass::recordByte(uint8_t c) {
 }
 
 MididuinoSysexListenerClass::MididuinoSysexListenerClass() 
-	: MidiSysexListenerClass() {
+  : MidiSysexListenerClass() {
   ids[0] = MIDIDUINO_SYSEX_VENDOR_1;
   ids[1] = MIDIDUINO_SYSEX_VENDOR_2;
   ids[2] = BOARD_ID;

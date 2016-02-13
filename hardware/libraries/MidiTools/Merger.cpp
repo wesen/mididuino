@@ -1,9 +1,12 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - implementation of parent merger class
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
-#include "WProgram.h"
-
-#include <Midi.h>
-#include <MidiUartParent.hh>
+#include "Platform.h"
+#include "Midi.h"
+#include "MidiUartParent.hh"
 #include "Merger.h"
 
 #ifndef HOST_MIDIDUINO

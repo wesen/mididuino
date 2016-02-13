@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MESSAGES</key>
+	<array>
+		<string>kind:message</string>
+		<string>kind:messages</string>
+	</array>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>kind:application</string>
+		<string>kind:applications</string>
+		<string>kind:app</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>kind:contact</string>
+		<string>kind:contacts</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>kind:document</string>
+		<string>kind:documents</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>kind:folder</string>
+		<string>kind:folders</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>kind:email</string>
+		<string>kind:emails</string>
+		<string>kind:mail message</string>
+		<string>kind:mail messages</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>kind:event</string>
+		<string>kind:events</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>kind:todo</string>
+		<string>kind:todos</string>
+		<string>kind:to do</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>kind:events &amp; to dos</string>
+		<string>kind:event OR kind:todo</string>
+		<string>kind:todo OR kind:event</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>kind:image</string>
+		<string>kind:images</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>kind:movie</string>
+		<string>kind:movies</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>kind:music</string>
+		<string>kind:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>date:next month</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>date:next week</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>date:next year</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>kind:pdf</string>
+		<string>kind:pdfs</string>
+		<string>kind:pdf document</string>
+		<string>kind:pdf documents</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>kind:system preferences</string>
+		<string>kind:preferences</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>date:this month</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>date:this week</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>date:this year</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>date:today</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>date:tomorrow</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>date:yesterday</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>kind:bookmark</string>
+		<string>kind:bookmarks</string>
+		<string>kind:webpage</string>
+		<string>kind:webpages</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>kind:font</string>
+		<string>kind:fonts</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>kind:presentations</string>
+		<string>kind:presentation</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>kind:spreadsheets</string>
+		<string>kind:spreadsheet</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>kind:source</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>kind:text</string>
+	</array>
+</dict>
+</plist>

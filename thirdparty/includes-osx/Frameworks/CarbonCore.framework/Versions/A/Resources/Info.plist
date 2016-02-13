@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildMachineOSBuild</key>
+	<string>11D17a</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>CarbonCore</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.CoreServices.CarbonCore</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Carbon Core</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string>960.20</string>
+	<key>CFBundleSignature</key>
+	<string>ccor</string>
+	<key>CFBundleVersion</key>
+	<string>960.20</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>CarbonLazyValues</key>
+	<dict>
+		<key>CodeFragmentManager</key>
+		<dict>
+			<key>CarbonCore</key>
+			<string>CFMPriv_CarbonCore</string>
+		</dict>
+	</dict>
+	<key>DTCompiler</key>
+	<string></string>
+	<key>DTPlatformBuild</key>
+	<string>11D17a</string>
+	<key>DTPlatformVersion</key>
+	<string>GM</string>
+	<key>DTSDKBuild</key>
+	<string>11D17a</string>
+	<key>DTSDKName</key>
+	<string></string>
+	<key>DTXcode</key>
+	<string>0410</string>
+	<key>DTXcodeBuild</key>
+	<string>11D17a</string>
+</dict>
+</plist>

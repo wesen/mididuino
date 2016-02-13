@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>rodzaj:program</string>
+		<string>rodzaj: program</string>
+		<string>rodzaj: programy</string>
+		<string>rodzaj:programy</string>
+		<string>rodzaj:prog</string>
+		<string>rodzaj: prog</string>
+		<string>rodzaj:prg</string>
+		<string>rodzaj: prg</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>rodzaj:zakładka</string>
+		<string>rodzaj: zakładka</string>
+		<string>rodzaj:zakładki</string>
+		<string>rodzaj: zakładki</string>
+		<string>rodzaj:witryna</string>
+		<string>rodzaj: witryna</string>
+		<string>rodzaj:witryny</string>
+		<string>rodzaj: witryny</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>rodzaj:kontakt</string>
+		<string>rodzaj: kontakt</string>
+		<string>rodzaj:kontakty</string>
+		<string>rodzaj: kontakty</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>rodzaj:katalog</string>
+		<string>rodzaj: katalog</string>
+		<string>rodzaj:katalogi</string>
+		<string>rodzaj: katalogi</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>rodzaj:dokument</string>
+		<string>rodzaj:dokumenty</string>
+		<string>rodzaj: dokument</string>
+		<string>rodzaj: dokumenty</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>rodzaj:email</string>
+		<string>rodzaj:emaile</string>
+		<string>rodzaj: email</string>
+		<string>rodzaj: wiadomość email</string>
+		<string>rodzaj: wiadomości email</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>rodzaj:zdarzenie</string>
+		<string>rodzaj:zdarzenia</string>
+		<string>rodzaj: zdarzenie</string>
+		<string>rodzaj: zdarzenia</string>
+		<string>rodzaj:wydarzenie</string>
+		<string>rodzaj:wydarzenia</string>
+		<string>rodzaj: wydarzenie</string>
+		<string>rodzaj: wydarzenia</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>rodzaj:wydrzenia i rzeczy do zrobienia</string>
+		<string>rodzaj: wydrzenia i rzeczy do zrobienia</string>
+		<string>rodzaj:wydarzenie OR rodzaj:rzecz do zrobienia</string>
+		<string>rodzaj:rzecz do zrobienia OR rodzaj:wydarzenie</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>rodzaj:czcionka</string>
+		<string>rodzaj:czcionki</string>
+		<string>rodzaj: czcionka</string>
+		<string>rodzaj: czcionki</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>rodzaj:obrazek</string>
+		<string>rodzaj:obrazki</string>
+		<string>rodzaj: obrazki</string>
+		<string>rodzaj: obrazek</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>rodzaj:wiadomość</string>
+		<string>rodzaj:wiadomości</string>
+		<string>rodzaj: wiadomość</string>
+		<string>rodzaj: wiadomości</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>rodzaj:film</string>
+		<string>rodzaj: film</string>
+		<string>rodzaj:filmy</string>
+		<string>rodzaj: filmy</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>rodzaj:muzyka</string>
+		<string>rodzaj: muzyka</string>
+		<string>rodzaj:audio</string>
+		<string>rodzaj: audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>data:następny miesiąc</string>
+		<string>data: następny miesiąc</string>
+		<string>data:za miesiąc</string>
+		<string>data: za miesiąc</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>data:następny tydzień</string>
+		<string>data: następny tydzień</string>
+		<string>data:za tydzień</string>
+		<string>data: za tydzień</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>date:następny rok</string>
+		<string>date:za rok</string>
+		<string>date: następny rok</string>
+		<string>date: za rok</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>rodzaj:pdf</string>
+		<string>rodzaj:pdfy</string>
+		<string>rodzaj:dokument pdf</string>
+		<string> rodzaj:dokumenty pdf</string>
+		<string>rodzaj: pdf</string>
+		<string>rodzaj: pdfy</string>
+		<string>rodzaj: dokument pdf</string>
+		<string> rodzaj: dokumenty pdf</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>rodzaj:prezentacje</string>
+		<string>rodzaj: prezentacje</string>
+		<string>rodzaj:prezentacja</string>
+		<string>rodzaj: prezentacja</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>rodzaj:preferencje systemowe</string>
+		<string>rodzaj: preferencje systemowe</string>
+		<string>rodzaj:preferencje</string>
+		<string>rodzaj: preferencje</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>data:ten miesiąc</string>
+		<string>data: ten miesiąc</string>
+		<string>data:w tym miesiącu</string>
+		<string>data: w tym miesiącu</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>data:ten tydzień</string>
+		<string>data: ten tydzień</string>
+		<string>data:w tym tygodniu</string>
+		<string>data: w tym tygodniu</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>data:ten rok</string>
+		<string>data: ten rok</string>
+		<string>data:w tym roku</string>
+		<string>data: w tym roku</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>data:dziś</string>
+		<string>data: dziś</string>
+		<string>data:dzisiaj</string>
+		<string>data: dzisiaj</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>rodzaj:rzecz do zrobienia</string>
+		<string>rodzaj: rzecz do zrobienia</string>
+		<string>rodzaj:rzeczy do zrobienia</string>
+		<string>rodzaj: rzeczy do zrobienia</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>data:jutro</string>
+		<string>data: jutro</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>data:wczoraj</string>
+		<string>data: wczoraj</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>rodzaj:źródło</string>
+		<string>rodzaj: źródło</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>rodzaj:arkusze kalkulacyjne</string>
+		<string>rodzaj: arkusze kalkulacyjne</string>
+		<string>rodzaj:arkusz kalkulacyjny</string>
+		<string>rodzaj: arkusz kalkulacyjny</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>rodzaj:preferencje systemowe</string>
+		<string>rodzaj: preferencje systemowe</string>
+		<string>rodzaj:preferencje</string>
+		<string>rodzaj: preferencje</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>rodzaj:tekst</string>
+		<string>rodzaj: tekst</string>
+	</array>
+</dict>
+</plist>

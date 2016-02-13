@@ -13,15 +13,15 @@ public:
   bool reloadKit;
   bool reloadGlobal;
   bool redisplay;
-	bool verbose;
+  bool verbose;
 
-  MNMTaskClass(uint16_t interval) : Task(interval) {
+MNMTaskClass(uint16_t interval) : Task(interval) {
     redisplay = false;
     autoLoadKit = reloadKit = false;
     autoLoadGlobal = true;
-		autoLoadPattern = false;
+    autoLoadPattern = false;
     reloadGlobal = false;
-		verbose = true;
+    verbose = true;
   }
 
   CallbackVector<MNMCallback, 8>kitChangeCallbacks;
@@ -73,15 +73,15 @@ public:
 	     bool reloadGlobal = true);
 
   virtual void run() {
-		if (autoLoadKit) {
-			MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_KIT_REQUEST);
-		}
-		if (autoLoadGlobal) {
-			MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_GLOBAL_SLOT_REQUEST);
-		}
-		if (autoLoadPattern) {
-			MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_PATTERN_REQUEST);
-		}
+    if (autoLoadKit) {
+      MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_KIT_REQUEST);
+    }
+    if (autoLoadGlobal) {
+      MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_GLOBAL_SLOT_REQUEST);
+    }
+    if (autoLoadPattern) {
+      MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_PATTERN_REQUEST);
+    }
     MNM.sendRequest(MNM_STATUS_REQUEST_ID, MNM_CURRENT_AUDIO_TRACK_REQUEST);
   }
 

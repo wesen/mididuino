@@ -1,6 +1,9 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
-
-#include "WProgram.h"
+/*
+ * MidiCtrl - Parent arpegiator class implementation
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+#include "Platform.h"
 #include "helpers.h"
 #include "Arpeggiator.hh"
 
@@ -29,22 +32,22 @@ const char *retrig_names[RETRIG_CNT] = {
 };
 
 const char *arp_names[ARP_STYLE_CNT] = {
-	"UP     ",
-	"DOWN   ",
-	"UPDOWN ",
-	"DOWNUP ",
-	"UP&DOWN",
-	"DOWN&UP",
-	"CONVERG",
-	"DIVERGE",
-	"CONDIV ",
-	"PINK_UP",
-	"PINK_UD",
-	"THMB_UP",
-	"THMB_UD",
-	"RANDOM ",
-	"RANDOM1",
-	"ORDER  "
+  "UP     ",
+  "DOWN   ",
+  "UPDOWN ",
+  "DOWNUP ",
+  "UP&DOWN",
+  "DOWN&UP",
+  "CONVERG",
+  "DIVERGE",
+  "CONDIV ",
+  "PINK_UP",
+  "PINK_UD",
+  "THMB_UP",
+  "THMB_UD",
+  "RANDOM ",
+  "RANDOM1",
+  "ORDER  "
 };
   
 
@@ -102,13 +105,13 @@ void ArpeggiatorClass::bubbleSortUp() {
     completed = true;
     for (int i = 0; i < numNotes-1; i++) {
       if (orderedNotes[i] > orderedNotes[i+1]) {
-				completed = false;
-				uint8_t tmp = orderedNotes[i];
-				orderedNotes[i] = orderedNotes[i+1];
-				orderedNotes[i+1] = tmp;
-				tmp = orderedVelocities[i];
-				orderedVelocities[i] = orderedVelocities[i+1];
-				orderedVelocities[i+1] = tmp;
+        completed = false;
+        uint8_t tmp = orderedNotes[i];
+        orderedNotes[i] = orderedNotes[i+1];
+        orderedNotes[i+1] = tmp;
+        tmp = orderedVelocities[i];
+        orderedVelocities[i] = orderedVelocities[i+1];
+        orderedVelocities[i+1] = tmp;
       }
     }
   } while (!completed);
@@ -120,13 +123,13 @@ void ArpeggiatorClass::bubbleSortDown() {
     completed = true;
     for (int i = 0; i < numNotes-1; i++) {
       if (orderedNotes[i] < orderedNotes[i+1]) {
-				completed = false;
-				uint8_t tmp = orderedNotes[i];
-				orderedNotes[i] = orderedNotes[i+1];
-				orderedNotes[i+1] = tmp;
-				tmp = orderedVelocities[i];
-				orderedVelocities[i] = orderedVelocities[i+1];
-				orderedVelocities[i+1] = tmp;
+        completed = false;
+        uint8_t tmp = orderedNotes[i];
+        orderedNotes[i] = orderedNotes[i+1];
+        orderedNotes[i+1] = tmp;
+        tmp = orderedVelocities[i];
+        orderedVelocities[i] = orderedVelocities[i+1];
+        orderedVelocities[i+1] = tmp;
       }
     }
   } while (!completed);
@@ -165,8 +168,8 @@ void ArpeggiatorClass::calculateArp() {
       m_memcpy(arpNotes, orderedNotes, numNotes);
       m_memcpy(arpVelocities, orderedVelocities, numNotes);
       for (int i = 0; i < numNotes - 2; i++) {
-				arpNotes[numNotes + i] = orderedNotes[numNotes - 2 - i];
-				arpVelocities[numNotes + i] = arpVelocities[numNotes - 2 - i];
+        arpNotes[numNotes + i] = orderedNotes[numNotes - 2 - i];
+        arpVelocities[numNotes + i] = arpVelocities[numNotes - 2 - i];
       }
       arpLen = numNotes + numNotes - 2;
     } else {
@@ -182,8 +185,8 @@ void ArpeggiatorClass::calculateArp() {
       m_memcpy(arpNotes, orderedNotes, numNotes);
       m_memcpy(arpVelocities, orderedVelocities, numNotes);
       for (int i = 0; i < numNotes - 2; i++) {
-				arpNotes[numNotes + i] = orderedNotes[numNotes - 2 - i];
-				arpVelocities[numNotes + i] = arpVelocities[numNotes - 2 - i];
+        arpNotes[numNotes + i] = orderedNotes[numNotes - 2 - i];
+        arpVelocities[numNotes + i] = arpVelocities[numNotes - 2 - i];
       }
       arpLen = numNotes + numNotes - 2;
     } else {
@@ -199,8 +202,8 @@ void ArpeggiatorClass::calculateArp() {
       m_memcpy(arpNotes, orderedNotes, numNotes);
       m_memcpy(arpVelocities, orderedVelocities, numNotes);
       for (int i = 0; i < numNotes; i++) {
-				arpNotes[numNotes + i] = orderedNotes[numNotes - 1 - i];
-				arpVelocities[numNotes + i] = arpVelocities[numNotes - 1 - i];
+        arpNotes[numNotes + i] = orderedNotes[numNotes - 1 - i];
+        arpVelocities[numNotes + i] = arpVelocities[numNotes - 1 - i];
       }
       arpLen = numNotes + numNotes;
     } else {
@@ -216,8 +219,8 @@ void ArpeggiatorClass::calculateArp() {
       m_memcpy(arpNotes, orderedNotes, numNotes);
       m_memcpy(arpVelocities, orderedVelocities, numNotes);
       for (int i = 0; i < numNotes; i++) {
-				arpNotes[numNotes + i] = orderedNotes[numNotes - 1 - i];
-				arpVelocities[numNotes + i] = arpVelocities[numNotes - 1 - i];
+        arpNotes[numNotes + i] = orderedNotes[numNotes - 1 - i];
+        arpVelocities[numNotes + i] = arpVelocities[numNotes - 1 - i];
       }
       arpLen = numNotes + numNotes;
     } else {
@@ -232,17 +235,17 @@ void ArpeggiatorClass::calculateArp() {
     if (numNotes > 1) {
       arpLen = 0;
       for (int i = 0; i < (numNotes >> 1); i++) {
-				arpNotes[arpLen] = orderedNotes[i];
-				arpVelocities[arpLen] = orderedVelocities[i];
-				arpLen++;
-				arpNotes[arpLen] = orderedNotes[numNotes-i-1];
-				arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
-				arpLen++;
+        arpNotes[arpLen] = orderedNotes[i];
+        arpVelocities[arpLen] = orderedVelocities[i];
+        arpLen++;
+        arpNotes[arpLen] = orderedNotes[numNotes-i-1];
+        arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
+        arpLen++;
       }
       if (numNotes & 1) {
-				arpNotes[arpLen] = orderedNotes[(numNotes >> 1)];
-				arpVelocities[arpLen] = orderedVelocities[(numNotes >> 1)];
-				arpLen++;
+        arpNotes[arpLen] = orderedNotes[(numNotes >> 1)];
+        arpVelocities[arpLen] = orderedVelocities[(numNotes >> 1)];
+        arpLen++;
       }
     } else {
       arpNotes[0] = orderedNotes[0];
@@ -256,17 +259,17 @@ void ArpeggiatorClass::calculateArp() {
     if (numNotes > 1) {
       arpLen = 0;
       if (numNotes & 1) {
-				arpNotes[arpLen] = orderedNotes[numNotes >> 1];
-				arpVelocities[arpLen] = orderedVelocities[numNotes >> 1];
-				arpLen++;
+        arpNotes[arpLen] = orderedNotes[numNotes >> 1];
+        arpVelocities[arpLen] = orderedVelocities[numNotes >> 1];
+        arpLen++;
       }
       for (int i = (numNotes >> 1) - 1; i >= 0; i--) {
-				arpNotes[arpLen] = orderedNotes[i];
-				arpVelocities[arpLen] = orderedVelocities[i];
-				arpLen++;
-				arpNotes[arpLen] = orderedNotes[numNotes-i-1];
-				arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
-				arpLen++;
+        arpNotes[arpLen] = orderedNotes[i];
+        arpVelocities[arpLen] = orderedVelocities[i];
+        arpLen++;
+        arpNotes[arpLen] = orderedNotes[numNotes-i-1];
+        arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
+        arpLen++;
       }
     } else {
       arpNotes[0] = orderedNotes[0];
@@ -280,25 +283,25 @@ void ArpeggiatorClass::calculateArp() {
     if (numNotes > 1) {
       arpLen = 0;
       for (int i = 0; i < (numNotes >> 1); i++) {
-				arpNotes[arpLen] = orderedNotes[i];
-				arpVelocities[arpLen] = orderedVelocities[i];
-				arpLen++;
-				arpNotes[arpLen] = orderedNotes[numNotes-i-1];
-				arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
-				arpLen++;
+        arpNotes[arpLen] = orderedNotes[i];
+        arpVelocities[arpLen] = orderedVelocities[i];
+        arpLen++;
+        arpNotes[arpLen] = orderedNotes[numNotes-i-1];
+        arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
+        arpLen++;
       }
       if (numNotes & 1) {
-				arpNotes[arpLen] = orderedNotes[(numNotes >> 1)];
-				arpVelocities[arpLen] = orderedVelocities[(numNotes >> 1)];
-				arpLen++;
+        arpNotes[arpLen] = orderedNotes[(numNotes >> 1)];
+        arpVelocities[arpLen] = orderedVelocities[(numNotes >> 1)];
+        arpLen++;
       }
       for (int i = (numNotes >> 1) - 1; i >= 0; i--) {
-				arpNotes[arpLen] = orderedNotes[i];
-				arpVelocities[arpLen] = orderedVelocities[i];
-				arpLen++;
-				arpNotes[arpLen] = orderedNotes[numNotes-i-1];
-				arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
-				arpLen++;
+        arpNotes[arpLen] = orderedNotes[i];
+        arpVelocities[arpLen] = orderedVelocities[i];
+        arpLen++;
+        arpNotes[arpLen] = orderedNotes[numNotes-i-1];
+        arpVelocities[arpLen] = orderedVelocities[numNotes-i-1];
+        arpLen++;
       }
     } else {
       arpNotes[0] = orderedNotes[0];
@@ -311,8 +314,8 @@ void ArpeggiatorClass::calculateArp() {
     bubbleSortUp();
     if (numNotes > 1) {
       for (int i = 0; i < numNotes-1; i++) {
-				arpNotes[i*2] = orderedNotes[numNotes-1];
-				arpNotes[i*2+1] = orderedNotes[i];
+        arpNotes[i*2] = orderedNotes[numNotes-1];
+        arpNotes[i*2+1] = orderedNotes[i];
       }
       arpLen = numNotes * 2;
     } else {
@@ -326,12 +329,12 @@ void ArpeggiatorClass::calculateArp() {
     bubbleSortUp();
     if (numNotes > 1) {
       for (int i = 0; i < numNotes-1; i++) {
-				arpNotes[i*2] = orderedNotes[numNotes-1];
-				arpNotes[i*2+1] = orderedNotes[i];
+        arpNotes[i*2] = orderedNotes[numNotes-1];
+        arpNotes[i*2+1] = orderedNotes[i];
       }
       for (int i = 0; i < numNotes-1; i++) {
-				arpNotes[i*2 + 2 * numNotes] = orderedNotes[numNotes-1];
-				arpNotes[i*2+1 + 2 * numNotes] = orderedNotes[numNotes - i - 2];
+        arpNotes[i*2 + 2 * numNotes] = orderedNotes[numNotes-1];
+        arpNotes[i*2+1 + 2 * numNotes] = orderedNotes[numNotes - i - 2];
       }
       arpLen = numNotes * 4;
     } else {
@@ -345,8 +348,8 @@ void ArpeggiatorClass::calculateArp() {
     bubbleSortUp();
     if (numNotes > 1) {
       for (int i = 1; i < numNotes; i++) {
-				arpNotes[i*2] = orderedNotes[0];
-				arpNotes[i*2+1] = orderedNotes[i];
+        arpNotes[i*2] = orderedNotes[0];
+        arpNotes[i*2+1] = orderedNotes[i];
       }
       arpLen = numNotes * 2;
     } else {
@@ -360,12 +363,12 @@ void ArpeggiatorClass::calculateArp() {
     bubbleSortUp();
     if (numNotes > 1) {
       for (int i = 1; i < numNotes; i++) {
-				arpNotes[i*2] = orderedNotes[0];
-				arpNotes[i*2+1] = orderedNotes[i];
+        arpNotes[i*2] = orderedNotes[0];
+        arpNotes[i*2+1] = orderedNotes[i];
       }
       for (int i = 0; i < numNotes-1; i++) {
-				arpNotes[i*2 + 2 * numNotes] = orderedNotes[0];
-				arpNotes[i*2+1 + 2 * numNotes] = orderedNotes[numNotes - i - 1];
+        arpNotes[i*2 + 2 * numNotes] = orderedNotes[0];
+        arpNotes[i*2+1 + 2 * numNotes] = orderedNotes[numNotes - i - 1];
       }
       arpLen = numNotes * 4;
     } else {
@@ -409,7 +412,7 @@ void ArpeggiatorClass::reorderNotes() {
       orderedNotes[write] = orderedNotes[i];
       orderedVelocities[write] = orderedVelocities[i];
       if (i != write)
-				orderedNotes[i] = 128;
+        orderedNotes[i] = 128;
       write++;
     }
   }
@@ -427,7 +430,7 @@ void ArpeggiatorClass::addNote(uint8_t pitch, uint8_t velocity) {
   if (replaced)
     return;
 
-  uint8_t replaceNote = 128;
+  //  uint8_t replaceNote = 128;
   if (numNotes == NUM_NOTES) {
     orderedNotes[0] = 128;
     numNotes--;
@@ -455,6 +458,5 @@ void ArpeggiatorClass::removeNote(uint8_t pitch) {
   }
   calculateArp();
 }
-
 
 /* @} @} @} */

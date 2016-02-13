@@ -1,3 +1,24 @@
-0017
+0018
 
 TODO information hosted as issues at http://redmine.ruinwesen.com/
+
+Further steps in the pivotal tracker for midi-ctrl
+
+Implement turbomidi
+
+Replace all includes with their subdirectory information so that only
+the top level include is required.
+
+Implement swing (?!?)
+
+Walk over midi sync implementation
+
+Add command line parameter processing for midi merger
+
+0017
+
+- fixed monomachine messages
+- cleaned up sourcecode
+- make all midictrl compilable from command line
+- make MD and MNM messaging work on host
+- added macosx midi-merger

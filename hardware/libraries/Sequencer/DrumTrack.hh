@@ -1,7 +1,13 @@
+/*
+ * MidiCtrl - Definition of simple drum sequencers
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef DRUMTRACK_H__
 #define DRUMTRACK_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 
 class DrumTrack {
 public:

@@ -1,0 +1,494 @@
+
+v18-development / 2011-07-02 
+==================
+
+  * Merge branch 'test-refactor' into develop
+  * Refactor unit test into subdirs
+  * remove gcc binary
+  * Update thirdparty submodule CppUnitLite2
+  * Added cppunitlite2 submodule
+  * Adding comments to private GUI implementation
+  * Merge branch 'core-cleanup' into develop
+  * Indentation
+  * Update changelog
+  * Remove unused cores
+  * Add callbacks for MIDI START, MIDI STOP, MIDI CONTINUE
+  * Set default clock mode to external
+  * Indentation
+  * Add test for midi clock callback
+  * Fix ignoring html folders
+  * add beginning of interactive firmware documentation (just a test really)
+  * Add some print methods, formatting
+  * Fix MNM Kit decoding (kit name is only 11 chars, not 16)
+  * Make info methods static
+  * some more sysex comparison tests
+  * Add opening midi port with name
+  * Formatting and indent
+  * Add dependency and clean target to host tests
+  * Remove unused variable
+  * Add dependencies to gitignore
+  * Indentation
+  * Return length when not checking encoding
+  * Fix initialization order
+  * Fix return type
+  * Make names of scales constant
+  * Added missing sysex buffers for host implementation of midi uarts
+  * Indentation
+  * Added indentation
+  * Add hack for continue clock on input 2
+  * Add beginning of ableton minicommand script
+  * Added SysexReceiveTestFirmware to make the basis for an Ableton Firmware
+  * Indentation
+  * Set correct evolver CC numbers
+  * Added evolver encoder and a simple evolver filter control sketch
+  * Added option for NO_BUTTON on events
+  * Use scale encoder in pitcheuclidsketch
+  * Remove scaleselect encode from leo sketch (ScaleEncoder now)
+  * Add new scales to pitch euclid
+  * Add new sketch for olli: midieuclid, automagiccontroller, magic sysex page
+  * Swapping tracks
+  * Remove checkHandle on encoder unlocking (wait for next GUI loop to take care of that).
+  * Formatting fix
+  * format
+  * Reformatted to add helper macros in a separate file
+  * format
+  * Added leo's firmware as CrazyLFOs Added clock settings to CrazyLFOs firmware
+  * format
+  * format
+  * Fix encoding of kit and global messages
+  * Reformatting and skeleton for slicing methods
+  * Added skeleton for new slice page
+  * Formatting
+  * Added KITTest pde to test kit encoding
+  * Added tests for conversion of kit Some reformatting Added test for MDGlobals
+  * formatting
+  * Added first tests for a central place for program-space strings to reduce space usage
+  * Added new md kit unit tests
+  * ignore binaries
+  * Added changelog file
+  * Swap tracks in kit (bork for some reason)
+  * Get kit and pattern in the studio sketch
+  * Midi tutorial with lock
+  * Test the tempo encoder for MD
+  * Test the md encoder
+  * Reformat
+  * Switch back to gcc
+  * Reformat
+  * added md_swap_tests
+  * Swap track test firmware
+  * Swap kit and tracks in the swap track page
+  * Reformat
+  * Avoid triggering on lfo pages
+  * lock encoders tweak so they work better
+  * handle trigger events on all pages
+  * Add ALL/None option to euclid and lfo page, randomization for LFO page as well
+  * Set basePitch automatically when switching destination track
+  * reindent
+  * Handle all / None in euclid
+  * Add all / None option to MD
+  * reindent
+  * Add allNone option to MDTrackFlashEncoder
+  * Added trackGetBasePitch
+  * Added trackGetBasePitch
+  * Add basepitchencoder as notepitchencoder, add mdtempoEncoder
+  * Initialize varRangeEncoder to var value
+  * Reindent
+  * Safety masking
+  * Reindent
+  * Added MD TempoEncoder
+  * Add lock button to every page except autoMDPage
+  * Add lockable encoders
+  * Add lockable encoders
+  * Use same scale encoder for pitch euclid
+  * Make pitch euclid scale encoder configurable
+  * Show short name in scale encoder
+  * Added event handling changes (first)
+  * Added configurable buttons for autoencoder page
+  * Merge branch 'feature/midi-controller-tutorials' into develop
+  * Added tutorial sketches
+  * Added tutorial text
+  * Merge branch 'feature/scale-short-names' into develop
+  * Reformat and small changes
+  * Added short names for scales, new scales
+  * Added scale short names
+  * added development firmwares
+  * Merge branch 'feature/mapping_automidi' into develop
+  * add parent setup() call to midiclockpage
+  * add documentation to auto encoder page
+  * indent cchandler
+  * Add documentation to auto midi controller, set names and CC linearly
+  * Indent
+  * Indent and add isSetup to setup()
+  * Indent pages
+  * Indent helpers
+  * Added comments with timer intervals
+  * Added comments for MidiUartParent
+  * indent code
+  * fixed mute track offset for mute CCs
+  * Add skeleton for TransposePattern and scalePatternPage
+  * Indent MDEncoders
+  * Indent encoders
+  * Add scale names Add ScaleEncoder
+  * Add transpose page to studio firmware
+  * Add skeleton for MDTransposePage
+  * reindent
+  * Add MDSwapPatternPage and helper functions
+  * ignore host-apps binaries
+  * Ignore symlink to avr tools
+  * Ignore patch manager log file
+  * Add video tutorial hello world
+  * Add test firmwares
+  * Add TAGS file to gitignore
+  * Remove symlink from git
+  * Add MDStudio firmware
+  * Add MDStudio sketch Add MDSwapTrack page
+  * Add swap tracks method to MDPattern
+  * Reformat weird indentation
+  * Show the FLASH and RAM size upon compilation
+  * Calculate FLASH size and RAM size in Sizer class Remove old size calculation
+  * Use JVM 1.6.0 on snow leopard because of  in eclipse
+  * MRG: ALL now merges PRG CHG, AT, PITCHWHEEL and CHANNEL PRESSURE
+  * Add on32Callbacks to weak funcs
+  * added comment to test refing in commit messages
+  * Added on32Callbacks to weak funcs
+  * added notelength to pitcheuclid to set the interval after which a note off is sent
+  * reformat midi clock page source file
+  * add a third config page to the midieuclidsketch to configure the notelength of the pitch euclid generator
+  * added build directory to ignore
+  * Add default name to realEncoders
+  * Merge commit '865c847b70cfa229218c'
+  * Suppress leading zeros in parameter displays. Fix overwriting of first character of next parameter in encoders. Make fast mode step size in encoders configurable.
+  * added bootloader documentation and formatted the midi-send.c file
+  * merged in formattingringbuffer
+  * added ignoring of dmgs for macosx build directory
+  * added formatting ring buffer
+  * Merge branch 'master' of github.com:wesen/mididuino
+  * fixed ram-p1 bug for grain, added build script
+  * updated fixing makefile to work correctly
+  * define user dir variable in makefile
+  * fix typo
+  * load boards.txt correctly when called from command line
+  * load boards.txt correctly when called from command line
+  * added isMidiTrack to check for MIDI track, added melodic pitch conversion for MIDI tracks
+  * remove midi-ctrl dir and tgx
+  * added clean.sh script for linux
+  * adapt classpath to use $CLASSPATH variable
+  * updated build process for linux
+  * removed usb midi from main branch
+  * added files for usbmidi on lufa
+  * make midi-common includable by c files
+  * slight reformatting
+  * rename a few things with new paths inside makefile, needs work however
+  * move configuration parameters for lcd and shift register to wprogram.h file
+  * rename mididuino to midi-ctrl in doxyfile
+  * added text files and correct location for tools under macosx
+  * added txt files to macosx build, compile midi-send with gcc-4.0 to avoid include errors on snow leopard (jesus)
+  * added non-commercial clause to BSD license
+  * added readme.txt, license.txt and building.txt to release zips
+  * removed typo in readme.txt
+  * renamed mididuino to midi-ctrl in java sourcecode
+  * added .gitattributes file to fix crlf settings for windows shell scripts (cygwin refuses to execute them if they are not in unix format
+  * fixed crlf on shell scripts
+  * update windows build scripts
+  * added pitcheuclid (?) and building information
+  * fied crlf issue
+  * updated build scripts for macosx to rename the app to midictrl
+  * added euclid pages to leo sketch
+  * reordered scale and trigger pages
+  * randomize lfos in leo sketch, handle all channel and no track in MDPitchEuclid
+  * removed buggy cchandler initialization
+  * fix lfo update parameter, add updates to leo sketch, add gitignores
+  * Merge branch 'master' of ssh://bl0rg.net/home/manuel/gits/mididuino
+  * removed patchmanager
+  * shortened readme to empty, but at least the name is now correct. starting to rename the framework to MIDI-CTRL
+  * added note off for euclid firmware, added faq skeleton
+  * added new profiler and er1 things
+  * slight cosmetic changes
+  * updated scrivener documentation
+  * slight changes to mdtask
+  * update midi-send for macosx
+  * added er1 firmware beginning
+  * checking in binary version of midi-send
+  * fixed race condition on windows
+  * added logging and debugging code in their own file, slight tweaks to windows version of midi-send, added debugflag level
+  * added correct id for faderfox and chmd the executables on export
+  * put correct status indicator for progress information
+  * add flush to midi-send status messages
+  * remodelled wizard to have moving status bar on refresh
+  * added status messages for sending
+  * added log messages to midi-send
+  * fixed parsing of kit and global messages
+  * added drummapping again and stuff
+  * fixed problem of not including unbuilt libraries
+  * fixing encoders and stuff to make random seq work
+  * updated docs and stuff
+  * updated documentation, added midi converter
+  * move documentation to their respective directories
+  * adapted dumpxml to work in live8, dump documentation
+  * added ableton live firmwares
+  * added live scripts (skeletton)
+  * added md messages test (empty)
+  * added tests for mnm messages (no mnm real sysex parsing yet)
+  * adapted firmwares so they all compile
+  * adapte mnm sketches
+  * adapted mnm to new message form
+  * adapt mnm to new decoder setup
+  * removed test-sketches
+  * moved test sketches around for mididuino to actually find them
+  * added documentation for miditools
+  * added doc stubs for Midi and MDSketches
+  * documented MD and MDpages
+  * added groups for classes (pita\!\!)
+  * added documentation for sketches
+  * added documentation for pages
+  * fixed a few things that may have gone wrong during the documentation writing
+  * added GUI documentation.
+  * added gui doc (not all)
+  * documented almost all of commontools
+  * added doxygen documentation
+  * make standalone version of the updater
+  * make standalone version of the updater
+  * Merge branch 'haye-hack'
+  * Merge branch 'master' of github.com:wesen/mididuino
+
+Manuel Odendahl / 2011-07-02 
+==================
+
+  * Add callbacks for MIDI START, MIDI STOP, MIDI CONTINUE
+  * Set default clock mode to external
+  * Indentation
+  * Add test for midi clock callback
+  * Fix ignoring html folders
+  * add beginning of interactive firmware documentation (just a test really)
+  * Add some print methods, formatting
+  * Fix MNM Kit decoding (kit name is only 11 chars, not 16)
+  * Make info methods static
+  * some more sysex comparison tests
+  * Add opening midi port with name
+  * Formatting and indent
+  * Add dependency and clean target to host tests
+  * Remove unused variable
+  * Add dependencies to gitignore
+  * Indentation
+  * Return length when not checking encoding
+  * Fix initialization order
+  * Fix return type
+  * Make names of scales constant
+  * Added missing sysex buffers for host implementation of midi uarts
+  * Indentation
+  * Added indentation
+  * Add hack for continue clock on input 2
+  * Add beginning of ableton minicommand script
+  * Added SysexReceiveTestFirmware to make the basis for an Ableton Firmware
+  * Indentation
+  * Set correct evolver CC numbers
+  * Added evolver encoder and a simple evolver filter control sketch
+  * Added option for NO_BUTTON on events
+  * Use scale encoder in pitcheuclidsketch
+  * Remove scaleselect encode from leo sketch (ScaleEncoder now)
+  * Add new scales to pitch euclid
+  * Add new sketch for olli: midieuclid, automagiccontroller, magic sysex page
+  * Swapping tracks
+  * Remove checkHandle on encoder unlocking (wait for next GUI loop to take care of that).
+  * Formatting fix
+  * format
+  * Reformatted to add helper macros in a separate file
+  * format
+  * Added leo's firmware as CrazyLFOs Added clock settings to CrazyLFOs firmware
+  * format
+  * format
+  * Fix encoding of kit and global messages
+  * Reformatting and skeleton for slicing methods
+  * Added skeleton for new slice page
+  * Formatting
+  * Added KITTest pde to test kit encoding
+  * Added tests for conversion of kit Some reformatting Added test for MDGlobals
+  * formatting
+  * Added first tests for a central place for program-space strings to reduce space usage
+  * Added new md kit unit tests
+  * ignore binaries
+  * Added changelog file
+  * Swap tracks in kit (bork for some reason)
+  * Get kit and pattern in the studio sketch
+  * Midi tutorial with lock
+  * Test the tempo encoder for MD
+  * Test the md encoder
+  * Reformat
+  * Switch back to gcc
+  * Reformat
+  * added md_swap_tests
+  * Swap track test firmware
+  * Swap kit and tracks in the swap track page
+  * Reformat
+  * Avoid triggering on lfo pages
+  * lock encoders tweak so they work better
+  * handle trigger events on all pages
+  * Add ALL/None option to euclid and lfo page, randomization for LFO page as well
+  * Set basePitch automatically when switching destination track
+  * reindent
+  * Handle all / None in euclid
+  * Add all / None option to MD
+  * reindent
+  * Add allNone option to MDTrackFlashEncoder
+  * Added trackGetBasePitch
+  * Added trackGetBasePitch
+  * Add basepitchencoder as notepitchencoder, add mdtempoEncoder
+  * Initialize varRangeEncoder to var value
+  * Reindent
+  * Safety masking
+  * Reindent
+  * Added MD TempoEncoder
+  * Add lock button to every page except autoMDPage
+  * Add lockable encoders
+  * Add lockable encoders
+  * Use same scale encoder for pitch euclid
+  * Make pitch euclid scale encoder configurable
+  * Show short name in scale encoder
+  * Added event handling changes (first)
+  * Added configurable buttons for autoencoder page
+  * Merge branch 'feature/midi-controller-tutorials' into develop
+  * Added tutorial sketches
+  * Added tutorial text
+  * Merge branch 'feature/scale-short-names' into develop
+  * Reformat and small changes
+  * Added short names for scales, new scales
+  * Added scale short names
+  * added development firmwares
+  * Merge branch 'feature/mapping_automidi' into develop
+  * add parent setup() call to midiclockpage
+  * add documentation to auto encoder page
+  * indent cchandler
+  * Add documentation to auto midi controller, set names and CC linearly
+  * Indent
+  * Indent and add isSetup to setup()
+  * Indent pages
+  * Indent helpers
+  * Added comments with timer intervals
+  * Added comments for MidiUartParent
+  * indent code
+  * fixed mute track offset for mute CCs
+  * Add skeleton for TransposePattern and scalePatternPage
+  * Indent MDEncoders
+  * Indent encoders
+  * Add scale names Add ScaleEncoder
+  * Add transpose page to studio firmware
+  * Add skeleton for MDTransposePage
+  * reindent
+  * Add MDSwapPatternPage and helper functions
+  * ignore host-apps binaries
+  * Ignore symlink to avr tools
+  * Ignore patch manager log file
+  * Add video tutorial hello world
+  * Add test firmwares
+  * Add TAGS file to gitignore
+  * Remove symlink from git
+  * Add MDStudio firmware
+  * Add MDStudio sketch Add MDSwapTrack page
+  * Add swap tracks method to MDPattern
+  * Reformat weird indentation
+  * Show the FLASH and RAM size upon compilation
+  * Calculate FLASH size and RAM size in Sizer class Remove old size calculation
+  * Use JVM 1.6.0 on snow leopard because of  in eclipse
+  * MRG: ALL now merges PRG CHG, AT, PITCHWHEEL and CHANNEL PRESSURE
+  * Add on32Callbacks to weak funcs
+  * added comment to test refing in commit messages
+  * Added on32Callbacks to weak funcs
+  * added notelength to pitcheuclid to set the interval after which a note off is sent
+  * reformat midi clock page source file
+  * add a third config page to the midieuclidsketch to configure the notelength of the pitch euclid generator
+  * added build directory to ignore
+  * Add default name to realEncoders
+  * Merge commit '865c847b70cfa229218c'
+  * Suppress leading zeros in parameter displays. Fix overwriting of first character of next parameter in encoders. Make fast mode step size in encoders configurable.
+  * added bootloader documentation and formatted the midi-send.c file
+  * merged in formattingringbuffer
+  * added ignoring of dmgs for macosx build directory
+  * added formatting ring buffer
+  * Merge branch 'master' of github.com:wesen/mididuino
+  * fixed ram-p1 bug for grain, added build script
+  * updated fixing makefile to work correctly
+  * define user dir variable in makefile
+  * fix typo
+  * load boards.txt correctly when called from command line
+  * load boards.txt correctly when called from command line
+  * added isMidiTrack to check for MIDI track, added melodic pitch conversion for MIDI tracks
+  * remove midi-ctrl dir and tgx
+  * added clean.sh script for linux
+  * adapt classpath to use $CLASSPATH variable
+  * updated build process for linux
+  * removed usb midi from main branch
+  * added files for usbmidi on lufa
+  * make midi-common includable by c files
+  * slight reformatting
+  * rename a few things with new paths inside makefile, needs work however
+  * move configuration parameters for lcd and shift register to wprogram.h file
+  * rename mididuino to midi-ctrl in doxyfile
+  * added text files and correct location for tools under macosx
+  * added txt files to macosx build, compile midi-send with gcc-4.0 to avoid include errors on snow leopard (jesus)
+  * added non-commercial clause to BSD license
+  * added readme.txt, license.txt and building.txt to release zips
+  * removed typo in readme.txt
+  * renamed mididuino to midi-ctrl in java sourcecode
+  * added .gitattributes file to fix crlf settings for windows shell scripts (cygwin refuses to execute them if they are not in unix format
+  * fixed crlf on shell scripts
+  * update windows build scripts
+  * added pitcheuclid (?) and building information
+  * fied crlf issue
+  * updated build scripts for macosx to rename the app to midictrl
+  * added euclid pages to leo sketch
+  * reordered scale and trigger pages
+  * randomize lfos in leo sketch, handle all channel and no track in MDPitchEuclid
+  * removed buggy cchandler initialization
+  * fix lfo update parameter, add updates to leo sketch, add gitignores
+  * Merge branch 'master' of ssh://bl0rg.net/home/manuel/gits/mididuino
+  * removed patchmanager
+  * shortened readme to empty, but at least the name is now correct. starting to rename the framework to MIDI-CTRL
+  * added note off for euclid firmware, added faq skeleton
+  * added new profiler and er1 things
+  * slight cosmetic changes
+  * updated scrivener documentation
+  * slight changes to mdtask
+  * update midi-send for macosx
+  * added er1 firmware beginning
+  * checking in binary version of midi-send
+  * fixed race condition on windows
+  * added logging and debugging code in their own file, slight tweaks to windows version of midi-send, added debugflag level
+  * added correct id for faderfox and chmd the executables on export
+  * put correct status indicator for progress information
+  * add flush to midi-send status messages
+  * remodelled wizard to have moving status bar on refresh
+  * added status messages for sending
+  * added log messages to midi-send
+  * fixed parsing of kit and global messages
+  * added drummapping again and stuff
+  * fixed problem of not including unbuilt libraries
+  * fixing encoders and stuff to make random seq work
+  * updated docs and stuff
+  * updated documentation, added midi converter
+  * move documentation to their respective directories
+  * adapted dumpxml to work in live8, dump documentation
+  * added ableton live firmwares
+  * added live scripts (skeletton)
+  * added md messages test (empty)
+  * added tests for mnm messages (no mnm real sysex parsing yet)
+  * adapted firmwares so they all compile
+  * adapte mnm sketches
+  * adapted mnm to new message form
+  * adapt mnm to new decoder setup
+  * removed test-sketches
+  * moved test sketches around for mididuino to actually find them
+  * added documentation for miditools
+  * added doc stubs for Midi and MDSketches
+  * documented MD and MDpages
+  * added groups for classes (pita\!\!)
+  * added documentation for sketches
+  * added documentation for pages
+  * fixed a few things that may have gone wrong during the documentation writing
+  * added GUI documentation.
+  * added gui doc (not all)
+  * documented almost all of commontools
+  * added doxygen documentation
+  * make standalone version of the updater
+  * make standalone version of the updater
+  * Merge branch 'haye-hack'
+  * Merge branch 'master' of github.com:wesen/mididuino

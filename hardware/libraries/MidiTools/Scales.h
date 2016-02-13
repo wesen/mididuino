@@ -3,6 +3,7 @@
 #ifndef SCALES_H__
 #define SCALES_H__
 
+#include "GUI.h"
 #include <inttypes.h>
 
 /**
@@ -24,6 +25,8 @@
  **/
 
 typedef struct scale_s {
+  const char *name;
+  const char *shortName;
   uint8_t size;
   uint8_t pitches[12];
 } scale_t;
@@ -77,6 +80,20 @@ extern scale_t minorMaj7ArpMin9;
 
 uint8_t randomScalePitch(const scale_t *scale, uint8_t octaves = 0);
 uint8_t scalePitch(uint8_t pitch, uint8_t root, const uint8_t *scale);
+
+/**
+ * Encoder that allows the user to choose a scale, displaying the scale name.
+ **/
+
+class ScaleEncoder : public RangeEncoder {
+public:
+  const scale_t **scales;
+  uint8_t numScales;
+  ScaleEncoder(char *_name = NULL, const scale_t *_scales[] = NULL, uint8_t _numScales = 0);
+
+  const scale_t *getScale();
+  void displayAt(int i);
+};
 
 /* @} @} @} */
 

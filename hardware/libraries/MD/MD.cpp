@@ -1,4 +1,11 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Implementation of common general functions for the Elektron Machinedrum
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+
+#include "Platform.h"
 #include "MD.h"
 #include "helpers.h"
 
@@ -18,7 +25,7 @@ uint8_t MDClass::noteToTrack(uint8_t pitch) {
   if (MD.loadedGlobal) {
     for (i = 0; i < sizeof(MD.global.drumMapping); i++) {
       if (pitch == MD.global.drumMapping[i])
-				return i;
+	return i;
     }
     return 128;
   } else {
@@ -88,8 +95,8 @@ void MDClass::triggerTrack(uint8_t track, uint8_t velocity) {
 void MDClass::setTrackParam(uint8_t track, uint8_t param, uint8_t value) {
   if (global.baseChannel > 15)
     return;
-	if ((track > 15) || (param > 33))
-		return;
+  if ((track > 15) || (param > 33))
+    return;
 
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
@@ -141,6 +148,15 @@ void MDClass::setCompressorParam(uint8_t param, uint8_t value) {
 
 /*** tunings ***/
 
+uint8_t MDClass::trackGetBasePitch(uint8_t track) {
+  tuning_t const *tuning = getModelTuning(kit.models[track]);
+  
+  if (tuning == NULL)
+    return 128;
+
+  return tuning->base;
+}
+
 
 uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
   tuning_t const *tuning = getModelTuning(kit.models[track]);
@@ -155,12 +171,12 @@ uint8_t MDClass::trackGetCCPitch(uint8_t track, uint8_t cc, int8_t *offset) {
     off = ccStored - cc;
     if (ccStored >= cc) {
       if (offset != NULL) {
-				*offset = off;
+	*offset = off;
       }
       if (off <= tuning->offset)
-				return i + tuning->base;
+	return i + tuning->base;
       else 
-				return 128;
+	return 128;
     }
   }
   off = ABS(pgm_read_byte(&tuning->tuning[tuning->len - 1]) - cc);
@@ -234,7 +250,7 @@ void MDClass::sliceTrack16(uint8_t track, uint8_t from, uint8_t to) {
 
 bool MDClass::isMidiTrack(uint8_t track) {
   if ((kit.models[track] >= MID_01_MODEL) &&
-          (kit.models[track] <= MID_16_MODEL)) {
+      (kit.models[track] <= MID_16_MODEL)) {
     return true;
   } else {
     return false;
@@ -249,7 +265,46 @@ bool MDClass::isMelodicTrack(uint8_t track) {
 }
 
 void MDClass::setLFOParam(uint8_t track, uint8_t param, uint8_t value) {
-  uint8_t data[3] = { 0x62, track << 3 | param, value };
+  // make sure we don't go outside boundaries
+  if (track > 15) {
+    return;
+  }
+
+  uint8_t data[3] = { 0x62, (uint8_t)(track << 3 | param), value };
+  MDLFO *lfo = MD.kit.lfos + track;
+  switch (param) {
+  case MD_LFO_TRACK:
+    lfo->destinationTrack = value;
+    break;
+
+  case MD_LFO_PARAM:
+    lfo->destinationParam = value;
+    break;
+
+  case MD_LFO_SHP1:
+    lfo->shape1 = value;
+    break;
+
+  case MD_LFO_SHP2:
+    lfo->shape2 = value;
+    break;
+
+  case MD_LFO_UPDTE:
+    lfo->type = value;
+    break;
+
+  case MD_LFO_SPEED:
+    lfo->speed = value;
+    break;
+
+  case MD_LFO_DEPTH:
+    lfo->depth = value;
+    break;
+
+  case MD_LFO_SHMIX:
+    lfo->mix = value;
+    break;
+  }
   MD.sendSysex(data, countof(data));
 }
 
@@ -280,7 +335,7 @@ void MDClass::setTrackRouting(uint8_t track, uint8_t output) {
 }
 
 void MDClass::setTempo(uint16_t tempo) {
-  uint8_t data[3] = { 0x61, tempo >> 7, tempo & 0x7F };
+  uint8_t data[3] = { 0x61, (uint8_t)((tempo >> 7) & 0x7F), (uint8_t)(tempo & 0x7F) };
   MD.sendSysex(data, countof(data));
 }
 
@@ -295,7 +350,7 @@ void MDClass::setMuteGroup(uint8_t srcTrack, uint8_t muteTrack) {
 }
 
 void MDClass::saveCurrentKit(uint8_t pos) {
-  uint8_t data[2] = { 0x59, pos & 0x7F };
+  uint8_t data[2] = { 0x59, (uint8_t)(pos & 0x7F) };
   MD.sendSysex(data, countof(data));
 }
 
@@ -325,12 +380,12 @@ void MDClass::muteTrack(uint8_t track, bool mute) {
       
   uint8_t channel = track >> 2;
   uint8_t b = track & 3;
-  uint8_t cc = 16 + b;
+  uint8_t cc = 12 + b;
   MidiUart.sendCC(channel + global.baseChannel, cc, mute ? 1 : 0);
 }
 
 void MDClass::setStatus(uint8_t id, uint8_t value) {
-  uint8_t data[] = { 0x71, id & 0x7F, value & 0x7F };
+  uint8_t data[] = { 0x71, (uint8_t)(id & 0x7F), (uint8_t)(value & 0x7F) };
   MD.sendSysex(data, countof(data));
 }
 
@@ -407,9 +462,9 @@ bool MDClass::waitBlocking(MDBlockCurrentStatusCallback *cb, uint16_t timeout) {
   do {
     current_clock = read_slowclock();
     handleIncomingMidi();
-		GUI.display();
+    GUI.display();
   } while ((clock_diff(start_clock, current_clock) < timeout) && !cb->received);
-	return cb->received;
+  return cb->received;
 }
 
 
@@ -420,7 +475,7 @@ uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
     (&cb, (md_status_callback_ptr_t)&MDBlockCurrentStatusCallback::onStatusResponseCallback);
   MD.sendRequest(MD_STATUS_REQUEST_ID, type);
 
-	bool ret = waitBlocking(&cb, timeout);
+  waitBlocking(&cb, timeout);
 	
   MDSysexListener.removeOnStatusResponseCallback(&cb);
 
@@ -430,9 +485,9 @@ uint8_t MDClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
 bool MDClass::getBlockingKit(uint8_t kit, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnKitMessageCallback(&cb,
-																					(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+					  (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestKit(kit);
-	bool ret = waitBlocking(&cb, timeout);
+  bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnKitMessageCallback(&cb);
 
   return ret;
@@ -441,9 +496,9 @@ bool MDClass::getBlockingKit(uint8_t kit, uint16_t timeout) {
 bool MDClass::getBlockingPattern(uint8_t pattern, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnPatternMessageCallback(&cb,
-																							(md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+					      (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestPattern(pattern);
-	bool ret = waitBlocking(&cb, timeout);
+  bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnPatternMessageCallback(&cb);
 
   return ret;
@@ -452,9 +507,9 @@ bool MDClass::getBlockingPattern(uint8_t pattern, uint16_t timeout) {
 bool MDClass::getBlockingGlobal(uint8_t global, uint16_t timeout) {
   MDBlockCurrentStatusCallback cb;
   MDSysexListener.addOnGlobalMessageCallback(&cb,
-																						 (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
+					     (md_callback_ptr_t)&MDBlockCurrentStatusCallback::onSysexReceived);
   MD.requestGlobal(global);
-	bool ret = waitBlocking(&cb, timeout);
+  bool ret = waitBlocking(&cb, timeout);
   MDSysexListener.removeOnGlobalMessageCallback(&cb);
 
   return ret;

@@ -17,6 +17,12 @@
  * Elektron Monomachine encoding and decoding routines
  **/
 
+/***************************************************************************
+ *
+ * MNM Sysex Encoder
+ *
+ ***************************************************************************/
+
 void MNMDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sysexLen), MidiUartParent *_uart)
 {
   ElektronDataToSysexEncoder::init(DATA_ENCODER_INIT(_sysex, _sysexLen), _uart);
@@ -26,46 +32,46 @@ void MNMDataToSysexEncoder::init(DATA_ENCODER_INIT(uint8_t *_sysex, uint16_t _sy
 }
 
 DATA_ENCODER_RETURN_TYPE MNMDataToSysexEncoder::pack8(uint8_t inb) {
-	//	printf("patck: %x\n", inb);
-	totalCnt++;
-	if (in7Bit) {
-		if (isFirstByte) {
-			lastByte = inb;
-			lastCnt = 1;
-			isFirstByte = false;
-			DATA_ENCODER_TRUE();
-		} else {
-			if (inb == lastByte) {
-				lastCnt++;
-				if (lastCnt == 127) {
-					DATA_ENCODER_CHECK(packLastByte());
-				}
-			} else {
-				DATA_ENCODER_CHECK(packLastByte());
-				lastByte = inb;
-				lastCnt = 1;
-			}
-		}
-	} else {
-		ElektronDataToSysexEncoder::pack8(inb);
-	}
+  //	printf("patck: %x\n", inb);
+  totalCnt++;
+  if (in7Bit) {
+    if (isFirstByte) {
+      lastByte = inb;
+      lastCnt = 1;
+      isFirstByte = false;
+      DATA_ENCODER_TRUE();
+    } else {
+      if (inb == lastByte) {
+        lastCnt++;
+        if (lastCnt == 127) {
+          DATA_ENCODER_CHECK(packLastByte());
+        }
+      } else {
+        DATA_ENCODER_CHECK(packLastByte());
+        lastByte = inb;
+        lastCnt = 1;
+      }
+    }
+  } else {
+    ElektronDataToSysexEncoder::pack8(inb);
+  }
 
-	DATA_ENCODER_TRUE();
+  DATA_ENCODER_TRUE();
 }
 
 DATA_ENCODER_RETURN_TYPE MNMDataToSysexEncoder::packLastByte() {
   if (lastCnt > 0) {
     if ((lastCnt == 1) && !(lastByte & 0x80)) {
-			DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(lastByte));
+      DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(lastByte));
       lastCnt = 0;
     } else {
-			DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(0x80 | lastCnt));
+      DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(0x80 | lastCnt));
       DATA_ENCODER_CHECK(ElektronDataToSysexEncoder::pack8(lastByte));
       lastCnt = 0;
     }
-	}
+  }
 
-	DATA_ENCODER_TRUE();
+  DATA_ENCODER_TRUE();
 }
 
 uint16_t MNMDataToSysexEncoder::finish() {
@@ -73,22 +79,22 @@ uint16_t MNMDataToSysexEncoder::finish() {
   if (!packLastByte())
     return 0;
   else
-		return ElektronDataToSysexEncoder::finish();
+    return ElektronDataToSysexEncoder::finish();
 #else
-	packLastByte();
-	ElektronDataToSysexEncoder::finish();
+  packLastByte();
+  return ElektronDataToSysexEncoder::finish();
 #endif
 }
 
 void MNMSysexToDataEncoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
   ElektronSysexToDataEncoder::init(DATA_ENCODER_INIT(_data, _maxLen));
   repeat = 0;
-	totalCnt = 0;
+  totalCnt = 0;
 }
 
 DATA_ENCODER_RETURN_TYPE MNMSysexToDataEncoder::pack8(uint8_t inb) {
   //  printf("pack: %x\n", inb);
-	totalCnt++;
+  totalCnt++;
   if ((cnt % 8) == 0) {
     bits = inb;
   } else {
@@ -98,10 +104,10 @@ DATA_ENCODER_RETURN_TYPE MNMSysexToDataEncoder::pack8(uint8_t inb) {
   cnt++;
 
   if (cnt7 == 7) {
-		DATA_ENCODER_CHECK(unpack8Bit());
+    DATA_ENCODER_CHECK(unpack8Bit());
   }
 
-	DATA_ENCODER_TRUE();
+  DATA_ENCODER_TRUE();
 }
 
 DATA_ENCODER_RETURN_TYPE MNMSysexToDataEncoder::unpack8Bit() {
@@ -109,28 +115,28 @@ DATA_ENCODER_RETURN_TYPE MNMSysexToDataEncoder::unpack8Bit() {
     //    printf("tmpdata[%d]: %x\n", i, tmpData[i]);
     if (repeat == 0) {
       if (tmpData[i] & 0x80) {
-				repeat = tmpData[i] & 0x7F;
+        repeat = tmpData[i] & 0x7F;
       } else {
 #ifdef DATA_ENCODER_CHECKING
-				DATA_ENCODER_CHECK(retLen <= maxLen);
+        DATA_ENCODER_CHECK(retLen <= maxLen);
 #endif
-				*(ptr++) = tmpData[i];
-				retLen++;
+        *(ptr++) = tmpData[i];
+        retLen++;
       }
     } else {
       for (uint8_t j = 0; j < repeat; j++) {
 #ifdef DATA_ENCODER_CHECKING
-				DATA_ENCODER_CHECK(retLen <= maxLen);
+        DATA_ENCODER_CHECK(retLen <= maxLen);
 #endif
-				*(ptr++) = tmpData[i];
-				retLen++;
+        *(ptr++) = tmpData[i];
+        retLen++;
       }
       repeat = 0;
     }
   }
   cnt7 = 0;
 
-	DATA_ENCODER_TRUE();
+  DATA_ENCODER_TRUE();
 }
 
 uint16_t MNMSysexToDataEncoder::finish() {
@@ -140,53 +146,66 @@ uint16_t MNMSysexToDataEncoder::finish() {
     return 0;
   }
 #else
-	unpack8Bit();
+  unpack8Bit();
 #endif
   return retLen;
 	
 }
 
+/***************************************************************************
+ *
+ * MNM Sysex Decoder
+ *
+ ***************************************************************************/
+
 void MNMSysexDecoder::init(DATA_ENCODER_INIT(uint8_t *_data, uint16_t _maxLen)) {
-	DataDecoder::init(DATA_ENCODER_INIT(_data, _maxLen));
-	cnt7 = 0;
-	cnt = 0;
-	repeatCount = 0;
-	repeatByte = 0;
-	totalCnt = 0;
+  DataDecoder::init(DATA_ENCODER_INIT(_data, _maxLen));
+  cnt7 = 0;
+  cnt = 0;
+  repeatCount = 0;
+  repeatByte = 0;
+  totalCnt = 0;
 }
 
 DATA_ENCODER_RETURN_TYPE MNMSysexDecoder::getNextByte(uint8_t *c) {
-	if ((cnt % 8) == 0) {
-		bits = *(ptr++);
-		cnt++;
-	}
-	bits <<= 1;
-	*c = *(ptr++) | (bits & 0x80);
-	cnt++;
+  if ((cnt % 8) == 0) {
+    bits = *(ptr++);
+    cnt++;
+  }
+  bits <<= 1;
+  *c = *(ptr++) | (bits & 0x80);
+  cnt++;
 
-	DATA_ENCODER_TRUE();
+  DATA_ENCODER_TRUE();
 }
 
 DATA_ENCODER_RETURN_TYPE MNMSysexDecoder::get8(uint8_t *c) {
-	uint8_t byte;
+  uint8_t byte;
 
-	totalCnt++;
+  totalCnt++;
 
  again:
-	if (repeatCount > 0) {
-		repeatCount--;
-		*c = repeatByte;
-		DATA_ENCODER_TRUE();
-	}
+  if (repeatCount > 0) {
+    repeatCount--;
+    *c = repeatByte;
+    DATA_ENCODER_TRUE();
+  }
 
-	DATA_ENCODER_CHECK(getNextByte(&byte));
+  DATA_ENCODER_CHECK(getNextByte(&byte));
 
-	if (IS_BIT_SET(byte, 7)) {
-		repeatCount = byte & 0x7F;
-		DATA_ENCODER_CHECK(getNextByte(&repeatByte));
-		goto again;
-	} else {
-		*c = byte;
-		DATA_ENCODER_TRUE();
-	}
+#ifdef HOST_MIDIDUINO
+  //  printf("%x (%c)\n", byte, byte);
+#endif
+
+  if (IS_BIT_SET(byte, 7)) {
+    repeatCount = byte & 0x7F;
+    DATA_ENCODER_CHECK(getNextByte(&repeatByte));
+#ifdef HOST_MIDIDUINO
+    //    printf("%x (%c)\n", repeatByte, repeatByte);
+#endif
+    goto again;
+  } else {
+    *c = byte;
+    DATA_ENCODER_TRUE();
+  }
 }

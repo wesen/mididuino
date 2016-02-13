@@ -1,8 +1,15 @@
+/*
+ * MidiCtrl - Monomachine Encoders
+ *
+ * (c) June 2012 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "MNMEncoders.h"
 
 #ifndef HOST_MIDIDUINO
 MNMEncoder::MNMEncoder(uint8_t _track, uint8_t _param, char *_name, uint8_t init) :
-  CCEncoder(0, 0, _name, init) {
+CCEncoder(0, 0, _name, init) {
   initMNMEncoder(_track, _param);
   handler = CCEncoderHandle;
 }
@@ -42,7 +49,7 @@ void MNMEncoder::loadFromKit() {
 }
 
 void MNMEncoder::initMNMEncoder(uint8_t _track, uint8_t _param,
-				char *_name, uint8_t init) {
+                                char *_name, uint8_t init) {
   track = _track;
   param = _param;
   if (_name == NULL) {
@@ -50,25 +57,25 @@ void MNMEncoder::initMNMEncoder(uint8_t _track, uint8_t _param,
       PGM_P name= NULL;
       name = MNM.getModelParamName(MNM.kit.models[track], param);
       if (name != NULL) {
-	char myName[4];
-	m_strncpy_p(myName, name, 4);
-	setName(myName);
-	GUI.redisplay();
+        char myName[4];
+        m_strncpy_p(myName, name, 4);
+        setName(myName);
+        GUI.redisplay();
       } else {
-	setName("XXX");
-	GUI.redisplay();
+        setName("XXX");
+        GUI.redisplay();
       }
     }
   } else {
     setName(_name);
     GUI.redisplay();
   }
-      
+
   setValue(init);
 }
 
 static const uint8_t flashOffset[4] = {
-  4, 8, 0, 0
+                                       4, 8, 0, 0
 };
 
 void MNMTrackFlashEncoder::displayAt(int i) {

@@ -1,9 +1,15 @@
+/*
+ * MidiCtrl - Interface class to the elektron monomachine
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
 #ifndef MNM_H__
 #define MNM_H__
 
 #include <inttypes.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 #include "MNMMessages.hh"
 #include "MNMPattern.hh"
 #include "MNMParams.hh"
@@ -145,9 +151,9 @@ class MNMClass {
     setAutoMute(false);
   }
   
-  PGM_P getMachineName(uint8_t machine);
-  PGM_P getModelParamName(uint8_t model, uint8_t param);
-  void getPatternName(uint8_t pattern, char str[5]);
+  static PGM_P getMachineName(uint8_t machine);
+  static PGM_P getModelParamName(uint8_t model, uint8_t param);
+  static void getPatternName(uint8_t pattern, char str[5]);
 
   void revertToCurrentKit(bool reloadKit = true);
   void revertToCurrentTrack(bool reloadTrack = true) {
@@ -167,6 +173,7 @@ class MNMClass {
   uint8_t getBlockingStatus(uint8_t type, uint16_t timeout = 1000);
   uint8_t getCurrentTrack(uint16_t timeout = 1000);
   uint8_t getCurrentKit(uint16_t timeout = 1000);
+  uint8_t getCurrentPattern(uint16_t timeout = 1000);
 };
 
 extern MNMClass MNM;

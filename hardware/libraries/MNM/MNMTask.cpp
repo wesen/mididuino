@@ -32,9 +32,9 @@ void MNMTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
     if (MNM.currentKit != value) {
       MNM.currentKit = value;
       if (autoLoadKit) {
-				MNM.requestKit(MNM.currentKit);
+        MNM.requestKit(MNM.currentKit);
       } else {
-				kitChangeCallbacks.call();
+        kitChangeCallbacks.call();
       }
     }
     if (reloadKit) {
@@ -47,9 +47,9 @@ void MNMTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
     if (MNM.currentGlobal != value) {
       MNM.currentGlobal = value;
       if (autoLoadGlobal) {
-				MNM.requestGlobal(MNM.currentGlobal);
+        MNM.requestGlobal(MNM.currentGlobal);
       } else {
-				globalChangeCallbacks.call();
+        globalChangeCallbacks.call();
       }
     }
     if (reloadGlobal) {
@@ -77,7 +77,7 @@ void MNMTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
 
 void MNMTaskClass::onGlobalMessageCallback() {
   MNM.loadedGlobal = false;
-  if (MNM.global.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+  if (MNM.global.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
     MNM.loadedGlobal = true;
     globalChangeCallbacks.call();
   }
@@ -85,12 +85,12 @@ void MNMTaskClass::onGlobalMessageCallback() {
 
 void MNMTaskClass::onKitMessageCallback() {
   MNM.loadedKit = false;
-  if (MNM.kit.fromSysex(MidiSysex.data, MidiSysex.recordLen)) {
+  if (MNM.kit.fromSysex(MidiSysex.data + 5, MidiSysex.recordLen - 5)) {
     MNM.loadedKit = true;
     kitChangeCallbacks.call();
     if (verbose) {
       GUI.setLine(GUI.LINE1);
-      GUI.flash_p_string_fill(PSTR("SWITCH KIT"));
+      GUI.flash_p_string_fill(PSTR("LOADED MNM KIT:"));
       GUI.setLine(GUI.LINE2);
       GUI.flash_string_fill(MNM.kit.name);
     }

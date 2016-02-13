@@ -1,4 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - Encode and decode MNM sysex messages
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "helpers.h"
 #include "MNMParams.hh"
 #include "MNMSysex.hh"
@@ -22,6 +28,7 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
     } else {
       isMNMMessage = false;
     }
+
     return;
   }
   
@@ -30,47 +37,47 @@ void MNMSysexListenerClass::handleByte(uint8_t byte) {
       msgType = byte;
       switch (byte) {
       case MNM_STATUS_RESPONSE_ID:
-				// MidiSysex.startRecord();
-				break;
+        // MidiSysex.startRecord();
+        break;
 	
       case MNM_GLOBAL_MESSAGE_ID:
       case MNM_KIT_MESSAGE_ID:
       case MNM_SONG_MESSAGE_ID:
-				//				MidiSysex.resetRecord();
-				isMNMEncodedMessage = false;
-				break;
+        //				MidiSysex.resetRecord();
+        isMNMEncodedMessage = false;
+        break;
 
       case MNM_PATTERN_MESSAGE_ID:
-				isMNMEncodedMessage = false;
-				break;
+        isMNMEncodedMessage = false;
+        break;
       }
     }
 
     if (isMNMEncodedMessage) {
       if (MidiSysex.len >= sizeof(monomachine_sysex_hdr)) {
-				if (MidiSysex.len == 9) {
-					encoder.init(DATA_ENCODER_INIT(MidiSysex.recordBuf + MidiSysex.recordLen,
-																				 MidiSysex.maxRecordLen - MidiSysex.recordLen));
-				}
-				if (MidiSysex.len < 9) {
-					if (MidiSysex.len == 8) {
-						msgCksum = byte;
-						msgLen++;
-					}
-					MidiSysex.recordByte(byte);
-				} else {
-					if (sysexCirc.size() == 4 && byte != 0xF7) {
-						uint8_t c = sysexCirc.get(3);
-						msgCksum += c;
-						msgLen++;
-						//	    printf("_pack: %x, byte %x\n", c, byte);
-						encoder.pack8(c);
-					}
-					sysexCirc.put(byte);
-				}
+        if (MidiSysex.len == 9) {
+          encoder.init(DATA_ENCODER_INIT(MidiSysex.recordBuf + MidiSysex.recordLen,
+                                         MidiSysex.maxRecordLen - MidiSysex.recordLen));
+        }
+        if (MidiSysex.len < 9) {
+          if (MidiSysex.len == 8) {
+            msgCksum = byte;
+            msgLen++;
+          }
+          MidiSysex.recordByte(byte);
+        } else {
+          if (sysexCirc.size() == 4 && byte != 0xF7) {
+            uint8_t c = sysexCirc.get(3);
+            msgCksum += c;
+            msgLen++;
+            //	    printf("_pack: %x, byte %x\n", c, byte);
+            encoder.pack8(c);
+          }
+          sysexCirc.put(byte);
+        }
       }
     } else {
-		}
+    }
   }
 }
 
@@ -88,12 +95,18 @@ void MNMSysexListenerClass::end() {
     uint16_t realCksum = ElektronHelper::to16Bit7(sysexCirc.get(3), sysexCirc.get(2));
     uint16_t realLen = ElektronHelper::to16Bit7(sysexCirc.get(1), sysexCirc.get(0));
     if ((msgLen + 4) != realLen) {
+#ifndef HOST_MIDIDUINO
+      GUI.flash_p_strings_fill(PSTR("WRONG MNM"), PSTR("MSG LENGTH"));
+#endif
 #ifdef HOST_MIDIDUINO
       fprintf(stderr, "wrong message len, %d should be %d\n", (msgLen + 4), realLen);
 #endif
       return;
     }
     if (msgCksum != realCksum) {
+#ifndef HOST_MIDIDUINO
+      GUI.flash_p_strings_fill(PSTR("WRONG MNM"), PSTR("CHECKSUM"));
+#endif
 #ifdef HOST_MIDIDUINO
       fprintf(stderr, "wrong message cksum, 0x%x should be 0x%x\n", msgCksum, realCksum);
 #endif

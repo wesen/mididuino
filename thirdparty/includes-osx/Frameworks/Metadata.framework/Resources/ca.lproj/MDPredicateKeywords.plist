@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MESSAGES</key>
+	<array>
+		<string>tipus:missatge</string>
+		<string>tipus:missatges</string>
+	</array>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>tipus:aplicació</string>
+		<string>tipus:aplicacions</string>
+		<string>tipus:app</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>tipus:contacte</string>
+		<string>tipus:contactes</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>tipus:document</string>
+		<string>tipus:documents</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>tipus:carpeta</string>
+		<string>tipus:carpetes</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>tipus:correu</string>
+		<string>tipus:correus</string>
+		<string>tipus:missatge de correu</string>
+		<string>tipus:missatges de correu</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>tipus:esdeveniment</string>
+		<string>tipus:esdeveniments</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>tipus:tasca</string>
+		<string>tipus:tasques</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>tipus:esdeveniments i tasques</string>
+		<string>tipus:esdeveniment O tipus:tasca</string>
+		<string>tipus:tasca O tipus:esdeveniment</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>tipus:imatge</string>
+		<string>tipus:imatges</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>tipus:pel·lícula</string>
+		<string>tipus:pel·lícules</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>tipus:música</string>
+		<string>tipus:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>data:mes vinent</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>data:setmana vinent</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>data:any vinent</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>tipus:pdf</string>
+		<string>tipus:pdfs</string>
+		<string>tipus:document pdf</string>
+		<string>tipus:documents pdf</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>tipus:preferències del sistema</string>
+		<string>tipus:preferències</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>data:aquest mes</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>data:aquesta setmana</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>data:aquest any</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>data:avui</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>data:demà</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>data:ahir</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>tipus:favorit</string>
+		<string>tipus:favorits</string>
+		<string>tipus:pàgina web</string>
+		<string>tipus:pàgines web</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>tipus:tipus de lletra</string>
+		<string>tipus:tipus de lletres</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>tipus:presentacions</string>
+		<string>tipus:presentació</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>tipus:fulls de càlcul</string>
+		<string>tipus:full de càlcul</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>tipus:font</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>tipus:text</string>
+	</array>
+</dict>
+</plist>

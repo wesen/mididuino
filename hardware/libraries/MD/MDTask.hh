@@ -31,23 +31,27 @@ extern MDClass MD;
  * when the kit/pattern/global changed.
  **/
 class MDTaskClass : public Task, public MDCallback {
-	/**
-	 * \addtogroup md_task
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_task
+   *
+   * @{
+   **/
 	
 public:
-	/**
-	 * When set to true, this will automatically request the kit sysex
-	 * data when the kit changed (default false).
-	 **/
+  /**
+   * When set to true, this will automatically request the kit sysex
+   * data when the kit changed (default false).
+   **/
   bool autoLoadKit;
-	/**
-	 * When set to true, this will automatically request the global sysex
-	 * data when the global changed (default false).
-	 **/
+  /**
+   * When set to true, this will automatically request the global sysex
+   * data when the global changed (default false).
+   **/
   bool autoLoadGlobal;
+  /**
+   * Set reloadKit to true to reload the currentKit on the next status
+   * answer for a current kit request.
+   **/
   bool reloadKit;
   bool reloadGlobal;
   bool redisplay;
@@ -106,7 +110,7 @@ public:
 
   virtual void destroy();
 
-	/* @} */
+  /* @} */
 };
 
 /**

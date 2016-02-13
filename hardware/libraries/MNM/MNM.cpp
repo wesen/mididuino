@@ -1,3 +1,6 @@
+#include <Platform.h>
+#include <GUI.h>
+#include <MidiUartParent.hh>
 #include "MNM.h"
 
 MNMClass::MNMClass() {
@@ -43,8 +46,8 @@ void MNMClass::sendAutoNoteOff(uint8_t note) {
 
 void MNMClass::triggerTrack(uint8_t track, bool amp, bool lfo, bool filter) {
   MidiUart.sendNRPN(global.baseChannel,
-		    (uint16_t)(0x7F << 7),
-		    (uint8_t)((track << 3) | (amp ? 4 : 0) | (lfo ? 2 : 0) | (filter ? 1 : 0)));
+      (uint16_t)(0x7F << 7),
+      (uint8_t)((track << 3) | (amp ? 4 : 0) | (lfo ? 2 : 0) | (filter ? 1 : 0)));
 }
 
 void MNMClass::setMultiEnvParam(uint8_t param, uint8_t value) {
@@ -131,7 +134,7 @@ void MNMClass::sendSysex(uint8_t *bytes, uint8_t cnt) {
 }
 
 void MNMClass::setStatus(uint8_t id, uint8_t value) {
-  uint8_t data[] = { 0x71, id & 0x7F, value & 0x7F };
+  uint8_t data[] = { 0x71, (uint8_t)(id & 0x7F), (uint8_t)(value & 0x7F) };
   MNM.sendSysex(data, countof(data));
 }
 
@@ -223,7 +226,7 @@ void MNMClass::requestGlobal(uint8_t _global) {
 }
 
 void MNMClass::assignMachine(uint8_t track, uint8_t model, bool initAll, bool initSynth) {
-  uint8_t data[] = { MNM_LOAD_GLOBAL_ID, track, model, 0x00 };
+  uint8_t data[] = { MNM_LOAD_MACHINE_ID, track, model, 0x00 };
   if (initAll) {
     data[3] = 0x01;
   } else if (initSynth) {
@@ -236,7 +239,7 @@ void MNMClass::assignMachine(uint8_t track, uint8_t model, bool initAll, bool in
 
 void MNMClass::setMachine(uint8_t track, uint8_t idx) {
   assignMachine(track, kit.models[idx]);
-  for (int i = 0; i < 56; i++) {
+    for (int i = 0; i < 56; i++) {
     setParam(track, i, kit.parameters[idx][i]);
   }
   setTrackLevel(track, kit.levels[idx]);
@@ -276,6 +279,10 @@ uint8_t MNMClass::getBlockingStatus(uint8_t type, uint16_t timeout) {
   } while ((clock_diff(start_clock, current_clock) < timeout) && !cb.received);
   MNMSysexListener.removeOnStatusResponseCallback(&cb);
 
+  if (!cb.received) {
+    GUI.flash_p_strings_fill(PSTR("TIMEOUT"), PSTR("MNM"));
+  }
+
   return cb.value;
 }
   
@@ -286,6 +293,16 @@ uint8_t MNMClass::getCurrentTrack(uint16_t timeout) {
     return 255;
   } else {
     MNM.currentTrack = value;
+    return value;
+  }
+}
+
+uint8_t MNMClass::getCurrentPattern(uint16_t timeout) {
+  uint8_t value = getBlockingStatus(MNM_CURRENT_PATTERN_REQUEST, timeout);
+  if (value == 255) {
+    return 255;
+  } else {
+    MNM.currentPattern = value;
     return value;
   }
 }

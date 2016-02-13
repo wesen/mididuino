@@ -1,11 +1,12 @@
 #ifndef MIDIUART_HOST_H__
 #define MIDIUART_HOST_H__
 
+#include "Platform.h"
 #include "Midi.h"
 #include "MidiSysex.hh"
 
-#include <MidiUartParent.hh>
 #include "RingBuffer.h"
+#include "MidiUartParent.hh"
 
 #define RX_BUF_SIZE 2048
 #if (RX_BUF_SIZE >= 256)
@@ -18,11 +19,11 @@
 class MidiUartHostParent;
 
 class MidiUartHostSysexListener : public MidiSysexListenerClass {
- protected:
+protected:
   MidiUartHostParent *uart;
 
- public:
- MidiUartHostSysexListener(MidiUartHostParent *_uart) : MidiSysexListenerClass() {
+public:
+  MidiUartHostSysexListener(MidiUartHostParent *_uart) : MidiSysexListenerClass() {
     uart = _uart;
     ids[0] = 0xFF;
   }
@@ -33,29 +34,32 @@ class MidiUartHostSysexListener : public MidiSysexListenerClass {
 class MidiClass;
 
 class MidiUartHostParent : public MidiUartParent, public MidiCallback {
- protected:
+protected:
+  uint8_t _sysexBuf[8192];
   MidiClass outputMidi;
   MidiUartHostSysexListener sysexListener;
 
   void onOutputMessage(uint8_t *msg, uint8_t len);
   
- public:
+public:
   int inputDevice;
   int outputDevice;
   volatile RingBuffer<RX_BUF_SIZE, RX_BUF_TYPE> rxRb;
-  
- MidiUartHostParent(int _inputDevice = -1, int _outputDevice = -1) : sysexListener(this) {
+
+  MidiUartHostParent(int _inputDevice = -1, int _outputDevice = -1) :
+    outputMidi(NULL, _sysexBuf, sizeof(_sysexBuf)),
+    sysexListener(this) {
     init(_inputDevice, _outputDevice);
-    // add sysex listener XXX
   }
   
   virtual void putc(uint8_t c) { outputMidi.handleByte(c); }
   virtual bool avail() { return !rxRb.isEmpty(); }
   virtual uint8_t getc() { return rxRb.get(); }
 
-  virtual void init(int _inputDevice, int _outputDevice);  
+  virtual bool init(int _inputDevice, int _outputDevice);
   virtual void runLoop() = 0;
   virtual void midiSendLong(unsigned char *buf, unsigned long len) = 0;
+  virtual void midiSendShort(unsigned char status, unsigned char byte1) = 0;
   virtual void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2) = 0;
 };
 
@@ -68,6 +72,8 @@ class MidiUartHostParent : public MidiUartParent, public MidiCallback {
 #endif
 
 class MidiUartHostClass;
+#ifndef TEST_SUITE
 extern MidiUartHostClass MidiUart;
+#endif
 
 #endif /* MIDIUART_HOST_H__ */

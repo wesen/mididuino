@@ -25,10 +25,14 @@ void MagicMNMPage::setup(uint8_t param1, uint8_t param2, uint8_t param3, uint8_t
 }
 
 void MagicMNMPage::setTrack(uint8_t _track)  {
-  if (track == _track)
+  if (track == _track) {
+    // already set to this track, do nothing
     return;
+  }
+
   track = _track;
   for (int i = 0; i < 4; i++) {
+    // init the encoders to match the monomachine parameters
     realEncoders[i].initMNMEncoder(track, params[i], NULL);
     if (MNM.loadedKit) {
       realEncoders[i].setValue(MNM.kit.parameters[track][params[i]]);
@@ -53,12 +57,12 @@ bool MagicMNMPage::handleEvent(gui_event_t *event)  {
   if (BUTTON_DOWN(Buttons.BUTTON4)) {
     for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
       if (EVENT_PRESSED(event, i)) {
-	GUI.setLine(GUI.LINE1);
-	GUI.flash_string_fill("CLEAR");
-	GUI.setLine(GUI.LINE2);
-	GUI.flash_put_value(0, i);
-	clearRecording(i);
-	return true;
+        GUI.setLine(GUI.LINE1);
+        GUI.flash_string_fill("CLEAR");
+        GUI.setLine(GUI.LINE2);
+        GUI.flash_put_value(0, i);
+        clearRecording(i);
+        return true;
       }
     }
   }
@@ -93,7 +97,8 @@ void MagicSwitchPage::setup()  {
   magicPages[3].setup(MNM_MODEL_AMP_DEC, MNM_MODEL_LFO1_DPTH, MNM_MODEL_LFO2_DPTH, MNM_MODEL_LFO3_DPTH);
   magicPages[3].setShortName("LFO");
 
-  setPage(&magicPages[0]); 
+  setPage(&magicPages[0]);
+  SwitchPage::setup();
 }
 
 void MagicSwitchPage::setPage(Page *page)  {
@@ -109,12 +114,13 @@ bool MagicSwitchPage::handleEvent(gui_event_t *event) {
     if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
       GUI.flash_strings_fill("CLEAR ALL", "");
       for (int i = 0; i < 4; i++) {
-	magicPages[i].clearRecording();
+        magicPages[i].clearRecording();
       }
       return true;
     }
   }
   if (EVENT_PRESSED(event, Buttons.BUTTON2)) {
+    MidiUart.printfString("SELECT PAGE");
     selectPage = true;
     redisplayPage();
     return true;
@@ -129,8 +135,8 @@ bool MagicSwitchPage::handleEvent(gui_event_t *event) {
   if (selectPage) {
     for (int i = Buttons.ENCODER1; i <= Buttons.ENCODER4; i++) {
       if (pages[i] != NULL && EVENT_PRESSED(event, i)) {
-	setPage(pages[i]);
-	return true;
+        setPage(pages[i]);
+        return true;
       }
     }
     if (EVENT_PRESSED(event, Buttons.BUTTON1)) {
@@ -177,7 +183,7 @@ void MagicSwitchPage::setToCurrentTrack() {
     }
   }
 }
-  
+
 void MagicSwitchPage::display() {
   if (currentPage != NULL && !selectPage) {
     currentPage->display();

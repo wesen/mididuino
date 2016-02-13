@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>clase:aplicación</string>
+		<string>clase:aplicaciones</string>
+		<string>clase:aplicación</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>clase:favorito</string>
+		<string>clase:favoritos</string>
+		<string>clase:página web</string>
+		<string>clase:páginas web</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>clase:contacto</string>
+		<string>clase:contactos</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>clase:carpeta</string>
+		<string>clase:carpetas</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>clase:documento</string>
+		<string>clase:documentos</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>clase:correo electrónico</string>
+		<string>clase:correos electrónicos</string>
+		<string>clase:mensaje de correo</string>
+		<string>clase:mensajes de correo</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>clase:evento</string>
+		<string>clase:eventos</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>clase:eventos y tareas</string>
+		<string>clase:evento O clase:tarea</string>
+		<string>clase:tarea O clase:evento</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>clase:tipo de letra</string>
+		<string>clase:tipos de letra</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>clase:imagen</string>
+		<string>clase:imágenes</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>clase:mensaje</string>
+		<string>clase:mensajes</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>clase:película</string>
+		<string>clase:películas</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>clase:música</string>
+		<string>clase:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>fecha:mes siguiente</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>fecha:semana siguiente</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>fecha:año siguiente</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>clase:archivo pdf</string>
+		<string>clase:archivos pdf</string>
+		<string>clase:documento pdf</string>
+		<string>clase:documentos pdf</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>clase:presentaciones</string>
+		<string>clase:presentación</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>clase:origen</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>clase:hojas de cálculo</string>
+		<string>clase:hoja de cálculo</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>clase:preferencias del sistema</string>
+		<string>clase:preferencias</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>clase:texto</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>fecha:este mes</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>fecha:esta semana</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>fecha:este año</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>fecha:hoy</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>clase:tarea</string>
+		<string>clase:tareas</string>
+		<string>clase:tarea pendiente</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>fecha:mañana</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>fecha:ayer</string>
+	</array>
+</dict>
+</plist>

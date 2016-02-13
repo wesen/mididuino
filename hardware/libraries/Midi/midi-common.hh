@@ -22,6 +22,9 @@ class MidiCallback {
 #ifdef HOST_MIDIDUINO
   virtual ~MidiCallback() { }
 #endif
+
+  typedef void(MidiCallback::*callback_ptr_t)(uint8_t *msg);
+  typedef void(MidiCallback::*callback2_ptr_t)(uint8_t *msg, uint8_t len);
 };
 #endif /* _cplusplus */
 
@@ -100,6 +103,8 @@ typedef enum {
 #define CMD_STRING             0x30
 
 // typedef void (*midi_callback_t)(uint8_t *msg);
+
+#define MIDI_CTRL_MINICOMMAND2_ID 0x41
 
 /* @} */
 

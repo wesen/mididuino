@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>soort:programma</string>
+		<string>soort:programma's</string>
+		<string>soort:toepassing</string>
+		<string>soort:toepassingen</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>soort:bladwijzer</string>
+		<string>soort:bladwijzers</string>
+		<string>soort:webpagina</string>
+		<string>soort:webpagina's</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>soort:contact</string>
+		<string>soort:contacten</string>
+		<string>soort:contactgegevens</string>
+		<string>soort:contactinformatie</string>
+		<string>soort:contactpersoon</string>
+		<string>soort:contactpersonen</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>soort:map</string>
+		<string>soort:mappen</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>soort:document</string>
+		<string>soort:documenten</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>soort:e-mail</string>
+		<string>soort:e-mails</string>
+		<string>soort:e-mailbericht</string>
+		<string>soort:e-mailberichten</string>
+		<string>soort:mail</string>
+		<string>soort:mails</string>
+		<string>soort:email</string>
+		<string>soort:emails</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>soort:activiteit</string>
+		<string>soort:activiteiten</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>soort:activiteiten en taken</string>
+		<string>soort:activiteit OR soort:taak</string>
+		<string>soort:taak OR soort:activiteit</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>soort:lettertype</string>
+		<string>soort:lettertypen</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>soort:afbeelding</string>
+		<string>soort:afbeeldingen</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>soort:bericht</string>
+		<string>soort:berichten</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>soort:film</string>
+		<string>soort:films</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>soort:muziek</string>
+		<string>soort:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>datum:volgende maand</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>datum:volgende week</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>datum:volgend jaar</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>soort:pdf</string>
+		<string>soort:pdf's</string>
+		<string>soort:pdfs</string>
+		<string>soort:pdf-document</string>
+		<string>soort:pdf-documenten</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>soort:presentatie</string>
+		<string>soort:presentaties</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>soort:bron</string>
+		<string>soort:bronbestand</string>
+		<string>soort:bronbestanden</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>soort:spreadsheets</string>
+		<string>soort:spreadsheet</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>soort:systeemvoorkeuren</string>
+		<string>soort:voorkeuren</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>soort:tekst</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>datum:deze maand</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>datum:deze week</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>datum:dit jaar</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>datum:vandaag</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>soort:taak</string>
+		<string>soort:taken</string>
+		<string>soort:te doen</string>
+		<string>soort:takenlijst</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>datum:morgen</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>datum:gisteren</string>
+	</array>
+</dict>
+</plist>

@@ -1,6 +1,9 @@
 #ifndef MIDIUARTOSX_H__
 #define MIDIUARTOSX_H__
 
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreFoundation/CFString.h>
+#include <CoreFoundation/CFBase.h>
 #include <CoreMIDI/MIDIServices.h>
 #include <CoreFoundation/CFRunLoop.h>
 
@@ -24,19 +27,24 @@ class MidiUartOSXClass : public MidiUartHostParent {
 
  public:
   MidiUartOSXClass(int _inputDevice = -1, int _outputDevice = -1);
-  ~MidiUartOSXClass() {
-		// XXX
-	}
+  MidiUartOSXClass(const char *inputDevice, const char *outputDevice);
+  ~MidiUartOSXClass();
 
   static void listInputMidiDevices();
-  static void listOutputMidiDevices();  
+  static void listOutputMidiDevices();
+  static int getInputMidiDevice(const char *name);
+  static int getOutputMidiDevice(const char *name);
   
-  void init(int _inputDevice, int _outputDevice);
+  bool init(int _inputDevice, int _outputDevice);
+  bool init(const char *_inputDeviceName, const char *_outputDeviceName);
   void runLoop();
   void midiSendLong(unsigned char *buf, unsigned long len);
+  void midiSendShort(unsigned char status, unsigned char byte1);
   void midiSendShort(unsigned char status, unsigned char byte1, unsigned char byte2);
 };
 
+#ifndef TEST_SUITE
 extern MidiUartOSXClass MidiUart;
+#endif
 
 #endif /* MIDIUARTOSX_H__ */

@@ -27,11 +27,11 @@
  * their names and values.
  **/
 class MDLFOPage : public EncoderPage {
-	/**
-	 * \addtogroup md_lfo_page
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_lfo_page
+   *
+   * @{
+   **/
 	
 public:
   MDLFOEncoder lfoEncoders[4];
@@ -64,18 +64,18 @@ public:
     }
   }
 
-	/* @} */
+  /* @} */
 };
 
 /**
  * This page is used to configure the parameters that the MDLFOPage controls.
  **/
 class MDLFOConfigPage : public EncoderPage {
-	/**
-	 * \addtogroup md_lfo_page
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_lfo_page
+   *
+   * @{
+   **/
 	
 public:
   EnumEncoder paramEncoders[4];
@@ -107,16 +107,16 @@ public:
     }
   }
 
-	/* @} */
+  /* @} */
 };
 
 /** This class is used to configure the destination track of an MDLFOPage object. **/
 class MDLFOTrackSelectPage : public EncoderPage {
-	/**
-	 * \addtogroup md_lfo_page
-	 *
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_lfo_page
+   *
+   * @{
+   **/
 public:
   MDTrackFlashEncoder trackEncoder;
   MDLFOPage *lfoPage;
@@ -131,7 +131,7 @@ public:
       lfoPage->setTrack(trackEncoder.getValue());
     }
   }
-	/* @} */
+  /* @} */
 };
 
 /* @} @} @} */

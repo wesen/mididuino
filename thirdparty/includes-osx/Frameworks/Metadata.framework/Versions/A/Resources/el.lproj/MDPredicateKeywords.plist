@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>είδος:εφαρμογή</string>
+		<string>είδος:εφαρμογές</string>
+		<string>είδος:app</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>είδος:σελιδοδείκτης</string>
+		<string>είδος:σελιδοδείκτες</string>
+		<string>είδος:ιστοσελίδα</string>
+		<string>είδος:ιστοσελίδες</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>είδος:επαφή</string>
+		<string>είδος:επαφές</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>είδος:φάκελος</string>
+		<string>είδος:φάκελοι</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>είδος:έγγραφο</string>
+		<string>είδος:έγγραφα</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>είδος:email</string>
+		<string>είδος:email</string>
+		<string>είδος:μήνυμα mail</string>
+		<string>είδος:μηνύματα mail</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>είδος:γεγονός</string>
+		<string>είδος:γεγονότα</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>είδος:γεγονότα &amp; υποχρεώσεις</string>
+		<string>είδος:γεγονός Ή είδος:υποχρέωση</string>
+		<string>είδος:υποχρέωση Ή είδος:γεγονός</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>είδος:γραμματοσειρά</string>
+		<string>είδος:γραμματοσειρές</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>είδος:εικόνα</string>
+		<string>είδος:εικόνες</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>είδος:μήνυμα</string>
+		<string>είδος:μηνύματα</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>είδος:ταινία</string>
+		<string>είδος:ταινίες</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>είδος:μουσική</string>
+		<string>είδος:ήχος</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>ημερομηνία:επόμενος μήνας</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>ημερομηνία:επόμεμνη εβδομάδα</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>ημερομηνία:επόμενο έτος</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>είδος:pdf</string>
+		<string>είδος:pdf</string>
+		<string>είδος:έγγραφο pdf</string>
+		<string>είδος:έγγραφα pdf</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>είδος:παρουσιάσεις</string>
+		<string>είδος:παρουσίαση</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>είδος:προέλευση</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>είδος:υπολογιστικά φύλλα</string>
+		<string>είδος:υπολογιστικό φύλλο</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>είδος:προτιμήσεις συστήματος</string>
+		<string>είδος:προτιμήσεις</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>είδος:κείμενο</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>ημερομηνία:τρέχων μήνας</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>ημερομηνία:τρέχουσα εβδομάδα</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>ημερομηνία:τρέχον έτος</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>ημερομηνία:σήμερα</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>είδος:υποχρέωση</string>
+		<string>είδος:υποχρεώσεις</string>
+		<string>είδος:υποχρέωση</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>ημερομηνία:αύριο</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>ημερομηνία:χτες</string>
+	</array>
+</dict>
+</plist>

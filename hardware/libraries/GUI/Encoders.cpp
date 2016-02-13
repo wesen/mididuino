@@ -1,12 +1,14 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - GUI Encoder classes
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
+#include "Platform.h"
 #include "Encoders.hh"
 #include "MidiTools.h"
 #include "Midi.h"
-
 #include "GUI.h"
-
-/* handlers */
 
 /**
  * \addtogroup GUI
@@ -22,15 +24,21 @@
  **/
 class Encoder;
 
+/***************************************************************************
+ *
+ * Encoder handlers
+ *
+ ***************************************************************************/
+
 /**
  * Handle a change in a CCEncoder by sending out the CC, using the
  * channel and cc out of the CCEncoder object.
  **/
 void CCEncoderHandle(Encoder *enc) {
   CCEncoder *ccEnc = (CCEncoder *)enc;
-	uint8_t channel = ccEnc->getChannel();
-	uint8_t cc = ccEnc->getCC();
-	uint8_t value = ccEnc->getValue();
+  uint8_t channel = ccEnc->getChannel();
+  uint8_t cc = ccEnc->getCC();
+  uint8_t value = ccEnc->getValue();
 	
   MidiUart.sendCC(channel, cc, value);
 }
@@ -56,22 +64,31 @@ void TempoEncoderHandle(Encoder *enc) {
 }
 #endif
 
+/***************************************************************************
+ *
+ * Base Encoder class
+ *
+ ***************************************************************************/
+
 Encoder::Encoder(const char *_name, encoder_handle_t _handler)
   : old(0),
     cur(0),
-    redisplay(false),
-    handler(_handler),
     fastmode(true),
     fastmodestep(5),
-    pressmode(false)
+    pressmode(false),
+    locked(false),
+    handler(_handler),
+    redisplay(false)
 {
   setName(_name);
 }
 
 void Encoder::checkHandle() {
   if (cur != old) {
-    if (handler != NULL)
-      handler(this);
+    if (!locked) {
+      if (handler != NULL)
+        handler(this);
+    }
   }
   
   old = cur;
@@ -93,13 +110,24 @@ void Encoder::setValue(int value, bool handle) {
   redisplay = true;
 }
 
+void Encoder::lock() {
+  old_lock = old;
+  locked = true;
+}
+
+void Encoder::unlock() {
+  locked = false;
+  old = old_lock;
+  //  checkHandle();
+}
+
 void Encoder::displayAt(int i) {
   GUI.put_value(i, getValue());
   redisplay = false;
 }
 
 bool Encoder::hasChanged() {
-  return old != cur;
+  return old != cur && !locked;
 }
 
 void Encoder::clear() {
@@ -111,6 +139,12 @@ int Encoder::update(encoder_t *enc) {
   cur = cur + enc->normal + (pressmode ? 0 : (fastmode ? fastmodestep * enc->button : enc->button));
   return cur;
 }
+
+/***************************************************************************
+ *
+ * Child encoder classes
+ *
+ ***************************************************************************/
 
 /* EnumEncoder */
 void EnumEncoder::displayAt(int i) {
@@ -126,7 +160,6 @@ void PEnumEncoder::displayAt(int i) {
 
 
 /* RangeEncoder */
-
 int RangeEncoder::update(encoder_t *enc) {
   int inc = enc->normal + (pressmode ? 0 : (fastmode ? fastmodestep * enc->button : enc->button));
   
@@ -161,6 +194,7 @@ void CharEncoder::setChar(char c) {
 
 /* notePitchEncoder */
 NotePitchEncoder::NotePitchEncoder(char *_name) : RangeEncoder(0, 127, _name) {
+  setName(_name);
 }
 
 void NotePitchEncoder::displayAt(int i) {
@@ -169,14 +203,18 @@ void NotePitchEncoder::displayAt(int i) {
   GUI.put_string_at(i * 4, name);
 }
 
+/* Midi track encoder */
 void MidiTrackEncoder::displayAt(int i) {
   GUI.put_value(i, getValue() + 1);
 }
 
+/* auto name CC encoder */
 void AutoNameCCEncoder::initCCEncoder(uint8_t _channel, uint8_t _cc) {
   CCEncoder::initCCEncoder(_channel, _cc);
   setCCName();
   GUI.redisplay();
-
 }
 
+/**
+ * @} @}
+ **/

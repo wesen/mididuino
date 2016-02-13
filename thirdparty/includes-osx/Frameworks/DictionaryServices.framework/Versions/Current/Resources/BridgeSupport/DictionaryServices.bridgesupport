@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<!DOCTYPE signatures SYSTEM "file://localhost/System/Library/DTDs/BridgeSupport.dtd">
+<signatures version='1.0'>
+<depends_on path='/System/Library/Frameworks/CoreFoundation.framework'/>
+<depends_on path='/System/Library/Frameworks/SystemConfiguration.framework'/>
+<depends_on path='/System/Library/Frameworks/Security.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CFNetwork.framework'/>
+<depends_on path='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework'/>
+<cftype name='DCSDictionaryRef' type='^{__DCSDictionary=}'/>
+<function name='DCSCopyTextDefinition'>
+<arg type='^{__DCSDictionary=}'/>
+<arg type='^{__CFString=}'/>
+<arg type64='{_CFRange=qq}' type='{_CFRange=ii}'/>
+<retval already_retained='true' type='^{__CFString=}'/>
+</function>
+<function name='DCSGetTermRangeInString'>
+<arg type='^{__DCSDictionary=}'/>
+<arg type='^{__CFString=}'/>
+<arg type64='q' type='l'/>
+<retval type64='{_CFRange=qq}' type='{_CFRange=ii}'/>
+</function>
+</signatures>

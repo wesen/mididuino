@@ -1,4 +1,12 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - LFO implementation 
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+/* XXX barely begun implementation of LFOs */
+
+#include "Platform.h"
 #include "LFO.h"
 
 LFO::LFO() {

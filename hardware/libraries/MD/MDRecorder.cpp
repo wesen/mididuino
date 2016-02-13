@@ -1,7 +1,12 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - Implementation of a recorder for MD melodies
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
-#include <inttypes.h>
-#include "WProgram.h"
+/* XXX write unit tests for the MD note recorder. */
+
+#include "Platform.h"
 #include "helpers.h"
 #include "MDRecorder.h"
 

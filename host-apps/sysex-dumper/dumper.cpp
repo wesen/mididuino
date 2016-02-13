@@ -2,38 +2,14 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "WProgram.h"
+#include "Platform.h"
 #include "MidiSysex.hh"
 
 #include "MidiUartOSX.h"
 
 #include <stdio.h>
 
-MidiUartOSXClass MidiUart;
-MidiClass Midi, Midi2;
-
 char *file = NULL;
-
-void hexDump(uint8_t *data, uint16_t len) {
-  uint8_t cnt = 0;
-  for (int i = 0; i < len; i++) {
-    if (cnt == 0) {
-      printf("%.4x: ", i & 0xFFF0);
-    }
-    printf("%.2x ", data[i]);
-    cnt++;
-    if (cnt == 8) {
-      printf(" ");
-    }
-    if (cnt == 16) {
-      printf("\n");
-      cnt = 0;
-    }
-  }
-  if (cnt != 0) {
-    printf("\n");
-  }
-}
 
 class DumperSysexListener : public MidiSysexListenerClass {
 public:
@@ -54,23 +30,23 @@ public:
   }
 
   virtual void end() {
-		if (MidiSysex.recordLen == 4) {
-			switch (MidiSysex.data[0]) {
-			case 1:
-				printf("byte: %x\n", (MidiSysex.data[1] << 7) | MidiSysex.data[2]);
-				break;
+    if (MidiSysex.recordLen == 4) {
+      switch (MidiSysex.data[0]) {
+      case 1:
+        printf("byte: %x\n", (MidiSysex.data[1] << 7) | MidiSysex.data[2]);
+        break;
 
-			case 2:
-				printf("short: %x\n", (MidiSysex.data[1] << 14) | (MidiSysex.data[2] << 7) | MidiSysex.data[3]);
-				break;
+      case 2:
+        printf("short: %x\n", (MidiSysex.data[1] << 14) | (MidiSysex.data[2] << 7) | MidiSysex.data[3]);
+        break;
 
-			default:
-				hexDump(MidiSysex.data, MidiSysex.recordLen);
-				break;
-			}
-		} else {
-			hexDump(MidiSysex.data, MidiSysex.recordLen);
-		}
+      default:
+        hexDump(MidiSysex.data, MidiSysex.recordLen);
+        break;
+      }
+    } else {
+      hexDump(MidiSysex.data, MidiSysex.recordLen);
+    }
   }
 
   virtual void handleByte(uint8_t byte) {

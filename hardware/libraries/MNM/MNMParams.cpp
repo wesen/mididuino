@@ -1,4 +1,10 @@
-#include "WProgram.h"
+/*
+ * MidiCtrl - MNM parameters
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
+
+#include "Platform.h"
 #include "helpers.h"
 #include "MNMParams.hh"
 #include "Elektron.hh"
@@ -278,22 +284,7 @@ model_to_param_names_t mnm_model_param_names[] = {
   { MNM_FX_RINGMOD_MODEL, mnm_fx_ringmod_model_names }
 };
 
-static PGM_P get_param_name(model_param_name_t *names, uint8_t param) {
-  uint8_t i = 0;
-  uint8_t id;
-  if (names == NULL)
-    return NULL;
-
-  while ((id = pgm_read_byte(&names[i].id)) != 127) {
-    if (id == param) {
-      return names[i].name ;
-    }
-    i++;
-  }
-  return NULL;
-}
-
-static model_param_name_t *get_model_param_names(uint8_t model) {
+static model_param_name_t const *get_model_param_names(uint8_t model) {
   for (uint16_t i = 0; i < countof(mnm_model_param_names); i++) {
     if (model == mnm_model_param_names[i].model) {
       return mnm_model_param_names[i].names;

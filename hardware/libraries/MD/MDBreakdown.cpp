@@ -1,5 +1,6 @@
 /* Copyright (c) 2009 - http://ruinwesen.com/ */
 
+#include "Platform.h"
 #include "MD.h"
 #include "MDBreakdown.h"
 

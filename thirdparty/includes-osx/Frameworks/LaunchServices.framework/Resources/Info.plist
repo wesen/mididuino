@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildMachineOSBuild</key>
+	<string>11D17a</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>LaunchServices</string>
+	<key>CFBundleGetInfoString</key>
+	<string>10.6, Copyright © 2000-2007 Apple Inc., All Rights Reserved</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.LaunchServices</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>LaunchServices</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string>480.27.1</string>
+	<key>CFBundleSignature</key>
+	<string>laun</string>
+	<key>CFBundleVersion</key>
+	<string>480.27.1</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>CarbonLazyValues</key>
+	<dict>
+		<key>AEEventHandler</key>
+		<dict>
+			<key>aevtocon</key>
+			<string>_LSInstall_ocon_EventHandler</string>
+		</dict>
+		<key>CodeFragmentManager</key>
+		<dict>
+			<key>LaunchServices</key>
+			<string>CFMPriv_LaunchServices</string>
+		</dict>
+	</dict>
+	<key>DTCompiler</key>
+	<string></string>
+	<key>DTPlatformBuild</key>
+	<string>11D17a</string>
+	<key>DTPlatformVersion</key>
+	<string>GM</string>
+	<key>DTSDKBuild</key>
+	<string>11D17a</string>
+	<key>DTSDKName</key>
+	<string></string>
+	<key>DTXcode</key>
+	<string>0410</string>
+	<key>DTXcodeBuild</key>
+	<string>11D17a</string>
+</dict>
+</plist>

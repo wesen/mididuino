@@ -6,9 +6,10 @@ DATE=`date +%F`
 mkdir /tmp/$DATE-$GITBRANCH
 for i in `find . -d 1 -type d`; do
     cd "$i"
-    make -f ../Makefile 2>&1 > /dev/null
+    echo "Building $i"
+    make -f ../../../makefiles/Sketches.mk
     mv "$i.hex" "/tmp/$DATE-$GITBRANCH/$i-$DATE-$GITBRANCH.hex"
-	  echo Built $i-$DATE-$GITBRANCH
+    echo Built $i-$DATE-$GITBRANCH
     cd -
 done
 

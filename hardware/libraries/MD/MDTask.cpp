@@ -36,9 +36,9 @@ void MDTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
     if (MD.currentKit != value) {
       MD.currentKit = value;
       if (autoLoadKit) {
-				MD.requestKit(MD.currentKit);
+        MD.requestKit(MD.currentKit);
       } else {
-				kitChangeCallbacks.call();
+        kitChangeCallbacks.call();
       }
     }
     if (reloadKit) {
@@ -51,15 +51,15 @@ void MDTaskClass::onStatusResponseCallback(uint8_t type, uint8_t value) {
     if (MD.currentGlobal != value) {
       MD.currentGlobal = value;
       if (autoLoadGlobal) {
-				MD.requestGlobal(MD.currentGlobal);
+        MD.requestGlobal(MD.currentGlobal);
       } else {
-				globalChangeCallbacks.call();
+        globalChangeCallbacks.call();
       }
-		}
-		if (reloadGlobal) {
-			MD.requestGlobal(MD.currentGlobal);
-			reloadGlobal = false;
-		}
+    }
+    if (reloadGlobal) {
+      MD.requestGlobal(MD.currentGlobal);
+      reloadGlobal = false;
+    }
     break;
 
   case MD_CURRENT_PATTERN_REQUEST:
@@ -79,8 +79,8 @@ void MDTaskClass::onGlobalMessageCallback() {
     MD.loadedGlobal = true;
     globalChangeCallbacks.call();
   } else {
-		GUI.flash_strings_fill("GLOBAL SYSEX", "ERROR");
-	}
+    GUI.flash_strings_fill("GLOBAL SYSEX", "ERROR");
+  }
 }
 
 void MDTaskClass::onKitMessageCallback() {
@@ -95,7 +95,7 @@ void MDTaskClass::onKitMessageCallback() {
     }
     kitChangeCallbacks.call();
   } else {
-		GUI.flash_strings_fill("KIT SYSEX", "ERROR");
+    GUI.flash_strings_fill("KIT SYSEX", "ERROR");
   }
 }
 

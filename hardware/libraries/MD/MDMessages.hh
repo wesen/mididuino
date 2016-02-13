@@ -31,26 +31,26 @@ extern uint8_t machinedrum_sysex_hdr[5];
  * - gate, sensitivity and levels of the audio inputs
  **/
 class MDGlobal {
-	/**
-	 * \addtogroup md_sysex_global
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_sysex_global
+   * @{
+   **/
 	
 public:
-	/* DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES. */
+  /* DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES. */
 	
-	/** Original position of the global inside the MD (0 to 7). **/
+  /** Original position of the global inside the MD (0 to 7). **/
   uint8_t origPosition;
-	/** Stores the audio output for each track. **/
+  /** Stores the audio output for each track. **/
   uint8_t drumRouting[16];
-	/** Stores the MIDI pitch that triggers each track. **/
+  /** Stores the MIDI pitch that triggers each track. **/
   int8_t drumMapping[16];
-	/** Stores the MIDI pitch that triggers each pattern. **/
+  /** Stores the MIDI pitch that triggers each pattern. **/
   uint8_t keyMap[128];
 
-	/** The MIDI base channel of the MachineDrum. **/
+  /** The MIDI base channel of the MachineDrum. **/
   uint8_t baseChannel;
-	uint8_t unused;
+  uint8_t unused;
 	
   uint16_t tempo;
   bool extendedMode;
@@ -78,17 +78,17 @@ public:
   MDGlobal() {
   }
 
-	/** Read in a global message from a sysex buffer. **/
+  /** Read in a global message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
-	/** Convert the global object into a sysex buffer to be sent to the machinedrum. **/
+  /** Convert the global object into a sysex buffer to be sent to the machinedrum. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-	/**
-	 * Convert the global object and encode it into a sysex encoder,
-	 * for example to send directly to the UAR.
-	 **/
-	uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
+  /**
+   * Convert the global object and encode it into a sysex encoder,
+   * for example to send directly to the UAR.
+   **/
+  uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
 
-	/* @} */
+  /* @} */
 };
 
 /* @} */
@@ -102,44 +102,44 @@ public:
  * This class stores the LFO settings for a track, inside the Kit object.
  **/
 class MDLFO {
-	/**
-	 * \addtogroup md_sysex_kit
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_sysex_kit
+   * @{
+   **/
 
 public:
-	/* DO NOT CHANGE THE ORDER OF DECLARATION OF THESE PARAMETERS */
+  /* DO NOT CHANGE THE ORDER OF DECLARATION OF THESE PARAMETERS */
 
-	/** The destination track of this LFO. **/
+  /** The destination track of this LFO. **/
   uint8_t destinationTrack;
-	/** The destination parameter of this LFO. **/
+  /** The destination parameter of this LFO. **/
   uint8_t destinationParam;
-	/** The first shape of this LFO. **/
+  /** The first shape of this LFO. **/
   uint8_t shape1;
-	/** The second shape of this LFO. **/
+  /** The second shape of this LFO. **/
   uint8_t shape2;
-	/** The LFO type. **/
+  /** The LFO type. **/
   uint8_t type;
-	/** The internal state of the LFO, must not all be 0!. **/
-	uint8_t state[31];
-	/** The LFO speed. **/
+  /** The internal state of the LFO, must not all be 0!. **/
+  uint8_t state[31];
+  /** The LFO speed. **/
   uint8_t speed;
-	/** The LFO depth. **/
+  /** The LFO depth. **/
   uint8_t depth;
-	/** The LFO mix setting. **/
+  /** The LFO mix setting. **/
   uint8_t mix;
 
-	/* @} */
+  /* @} */
 };
 
 /**
  * This class stores the complete settings for a track inside the Kit object.
  **/
 class MDMachine {
-	/**
-	 * \addtogroup md_sysex_kit
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_sysex_kit
+   * @{
+   **/
 
 public:
   uint8_t params[24];
@@ -150,7 +150,7 @@ public:
   uint8_t trigGroup;
   uint8_t muteGroup;
 
-	/* @} */
+  /* @} */
 };
 
 /**
@@ -159,23 +159,23 @@ public:
  **/
 	
 class MDKitShort {
-	/**
-	 * \addtogroup md_sysex_kit
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_sysex_kit
+   * @{
+   **/
 
 public:
-	uint8_t origPosition;
-	char name[17];
-	uint32_t models[16];
+  uint8_t origPosition;
+  char name[17];
+  uint32_t models[16];
 
-	MDKitShort() {
-	}
+  MDKitShort() {
+  }
 	
-	/** Read in a kit message from a sysex buffer. **/
-	bool fromSysex(uint8_t *sysex, uint16_t len);
+  /** Read in a kit message from a sysex buffer. **/
+  bool fromSysex(uint8_t *sysex, uint16_t len);
 
-	/* @} */
+  /* @} */
 };
 
 /**
@@ -183,49 +183,54 @@ public:
  * machinedrum, including effect and machine settings.
  **/
 class MDKit {
-	/**
-	 * \addtogroup md_sysex_kit
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_sysex_kit
+   * @{
+   **/
 
 public:
   uint8_t origPosition;
   char name[17];
 
-	/** The parameters for each track. **/
+  /** The parameters for each track. **/
   uint8_t params[16][24];
-	/** The levels of each track. **/
+  /** The levels of each track. **/
   uint8_t levels[16];
-	/** The selected drum model for each track. **/
+  /** The selected drum model for each track. **/
   uint32_t models[16];
-	/** The LFO settings for each track. **/
-	MDLFO lfos[16];
+  /** The LFO settings for each track. **/
+  MDLFO lfos[16];
 	
-	/** The settings of the reverb effect. **/
+  /** The settings of the reverb effect. **/
   uint8_t reverb[8];
-	/** The settings of the delay effect. **/
+  /** The settings of the delay effect. **/
   uint8_t delay[8];
-	/** The settings of the EQ effect. **/
+  /** The settings of the EQ effect. **/
   uint8_t eq[8];
-	/** The settings of the compressor effect. **/
+  /** The settings of the compressor effect. **/
   uint8_t dynamics[8];
 
-	/** The trig group selected for each track (255: OFF). **/
+  /** The trig group selected for each track (255: OFF). **/
   uint8_t trigGroups[16];
-	/** The mute group selected for each track (255: OFF). **/
+  /** The mute group selected for each track (255: OFF). **/
   uint8_t muteGroups[16];
 
-	/** Read in a kit message from a sysex buffer. **/
+  /** Read in a kit message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
-	/** Convert a kit object to a sysex buffer ready to be sent to the MD. **/
+  /** Convert a kit object to a sysex buffer ready to be sent to the MD. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-	/**
-	 * Convert the global object and encode it into a sysex encoder,
-	 * for example to send directly to the UAR.
-	 **/
-	uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
+  /**
+   * Convert the global object and encode it into a sysex encoder,
+   * for example to send directly to the UAR.
+   **/
+  uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
 
-	/* @} */
+  /**
+   * Swap two machines.
+   **/
+  void swapTracks(uint8_t srcTrack, uint8_t dstTrack);
+
+  /* @} */
 };
 
 /* @} */
@@ -239,13 +244,13 @@ public:
  * This class stores a single row in a song.
  **/
 class MDRow {
-	/**
-	 * \addtogroup md_sysex_song
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_sysex_song
+   * @{
+   **/
 
 public:
-	/* DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES. */
+  /* DO NOT CHANGE THE ORDER OF DECLARATION OF THESE VARIABLES. */
   uint8_t pattern;
   uint8_t kit;
   uint8_t loopTimes;
@@ -255,17 +260,17 @@ public:
   uint8_t startPosition;
   uint8_t endPosition;
 
-	/* @} */
+  /* @} */
 };
 
 /**
  * This class stores a song of the MachineDrum.
  **/
 class MDSong {
-	/**
-	 * \addtogroup md_sysex_song
-	 * @{
-	 **/
+  /**
+   * \addtogroup md_sysex_song
+   * @{
+   **/
 
 public:
   uint8_t origPosition;
@@ -273,17 +278,17 @@ public:
   MDRow rows[256];
   uint8_t numRows;
   
-	/** Read in a song message from a sysex buffer. **/
+  /** Read in a song message from a sysex buffer. **/
   bool fromSysex(uint8_t *sysex, uint16_t len);
-	/** Convert a song object to a sysex buffer ready to be sent to the MD. **/
+  /** Convert a song object to a sysex buffer ready to be sent to the MD. **/
   uint16_t toSysex(uint8_t *sysex, uint16_t len);
-	/**
-	 * Convert the global object and encode it into a sysex encoder,
-	 * for example to send directly to the UAR.
-	 **/
-	uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
+  /**
+   * Convert the global object and encode it into a sysex encoder,
+   * for example to send directly to the UAR.
+   **/
+  uint16_t toSysex(ElektronDataToSysexEncoder &encoder);
 
-	/* @} */
+  /* @} */
 };
 
 /* @} */

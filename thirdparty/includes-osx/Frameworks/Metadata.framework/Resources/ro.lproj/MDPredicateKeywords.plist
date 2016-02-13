@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>tip:aplicație</string>
+		<string>tip:aplicații</string>
+		<string>tip:apl</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>tip:favorită</string>
+		<string>tip:favorite</string>
+		<string>tip:pagină web</string>
+		<string>tip:pagini web</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>tip:contact</string>
+		<string>tip:contacte</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>tip:dosar</string>
+		<string>tip:dosare</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>tip:document</string>
+		<string>tip:documente</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>tip:e-mail</string>
+		<string>tip:e-mailuri</string>
+		<string>tip:mesaj mail</string>
+		<string>tip:mesaje mail</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>tip:eveniment</string>
+		<string>tip:evenimente</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>tip:evenimente &amp; lucruri de făcut</string>
+		<string>tip:evenimente OR tip:lucruri de făcut</string>
+		<string>tip:lucru de făcut OR tip:eveniment</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>tip:font</string>
+		<string>tip:fonturi</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>tip:imagine</string>
+		<string>tip:imagini</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>tip:mesaj</string>
+		<string>tip:mesaje</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>tip:film</string>
+		<string>tip:filme</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>tip:muzică</string>
+		<string>tip:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>dată:luna următoare</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>dată:săptămâna următoare</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>dată:anul următor</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>tip:pdf</string>
+		<string>tip:pdf-uri</string>
+		<string>tip:document pdf</string>
+		<string>tip:documente pdf</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>tip:prezentări</string>
+		<string>tip:prezentări</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>tip:sursă</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>tip:foi de calcul tabelar</string>
+		<string>tip:foaie de calcul tabelar</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>tip:preferințe sistem</string>
+		<string>tip:preferințe</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>tip:text</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>dată:luna aceasta</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>dată:săptămâna aceasta</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>dată:anul acesta</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>dată:azi</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>tip:lucru de făcut</string>
+		<string>tip:lucruri de făcut</string>
+		<string>tip:de făcut</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>dată:mâine</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>dată:ieri</string>
+	</array>
+</dict>
+</plist>

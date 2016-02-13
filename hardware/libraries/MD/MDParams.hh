@@ -13,6 +13,12 @@
  * @{
  **/
 
+/**
+ * Simple defines to mark for all tracks and for no tracks.
+ **/
+#define MD_ALL_TRACKS 17
+#define MD_NO_TRACK   16
+
 #define MD_ASSIGN_MACHINE_ID                             0x5b
 #define MD_ASSIGN_MACHINE_INIT_SYNTHESIS                 0
 #define MD_ASSIGN_MACHINE_INIT_SYNTHESIS_EFFECTS         1
@@ -786,7 +792,7 @@
 PGM_P model_param_name(uint8_t model, uint8_t param);
 
 extern const char *MDLFONames[8];
-extern md_machine_name_t machine_names[134] PROGMEM;
+extern const md_machine_name_t machine_names[134] PROGMEM;
 
 /* @} @} */
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DCSDefaultActiveDictionaries</key>
+	<array>
+		<string>/Library/Dictionaries/Shogakukan Daijisen.dictionary</string>
+		<string>/Library/Dictionaries/Shogakukan Progressive English-Japanese Japanese-English Dictionary.dictionary</string>
+		<string>/Library/Dictionaries/Shogakukan Ruigo Reikai Jiten.dictionary</string>
+		<string>/Library/Dictionaries/Apple Dictionary.dictionary</string>
+		<string>/System/Library/Frameworks/CoreServices.framework/Frameworks/DictionaryServices.framework/Resources/Wikipedia.wikipediadictionary</string>
+	</array>
+	<key>DCSDefaultDictionaryPath</key>
+	<string>/Library/Dictionaries/Shogakukan Daijisen.dictionary</string>
+	<key>DCSDefaultThesaurusPath</key>
+	<string>/Library/Dictionaries/Shogakukan Ruigo Reikai Jiten.dictionary</string>
+</dict>
+</plist>

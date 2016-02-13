@@ -1,11 +1,20 @@
-/* Copyright (c) 2009 - http://ruinwesen.com/ */
+/*
+ * MidiCtrl - GUI event polling
+ *
+ * (c) 2009 - 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 
 #include "GUI.h"
+#include "RingBuffer.h"
 
 volatile CRingBuffer<gui_event_t, 8> EventRB;
 
+/**
+ * Gather the current button status and insert GUI events into the
+ * event ringbuffer if necessary.
+ **/
 void pollEventGUI() {
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < GUI_NUM_BUTTONS; i++) {
     gui_event_t event;
     event.source = i;
     if (BUTTON_PRESSED(i)) {

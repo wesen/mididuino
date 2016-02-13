@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>druh:aplikácia</string>
+		<string>druh:aplikácie</string>
+		<string>druh:apl.</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>druh:záložka</string>
+		<string>druh:záložky</string>
+		<string>druh:webová stránka</string>
+		<string>druh:webové stránky</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>druh:kontakt</string>
+		<string>druh:kontakty</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>druh:priečinok</string>
+		<string>druh:priečinky</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>druh:dokument</string>
+		<string>druh:dokumenty</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>druh:email</string>
+		<string>druh:emaily</string>
+		<string>druh:emailová správa</string>
+		<string>druh:emailové správy</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>druh:udalosť</string>
+		<string>druh:udalosti</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>druh:udalosti a úlohy</string>
+		<string>druh:udalosť ALEBO druh:úloha</string>
+		<string>druh:úloha ALEBO druh:udalosť</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>druh:písmo</string>
+		<string>druh:písma</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>druh:obrázok</string>
+		<string>druh:obrázky</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>druh:správa</string>
+		<string>druh:správy</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>druh:film</string>
+		<string>druh:filmy</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>druh:hudba</string>
+		<string>druh:audio</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>dátum:nasledujúci mesiac</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>dátum:nasledujúci týždeň</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>dátum:nasledujúci rok</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>druh:pdf</string>
+		<string>druh:pdf</string>
+		<string>druh:pdf dokument</string>
+		<string>druh:pdf dokumenty</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>druh:prezentácie</string>
+		<string>druh:prezentácia</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>druh:zdroj</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>druh:tabuľkové procesory</string>
+		<string>druh:tabuľkový procesor</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>druh:systémové nastavenia</string>
+		<string>druh:nastavenia</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>druh:text</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>dátum:tento mesiac</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>dátum:tento týždeň</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>dátum:tento rok</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>dátum:dnes</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>druh:úloha</string>
+		<string>druh:úlohy</string>
+		<string>druh:úloha</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>dátum:zajtra</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>dátum:včera</string>
+	</array>
+</dict>
+</plist>

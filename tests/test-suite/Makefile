@@ -1,74 +1,27 @@
-CXX = llvm-g++-4.2
-#CXX = g++
-CC = llvm-gcc-4.2
-#CC = gcc
-#ARCHFLAGS = -arch x86_64
+#
+# MidiCtrl - Makefile for unit test suite
+#
+# (c)  July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+#
 
-BASE_DIR=../..
-LBASE_DIR=$(BASE_DIR)/hardware/libraries
-JAR_DIR=$(BASE_DIR)/build/macosx/build/work/Arduino.app/Contents/Resources/Java
-CLASSPATH=$(subst jar ,jar:,$(wildcard $(JAR_DIR)/*.jar))
+MIDICTRL_LIBS = Midi MidiTools GUI Elektron MD MNM Sequencer GUI
 
-DIRS  = CommonTools Midi MidiTools GUI Elektron MD MNM Sequencer
-LDIRS = $(foreach dir,$(DIRS),$(LBASE_DIR)/$(dir)) ../../host/MidiUart ../../host/GUI
-INCS  = $(foreach dir,$(LDIRS),-I$(dir)) -I../../host
-#EXCLUDE += %MidiClock.cpp
-OBJS  = $(foreach dir,$(LDIRS),$(foreach file,$(filter-out $(EXCLUDE),$(wildcard $(dir)/*.cpp)),$(subst .cpp,.host.o,$(file))))
-OBJS += $(foreach dir,$(LDIRS),$(foreach file,$(wildcard $(dir)/*.c),$(subst .c,.host.o,$(file))))
+include ../../makefiles/Host.mk
 
-CPPUNITDIR=$(BASE_DIR)/thirdparty/CppUnitLite2
-CXXFLAGS += -I$(CPPUNITDIR)/src
-CLDFLAGS += $(CPPUNITDIR)/cppunitlite.a
+CPPUNITDIR=$(MIDICTRL_BASE_DIR)/thirdparty/CppUnitLite2
+CXXFLAGS += -I../../thirdparty/CppUnitLite2/src -std=c++0x
+CPPSOURCES := $(shell find . -name '*.cpp')
+HOSTOBJFILES = $(foreach file,$(CPPSOURCES),$(subst .cpp,.test.o,$(file)))
 
-CXXFLAGS += -Wall  -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g -O4
-CFLAGS += -O4
-CFLAGS += -Wall -DHOST_MIDIDUINO -I. -ffunction-sections $(ARCHFLAGS) -g
-
-UNAME=$(shell uname)
-ISWIN=$(findstring CYGWIN,$(UNAME))
-ISMAC=$(findstring Darwin,$(UNAME))
-
-ifneq (,$(ISMAC))
-CLDFLAGS +=  -framework CoreAudio -framework CoreMIDI -framework Carbon $(ARCHFLAGS)
-endif
-
-ifneq (,$(ISWIN))
-LIBS += -lwinmm
-endif
-
-CXXFLAGS += $(INCS)
-CFLAGS += $(INCS)
+CFLAGS += -DTEST_SUITE
+CXXFLAGS += -DTEST_SUITE
 
 all: test
 
-%.host.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-%.host.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-test: main.host.o \
-			bitTests.host.o \
-			listTest.host.o \
-      arpTest.host.o \
-			stackTest.host.o \
-			miscTest.host.o \
-      midiTest.host.o \
-			callbackTest.host.o \
-			noteHandlerTest.host.o \
-		  dataEncoderTest.host.o \
-			mnmDataEncoderTest.host.o \
-      mdPatternTest.host.o\
-			mdMessagesTest.host.o \
-			mnmPatternTest.host.o \
-			mnmMessagesTest.host.o \
-			clockTests.host.o \
-      $(OBJS)
+test: $(HOSTOBJFILES) $(TEST_OBJS)
 	$(CXX) $(CLDFLAGS) -o $@ $^ $(CPPUNITDIR)/cppunitlite.a $(LIBS)
 
 clean:
 	- rm -f *.o test
-
-libclean:
-	rm -rf $(OBJS)
+	- find . -name \*.o -print0 | xargs -0 rm
 

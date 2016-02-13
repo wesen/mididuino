@@ -1,7 +1,12 @@
+/*
+ * MidiCtrl - Configuration page for the MIDI clock
+ *
+ * (c) July 2011 - Manuel Odendahl - wesen@ruinwesen.com
+ */
 #ifndef MIDICLOCKPAGE_H__
 #define MIDICLOCKPAGE_H__
 
-#include "WProgram.h"
+#include "PlatformConfig.h"
 #include "MidiClock.h"
 #include "GUI.h"
 

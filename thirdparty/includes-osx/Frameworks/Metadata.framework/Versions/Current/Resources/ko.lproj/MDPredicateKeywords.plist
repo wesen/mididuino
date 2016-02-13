@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APPLICATIONS</key>
+	<array>
+		<string>kind:application</string>
+		<string>kind:applications</string>
+		<string>kind:app</string>
+		<string>종류:응용 프로그램</string>
+		<string>종류:애플리케이션</string>
+		<string>종류:앱</string>
+	</array>
+	<key>BOOKMARKS</key>
+	<array>
+		<string>kind:bookmark</string>
+		<string>kind:bookmarks</string>
+		<string>kind:webpage</string>
+		<string>kind:webpages</string>
+		<string>종류:책갈피</string>
+		<string>종류:웹 페이지</string>
+	</array>
+	<key>CONTACT</key>
+	<array>
+		<string>kind:contact</string>
+		<string>kind:contacts</string>
+		<string>종류:연락처</string>
+	</array>
+	<key>DIRECTORIES</key>
+	<array>
+		<string>kind:folder</string>
+		<string>kind:folders</string>
+		<string>종류:폴더</string>
+	</array>
+	<key>DOCUMENTS</key>
+	<array>
+		<string>kind:document</string>
+		<string>kind:documents</string>
+		<string>종류:도큐멘트</string>
+	</array>
+	<key>EMAIL</key>
+	<array>
+		<string>kind:email</string>
+		<string>kind:emails</string>
+		<string>kind:mail message</string>
+		<string>kind:mail messages</string>
+		<string>종류:이메일</string>
+		<string>종류:e-메일</string>
+		<string>종류:메일 메시지</string>
+	</array>
+	<key>EVENT</key>
+	<array>
+		<string>kind:event</string>
+		<string>kind:events</string>
+		<string>종류:이벤트</string>
+	</array>
+	<key>EVENT_TODO</key>
+	<array>
+		<string>kind:events &amp; to dos</string>
+		<string>kind:event OR kind:todo</string>
+		<string>kind:todo OR kind:event</string>
+		<string>종류:이벤트 및 해야할 일</string>
+	    <string>종류:이벤트 또는 종류:해야할 일</string>
+	    <string>종류:해야할 일 또는 종류:이벤트</string>
+	</array>
+	<key>FONTS</key>
+	<array>
+		<string>kind:font</string>
+		<string>kind:fonts</string>
+		<string>종류:서체</string>
+	</array>
+	<key>IMAGES</key>
+	<array>
+		<string>kind:image</string>
+		<string>kind:images</string>
+		<string>종류:이미지</string>
+	</array>
+	<key>MESSAGES</key>
+	<array>
+		<string>kind:message</string>
+		<string>kind:messages</string>
+		<string>종류:메시지</string>
+	</array>
+	<key>MOVIES</key>
+	<array>
+		<string>kind:movie</string>
+		<string>kind:movies</string>
+		<string>종류:동영상</string>
+	</array>
+	<key>MUSIC</key>
+	<array>
+		<string>kind:music</string>
+		<string>kind:audio</string>
+		<string>종류:음악</string>
+		<string>종류:오디오</string>
+	</array>
+	<key>NEXT_MONTH</key>
+	<array>
+		<string>date:next month</string>
+		<string>날짜:다음 달</string>
+	</array>
+	<key>NEXT_WEEK</key>
+	<array>
+		<string>date:next week</string>
+		<string>날짜:다음 주</string>
+	</array>
+	<key>NEXT_YEAR</key>
+	<array>
+		<string>date:next year</string>
+		<string>날짜:내년</string>
+	</array>
+	<key>PDF</key>
+	<array>
+		<string>kind:pdf</string>
+		<string>kind:pdfs</string>
+		<string>kind:pdf document</string>
+		<string>kind:pdf documents</string>
+		<string>종류:pdf</string>
+		<string>종류:pdf 도큐멘트</string>
+	</array>
+	<key>PRESENTATIONS</key>
+	<array>
+		<string>kind:presentations</string>
+		<string>kind:presentation</string>
+		<string>종류:프레젠테이션</string>
+	</array>
+	<key>SOURCE</key>
+	<array>
+		<string>kind:source</string>
+		<string>종류:소스</string>
+	</array>
+	<key>SPREADSHEETS</key>
+	<array>
+		<string>kind:spreadsheets</string>
+		<string>kind:spreadsheet</string>
+		<string>종류:스프레드시트</string>
+	</array>
+	<key>SYSTEM_PREFS</key>
+	<array>
+		<string>kind:system preferences</string>
+		<string>kind:preferences</string>
+		<string>종류:시스템 환경설정</string>
+		<string>종류:환경설정</string>
+	</array>
+	<key>TEXT</key>
+	<array>
+		<string>kind:text</string>
+		<string>종류:텍스트</string>
+	</array>
+	<key>THIS_MONTH</key>
+	<array>
+		<string>date:this month</string>
+		<string>날짜:이번 달</string>
+	</array>
+	<key>THIS_WEEK</key>
+	<array>
+		<string>date:this week</string>
+		<string>날짜:이번 주</string>
+	</array>
+	<key>THIS_YEAR</key>
+	<array>
+		<string>date:this year</string>
+		<string>날짜:올해</string>
+	</array>
+	<key>TODAY</key>
+	<array>
+		<string>date:today</string>
+		<string>날짜:오늘</string>
+	</array>
+	<key>TODO</key>
+	<array>
+		<string>kind:todo</string>
+		<string>kind:todos</string>
+		<string>kind:to do</string>
+		<string>종류:해야할일</string>
+		<string>종류:해야할 일</string>
+	</array>
+	<key>TOMORROW</key>
+	<array>
+		<string>date:tomorrow</string>
+		<string>날짜:내일</string>
+	</array>
+	<key>YESTERDAY</key>
+	<array>
+		<string>date:yesterday</string>
+		<string>날짜:어제</string>
+	</array>
+</dict>
+</plist>

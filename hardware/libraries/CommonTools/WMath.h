@@ -18,8 +18,11 @@
  * @{
  **/
 
+#ifdef __cplusplus
 long random(long);
 long random(long, long);
+#endif
+
 void randomSeed(unsigned int);
 long map(long, long, long, long, long);
 

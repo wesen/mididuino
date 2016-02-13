@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDXDictionaryIndexes</key>
+	<array>
+		<dict>
+			<key>IDXIndexAccessMethod</key>
+			<string>com.apple.TrieAccessMethod</string>
+			<key>IDXIndexBigEndian</key>
+			<false/>
+			<key>IDXIndexDataFields</key>
+			<dict>
+				<key>IDXVariableDataFields</key>
+				<array>
+					<dict>
+						<key>IDXDataFieldName</key>
+						<string>VariableSizeData</string>
+						<key>IDXDataSizeLength</key>
+						<integer>4</integer>
+					</dict>
+				</array>
+			</dict>
+			<key>IDXIndexKeyMatchingMethods</key>
+			<array>
+				<string>IDXExactMatch</string>
+				<string>IDXPrefixMatch</string>
+				<string>IDXCommonPrefixMatch</string>
+				<string>IDXWildcardMatch</string>
+			</array>
+			<key>IDXIndexPath</key>
+			<string>Keyword.index</string>
+			<key>IDXIndexSupportDataID</key>
+			<false/>
+			<key>IDXIndexWritable</key>
+			<true/>
+		</dict>
+	</array>
+	<key>IDXDictionaryVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
