@@ -205,7 +205,7 @@ public:
   Page *tmpPage;
 
   /** Create a sketch switch page switching between different sketches. **/
-  SketchSwitchPage(char *_name = "SELECT SKETCH:",
+  SketchSwitchPage(const char *_name = "SELECT SKETCH:",
 		   Sketch *s1 = NULL, Sketch *s2 = NULL, Sketch *s3 = NULL, Sketch *s4 = NULL) :
     Page(_name) {
     tmpPage = NULL;
