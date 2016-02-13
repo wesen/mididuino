@@ -100,7 +100,7 @@ template <class C, int N, class T> T CRingBuffer<C, N, T>::size() volatile {
   if (wr >= rd) {
     return wr - rd;
   } else {
-    return 256 << (sizeof(T) - 1) - rd + wr;
+    return (256 << (sizeof(T) - 1)) - rd + wr;
   }
 }
 

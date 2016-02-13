@@ -106,6 +106,7 @@ mkdir "${WORK_DIR}/classes"
 
 # Intentionally keeping this separate from the 'bin' folder
 # used by eclipse so that they don't cause conflicts.
+java6
 javac \
     -Xlint:deprecation \
     -source 1.5 -target 1.5 \

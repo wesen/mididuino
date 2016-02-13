@@ -4,7 +4,6 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFBase.h>
-#include <CoreServices/../Frameworks/CarbonCore.framework/Headers/MacTypes.h>
 #include <CoreMIDI/MIDIServices.h>
 #include <CoreFoundation/CFRunLoop.h>
 
