@@ -717,7 +717,7 @@ model_to_param_names_t model_param_names[] = {
   { RAM_R4_MODEL,  ram_r_model_names }
 };
 
-static PGM_P get_param_name(const model_param_name_t *names, uint8_t param) {
+static PGM_P get_md_param_name(const model_param_name_t *names, uint8_t param) {
   uint8_t i = 0;
   uint8_t id;
   if (names == NULL)
@@ -749,36 +749,36 @@ PGM_P model_param_name(uint8_t model, uint8_t param) {
   }
 
   if (model >= MID_MODEL && model <= MID_16_MODEL) {
-    return get_param_name(mid_model_names, param);
+    return get_md_param_name(mid_model_names, param);
   }
   if (model >= CTR_8P_MODEL && model < ROM_01_MODEL) {
-    return get_param_name(get_model_param_names(model), param);
+    return get_md_param_name(get_model_param_names(model), param);
   }
 
   if (param >= 8) {
-    return get_param_name(generic_param_names, param);
+    return get_md_param_name(generic_param_names, param);
   } else {
     if (model == 0xFF) {
-      return get_param_name(generic_param_names, param);
+      return get_md_param_name(generic_param_names, param);
     }
   
     if ((model >= ROM_01_MODEL && model <= ROM_32_MODEL) ||
 	(model >= ROM_33_MODEL && model <= ROM_48_MODEL)) {
-      return get_param_name(rom_model_names, param);
+      return get_md_param_name(rom_model_names, param);
     }
     if (model == RAM_R1_MODEL ||
 	model == RAM_R2_MODEL ||
 	model == RAM_R3_MODEL ||
 	model == RAM_R4_MODEL) {
-      return get_param_name(ram_r_model_names, param);
+      return get_md_param_name(ram_r_model_names, param);
     }
     if (model == RAM_P1_MODEL ||
 	model == RAM_P2_MODEL ||
 	model == RAM_P3_MODEL ||
 	model == RAM_P4_MODEL) {
-      return get_param_name(rom_model_names, param);
+      return get_md_param_name(rom_model_names, param);
     }
-    return get_param_name(get_model_param_names(model), param);
+    return get_md_param_name(get_model_param_names(model), param);
   }
 }
 
