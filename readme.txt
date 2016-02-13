@@ -16,3 +16,5 @@ It contains code to:
 - create musical algorithms (sequencer, euclid rhythm generation,
   arpeggiator)
 - a big collection of firmwares and tutorials
+
+A mac binary can be downloaded under: https://drive.google.com/folderview?id=0B0urCULhoczcdXZVaFRoQzRwcEU&amp;usp=sharing
