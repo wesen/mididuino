@@ -153,11 +153,11 @@ void MidiClass::handleByte(uint8_t byte) {
     if (midi_parse[callback].midi_status == MIDI_NOTE_ON && msg[2] == 0) {
       callback = 0; // XXX ugly hack to recgnize NOTE on with velocity 0 as Note Off
     }
+    in_state = midi_wait_status;
 
 #ifdef HOST_MIDIDUINO
     messageCallback.call(msg, in_msg_len);
 #endif
-		
     if (callback < 7) {
       midiCallbacks[callback].call(msg);
 #if 0
@@ -176,7 +176,6 @@ void MidiClass::handleByte(uint8_t byte) {
 #endif
     }
 		
-    in_state = midi_wait_status;
     break;
 
   case midi_wait_byte_2:
